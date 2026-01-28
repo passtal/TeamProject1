@@ -2,6 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 회원 매퍼 XML -->
-<mapper namespace="com.aloha.duruduru.mapper.UserMapper">
+<mapper namespace="com.aloha.durudurub.dao.UserMapper">
     <!-- TODO: 구현 -->
 </mapper>

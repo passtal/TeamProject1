@@ -10,9 +10,11 @@ import lombok.Data;
 
 @Data
 public class Auth {
+
     private int no;
     private int userNo;
     private String auth;
     private Date createdAt;
     private Date updatedAt;
+    
 }
