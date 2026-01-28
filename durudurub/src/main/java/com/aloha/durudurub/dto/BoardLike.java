@@ -1,5 +1,7 @@
 package com.aloha.durudurub.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -7,5 +9,10 @@ import lombok.Data;
  */
 @Data
 public class BoardLike {
-    // TODO: 구현
+
+    private int no;
+    private int boardNo;
+    private int userNo;
+    private Date createdAt;
+
 }
