@@ -1,0 +1,15 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `persistence_logins`;
+
+CREATE TABLE `persistence_logins` (
+    `no`            INT NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '번호',
+    `id`            VARCHAR(255) NOT NULL COMMENT 'ID (UUID)',
+    `user_id`       VARCHAR(100) NOT NULL COMMENT '회원 아이디',
+    `token`         VARCHAR(255) NOT NULL COMMENT '인증 토큰',
+    `expiry_date`   TIMESTAMP NOT NULL COMMENT '만료시간',
+    `created_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '등록일자',
+    `updated_at`    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '수정일자'
+);
+
+SET FOREIGN_KEY_CHECKS = 1;

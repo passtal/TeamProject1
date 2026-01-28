@@ -1,0 +1,20 @@
+-- 10. club_comments (댓글)
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `club_commments`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `club_comments` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `board_no` INT NOT NULL COMMENT 'FK',
+    `writer_no` INT NOT NULL COMMENT 'FK',
+    `content` VARCHAR(500) NOT NULL COMMENT '댓글 내용',
+    `like_count` INT DEFAULT 0 COMMENT '좋아요 수',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`no`),
+    FOREIGN KEY (`board_no`) REFERENCES `club_boards`(`no`) ON DELETE CASCADE,
+    FOREIGN KEY (`writer_no`) REFERENCES `users`(`no`) ON DELETE CASCADE
+);

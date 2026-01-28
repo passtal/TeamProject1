@@ -1,0 +1,17 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `categories`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `categories` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `name` VARCHAR(50) NOT NULL COMMENT '카테고리명',
+    `description` VARCHAR(200) NULL COMMENT '카테고리 설명',
+    `icon` VARCHAR(100) NULL COMMENT '카테고리 아이콘',
+    `seq` INT DEFAULT 0 COMMENT '정렬순서',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`no`),
+    UNIQUE KEY uk_category_name (`name`)
+);
