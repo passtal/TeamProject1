@@ -1,7 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- 게시글 매퍼 XML -->
-<mapper namespace="com.aloha.durudurub.dao.BoardMapper">
-    <!-- TODO: 구현 -->
+
+<mapper namespace="com.aloha.sample.dao.BoardMapper">
+
+    <resultMap id="boardResultMap" type="com.aloha.sample.dto.Board">
+        <id property="no" column="no"/>
+        <result property="clubNo" column="club_no"/>
+        <result property="writerNo" column="writer_no"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="commentCount" column="comment_count"/>
+        <result property="isNotice" column="is_notice"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <association property="writer" javaType="com.aloha.sample.dto.User">
+            <id property="no" column="writer_user_no"/>
+            <result property="username" column="writer_username"/>
+            <result property="profileImg" column="writer_profile_img"/>
+        </association>
+    </resultMap>
+
+    <!-- 게시글 목록 (모임별) -->
+    <select id="listByClub" resultMap="boardResultMap">
+        SELECT b.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_boards b
+        JOIN users u ON b.writer_no = u.no
+        WHERE b.club_no = #{clubNo}
+        ORDER BY b.is_notice DESC, b.created_at DESC
+    </select>
+
+    <!-- 공지 게시글 목록 (모임별) -->
+    <select id="listNoticeByClub" resultMap="boardResultMap">
+        SELECT b.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_boards b
+        JOIN users u ON b.writer_no = u.no
+        WHERE b.club_no = #{clubNo} AND b.is_notice = 'Y'
+        ORDER BY b.created_at DESC
+    </select>
+
+    <!-- 작성자별 게시글 목록 -->
+    <select id="listByWriter" resultMap="boardResultMap">
+        SELECT b.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_boards b
+        JOIN users u ON b.writer_no = u.no
+        WHERE b.writer_no = #{writerNo}
+        ORDER BY b.created_at DESC
+    </select>
+
+    <!-- 게시글 검색 -->
+    <select id="searchByClub" resultMap="boardResultMap">
+        SELECT b.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_boards b
+        JOIN users u ON b.writer_no = u.no
+        WHERE b.club_no = #{clubNo} 
+          AND (b.title LIKE CONCAT('%', #{keyword}, '%') OR b.content LIKE CONCAT('%', #{keyword}, '%'))
+        ORDER BY b.created_at DESC
+    </select>
+
+    <!-- 게시글 단건 조회 -->
+    <select id="selectByNo" resultMap="boardResultMap">
+        SELECT b.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_boards b
+        JOIN users u ON b.writer_no = u.no
+        WHERE b.no = #{no}
+    </select>
+
+    <!-- 게시글 등록 -->
+    <insert id="insert" parameterType="com.aloha.sample.dto.Board" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO club_boards (club_no, writer_no, title, content, is_notice)
+        VALUES (#{clubNo}, #{writerNo}, #{title}, #{content}, COALESCE(#{isNotice}, 'N'))
+    </insert>
+
+    <!-- 게시글 수정 -->
+    <update id="update" parameterType="com.aloha.sample.dto.Board">
+        UPDATE club_boards
+        SET title = #{title}, content = #{content}, is_notice = #{isNotice}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 게시글 삭제 -->
+    <delete id="delete">
+        DELETE FROM club_boards WHERE no = #{no}
+    </delete>
+
+    <!-- 조회수 증가 -->
+    <update id="incrementViewCount">
+        UPDATE club_boards SET view_count = view_count + 1 WHERE no = #{no}
+    </update>
+
+    <!-- 좋아요 수 증가 -->
+    <update id="incrementLikeCount">
+        UPDATE club_boards SET like_count = like_count + 1 WHERE no = #{no}
+    </update>
+
+    <!-- 좋아요 수 감소 -->
+    <update id="decrementLikeCount">
+        UPDATE club_boards SET like_count = GREATEST(like_count - 1, 0) WHERE no = #{no}
+    </update>
+
+    <!-- 댓글 수 증가 -->
+    <update id="incrementCommentCount">
+        UPDATE club_boards SET comment_count = comment_count + 1 WHERE no = #{no}
+    </update>
+
+    <!-- 댓글 수 감소 -->
+    <update id="decrementCommentCount">
+        UPDATE club_boards SET comment_count = GREATEST(comment_count - 1, 0) WHERE no = #{no}
+    </update>
+
+    <!-- ===== 게시글 이미지 ===== -->
+
+    <!-- 이미지 목록 조회 -->
+    <select id="listImageByBoard" resultType="com.aloha.sample.dto.BoardImage">
+        SELECT no, board_no AS boardNo, image_url AS imageUrl, seq
+        FROM club_board_images
+        WHERE board_no = #{boardNo}
+        ORDER BY seq
+    </select>
+
+    <!-- 이미지 등록 -->
+    <insert id="insertImage" parameterType="com.aloha.sample.dto.BoardImage" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO club_board_images (board_no, image_url, seq)
+        VALUES (#{boardNo}, #{imageUrl}, #{seq})
+    </insert>
+
+    <!-- 이미지 삭제 -->
+    <delete id="deleteImage">
+        DELETE FROM club_board_images WHERE no = #{no}
+    </delete>
+
+    <!-- 게시글 이미지 전체 삭제 -->
+    <delete id="deleteImageByBoard">
+        DELETE FROM club_board_images WHERE board_no = #{boardNo}
+    </delete>
+
 </mapper>

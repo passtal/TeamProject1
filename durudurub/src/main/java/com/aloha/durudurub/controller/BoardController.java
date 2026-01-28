@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aloha.durudurub.dto.Board;
 import com.aloha.durudurub.dto.Club;
+import com.aloha.durudurub.dto.ClubMember;
 import com.aloha.durudurub.dto.Comment;
 import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.BoardService;
@@ -72,7 +73,7 @@ public class BoardController {
 
     /**
      * 게시글 상세보기(detail)
-     * @param param
+     * @param no
      * @return
      */
     @GetMapping("/board/{no}")
@@ -165,8 +166,104 @@ public class BoardController {
     }
 
     /**
-     * TODO - 수정페이지, 수정기능 페이지, 삭제페이지 (기능필없음)
+     * 게시글 수정
+     * @param no
+     * @return
      */
+    @GetMapping("/{no}/edit")
+    public String edit(@PathVariable("clubNo") int clubNo,
+                      @PathVariable("no") int no,
+                      Principal principal,
+                      Model model) {
+        if (!isMember(clubNo, principal)) {
+            return "redirect:/club/" + clubNo;
+        }
+        
+        Board board = boardService.selectByNo(no);
+        User user = userService.selectByUserId(principal.getName());
+        Club club = clubService.selectByNo(clubNo);
+        
+        // 작성자 또는 호스트만 수정 가능
+        if (board.getWriterNo() != user.getNo() && club.getHostNo() != user.getNo()) {
+            return "redirect:/club/" + clubNo + "/board/" + no;
+        }
+        
+        model.addAttribute("club", club);
+        model.addAttribute("board", board);
+        model.addAttribute("isHost", club.getHostNo() == user.getNo());
+        
+        return "board/edit";
+    }
+
+    /**
+     * 게시글 수정 처리
+     * @param no
+     * @return
+     */
+    @PostMapping("/{no}/edit")
+    public String editPro(@PathVariable("clubNo") int clubNo,
+                         @PathVariable("no") int no,
+                         Board board,
+                         @RequestParam(value = "isNotice", defaultValue = "N") String isNotice,
+                         Principal principal,
+                         RedirectAttributes rttr) {
+        Board existingBoard = boardService.selectByNo(no);
+        User user = userService.selectByUserId(principal.getName());
+        Club club = clubService.selectByNo(clubNo);
+        
+        if (existingBoard.getWriterNo() != user.getNo() && club.getHostNo() != user.getNo()) {
+            return "redirect:/club/" + clubNo + "/board/" + no;
+        }
+        
+        board.setNo(no);
+        if (club.getHostNo() == user.getNo()) {
+            board.setIsNotice(isNotice);
+        }
+        
+        int result = boardService.update(board);
+        
+        if (result > 0) {
+            rttr.addFlashAttribute("message", "게시글이 수정되었습니다.");
+        } else {
+            rttr.addFlashAttribute("error", "수정에 실패했습니다.");
+        }
+        
+        return "redirect:/club/" + clubNo + "/board/" + no;
+    }
     
+    /**
+     * 게시글 삭제
+     * @param no
+     * @return
+     */
+    @PostMapping("/{no}/delete")
+    public String delete(@PathVariable("clubNo") int clubNo,
+                        @PathVariable("no") int no,
+                        Principal principal,
+                        RedirectAttributes rttr) {
+        Board board = boardService.selectByNo(no);
+        User user = userService.selectByUserId(principal.getName());
+        Club club = clubService.selectByNo(clubNo);
+        
+        if (board.getWriterNo() != user.getNo() && club.getHostNo() != user.getNo()) {
+            return "redirect:/club/" + clubNo + "/board/" + no;
+        }
+        
+        boardService.delete(no);
+        rttr.addFlashAttribute("message", "게시글이 삭제되었습니다.");
+        
+        return "redirect:/club/" + clubNo + "/board";
+    }
     
+    /**
+     * 멤버 여부 확인 (승인된 멤버만 접근 가능하게)
+     */
+    private boolean isMember(int clubNo, Principal principal) {
+        if (principal == null) return false;
+        
+        User user = userService.selectByUserId(principal.getName());
+        ClubMember member = clubService.selectMember(clubNo, user.getNo());
+        
+        return member != null && "APPROVED".equals(member.getStatus());
+    }
 }
