@@ -183,30 +183,104 @@
 
 /* 푸터 */
 .footer {
-  background-color: #1f2937;
-  color: white;
-  padding: 2rem 0;
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb; 
+  padding: 48px 0;
+}
+
+.container {
+  max-width: 1280px; 
+  margin: 0 auto;
+  padding: 0 16px;
 }
 
 .footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
-.footer-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.footer-logo h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00A651;
+  margin-bottom: 1rem;
 }
 
-.footer-logo .logo-text {
-  color: white;
-}
-
-.footer-text {
-  color: #9ca3af;
+.footer-logo .intro {
   font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.logo-sns {
+  display: flex;
+  gap: 12px;
+}
+
+.logo-sns .sns {
+  width: 40px;
+  height: 40px;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.logo-sns .sns:hover {
+  background-color: #00A651;
+}
+
+.logo-sns img {
+  width: 20px;
+  height: 20px;
+}
+
+.footer-section h4 {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section a {
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.footer-section a:hover {
+  color: #00A651;
+}
+
+br {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 2rem;
+  padding-top: 2rem;
+}
+
+
+.footer-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 4px 0;
+}
+
+.footer-copy {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-top: 1.5rem;
 }
