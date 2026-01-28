@@ -9,6 +9,16 @@
             "projectName": "durudurub-sample",
             "args": "",
             "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CarrotApplication<durudurub>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.aloha.carrot.CarrotApplication",
+            "projectName": "durudurub",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
         }
     ]
 }

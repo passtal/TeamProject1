@@ -3,5 +3,6 @@
     "files.exclude": {
         "**/bin/": true,
         "**/build/": true
-    }
+    },
+    "liveServer.settings.port": 5501
 }
