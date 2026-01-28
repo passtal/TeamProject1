@@ -1,5 +1,7 @@
 package com.aloha.durudurub.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -7,5 +9,10 @@ import lombok.Data;
  */
 @Data
 public class CommentLike {
-    // TODO: 구현
+    
+    private int no;
+    private int commentNo;
+    private int userNo;
+    private Date createdAt;
+    
 }

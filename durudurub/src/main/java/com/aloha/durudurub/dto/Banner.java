@@ -1,5 +1,7 @@
 package com.aloha.durudurub.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -7,5 +9,18 @@ import lombok.Data;
  */
 @Data
 public class Banner {
-    // TODO: 구현
+    
+    private int no;
+    private String title;
+    private String imageUrl;
+    private String position;
+    private String linkUrl;
+    private String isActive;
+    private Date startDate;
+    private Date endDate;
+    private int seq;
+    private int clickCount;
+    private Date createdAt;
+    private Date updatedAt;
+
 }

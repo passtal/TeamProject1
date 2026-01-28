@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 /**
  * 메인 페이지 컨트롤러
  */
+
 @Controller
 public class HomeController {
-    // TODO: 구현
+
 }

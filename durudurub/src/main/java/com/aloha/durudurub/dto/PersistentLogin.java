@@ -1,5 +1,7 @@
 package com.aloha.durudurub.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -7,5 +9,13 @@ import lombok.Data;
  */
 @Data
 public class PersistentLogin {
-    // TODO: 구현
+    
+    private int no;
+    private String id;
+    private String userId;
+    private String token;
+    private Date expiryDate;
+    private Date createdAt;
+    private Date updatedAt;
+    
 }
