@@ -19,7 +19,7 @@
                 <div class="nav-content">
                     <!-- 왼쪽 -->
                     <!-- 두루두룹 로고 -->
-                    <div class="nav-left" id="logo" onclick="index('home')">
+                    <a href="" class="nav-left" id="logo" >
                         <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
                             <ellipse cx="35" cy="35" rx="8" ry="18" fill="#00C962" transform="rotate(-25 35 35)" />
@@ -34,16 +34,14 @@
                             <circle cx="62" cy="64" r="3" fill="#FFFFFF" opacity="0.4" />
                         </svg>
                         <span class="logo-text">두루두룹</span>
-                    </div>
+                    </a>
 
-                    <!-- 여기서부터 전체 수정
-                        1. 로그인 전후 나누기
-                        2. 로그인 : user / admin 나누기
-                        3. 드롭다운 적용하기
-                        4. 검색창 적용하기 
-                        ** 하나하고 확인하고 ** -->
-
-                    <!-- 로그인 전/후 -->
+                    <!-- 타임리프 + 세큐리티 + 제이쿼리 
+                        1. sec:authorize
+                            - 서버 렌더링
+                            - 로그인 여부 및 Role 타입
+                        2. 클릭 이벤트 jquery
+                            - 버튼 처리 -->
 
                     <!-- 가운데 -->
                     <!-- 검색 창 -->
@@ -70,7 +68,7 @@
                     </div>
                     <!-- 오른쪽 -->
                     <div class="nav-right">
-                        <a href="#" class="minigame" onclick="minigame()">
+                        <a href="#" class="minigame">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <line x1="6" x2="10" y1="11" y2="11"/>
                                 <line x1="8" x2="8" y1="9" y2="13"/>
@@ -81,34 +79,61 @@
                             미니게임
                         </a>
                         <!-- 로그인 전 -->
-                        <a href="#" class="signup">회원가입</a>
-                        <a href="#" class="login">로그인</a>
-                        <!-- 로그인 후 -->
-                        <button type="avatar-icon" onclick="toggleDropdown()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-10 h-10">
-                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                        </button>
-                        <div id="user-dropdown">
-                            <ul>
-                                <li><a href="">마이페이지</a></li>
-                                <li><a href="">내모임</a></li>
-                                <li><a href="">로그아웃</a></li>
-                            </ul>
-                        </div>
-                        <div id="admin-dropdown">
-                            <ul>
-                                <li><a href="">공지사항</a></li>
-                                <li><a href="">관리자 페이지</a></li>
-                                <li><a href="">로그아웃</a></li>
-                            </ul>
-                        </div>
+                        <th:block sec:authorize="isAnonymous()">
+                            <div class="login-container">
+                                <a href="#" class="signup">회원가입</a>
+                                <a href="#" class="login">로그인</a>
+                            </div>    
+                        </th:block>
+                        <!-- 로그인 후 : user -->
+                        <th:block sec:authorize="( hasRole('USER') )">
+                            <div class="icon-container">
+                                <button class="profile-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-10 h-10" data-fg-cqpb87="211.221:228.1061:/src/app/components/Navbar.tsx:252:14:8773:30:e:User::::::0ls">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </button>
+                                <!-- user -->
+                                <div id="user-dropdown" class="hidden">
+                                    <ul>
+                                        <li><a href="" class="mypage">마이페이지</a></li>
+                                        <li><a href="" class="myclub">내모임</a></li>
+                                        <hr>
+                                        <li><a href="" class="logout">로그아웃</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </th:block>
+                        <!-- 로그인 후 : admin -->
+                        <th:block sec:authorize="( hasRole('ADMIN') )">
+                            <div class="icon-container">
+                                <button class="profile-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-10 h-10" data-fg-cqpb87="211.221:228.1061:/src/app/components/Navbar.tsx:252:14:8773:30:e:User::::::0ls">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                </button>
+                                <!-- user -->
+                                <div id="admin-dropdown" class="hidden">
+                                    <ul>
+                                        <li><a href="" class="notice">공지사항</a></li>
+                                        <li><a href="" class="adminpage">관리자 페이지</a></li>
+                                        <hr>
+                                        <li><a href="" class="logout">로그아웃</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
                     </div>
                 </div>
             </div>
         </nav>
     </header>
+
+
+
      <div class="wrapper" style="background: linear-gradient(to bottom right, #ebf4ff, #e0e7ff);">
       <div class="content-box">
         <div class="icon-area">
@@ -150,5 +175,29 @@
         </div>
       </div>
     </div>
+
+
+    <script>
+    $(document).ready(function() {
+        $('.profile-icon').on('click', function() {
+            const userDropdown = $('#user-dropdown')
+            const adminDropdown = $('#admin-dropdown')
+            
+            // .length : 선택된 요소의 개수
+            if (userDropdown.length) {
+                $('#user-dropdown').toggle();
+                $('#admin-dropdown').hide();
+            } else if (adminDropdown.length) {
+                $('#admin-dropdown').toggle();
+                $('#user-dropdown').hide();
+            }
+        })
+
+        $(document).on('click', function() {
+            $('#user-dropdown').hide();
+            $('#admin-dropdown').hide();
+        })
+    })
+    </script>
 </body>
 </html>

@@ -178,6 +178,10 @@ header {
 }
 
 /* 로그인 */
+.login-container {
+  display: flex;
+  gap: 1.5rem;
+}
 .login {
   font-size: 1.125rem; 
   background-color: #00A651;
@@ -221,9 +225,95 @@ header {
   background-color: #00A651;
   color: #fff;
 }
+
 /* 로그인 후 아이콘 */
+.icon-container {
+  position: relative;
+}
+
+.profile-icon {
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+}
+
+.profile-icon:hover {
+  color: #00A651;
+}
 
 /* 드롭다운 */
+.hidden {
+  /* display: none; */
+}
+.hidden ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.hidden li {
+  width: 100%;
+  text-align: left;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: #374151;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.hidden li:hover {
+  background-color: #f9fafb;
+  color: #00A651;
+}
+
+.hidden a {
+  text-decoration: none;
+}
+
+.hidden hr {
+  border-top: 1px solid #f3f4f6;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.hidden .logout {
+  width: 100%;
+  text-align: left;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  color: #dc2626;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.hidden .logout:hover {
+  background-color: #f9fafb;
+}
+
+.icon-container .hidden {
+  position: absolute;
+  right: 0;
+  margin-top: 0.5rem;
+  width: 12rem;
+  background-color: #ffffff;
+  border-radius: 1rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  z-index: 50;
+}
+
+.icon-container .hidden{
+  background-color: #f9fafb;
+  color: #00A651;
+}
 
 /* 푸터 */
 .footer {
