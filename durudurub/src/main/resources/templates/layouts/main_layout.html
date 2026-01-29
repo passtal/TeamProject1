@@ -1,0 +1,25 @@
+<!-- 공통 레이아웃 -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- link : css -->
+    <th:block th:replace="~{fragment/head::head}"></th:block>
+</head>
+<body>
+    <!-- header -->
+    <th:block th:replace="~{fragment/header::header}"></th:block>
+    <!-- content : 레이아웃의 프레그먼트 영역 이름
+        **참고 사항** 
+        header 제외한 각 페이지 html 작성하기
+        단, <body layout:fragment="content"> 
+        위의 예시처럼 body 태그에 프레그먼트 영역 이름 추가 필수! -->
+    <th:block layout:fragment="content"></th:block>
+    <!-- script -->
+    <th:block th:replace="~{fragment/script::script}"></th:block>
+</body>
+</html>
+<!-- footer : 없음
+    **참고 사항** 
+    index 화면에서만 footer 필요하므로
+    index.html : layout + footer 필요!
+    나머지.html : footer 필요! -->
