@@ -2,6 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 댓글 매퍼 XML -->
-<mapper namespace="com.aloha.duruduru.mapper.CommentMapper">
+<mapper namespace="com.aloha.durudurub.dao.CommentMapper">
     <!-- TODO: 구현 -->
 </mapper>
