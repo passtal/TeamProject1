@@ -36,6 +36,10 @@ public interface BoardMapper {
 
     int decrementLikeCount(@Param("no") int no);
 
+    int incrementCommentCount(@Param("no") int no);
+    
+    int decrementCommentCount(@Param("no") int no);
+
     List<BoardImage> listImageByBoard(@Param("boardNo") int boardNo);
 
     int insertImage(BoardImage image);
