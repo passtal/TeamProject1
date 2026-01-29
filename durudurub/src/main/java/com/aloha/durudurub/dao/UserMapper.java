@@ -11,19 +11,17 @@ import com.aloha.durudurub.dto.User;
 public interface UserMapper {
 
     // Id(Email) 회원 조회
-    public User selectByUserId(String userId);
+    User selectByUserId(String userId);
 
-    // 닉네임으로 회원 조회
-    public User selectByUserName(String userName);
+    // 닉네임(username) 회원 조회
+    User selectByUsername(String username);
 
     // 회원 가입
-    public int insert(User user);
+    int insert(User user);
 
     // 회원 수정
-    public int update(User user);
+    int update(User user);
 
     // 회원 번호로 회원 조회
-    public User selectByNo(int no);
-
-
+    User selectByNo(int no);
 }
