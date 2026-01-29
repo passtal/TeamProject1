@@ -44,8 +44,8 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public List<SubCategory> listSubByCategory(int categoryNo) {
-        return categoryMapper.listSubByCategory(categoryNo);
+    public List<SubCategory> listBySubCategory(int categoryNo) {
+        return categoryMapper.listBySubCategory(categoryNo);
     }
 
     @Override

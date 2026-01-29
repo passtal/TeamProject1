@@ -116,7 +116,7 @@ public class BoardController {
         }
 
         Club club = clubService.selectByNo(clubNo);
-        User user = userService.selectByUserId(principal);
+        User user = userService.selectByUserId(principal.getName());
         boolean isHost = club.getHostNo() == user.getNo();
 
         model.addAttribute("club", club);
@@ -142,7 +142,7 @@ public class BoardController {
             return "redirect:/club/" + clubNo;
         }
         
-        User user = userService.selectByUserId(principal);
+        User user = userService.selectByUserId(principal.getName());
         Club club = clubService.selectByNo(clubNo);
 
         board.setClubNo(clubNo);

@@ -24,7 +24,7 @@ public interface CategoryMapper {
     
     int delete(@Param("no") int no);
     
-    List<SubCategory> listSubByCategory(@Param("categoryNo") int categoryNo);
+    List<SubCategory> listBySubCategory(@Param("categoryNo") int categoryNo);
     
     SubCategory selectSubByNo(@Param("no") int no);
     
