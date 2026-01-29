@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface LikeMapper {
-    // TODO: 구현
+    
 }
