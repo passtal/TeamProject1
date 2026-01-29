@@ -1,25 +1,30 @@
 <!-- 공통 레이아웃 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- link : css -->
-    <th:block th:replace="~{fragment/head::head}"></th:block>
+    <th:block th:replace="~{fragments/head::head}"></th:block>
 </head>
 <body>
     <!-- header -->
-    <th:block th:replace="~{fragment/header::header}"></th:block>
+    <th:block th:replace="~{fragments/header::header}"></th:block>
     <!-- content : 레이아웃의 프레그먼트 영역 이름
         **참고 사항** 
-        header 제외한 각 페이지 html 작성하기
-        단, <body layout:fragment="content"> 
-        위의 예시처럼 body 태그에 프레그먼트 영역 이름 추가 필수! -->
+        <body layout:fragment="content"> 
+        위의 코드 body 태그에 프레그먼트 영역 이름 추가 필수! 
+        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+        위의 링크 상단 html 에 포함 필수! -->
     <th:block layout:fragment="content"></th:block>
     <!-- script -->
-    <th:block th:replace="~{fragment/script::script}"></th:block>
+    <th:block th:replace="~{fragments/script::script}"></th:block>
 </body>
 </html>
 <!-- footer : 없음
     **참고 사항** 
     index 화면에서만 footer 필요하므로
     index.html : layout + footer 필요!
-    나머지.html : footer 필요! -->
+    나머지.html : footer 필요 없음! -->
+    
+<!-- 수업 시간 layout 프로젝트 참고!-->

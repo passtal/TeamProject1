@@ -86,9 +86,9 @@ $(document).ready(function () {
         }
     })
 })
-function signup() {
-    location.href = '/index/signup'
-}
+// function signup() {
+//     location.href = '/index/signup'
+// }
 
 /* 로그인 후 */
 /* 로그인 모임 만들기 */

@@ -1,6 +1,6 @@
 <!-- 헤더 fragment -->
 <!-- TODO: 구현 -->
-<th:block th:fragment="header">
+<th:block th:fragments="header">
     <header>
         <nav class="navbar">
             <div class="nav-container">
@@ -33,7 +33,9 @@
                             <a href="#" onclick="userpage()">마이페이지</a>
                             <a href="#" id="club" onclick="userclub()">나의 모임</a>
                             <!-- <a href="">즐겨찾기</a> -->
-                            <a href="#" id="admin" style="display: none;" onclick="adminpage()">관리자</a>
+                            <th:block sec:authorize="( hasRole('ADMIN') )">
+                                <a href="#" id="admin" onclick="adminpage()">관리자</a>
+                            </th:block>
                             <a href="#" onclick="logout()">로그아웃</a>
                         </div>
                     </div>

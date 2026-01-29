@@ -1,185 +1,229 @@
 /* 두루두루 공통 스타일 */
 /* TODO: 구현 */
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 /* 네비게이션 바 */
+header {
+  height: 100px;
+}
 .navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #f3f4f6;
   position: sticky;
   top: 0;
   z-index: 50;
-  background-color: white;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  /* height: 100px; */
 }
 
 .nav-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  max-width: 80rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  height: 100px;
+  align-content: center;
 }
 
-.nav-logo {
+@media (min-width: 640px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100px;
+}
+
+/* 로고 */
+.nav-left {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #00A651;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: opacity 0.2s;
 }
 
 .nav-logo:hover {
-  transform: scale(1.05);
-}
-
-.logo-icon {
-  width: 2rem;
-  height: 2rem;
+  opacity: 0.8;
 }
 
 .logo-text {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #00A651;
+  white-space: nowrap;
 }
 
-.nav-menu {
+@media (min-width: 640px) {
+  .logo-text {
+    display: inline;
+  }
+}
+
+/* 검색창 */
+.search-container { 
   display: none;
-  gap: 2rem;
+  flex: 1;
+  max-width: 28rem;
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 }
 
 @media (min-width: 768px) {
-  .nav-menu {
+  .search-container {
     display: flex;
   }
 }
 
-.nav-link {
-  color: #4b5563;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-link:hover {
-  color: #00A651;
-}
-
-.nav-user {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-#beforeLogin {
-  display: flex;
-  gap: 0.75rem;
-}
-
-#afterLogin {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.search-container .search {
   position: relative;
 }
-
-.btn-login {
-  padding: 0.5rem 1.25rem;
-  background-color: white;
-  color: #00A651;
-  border: 1px solid #00A651;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
+.search-container .search-input{
+  width: 100%;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-left: 2.75rem;
+  padding-right: 3rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  outline: none;
   transition: all 0.2s;
 }
 
-.btn-login:hover {
-  background-color: #00A651;
-  color: white;
+.search-input:focus {
+  border-color: #00A651;
+  box-shadow: 0 0 0 2px rgba(0, 166, 81, 0.5);
 }
 
-.btn-signup {
-  padding: 0.5rem 1.25rem;
-  background-color: #00A651;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-signup:hover {
-  background-color: #008f46;
-}
-
-.btn-create {
-  padding: 0.5rem 1.25rem;
-  background-color: #00A651;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-create:hover {
-  background-color: #008f46;
-}
-
-.user-profile {
+.search-container .icon-wrapper {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: background-color 0.2s;
+  gap: 0.25rem;
 }
 
-.user-profile:hover {
+.icon-wrapper .ai-icon{
+  padding: 0.25rem;
+  border-radius: 9999px;
+  transition: all 0.2s;
   background-color: #f3f4f6;
+  color: #4b5563;
 }
 
-.user-avatar {
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
-  object-fit: cover;
+/* 버튼 */
+.nav-right {
+  display: none;
+  align-items: center;
+  gap: 1.5rem;
+  white-space: nowrap;
 }
 
-.user-name {
-  font-weight: 500;
-  color: #111827;
+@media (min-width: 768px) {
+  .nav-right {
+    display: flex;
+  }
 }
 
-.user-dropdown {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  margin-top: 0.5rem;
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
-  min-width: 150px;
-  overflow: hidden;
-}
-
-.user-dropdown a {
-  display: block;
-  padding: 0.75rem 1rem;
-  color: #374151;
-  text-decoration: none;
-  transition: background-color 0.2s;
-}
-
-.user-dropdown a:hover {
-  background-color: #f3f4f6;
+/* 미니게임 */
+.minigame {
+  font-size: 1.125rem; 
+  font-weight: 400; 
+  border: 2px solid #00A651;
   color: #00A651;
+  padding: 0.625rem 1.5rem; 
+  border-radius: 9999px; 
+  display: flex; 
+  align-items: center; 
+  gap: 0.5rem; 
+  transition: background-color 0.2s, color 0.2s;
+  text-decoration: none;
 }
+
+.minigame:hover {
+  background-color: #00A651;
+  color: #fff;
+}
+
+.minigame svg {
+  display: block;
+}
+
+@media (min-width: 640px) {
+  .minigame {
+    display: flex;
+  }
+}
+
+/* 로그인 */
+.login {
+  font-size: 1.125rem; 
+  background-color: #00A651;
+  color: #fff;
+  padding: 0.625rem 1.5rem;
+  border: #00A651;
+  border-radius: 9999px;
+  transition: background-color 0.2s, color 0.2s;
+  text-decoration: none;
+}
+/* 브라우저 화면 너비 640 이상일 때 보여줌*/
+@media (min-width: 640px) {
+  .login {
+    display: block;
+  }
+}
+
+.login:hover {
+  background-color: #008f46;
+}
+
+/* 회원가입 */
+.signup {
+  font-size: 1.125rem; 
+  background-color: white;
+  border: 2px solid #00A651;
+  color: #00A651;
+  padding: 0.625rem 1.5rem; 
+  border-radius: 9999px; 
+  transition: background-color 0.2s, color 0.2s;
+  text-decoration: none;
+}
+
+@media (min-width: 640px) {
+  .signup {
+    display: block;
+  }
+}
+
+.signup:hover {
+  background-color: #00A651;
+  color: #fff;
+}
+/* 로그인 후 아이콘 */
+
+/* 드롭다운 */
 
 /* 푸터 */
 .footer {
