@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <!-- 회원 매퍼 XML -->
 <mapper namespace="com.aloha.durudurub.dao.UserMapper">
 
-
     <resultMap id="UserMap" type="com.aloha.durudurub.dto.User">
-        <id property="no" column="no"/> <!-- PK -->
+        <id property="no" column="no"/>
 
         <result property="id" column="id"/>
         <result property="userId" column="user_id"/>
@@ -26,7 +26,6 @@
     <!-- 회원 가입 -->
     <insert id="insert" parameterType="com.aloha.durudurub.dto.User"
             useGeneratedKeys="true" keyProperty="no">
-
         INSERT INTO users (
             id, user_id, password, username,
             address, gender, profile_img, age
@@ -34,24 +33,25 @@
             UUID(), #{userId}, #{password}, #{username},
             #{address}, #{gender}, #{profileImg}, #{age}
         )
-
     </insert>
 
-    <!-- 로그인/중복체크:user_id(이메일)로 회원 조회 -->    
-    <select id="selectByUserId" parameterType="string" resultType="UserMap">
+    <!-- 로그인/중복체크: user_id(이메일)로 회원 조회 -->
+    <select id="selectByUserId" parameterType="string" resultMap="UserMap">
         SELECT
-            no, id, user_id, password, username, profile_img, age, gender, address,
-            report_count, is_banned, banned_at, created_at, updated_at
-            FROM users
+            no, id, user_id, password, username,
+            profile_img, age, gender, address,
+            report_count, created_at, updated_at
+        FROM users
         WHERE user_id = #{userId}
     </select>
 
     <!-- 닉네임 중복체크: username(닉네임)으로 회원 조회 -->
-    <select id="selectByUsername" parameterType="string" resultType="UserMap">
+    <select id="selectByUsername" parameterType="string" resultMap="UserMap">
         SELECT
-            no, id, user_id, password, username, profile_img, age, gender, address,
-            report_count, is_banned, banned_at, created_at, updated_at
-            FROM users
+            no, id, user_id, password, username,
+            profile_img, age, gender, address,
+            report_count, created_at, updated_at
+        FROM users
         WHERE username = #{username}
     </select>
 
@@ -61,7 +61,7 @@
             no, id, user_id, username, password,
             address, gender, profile_img, age, report_count,
             created_at, updated_at
-            FROM users
+        FROM users
         WHERE no = #{no}
     </select>
 
@@ -75,9 +75,6 @@
             profile_img = #{profileImg},
             age         = #{age}
         WHERE no = #{no}
-  </update>
-
-
-
+    </update>
 
 </mapper>
