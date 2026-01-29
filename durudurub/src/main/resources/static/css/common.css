@@ -1,0 +1,286 @@
+/* 두루두루 공통 스타일 */
+/* TODO: 구현 */
+
+/* 네비게이션 바 */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background-color: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.nav-logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #00A651;
+}
+
+.nav-menu {
+  display: none;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .nav-menu {
+    display: flex;
+  }
+}
+
+.nav-link {
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: #00A651;
+}
+
+.nav-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+#beforeLogin {
+  display: flex;
+  gap: 0.75rem;
+}
+
+#afterLogin {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.btn-login {
+  padding: 0.5rem 1.25rem;
+  background-color: white;
+  color: #00A651;
+  border: 1px solid #00A651;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-login:hover {
+  background-color: #00A651;
+  color: white;
+}
+
+.btn-signup {
+  padding: 0.5rem 1.25rem;
+  background-color: #00A651;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-signup:hover {
+  background-color: #008f46;
+}
+
+.btn-create {
+  padding: 0.5rem 1.25rem;
+  background-color: #00A651;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-create:hover {
+  background-color: #008f46;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.user-profile:hover {
+  background-color: #f3f4f6;
+}
+
+.user-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+  overflow: hidden;
+}
+
+.user-dropdown a {
+  display: block;
+  padding: 0.75rem 1rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+
+.user-dropdown a:hover {
+  background-color: #f3f4f6;
+  color: #00A651;
+}
+
+/* 푸터 */
+.footer {
+  background-color: #f9fafb;
+  border-top: 1px solid #e5e7eb; 
+  padding: 48px 0;
+}
+
+.container {
+  max-width: 1280px; 
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.footer-logo h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #00A651;
+  margin-bottom: 1rem;
+}
+
+.footer-logo .intro {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 1rem;
+}
+
+.logo-sns {
+  display: flex;
+  gap: 12px;
+}
+
+.logo-sns .sns {
+  width: 40px;
+  height: 40px;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.logo-sns .sns:hover {
+  background-color: #00A651;
+}
+
+.logo-sns img {
+  width: 20px;
+  height: 20px;
+}
+
+.footer-section h4 {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-section a {
+  font-size: 0.875rem;
+  color: #4b5563;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.footer-section a:hover {
+  color: #00A651;
+}
+
+br {
+  border-top: 1px solid #e5e7eb;
+  margin-top: 2rem;
+  padding-top: 2rem;
+}
+
+
+.footer-info p {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 4px 0;
+}
+
+.footer-copy {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-top: 1.5rem;
+}
