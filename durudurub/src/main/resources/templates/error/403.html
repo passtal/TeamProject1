@@ -1,5 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
 <!-- 에러 페이지 (403) -->
 <!-- TODO: 구현 -->
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/durudurub/src/main/resources/static/css/error.css">
+    <title>404에러</title>
+</head>
+<body layout:fragment="content">
+     <div class="wrapper" style="background: linear-gradient(to bottom right, #FFFBEB, #FFEDD5);">
+      <div class="content-box">
+        <div class="icon-area">
+            <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 두릅 몸통 - 메인 -->
+            <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
+            <!-- 두릅 잎 - 왼쪽 (약간 처진) -->
+            <ellipse cx="35" cy="36" rx="8" ry="18" fill="#00C962" transform="rotate(-30 35 36)" />
+            <!-- 두릅 잎 - 가운데 (약간 처진) -->
+            <ellipse cx="50" cy="30" rx="9" ry="21" fill="#00C962" />
+            <!-- 두릅 잎 - 오른쪽 (약간 처진) -->
+            <ellipse cx="65" cy="36" rx="8" ry="18" fill="#00C962" transform="rotate(30 65 36)" />
+            <!-- 얼굴 - 눈 왼쪽 (슬픈 눈) -->
+            <circle cx="43" cy="58" r="3" fill="#FFFFFF" />
+            <circle cx="43.5" cy="58.5" r="1.5" fill="#333333" />
+            <!-- 얼굴 - 눈 오른쪽 (슬픈 눈) -->
+            <circle cx="57" cy="58" r="3" fill="#FFFFFF" />
+            <circle cx="57.5" cy="58.5" r="1.5" fill="#333333" />
+            <!-- 눈물 왼쪽 -->
+            <ellipse cx="42" cy="64" rx="1.5" ry="3" fill="#8DD5F7" opacity="0.8" />
+            <circle cx="42" cy="68" r="1.5" fill="#8DD5F7" opacity="0.6" />
+            <!-- 얼굴 - 입 (슬픈 입) -->
+            <path d="M 45 70 Q 50 66 55 70" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" />
+            </svg>
+        </div>
+        <h1 class="title">403 에러 페이지</h1>
+        <div class="desc">
+            <p class="main-desc">접근 권한이 없습니다.</p>
+            <h5 class="sub-desc">이 페이지에 접근할 수 있는 권한이 없어요</h5>
+        </div>
+        <div class="btn-box">
+            <a href="/" class="main-btn">메인 화면</a>
+        </div>
+      </div>
+    </div>
+</body>
 </html>

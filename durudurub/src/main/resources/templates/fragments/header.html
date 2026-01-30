@@ -1,5 +1,46 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
 <!-- 헤더 fragment -->
 <!-- TODO: 구현 -->
-</html>
+<th:block th:fragments="header">
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <!-- 두루두룹 로고 -->
+                <div class="nav-logo" id="logo" onclick="index('home')">
+                    <img class="logo-icon" src="/img/durudurub.jpg" alt="두루두룹">
+                    <span class="logo-text">두루두룹</span>
+                </div>
+                <!-- 네이게이션 메뉴 -->
+                <div class="nav-menu">
+                    <a href="#" class="nav-link" onclick="list()">모임 둘러보기</a>
+                    <a href="#" class="nav-link" onclick="notice()">공지사항</a>
+                    <a href="#" class="nav-link" onclick="minigame()">미니게임</a>
+                </div>
+                <!-- 로그인 전/후 -->
+                <div class="nav-user">
+                    <!-- 로그인 전 -->
+                    <div id="beforeLogin">
+                        <button class="btn-login" id="login" onclick="login()">로그인</button>
+                        <button class="btn-signup" onclick="signup()">회원가입</button>
+                    </div>
+                    <!-- 로그인 후 -->
+                    <div id="afterLogin" style="display: none;">
+                        <button class="btn-create" onclick="create()">모임 만들기</button>
+                        <div class="user-profile" onclick="userDropdown()">
+                            <img class="user-avatar" src="" alt="프로필">
+                        </div>
+                        <!-- sideMenu : 드롭다운 -->
+                        <div class="user-dropdown" style="display: none;">
+                            <a href="#" onclick="userpage()">마이페이지</a>
+                            <a href="#" id="club" onclick="userclub()">나의 모임</a>
+                            <!-- <a href="">즐겨찾기</a> -->
+                            <th:block sec:authorize="( hasRole('ADMIN') )">
+                                <a href="#" id="admin" onclick="adminpage()">관리자</a>
+                            </th:block>
+                            <a href="#" onclick="logout()">로그아웃</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+</th:block>

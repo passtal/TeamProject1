@@ -1,0 +1,62 @@
+/* 404페이지 */
+.wrapper {
+  min-height: 100vh;
+  /* background: linear-gradient(to bottom right, #ebf4ff, #e0e7ff); blue-50 → indigo-50 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.content-box {
+  text-align: center;
+}
+
+.icon-area {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.title {
+  font-size: 60px;
+  font-weight: bold;
+  color: #111827; /* gray-900 */
+  margin: 0;
+}
+.desc {
+    display: flex;
+    flex-direction: column;
+    margin: 45px;
+    gap: 15px;
+}
+.main-desc {
+  font-size: 40px;
+  color: #374151; /* gray-700 */
+  margin : 0
+}
+
+.sub-desc {
+  font-size: 20px;
+  color: #4b5563; /* gray-600 */
+  font-weight: 300;
+  margin : 0
+}
+
+/* 버튼 */
+.btn-box {
+  margin-top: 32px;
+}
+
+.main-btn {
+  display: inline-block;
+  background: #00A651;
+  color: white;
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.main-btn:hover {
+  background: #008F44;
+}
