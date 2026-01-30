@@ -1,5 +1,30 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{/layouts/main_layout}">
 <!-- 메인 페이지 -->
 <!-- TODO: 구현 -->
+ <head>
+    <link rel="stylesheet" href="/durudurub/src/main/resources/static/css/index.css">
+ </head>
+ <body>
+    <div class="container">
+
+        <section class="heroSection">
+            <h1>
+                함께하면
+                <br>
+                더 즐거운 순간
+            </h1>
+            <br>
+            <p>관심사가 같은 사람들과 모여</p>
+            <br>
+            <p>새로운 경험을 만들어보세요</p>
+
+            <!-- 모든 카테고리 페이지로 이동-->
+            <button type="button" class="btn-primary" id="goCategory">
+                모임 둘러보기
+            </button>
+        </section>
+
+    </div>
+ </body>
 </html>
