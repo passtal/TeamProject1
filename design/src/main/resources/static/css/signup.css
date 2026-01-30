@@ -1,0 +1,399 @@
+/* ========================================
+   Signup Page Styles
+   ======================================== */
+
+.signup-page {
+    background: #FBF7F0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+.signup-container {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.signup-card {
+    background: white;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 
+                0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Close Button */
+.btn-close-signup {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.btn-close-signup:hover {
+    opacity: 0.7;
+}
+
+.btn-close-signup img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Header */
+.signup-header {
+    margin-bottom: 2rem;
+}
+
+.signup-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #00A651;
+    margin-bottom: 0.5rem;
+    line-height: 1.2;
+}
+
+.signup-subtitle {
+    font-size: 16px;
+    color: #4A5565;
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+/* Form Styles */
+.signup-form {
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #364153;
+    margin-bottom: 0.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border: 1px solid #D1D5DC;
+    border-radius: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+.form-control:focus {
+    border-color: #00A651;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 166, 81, 0.1);
+}
+
+/* Profile Upload Section */
+.profile-upload-section {
+    margin-bottom: 2rem;
+}
+
+.profile-label {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    color: #6A7282;
+    margin-bottom: 1rem;
+}
+
+.profile-upload-container {
+    position: relative;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto;
+}
+
+.profile-preview {
+    width: 96px;
+    height: 96px;
+    border: 2px solid #D1D5DC;
+    border-radius: 50%;
+    background: #F3F4F6;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.camera-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    background: #00A651;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.camera-button:hover {
+    background: #008C41;
+}
+
+.camera-icon {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .form-control {
+    padding-right: 48px;
+}
+
+.btn-password-toggle {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.btn-password-toggle:hover {
+    opacity: 0.7;
+}
+
+.btn-password-toggle img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+/* Gender Selection */
+.gender-selection {
+    display: flex;
+    gap: 16px;
+}
+
+.gender-option {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #D1D5DC;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.gender-option:hover {
+    border-color: #00A651;
+}
+
+.gender-option input[type="radio"] {
+    width: 16px;
+    height: 16px;
+    accent-color: #00A651;
+    cursor: pointer;
+}
+
+.gender-label {
+    font-size: 16px;
+    color: #364153;
+    cursor: pointer;
+}
+
+/* Terms Section */
+.terms-section {
+    padding-top: 0.5rem;
+}
+
+.form-check {
+    padding-left: 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+}
+
+.form-check-input {
+    width: 16px;
+    height: 16px;
+    margin-top: 0.25rem;
+    border: 1px solid #D1D5DC;
+    cursor: pointer;
+    accent-color: #00A651;
+}
+
+.form-check-label {
+    font-size: 14px;
+    color: #364153;
+    cursor: pointer;
+    flex: 1;
+}
+
+.required-tag {
+    font-size: 14px;
+    color: #364153;
+    font-weight: 400;
+}
+
+/* Submit Button */
+.btn-signup {
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 400;
+    background-color: #00A651;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.btn-signup:hover {
+    background-color: #008C41;
+}
+
+/* Login Link */
+.login-link {
+    font-size: 14px;
+    color: #4A5565;
+}
+
+.login-link span {
+    margin-right: 0.5rem;
+}
+
+.link-login {
+    font-size: 16px;
+    font-weight: 400;
+    color: #00A651;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.link-login:hover {
+    color: #008C41;
+    text-decoration: underline;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 576px) {
+    .signup-card {
+        padding: 24px;
+        border-radius: 16px;
+    }
+
+    .signup-title {
+        font-size: 24px;
+    }
+
+    .signup-subtitle {
+        font-size: 14px;
+    }
+
+    .btn-close-signup {
+        top: 16px;
+        right: 16px;
+    }
+
+    .form-control {
+        padding: 10px 14px;
+        font-size: 14px;
+    }
+
+    .profile-upload-container {
+        width: 80px;
+        height: 80px;
+    }
+
+    .profile-preview {
+        width: 80px;
+        height: 80px;
+    }
+
+    .camera-button {
+        width: 28px;
+        height: 28px;
+    }
+
+    .camera-icon {
+        width: 14px;
+        height: 14px;
+    }
+
+    .gender-selection {
+        gap: 12px;
+    }
+
+    .gender-option {
+        padding: 12px;
+    }
+
+    .btn-signup {
+        padding: 12px 20px;
+        font-size: 14px;
+    }
+}
+
+/* ========================================
+   Validation Styles
+   ======================================== */
+
+.form-control.is-invalid {
+    border-color: #dc3545;
+}
+
+.form-control.is-valid {
+    border-color: #00A651;
+}
+
+.invalid-feedback {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 12px;
+    color: #dc3545;
+}
+
+.valid-feedback {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 12px;
+    color: #00A651;
+}
