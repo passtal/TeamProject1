@@ -13,6 +13,7 @@ CREATE TABLE `club_member_reports` (
     `reporter_no` INT NOT NULL COMMENT 'FK',    -- 신고한 회원의 no
     `target_no` INT NOT NULL COMMENT 'FK',      -- 신고당한 회원의 no
     `reason` VARCHAR(100) NULL COMMENT '신고 사유 (욕설, 비매너 등)',
+    `processed_at` TIMESTAMP NULL COMMENT '처리 일시',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`no`),
     FOREIGN KEY (`club_no`) REFERENCES `clubs`(`no`) ON DELETE CASCADE,

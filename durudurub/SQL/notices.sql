@@ -1,0 +1,21 @@
+-- 19. notices (공지사항)
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `notices`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `notices` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `writer_no` INT NOT NULL COMMENT 'FK',      -- ADMIN
+    `category` VARCHAR(50) NULL COMMENT '공지 카테고리',
+    `title` VARCHAR(200) NOT NULL COMMENT '제목',
+    `content` TEXT NOT NULL COMMENT '내용',
+    `is_important` CHAR(1) DEFAULT 'N' COMMENT '중요 공지 여부',
+    'view_count' INT DEFAULT 0 COMMENT '조회수'
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`no`),
+    FOREIGN KEY (`writer_no`) REFERENCES `users`(`no`) ON DELETE CASCADE
+)
