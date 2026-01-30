@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - 두루두룹</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/reset.css}">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/signup.css}">
+</head>
+<body class="signup-page">
+    <!-- Main Container -->
+    <div class="signup-container">
+        <div class="signup-card">
+            <!-- Close Button -->
+            <button type="button" class="btn-close-signup" onclick="window.location.href='/'">
+                <img th:src="@{/img/signup/close-button.png}" alt="닫기">
+            </button>
+
+            <!-- Header -->
+            <div class="signup-header text-center mb-4">
+                <h1 class="signup-title">두루두룹</h1>
+                <p class="signup-subtitle">새로운 모임을 시작해보세요</p>
+            </div>
+
+            <!-- Signup Form -->
+            <form th:action="@{/signup}" method="post" enctype="multipart/form-data" class="signup-form">
+                <!-- Profile Photo Upload -->
+                <div class="form-group profile-upload-section mb-4">
+                    <label class="profile-label">프로필 사진 (선택)</label>
+                    <div class="profile-upload-container">
+                        <div class="profile-preview">
+                            <img th:src="@{/img/signup/profile-upload-icon.png}" alt="프로필" id="profilePreview" class="profile-image">
+                            <input type="file" id="profileImage" name="profileImage" accept="image/*" class="d-none">
+                        </div>
+                        <label for="profileImage" class="camera-button">
+                            <img th:src="@{/img/signup/camera-icon.png}" alt="사진 업로드" class="camera-icon">
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Email Input -->
+                <div class="form-group mb-3">
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요" required>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group mb-3">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="6자 이상 입력하세요" required minlength="6">
+                        <button type="button" class="btn-password-toggle" onclick="togglePassword('password')">
+                            <img th:src="@{/img/signup/password-show-icon.png}" alt="비밀번호 표시">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Password Confirm Input -->
+                <div class="form-group mb-3">
+                    <label for="passwordConfirm" class="form-label">비밀번호 확인</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" class="form-control" id="passwordConfirm" name="passwordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
+                        <button type="button" class="btn-password-toggle" onclick="togglePassword('passwordConfirm')">
+                            <img th:src="@{/img/signup/password-show-icon.png}" alt="비밀번호 표시">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Nickname Input -->
+                <div class="form-group mb-3">
+                    <label for="nickname" class="form-label">닉네임</label>
+                    <input type="text" class="form-control" id="nickname" name="nickname" placeholder="닉네임을 입력하세요" required>
+                </div>
+
+                <!-- Age Input -->
+                <div class="form-group mb-3">
+                    <label for="age" class="form-label">나이</label>
+                    <input type="number" class="form-control" id="age" name="age" placeholder="나이를 입력하세요" required min="1" max="150">
+                </div>
+
+                <!-- Gender Selection -->
+                <div class="form-group mb-3">
+                    <label class="form-label">성별</label>
+                    <div class="gender-selection">
+                        <label class="gender-option">
+                            <input type="radio" name="gender" value="male" required>
+                            <span class="gender-label">남성</span>
+                        </label>
+                        <label class="gender-option">
+                            <input type="radio" name="gender" value="female" required>
+                            <span class="gender-label">여성</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Address Input -->
+                <div class="form-group mb-3">
+                    <label for="address" class="form-label">주소</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="주소를 입력하세요" required>
+                </div>
+
+                <!-- Terms & Privacy Checkboxes -->
+                <div class="form-group terms-section mb-4">
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="termsAgree" name="termsAgree" required>
+                        <label class="form-check-label" for="termsAgree">
+                            <span class="required-tag">(필수)</span> 이용약관에 동의합니다
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="privacyAgree" name="privacyAgree" required>
+                        <label class="form-check-label" for="privacyAgree">
+                            <span class="required-tag">(필수)</span> 개인정보 처리방침에 동의합니다
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success btn-signup w-100 mb-3">회원가입</button>
+
+                <!-- Login Link -->
+                <div class="login-link text-center">
+                    <span>이미 계정이 있으신가요?</span>
+                    <a href="/login" class="link-login">로그인하기</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script th:src="@{/js/signup.js}"></script>
+    <script>
+        // Profile Image Preview
+        document.getElementById('profileImage').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Toggle Password Visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
+        // Form Validation
+        document.querySelector('.signup-form').addEventListener('submit', function(e) {
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                e.preventDefault();
+                alert('비밀번호가 일치하지 않습니다.');
+                return false;
+            }
+
+            if (password.length < 6) {
+                e.preventDefault();
+                alert('비밀번호는 6자 이상이어야 합니다.');
+                return false;
+            }
+
+            const termsAgree = document.getElementById('termsAgree').checked;
+            const privacyAgree = document.getElementById('privacyAgree').checked;
+
+            if (!termsAgree || !privacyAgree) {
+                e.preventDefault();
+                alert('필수 약관에 동의해주세요.');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>
