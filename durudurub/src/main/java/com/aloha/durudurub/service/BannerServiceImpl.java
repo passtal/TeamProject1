@@ -8,7 +8,6 @@ import com.aloha.durudurub.dao.BannerMapper;
 import com.aloha.durudurub.dto.Banner;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 배너 서비스 구현체
