@@ -4,4 +4,39 @@
 <!-- 배너 매퍼 XML -->
 <mapper namespace="com.aloha.durudurub.mapper.BannerMapper">
     <!-- TODO: 구현 -->
+    <!-- 배너 목록 -->
+    <select id="list" resultType="Banner">
+        SELECT *
+        FROM banners
+        ORDER BY created_at DESC
+    </select>
+    <!-- 배너 조회 -->
+    <select id="select" resultType="Banner">
+        SELECT *
+        FROM banners
+        WHERE no = #{no}
+    </select>
+    <!-- 배너 등록 -->
+    <insert id="insert">
+        INSERT INTO banners ( title, image_url, link_url, "설명", start_date, end_date, seq, is_active )
+        VALUES ( #{title}, #{imageUrl}, #{linkUrl}, #{banner-설명}, #{startDate}, #{endDate}, #{seq}, #{isActive})
+    </insert>
+    <!-- 배너 수정 -->
+    <update id="update">
+        UPDATE banners
+            SET title = #{title}
+                ,image_url = #{imageUrl}
+                ,link_url = #{linkUrl}
+                ,"설명" = #{banner-설명}
+                ,start_date = #{startDate}
+                ,end_date = #{endDate}
+                ,seq = #{seq}
+                ,is_active = #{isActive}
+        WHERE no = #{no}
+    </update>
+    <!-- 배너 삭제 -->
+    <delete id="delete">
+        DELETE FROM banners
+        WHERE no = #{no}
+    </delete>
 </mapper>
