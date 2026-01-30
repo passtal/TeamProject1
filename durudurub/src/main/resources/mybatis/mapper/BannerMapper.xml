@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 배너 매퍼 XML -->
-<mapper namespace="com.aloha.durudurub.mapper.BannerMapper">
+<mapper namespace="com.aloha.durudurub.dao.BannerMapper">
     <!-- TODO: 구현 -->
     <!-- 배너 목록 -->
     <select id="list" resultType="Banner">

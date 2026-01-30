@@ -3,5 +3,88 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 좋아요 매퍼 XML -->
 <mapper namespace="com.aloha.durudurub.dao.LikeMapper">
-    <!-- TODO: 구현 -->
+    
+    <!-- 모임 좋아요 등록 -->
+    <insert id="insertClubLike" parameterType="com.aloha.durudurub.dto.ClubLike">
+        INSERT INTO club_likes (club_no, user_no) VALUES (#{clubNo}, #{userNo})
+    </insert>
+
+    <!-- 모임 좋아요 삭제 -->
+    <delete id="deleteClubLike">
+        DELETE FROM club_likes WHERE club_no = #{clubNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- 모임 좋아요 여부 확인 -->
+    <select id="countClubLike" resultType="int">
+        SELECT COUNT(*) FROM club_likes WHERE club_no = #{clubNo} AND user_no = #{userNo}
+    </select>
+
+    <!-- 모임 좋아요 수 조회 -->
+    <select id="countClubLikeByClub" resultType="int">
+        SELECT COUNT(*) FROM club_likes WHERE club_no = #{clubNo}
+    </select>
+
+    <!-- 회원별 좋아요 모임 목록 -->
+    <select id="listClubLikeByUser" resultType="com.aloha.sample.dto.ClubLike">
+        SELECT no, club_no AS clubNo, user_no AS userNo, created_at AS createdAt
+        FROM club_likes
+        WHERE user_no = #{userNo}
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 게시글 좋아요 등록 -->
+    <insert id="insertBoardLike" parameterType="com.aloha.sample.dto.BoardLike">
+        INSERT INTO club_board_likes (board_no, user_no) VALUES (#{boardNo}, #{userNo})
+    </insert>
+
+    <!-- 게시글 좋아요 삭제 -->
+    <delete id="deleteBoardLike">
+        DELETE FROM club_board_likes WHERE board_no = #{boardNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- 게시글 좋아요 여부 확인 -->
+    <select id="countBoardLike" resultType="int">
+        SELECT COUNT(*) FROM club_board_likes WHERE board_no = #{boardNo} AND user_no = #{userNo}
+    </select>
+
+    <!-- 게시글 좋아요 수 조회 -->
+    <select id="countBoardLikeByBoard" resultType="int">
+        SELECT COUNT(*) FROM club_board_likes WHERE board_no = #{boardNo}
+    </select>
+
+    <!-- 댓글 좋아요 등록 -->
+    <insert id="insertCommentLike" parameterType="com.aloha.sample.dto.CommentLike">
+        INSERT INTO club_comment_likes (comment_no, user_no) VALUES (#{commentNo}, #{userNo})
+    </insert>
+
+    <!-- 댓글 좋아요 삭제 -->
+    <delete id="deleteCommentLike">
+        DELETE FROM club_comment_likes WHERE comment_no = #{commentNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- 댓글 좋아요 여부 확인 -->
+    <select id="countCommentLike" resultType="int">
+        SELECT COUNT(*) FROM club_comment_likes WHERE comment_no = #{commentNo} AND user_no = #{userNo}
+    </select>
+
+    <!-- 댓글 좋아요 수 조회 -->
+    <select id="countCommentLikeByComment" resultType="int">
+        SELECT COUNT(*) FROM club_comment_likes WHERE comment_no = #{commentNo}
+    </select>
+
+    <!-- 모임 좋아요 수 조회 (통합) -->
+    <select id="countClubLikes" resultType="int">
+        SELECT COUNT(*) FROM club_likes WHERE club_no = #{clubNo}
+    </select>
+
+    <!-- 게시글 좋아요 수 조회 (통합) -->
+    <select id="countBoardLikes" resultType="int">
+        SELECT COUNT(*) FROM club_board_likes WHERE board_no = #{boardNo}
+    </select>
+
+    <!-- 댓글 좋아요 수 조회 (통합) -->
+    <select id="countCommentLikes" resultType="int">
+        SELECT COUNT(*) FROM club_comment_likes WHERE comment_no = #{commentNo}
+    </select>
+
 </mapper>
