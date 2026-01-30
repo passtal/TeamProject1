@@ -179,7 +179,7 @@ public class ClubController {
         }
         
         List<Category> categories = categoryService.list();
-        List<SubCategory> subCategories = categoryService.listSubByCategory(club.getCategoryNo());
+        List<SubCategory> subCategories = categoryService.listBySubCategory(club.getCategoryNo());
         
         model.addAttribute("club", club);
         model.addAttribute("categories", categories);

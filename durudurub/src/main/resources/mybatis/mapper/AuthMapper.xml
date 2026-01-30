@@ -3,27 +3,39 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 회원 권한 매퍼 XML -->
 <mapper namespace="com.aloha.durudurub.dao.AuthMapper">
-
-    <resultMap id="AuthMap" type="com.aloha.durudurub.dto.Auth">
+    
+    <!-- 권한 결과 매핑 -->
+    <resultMap id="authResultMap" type="com.aloha.durudurub.dto.Auth">
         <id property="no" column="no"/>
         <result property="userNo" column="user_no"/>
         <result property="auth" column="auth"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
-
-    <!-- 특정 회원 권한 목록 조회 -->
-    <select id="selectByUserNo" parameterType="int" resultMap="AuthMap">
-        SELECT
-            no, user_no, auth, created_at, updated_at
+    
+    <!-- 권한 목록 조회 (사용자 번호로) -->
+    <select id="listByUserNo" resultMap="authResultMap">
+        SELECT *
         FROM user_auth
         WHERE user_no = #{userNo}
     </select>
-
-    <!-- 회원가입 시 권한 등록 -->
-    <insert id="insert">
+    
+    <!-- 권한 등록 -->
+    <insert id="insert" parameterType="com.aloha.durudurub.dto.Auth" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO user_auth (user_no, auth)
         VALUES (#{userNo}, #{auth})
     </insert>
+    
+    <!-- 권한 삭제 -->
+    <delete id="delete">
+        DELETE FROM user_auth
+        WHERE user_no = #{userNo} AND auth = #{auth}
+    </delete>
+    
+    <!-- 사용자의 모든 권한 삭제 -->
+    <delete id="deleteByUserNo">
+        DELETE FROM user_auth
+        WHERE user_no = #{userNo}
+    </delete>
+    
 </mapper>
-

@@ -1,6 +1,9 @@
 package com.aloha.durudurub.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.aloha.durudurub.dto.User;
 
@@ -9,19 +12,27 @@ import com.aloha.durudurub.dto.User;
  */
 @Mapper
 public interface UserMapper {
-
-    // Id(Email) 회원 조회
-    User selectByUserId(String userId);
-
-    // 닉네임(username) 회원 조회
-    User selectByUsername(String username);
-
-    // 회원 가입
+    
+    List<User> list();
+    
+    User selectByNo(@Param("no") int no);
+    
+    User selectByUserId(@Param("userId") String userId);
+    
+    User selectByUsername(@Param("username") String username);
+    
     int insert(User user);
-
-    // 회원 수정
+    
     int update(User user);
-
-    // 회원 번호로 회원 조회
-    User selectByNo(int no);
+    
+    int delete(@Param("no") int no);
+    
+    int updatePassword(@Param("no") int no, @Param("password") String password);
+    
+    int updateProfileImg(@Param("no") int no, @Param("profileImg") String profileImg);
+    
+    int countByUserId(@Param("userId") String userId);
+    
+    int countByUsername(@Param("username") String username);
+    
 }

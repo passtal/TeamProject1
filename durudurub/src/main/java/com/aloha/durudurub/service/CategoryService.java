@@ -20,7 +20,7 @@ public interface CategoryService {
     
     int delete(int no);
     
-    List<SubCategory> listSubByCategory(int categoryNo);
+    List<SubCategory> listBySubCategory(int categoryNo);
     
     SubCategory selectSubByNo(int no);
     

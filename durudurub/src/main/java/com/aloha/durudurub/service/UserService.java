@@ -1,22 +1,41 @@
 package com.aloha.durudurub.service;
 
+import java.util.List;
+
+import com.aloha.durudurub.dto.Auth;
 import com.aloha.durudurub.dto.User;
 
+/**
+ * 회원 서비스
+ */
 public interface UserService {
-
-    // 로그인 사용자 조회 (principal.getName() = userId(email))
-    User selectByUserId(String userId);
-
-    // 회원번호로 조회
+    
+    List<User> list();
+    
     User selectByNo(int no);
-
-    // 이메일/닉네임 중복 체크
-    boolean existsUserId(String userId);
-    boolean existsUsername(String username);
-
-    // 회원가입 (성공 시 가입된 회원 PK 반환을 추천)
-    int signup(User user);
-
-    // (선택) 회원정보 수정
+    
+    User selectByUserId(String userId);
+    
+    User selectByUsername(String username);
+    
+    int insert(User user);
+    
     int update(User user);
+    
+    int delete(int no);
+    
+    int updatePassword(int no, String password);
+    
+    int updateProfileImg(int no, String profileImg);
+    
+    boolean existsByUserId(String userId);
+    
+    boolean existsByUsername(String username);
+    
+    List<Auth> selectAuthByUserNo(int userNo);
+    
+    int insertAuth(Auth auth);
+    
+    int deleteAuth(int userNo, String auth);
+    
 }

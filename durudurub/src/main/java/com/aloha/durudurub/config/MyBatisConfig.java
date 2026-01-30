@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
  * MyBatis 설정
  */
 @Configuration
-@MapperScan("com.aloha.durudurub.mapper")
+@MapperScan("com.aloha.duruduru.mapper")
 public class MyBatisConfig {
     // MyBatis 매퍼 스캔 설정
 }

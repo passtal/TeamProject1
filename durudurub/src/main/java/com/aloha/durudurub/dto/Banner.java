@@ -13,7 +13,6 @@ public class Banner {
     private int no;
     private String title;
     private String imageUrl;
-    private String position;
     private String linkUrl;
     private String isActive;
     private Date startDate;
