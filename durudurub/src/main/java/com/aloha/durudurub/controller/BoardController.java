@@ -22,7 +22,6 @@ import com.aloha.durudurub.service.ClubService;
 import com.aloha.durudurub.service.CommentService;
 import com.aloha.durudurub.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 

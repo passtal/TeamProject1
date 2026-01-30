@@ -34,7 +34,6 @@ public class UserController {
     @Autowired
     private UserService userService;
     
-    
     /**
      * 현재 로그인한 사용자 정보 조회
      * @param principal

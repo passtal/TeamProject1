@@ -3,5 +3,97 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 댓글 매퍼 XML -->
 <mapper namespace="com.aloha.durudurub.dao.CommentMapper">
-    <!-- TODO: 구현 -->
+    <resultMap id="commentResultMap" type="com.aloha.durudurub.dto.Comment">
+        <id property="no" column="no"/>
+        <result property="boardNo" column="board_no"/>
+        <result property="writerNo" column="writer_no"/>
+        <result property="content" column="content"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <association property="writer" javaType="com.aloha.durudurub.dto.User">
+            <id property="no" column="writer_user_no"/>
+            <result property="username" column="writer_username"/>
+            <result property="profileImg" column="writer_profile_img"/>
+        </association>
+    </resultMap>
+
+    <!-- 댓글 목록 (게시판 별) -->
+    <select id="listByBoard" resultMap="commentResultMap">
+        SELECT c.*,
+            u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_comments c
+        JOIN users u ON c.writer_no = u.no
+        WHERE c.board_no = #{boardNo}
+        ORDER BY c.created_at
+    </select>
+
+    <!-- 작성자 별 댓글 목록 -->
+    <select id="listByWriter" resultMap="commentResultMap">
+        SELECT c.*,
+            u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_comments c
+        JOIN users u ON c.writer_no = u.no
+        WHERE c.writer_no = #{writerNo}
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 댓글 조회 -->
+    <select id="selectByNo" resultMap="commentResultMap">
+        SELECT c.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_comments c
+        JOIN users u ON c.writer_no = u.no
+        WHERE c.no = #{no}
+    </select>
+
+    <!-- 댓글 등록 -->
+    <insert id="insert" parameterType="com.aloha.durudurub.dto.Comment">
+        INSERT INTO club_comments (board_no, writer_no, content)
+        VALUES (#{boardNo}, #{writerNo}, #{content})
+    </insert>
+
+    <!-- 댓글 수정 -->
+    <update id="update" parameterType="com.aloha.durudurub.dto.Comment">
+        UPDATE club_comments
+        SET content = #{content}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 댓글 삭제 -->
+    <delete id="delete">
+        DELETE FROM club_comments WHERE no = #{no}
+    </delete>
+
+    <!-- 좋아요 수 증가 -->
+    <update id="incrementLikeCount">
+        UPDATE club_comments
+        SET like_count = like_count + 1 
+        WHERE no = #{no}
+    </update>
+
+    <!-- 좋아요 수 감소 -->
+    <update id="decrementLikeCount">
+        UPDATE club_comments
+        SET like_count = GREATEST(like_count - 1, 0)
+        WHERE no = #{no}
+    </update>
+
+    <!-- 댓글 수 증가 -->
+    <update id="incrementCommentCount">
+        UPDATE club_comments
+        SET comment_count = commentCount + 1
+        WHERE no = #{no}
+    </update>
+
+    <!-- 댓글 수 감소 -->
+    <update id="decrementCommentCount">
+        UPDATE club_comments
+        SET comment_count = GREATEST(comment_count - 1, 0)
+        WHERE no = #{no}
+    </update>
+
+    <!-- countByBoard 추후에 필요해지면 마킹함 -->
+
+    
 </mapper>
