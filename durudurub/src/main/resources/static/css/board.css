@@ -1,1 +1,972 @@
 /* board : 게시글, 댓글 */
+
+/* board-detail */
+
+/* ========================================
+   Board Detail Page Styles
+   ======================================== */
+
+.board-detail-page {
+    background: #F9FAFB;
+    min-height: 100vh;
+}
+
+/* Hero Section */
+.hero-section {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hero-image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.hero-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.9;
+}
+
+/* Container */
+.board-container {
+    max-width: 896px;
+    margin: -80px auto 0;
+    padding: 0 32px 64px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Board Card */
+.board-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 8px 10px -6px rgba(0, 0, 0, 0.1), 
+                0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 32px;
+}
+
+/* Board Header */
+.board-header {
+    padding: 32px 32px 0;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.board-title {
+    font-size: 36px;
+    font-weight: 700;
+    color: #101828;
+    line-height: 1.11;
+    flex: 1;
+    margin: 0;
+}
+
+.btn-heart {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    background: #F3F4F6;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-heart:hover {
+    background: #00A651;
+}
+
+.btn-heart img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.heart-badge {
+    position: absolute;
+    top: 32px;
+    right: 32px;
+    background: #00A651;
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* Board Meta */
+.board-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.category-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #00A651;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    border-radius: 50%;
+}
+
+.leader-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-label {
+    font-size: 14px;
+    color: #6A7282;
+    line-height: 1.43;
+}
+
+.meta-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #101828;
+    line-height: 1.5;
+}
+
+/* Board Actions */
+.board-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding-bottom: 16px;
+}
+
+.member-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 40px;
+    background: rgba(0, 166, 81, 0.1);
+    border-radius: 50px;
+}
+
+.member-status img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.member-status span {
+    font-size: 16px;
+    font-weight: 700;
+    color: #00A651;
+}
+
+.btn-join {
+    padding: 8px 24px;
+    height: 40px;
+    background: #00A651;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.btn-join:hover {
+    background: #008C41;
+}
+
+/* Button Edit (Leader only) */
+.btn-edit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 36px;
+    background: #00A651;
+    color: white;
+    font-size: 14px;
+    font-weight: 400;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-edit:hover {
+    background: #008C41;
+}
+
+.btn-edit img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+/* Board Content */
+.board-content {
+    padding: 32px 32px 0;
+}
+
+.content-section {
+    margin-bottom: 24px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #101828;
+    line-height: 1.33;
+    margin-bottom: 16px;
+}
+
+.section-text {
+    font-size: 16px;
+    color: #364153;
+    line-height: 1.625;
+    margin-bottom: 0;
+}
+
+.section-text + .section-text {
+    margin-top: 16px;
+}
+
+/* Schedule & Location */
+.schedule-location {
+    padding-top: 24px;
+    border-top: 1px solid #F3F4F6;
+}
+
+.schedule-section {
+    margin-bottom: 24px;
+}
+
+/* Schedule Header (with Add Button for Leader) */
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.btn-add-schedule {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 36px;
+    background: #00A651;
+    color: white;
+    font-size: 14px;
+    font-weight: 400;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add-schedule:hover {
+    background: #008C41;
+}
+
+.btn-add-schedule img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.schedule-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.schedule-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 10px;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.schedule-item.active {
+    background: rgba(0, 166, 81, 0.05);
+    border-left-color: #00A651;
+}
+
+.schedule-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+}
+
+.schedule-item img,
+.schedule-content img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.schedule-item span,
+.schedule-content span {
+    font-size: 16px;
+    font-weight: 700;
+    color: #101828;
+}
+
+/* Delete Schedule Button (Leader only) */
+.btn-delete-schedule {
+    width: 20px;
+    height: 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.5;
+    transition: opacity 0.3s ease;
+}
+
+.btn-delete-schedule:hover {
+    opacity: 1;
+}
+
+.btn-delete-schedule img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Location Section */
+.location-section {
+    background: #F9FAFB;
+    border-radius: 14px;
+    padding: 16px 16px 0;
+}
+
+.location-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.location-header img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.location-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.location-label {
+    font-size: 14px;
+    color: #6A7282;
+}
+
+.location-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #101828;
+}
+
+/* Map Container */
+.map-container {
+    width: 100%;
+    height: 250px;
+    border-radius: 12px;
+    border: 1px solid #D1D5DC;
+    overflow: hidden;
+}
+
+/* Posts Section */
+.posts-section {
+    margin-top: 32px;
+}
+
+.posts-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.posts-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.posts-info img {
+    width: 16px;
+    height: 16px;
+    object-fit: contain;
+}
+
+.posts-info span {
+    font-size: 14px;
+    color: #6A7282;
+}
+
+/* Join CTA Card */
+.join-cta-card {
+    background: linear-gradient(180deg, #00A651 0%, #008E41 100%);
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 
+                0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.join-cta-content {
+    flex: 1;
+}
+
+.join-cta-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 4px;
+}
+
+.join-cta-text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.btn-join-cta {
+    padding: 12px 24px;
+    background: white;
+    color: #00A651;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+.btn-join-cta:hover {
+    background: #F3F4F6;
+}
+
+/* Post Write Form (Leader only) */
+.post-write-form {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.write-form-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.post-textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px;
+    background: #F9FAFB;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+    color: #101828;
+    resize: none;
+    transition: background-color 0.3s ease;
+}
+
+.post-textarea::placeholder {
+    color: rgba(16, 24, 40, 0.5);
+}
+
+.post-textarea:focus {
+    outline: none;
+    background: #F3F4F6;
+}
+
+.write-form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.btn-add-photo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    color: #4A5565;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-add-photo:hover {
+    background: #F9FAFB;
+}
+
+.btn-add-photo img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.btn-post-submit {
+    padding: 8px 24px;
+    height: 40px;
+    background: #D1D5DC;
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: not-allowed;
+    transition: background-color 0.3s ease;
+}
+
+.btn-post-submit:not(:disabled) {
+    background: #00A651;
+    cursor: pointer;
+}
+
+.btn-post-submit:not(:disabled):hover {
+    background: #008C41;
+}
+
+/* Posts List */
+.posts-list {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 2px 4px -2px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.post-item {
+    padding: 24px;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.post-item:last-child {
+    border-bottom: none;
+}
+
+.post-author {
+    display: flex;
+    gap: 12px;
+}
+
+.author-avatar {
+    width: 40px;
+    height: 40px;
+    background: #00A651;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.author-info {
+    flex: 1;
+}
+
+.author-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.author-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: #101828;
+}
+
+.post-divider {
+    color: #99A1AF;
+    font-size: 14px;
+}
+
+.post-date {
+    font-size: 14px;
+    color: #6A7282;
+}
+
+.post-content {
+    font-size: 16px;
+    color: #364153;
+    line-height: 1.625;
+    margin: 8px 0;
+}
+
+.post-image {
+    width: 100%;
+    max-width: 732px;
+    height: 320px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 12px 0;
+}
+
+.post-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.post-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 12px;
+}
+
+.btn-like-post,
+.btn-comment {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-like-post:hover,
+.btn-comment:hover {
+    background: #F9FAFB;
+}
+
+.btn-like-post img,
+.btn-comment img {
+    width: 20px;
+    height: 20px;
+}
+
+.btn-like-post span,
+.btn-comment span {
+    font-size: 14px;
+    color: #6A7282;
+}
+
+.btn-like-post.liked span {
+    color: #00A651;
+}
+
+/* Comments Section */
+.comments-section {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.comment-item {
+    display: flex;
+    gap: 8px;
+    padding: 12px;
+    background: #F9FAFB;
+    border-radius: 10px;
+}
+
+.comment-avatar {
+    width: 32px;
+    height: 32px;
+    background: #00A651;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.comment-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.comment-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.comment-author {
+    font-size: 14px;
+    font-weight: 700;
+    color: #101828;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+
+.comment-author:hover {
+    text-decoration: underline;
+}
+
+.comment-separator {
+    color: #99A1AF;
+    font-size: 12px;
+}
+
+.comment-date {
+    font-size: 12px;
+    color: #6A7282;
+}
+
+.comment-text {
+    font-size: 14px;
+    color: #364153;
+    margin: 0;
+}
+
+/* ========================================
+   Responsive Design
+   ======================================== */
+
+@media (max-width: 768px) {
+    .hero-section {
+        height: 300px;
+    }
+
+    .board-container {
+        margin-top: -60px;
+        padding: 0 16px 32px;
+    }
+
+    .board-header {
+        padding: 24px 24px 0;
+    }
+
+    .board-title {
+        font-size: 28px;
+    }
+
+    .btn-heart {
+        width: 40px;
+        height: 40px;
+    }
+
+    .btn-heart img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .heart-badge {
+        top: 28px;
+        right: 28px;
+        font-size: 10px;
+    }
+
+    .board-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .member-status {
+        justify-content: center;
+    }
+
+    .btn-join {
+        width: 100%;
+    }
+
+    .board-content {
+        padding: 24px 24px 0;
+    }
+
+    .section-title {
+        font-size: 20px;
+    }
+
+    .join-cta-card {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 20px;
+    }
+
+    .btn-join-cta {
+        width: 100%;
+        text-align: center;
+    }
+
+    .post-item {
+        padding: 20px;
+    }
+
+    .post-image {
+        height: 240px;
+    }
+
+    .schedule-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .btn-add-schedule {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .write-form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn-add-photo {
+        justify-content: center;
+    }
+
+    .btn-post-submit {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .board-title {
+        font-size: 24px;
+    }
+
+    .category-badge {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+
+    .section-text {
+        font-size: 14px;
+    }
+
+    .schedule-item {
+        padding: 12px;
+    }
+
+    .schedule-item span {
+        font-size: 14px;
+    }
+
+    .map-container {
+        height: 200px;
+    }
+
+    .post-content {
+        font-size: 14px;
+    }
+
+    .post-image {
+        height: 180px;
+    }
+
+    .join-cta-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .btn-join-cta {
+        width: 100%;
+        text-align: center;
+    }
+
+    .comment-avatar {
+        width: 28px;
+        height: 28px;
+        font-size: 11px;
+    }
+
+    .btn-edit,
+    .btn-add-schedule {
+        font-size: 13px;
+        padding: 0 12px;
+        height: 32px;
+    }
+
+    .post-write-form {
+        padding: 16px;
+    }
+
+    .post-textarea {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .join-cta-title {
+        font-size: 16px;
+    }
+
+    .join-cta-text {
+        font-size: 13px;
+    }
+
+    .comment-meta {
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+}

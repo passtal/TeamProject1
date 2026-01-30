@@ -1,46 +1,38 @@
 <!-- 헤더 fragment -->
 <!-- TODO: 구현 -->
-<th:block th:fragments="header">
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <!-- 두루두룹 로고 -->
-                <div class="nav-logo" id="logo" onclick="index('home')">
-                    <img class="logo-icon" src="/img/durudurub.jpg" alt="두루두룹">
-                    <span class="logo-text">두루두룹</span>
-                </div>
-                <!-- 네이게이션 메뉴 -->
-                <div class="nav-menu">
-                    <a href="#" class="nav-link" onclick="list()">모임 둘러보기</a>
-                    <a href="#" class="nav-link" onclick="notice()">공지사항</a>
-                    <a href="#" class="nav-link" onclick="minigame()">미니게임</a>
-                </div>
-                <!-- 로그인 전/후 -->
-                <div class="nav-user">
-                    <!-- 로그인 전 -->
-                    <div id="beforeLogin">
-                        <button class="btn-login" id="login" onclick="login()">로그인</button>
-                        <button class="btn-signup" onclick="signup()">회원가입</button>
-                    </div>
-                    <!-- 로그인 후 -->
-                    <div id="afterLogin" style="display: none;">
-                        <button class="btn-create" onclick="create()">모임 만들기</button>
-                        <div class="user-profile" onclick="userDropdown()">
-                            <img class="user-avatar" src="" alt="프로필">
-                        </div>
-                        <!-- sideMenu : 드롭다운 -->
-                        <div class="user-dropdown" style="display: none;">
-                            <a href="#" onclick="userpage()">마이페이지</a>
-                            <a href="#" id="club" onclick="userclub()">나의 모임</a>
-                            <!-- <a href="">즐겨찾기</a> -->
-                            <th:block sec:authorize="( hasRole('ADMIN') )">
-                                <a href="#" id="admin" onclick="adminpage()">관리자</a>
-                            </th:block>
-                            <a href="#" onclick="logout()">로그아웃</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-    </header>
+<th:block th:fragment="header">
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+      <div class="container-fluid">
+          <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+              <!-- Logo -->
+              <img th:src="@{/img/icons/logo-durup.png}" alt="두루두룹 로고" class="logo-img" width="40" height="40">
+              <span class="fw-bold fs-5">두루두룹</span>
+          </a>
+  
+          <!-- Search Form -->
+          <div class="search-container ms-auto me-3">
+              <form class="d-flex" role="search">
+                  <div class="input-group">
+                      <input class="form-control rounded-pill" type="search" placeholder="모임 검색..." aria-label="Search">
+                      <button class="btn btn-outline-secondary" type="submit">
+                          <img th:src="@{/img/icons/navbar-search-icon.png}" alt="검색" class="navbar-icon">
+                      </button>
+                  </div>
+              </form>
+          </div>
+  
+          <!-- Navbar Right Items -->
+          <div class="navbar-right">
+              <a href="#" class="btn btn-outline-success rounded-pill me-2">
+                  <img th:src="@{/img/icons/navbar-filter-button.png}" alt="미니게임" class="navbar-icon me-2">
+                  미니게임
+              </a>
+              <button class="btn btn-link" type="button">
+                  <img th:src="@{/img/icons/navbar-notification.png}" alt="알림" class="navbar-icon">
+              </button>
+          </div>
+      </div>
+    </nav>
+  </header>
 </th:block>
