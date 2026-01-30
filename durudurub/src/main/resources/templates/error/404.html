@@ -13,191 +13,46 @@
 </head>
 <body layout:fragment="content">
     <!-- 임시 방편 : 레이아웃 확인용 -->
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="nav-content">
-                    <!-- 왼쪽 -->
-                    <!-- 두루두룹 로고 -->
-                    <a href="" class="nav-left" id="logo" >
-                        <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
-                            <ellipse cx="35" cy="35" rx="8" ry="18" fill="#00C962" transform="rotate(-25 35 35)" />
-                            <ellipse cx="50" cy="28" rx="9" ry="22" fill="#00C962" />
-                            <ellipse cx="65" cy="35" rx="8" ry="18" fill="#00C962" transform="rotate(25 65 35)" />
-                            <circle cx="43" cy="58" r="3" fill="#FFFFFF" />
-                            <circle cx="43.5" cy="58" r="1.5" fill="#333333" />
-                            <circle cx="57" cy="58" r="3" fill="#FFFFFF" />
-                            <circle cx="57.5" cy="58" r="1.5" fill="#333333" />
-                            <path d="M 45 66 Q 50 70 55 66" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" fill="none"/>
-                            <circle cx="38" cy="64" r="3" fill="#FFFFFF" opacity="0.4" />
-                            <circle cx="62" cy="64" r="3" fill="#FFFFFF" opacity="0.4" />
-                        </svg>
-                        <span class="logo-text">두루두룹</span>
-                    </a>
-
-                    <!-- 타임리프 + 세큐리티 + 제이쿼리 
-                        1. sec:authorize
-                            - 서버 렌더링
-                            - 로그인 여부 및 Role 타입
-                        2. 클릭 이벤트 jquery
-                            - 버튼 처리 -->
-
-                    <!-- 가운데 -->
-                    <!-- 검색 창 -->
-                    <div class="search-container">
-                        <form style="width: 100%">
-                            <!-- relative : 자신의 원래 위치 기준으로 이동 가능 -->
-                            <div class="search">
-                                <input type="text" class="search-input">
-                                <!-- 돋보기 svg -->
-                                <!-- absolute : 가장 가까운 relative 나 absolute 가 아닌 부모 기준으로 위치선정 -->
-                                <div class="icon-wrapper">
-                                    <button type="button" class="ai-icon">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-4 h-4">
-                                            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path>
-                                            <path d="M20 3v4"></path>
-                                            <path d="M22 5h-4"></path>
-                                            <path d="M4 17v2"></path>
-                                            <path d="M5 18H3"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- 오른쪽 -->
-                    <div class="nav-right">
-                        <a href="#" class="minigame">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="6" x2="10" y1="11" y2="11"/>
-                                <line x1="8" x2="8" y1="9" y2="13"/>
-                                <line x1="15" x2="15.01" y1="12" y2="12"/>
-                                <line x1="18" x2="18.01" y1="10" y2="10"/>
-                                <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/>
-                            </svg>
-                            미니게임
-                        </a>
-                        <!-- 로그인 전 -->
-                        <th:block sec:authorize="isAnonymous()">
-                            <div class="login-container">
-                                <a href="#" class="signup">회원가입</a>
-                                <a href="#" class="login">로그인</a>
-                            </div>    
-                        </th:block>
-                        <!-- 로그인 후 : user -->
-                        <th:block sec:authorize="( hasRole('USER') )">
-                            <div class="icon-container">
-                                <button class="profile-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-10 h-10" data-fg-cqpb87="211.221:228.1061:/src/app/components/Navbar.tsx:252:14:8773:30:e:User::::::0ls">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                </button>
-                                <!-- user -->
-                                <div id="user-dropdown" class="hidden">
-                                    <ul>
-                                        <li><a href="" class="mypage">마이페이지</a></li>
-                                        <li><a href="" class="myclub">내모임</a></li>
-                                        <hr>
-                                        <li><a href="" class="logout">로그아웃</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </th:block>
-                        <!-- 로그인 후 : admin -->
-                        <th:block sec:authorize="( hasRole('ADMIN') )">
-                            <div class="icon-container">
-                                <button class="profile-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 22 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user w-10 h-10" data-fg-cqpb87="211.221:228.1061:/src/app/components/Navbar.tsx:252:14:8773:30:e:User::::::0ls">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
-                                        <circle cx="12" cy="7" r="4"></circle>
-                                    </svg>
-                                </button>
-                                <!-- user -->
-                                <div id="admin-dropdown" class="hidden">
-                                    <ul>
-                                        <li><a href="" class="notice">공지사항</a></li>
-                                        <li><a href="" class="adminpage">관리자 페이지</a></li>
-                                        <hr>
-                                        <li><a href="" class="logout">로그아웃</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </th:block>
-                    </div>
-                    </div>
-                </div>
+    <main class="wrapper" style="background: linear-gradient(to bottom right, #ebf4ff, #e0e7ff);">
+        <div class="content-box">
+            <div class="icon-area">
+            <!-- <DurupCharacter size={150} variant="surprised" /> -->
+            <svg width="200" height="200" viewBox="0 0 105 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- 두릅 몸통 - 메인 -->
+                <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
+                <!-- 두릅 잎 - 왼쪽 (더 올라간) -->
+                <ellipse cx="32" cy="28" rx="8" ry="20" fill="#00C962" transform="rotate(-40 32 28)" />
+                <!-- 두릅 잎 - 가운데 (더 올라간) -->
+                <ellipse cx="50" cy="22" rx="9" ry="24" fill="#00C962" />
+                <!-- 두릅 잎 - 오른쪽 (더 올라간) -->
+                <ellipse cx="68" cy="28" rx="8" ry="20" fill="#00C962" transform="rotate(40 68 28)" />
+                <!-- 얼굴 - 눈 왼쪽 (크게 뜬 눈) -->
+                <circle cx="43" cy="57" r="4.5" fill="#FFFFFF" />
+                <circle cx="43.5" cy="57" r="2.5" fill="#333333" />
+                <circle cx="44.5" cy="56" r="1" fill="#FFFFFF" />
+                <!-- 얼굴 - 눈 오른쪽 (크게 뜬 눈) -->
+                <circle cx="57" cy="57" r="4.5" fill="#FFFFFF" />
+                <circle cx="57.5" cy="57" r="2.5" fill="#333333" />
+                <circle cx="58.5" cy="56" r="1" fill="#FFFFFF" />
+                <!-- 얼굴 - 입 (놀란 입) -->
+                <ellipse cx="50" cy="68" rx="4" ry="5" fill="#FFFFFF" />
+                <ellipse cx="50" cy="69" rx="3" ry="3.5" fill="#333333" opacity="0.3" />
+                <!-- 놀람 표시 (왼쪽) -->
+                <path d="M 28 52 L 30 48 L 26 47" stroke="#FFD700" stroke-width="2" stroke-linecap="round" fill="none" />
+                <!-- 놀람 표시 (오른쪽) -->
+                <path d="M 72 52 L 70 48 L 74 47" stroke="#FFD700" stroke-width="2" stroke-linecap="round" fill="none" />
+            </svg>
+                <!-- <DurupCharacter size={150} variant="sad"/> -->
             </div>
-        </nav>
-    </header>
-
-
-
-     <div class="wrapper" style="background: linear-gradient(to bottom right, #ebf4ff, #e0e7ff);">
-      <div class="content-box">
-        <div class="icon-area">
-          <!-- <DurupCharacter size={150} variant="surprised" /> -->
-          <svg width="200" height="200" viewBox="0 0 105 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <!-- 두릅 몸통 - 메인 -->
-            <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
-            <!-- 두릅 잎 - 왼쪽 (더 올라간) -->
-            <ellipse cx="32" cy="28" rx="8" ry="20" fill="#00C962" transform="rotate(-40 32 28)" />
-            <!-- 두릅 잎 - 가운데 (더 올라간) -->
-            <ellipse cx="50" cy="22" rx="9" ry="24" fill="#00C962" />
-            <!-- 두릅 잎 - 오른쪽 (더 올라간) -->
-            <ellipse cx="68" cy="28" rx="8" ry="20" fill="#00C962" transform="rotate(40 68 28)" />
-            <!-- 얼굴 - 눈 왼쪽 (크게 뜬 눈) -->
-            <circle cx="43" cy="57" r="4.5" fill="#FFFFFF" />
-            <circle cx="43.5" cy="57" r="2.5" fill="#333333" />
-            <circle cx="44.5" cy="56" r="1" fill="#FFFFFF" />
-            <!-- 얼굴 - 눈 오른쪽 (크게 뜬 눈) -->
-            <circle cx="57" cy="57" r="4.5" fill="#FFFFFF" />
-            <circle cx="57.5" cy="57" r="2.5" fill="#333333" />
-            <circle cx="58.5" cy="56" r="1" fill="#FFFFFF" />
-            <!-- 얼굴 - 입 (놀란 입) -->
-            <ellipse cx="50" cy="68" rx="4" ry="5" fill="#FFFFFF" />
-            <ellipse cx="50" cy="69" rx="3" ry="3.5" fill="#333333" opacity="0.3" />
-            <!-- 놀람 표시 (왼쪽) -->
-            <path d="M 28 52 L 30 48 L 26 47" stroke="#FFD700" stroke-width="2" stroke-linecap="round" fill="none" />
-            <!-- 놀람 표시 (오른쪽) -->
-            <path d="M 72 52 L 70 48 L 74 47" stroke="#FFD700" stroke-width="2" stroke-linecap="round" fill="none" />
-          </svg>
-            <!-- <DurupCharacter size={150} variant="sad"/> -->
+            <h1 class="title">404 에러 페이지</h1>
+            <div class="desc">
+                <p class="main-desc">페이지를 찾을 수 없습니다.</p>
+                <h5 class="sub-desc">요청하신 페이지가 존재하지 않아요</h5>
+            </div>
+            <div class="btn-box">
+                <a href="/" class="main-btn">메인 화면</a>
+            </div>
         </div>
-        <h1 class="title">404 에러 페이지</h1>
-        <div class="desc">
-            <p class="main-desc">페이지를 찾을 수 없습니다.</p>
-            <h5 class="sub-desc">요청하신 페이지가 존재하지 않아요</h5>
-        </div>
-        <div class="btn-box">
-            <a href="/" class="main-btn">메인 화면</a>
-        </div>
-      </div>
-    </div>
-
-
-    <script>
-    $(document).ready(function() {
-        $('.profile-icon').on('click', function() {
-            const userDropdown = $('#user-dropdown')
-            const adminDropdown = $('#admin-dropdown')
-            
-            // .length : 선택된 요소의 개수
-            if (userDropdown.length) {
-                $('#user-dropdown').toggle();
-                $('#admin-dropdown').hide();
-            } else if (adminDropdown.length) {
-                $('#admin-dropdown').toggle();
-                $('#user-dropdown').hide();
-            }
-        })
-
-        $(document).on('click', function() {
-            $('#user-dropdown').hide();
-            $('#admin-dropdown').hide();
-        })
-    })
-    </script>
+    </main>
 </body>
 </html>
