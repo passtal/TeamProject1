@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/base_layout}">
+<!-- ⭐ layout:decorate="~{/레이아웃 경로/레이아웃 파일명}" -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 두루두룹</title>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<!-- ⭐ layout:fragment="레이아웃 프레그먼트 이름" -->
+<body layout:fragment="content" class="login-page">
+
+    <!-- Main Container -->
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Close Button -->
+            <button type="button" class="btn-close-login" onclick="window.location.href='/'">
+                <img th:src="@{/img/login/close-button.png}" alt="닫기">
+            </button>
+
+            <!-- Header -->
+            <div class="login-header text-center mb-4">
+                <h1 class="login-title">두루두룹</h1>
+                <p class="login-subtitle">다시 만나서 반가워요!</p>
+            </div>
+
+            <!-- Login Form -->
+            <form th:action="@{/login}" method="post" class="login-form">
+                <!-- Email Input -->
+                <div class="form-group mb-3">
+                    <label for="email" class="form-label">이메일</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="이메일을 입력하세요" required>
+                </div>
+
+                <!-- Password Input -->
+                <div class="form-group mb-3">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" class="form-control" id="password" name="password" placeholder="비밀번호를 입력하세요" required>
+                        <button type="button" class="btn-password-toggle" onclick="togglePassword('password')">
+                            <img th:src="@{/img/login/password-toggle.png}" alt="비밀번호 표시">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Email & Find Password -->
+                <div class="form-options d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="rememberEmail" name="rememberEmail">
+                        <label class="form-check-label" for="rememberEmail">
+                            이메일 저장
+                        </label>
+                    </div>
+                    <a href="/find-password" class="link-find-password">비밀번호 찾기</a>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn btn-success btn-login w-100 mb-3">로그인</button>
+
+                <!-- Signup Link -->
+                <div class="signup-link text-center">
+                    <span>아직 회원이 아니신가요?</span>
+                    <a href="/join" class="link-signup">회원가입하기</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom JS -->
+    <script th:inline="javascript">
+        // Toggle Password Visibility
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+            } else {
+                input.type = 'password';
+            }
+        }
+
+        // Remember Email
+        window.addEventListener('DOMContentLoaded', function() {
+            const savedEmail = localStorage.getItem('rememberedEmail');
+            if (savedEmail) {
+                document.getElementById('email').value = savedEmail;
+                document.getElementById('rememberEmail').checked = true;
+            }
+        });
+
+        // Save Email on Form Submit
+        document.querySelector('.login-form').addEventListener('submit', function(e) {
+            const rememberEmail = document.getElementById('rememberEmail').checked;
+            const email = document.getElementById('email').value;
+
+            if (rememberEmail) {
+                localStorage.setItem('rememberedEmail', email);
+            } else {
+                localStorage.removeItem('rememberedEmail');
+            }
+        });
+    </script>
+
+</body>
+</html>
