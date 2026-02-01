@@ -1,5 +1,168 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 카테고리별 모임 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${category.name} + ' 모임 - 두루두룹'">카테고리 모임 - 두루두룹</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+</head>
+<body class="category-page">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <!-- Main Content -->
+    <main>
+        <!-- 카테고리 헤더 -->
+        <section class="category-header-section py-5 bg-light">
+            <div class="container text-center">
+                <div class="category-icon-large mx-auto mb-3">
+                    <img th:src="@{/img/icons/category-{name}.png(name=${#strings.toLowerCase(category.name)})}" 
+                         th:alt="${category.name}" class="category-icon-img"
+                         onerror="this.src='/img/icons/category-sports.png'">
+                </div>
+                <h1 class="fw-bold" th:text="${category.name}">카테고리</h1>
+                <p class="text-muted" th:text="${category.description}">카테고리 설명</p>
+            </div>
+        </section>
+
+        <!-- 세부 카테고리 (있는 경우) -->
+        <section class="sub-category-section py-4 border-bottom" th:if="${subCategories != null and !subCategories.empty}">
+            <div class="container">
+                <div class="d-flex flex-wrap justify-content-center gap-2">
+                    <a th:href="@{/club/list(category=${category.no})}" 
+                       class="btn btn-sm rounded-pill"
+                       th:classappend="${subCategoryNo == null} ? 'btn-success' : 'btn-outline-secondary'">
+                        전체
+                    </a>
+                    <a th:each="sub : ${subCategories}"
+                       th:href="@{/club/list(category=${category.no}, sub=${sub.no})}"
+                       class="btn btn-sm rounded-pill"
+                       th:classappend="${subCategoryNo == sub.no} ? 'btn-success' : 'btn-outline-secondary'"
+                       th:text="${sub.name}">세부카테고리</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 모임 목록 -->
+        <section class="clubs-section py-5">
+            <div class="container">
+                <!-- 정렬 옵션 -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <p class="mb-0 text-muted">
+                        총 <strong th:text="${clubs != null} ? ${clubs.size()} : 0">0</strong>개의 모임
+                    </p>
+                    <div class="d-flex gap-2">
+                        <select class="form-select form-select-sm" style="width: auto;">
+                            <option>최신순</option>
+                            <option>인기순</option>
+                            <option>멤버순</option>
+                        </select>
+                        <a th:href="@{/club/insert}" class="btn btn-join btn-sm" sec:authorize="isAuthenticated()">
+                            + 모임 만들기
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 모임 카드 그리드 -->
+                <div class="row g-4">
+                    <div th:if="${clubs == null or clubs.empty}" class="col-12 text-center py-5">
+                        <p class="text-muted">이 카테고리에는 아직 모임이 없습니다.</p>
+                        <a th:href="@{/club/insert}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                            첫 모임 만들기
+                        </a>
+                    </div>
+
+                    <div th:each="club : ${clubs}" class="col-md-6 col-lg-4">
+                        <div class="card club-card h-100 shadow-sm">
+                            <div class="club-card-image">
+                                <img th:src="${club.thumbnail != null} ? ${club.thumbnail} : @{/img/hero-image.png}" 
+                                     class="card-img-top" alt="모임 이미지">
+                                <span class="club-status badge" 
+                                      th:classappend="${club.status == 'RECRUITING'} ? 'bg-success' : 'bg-secondary'"
+                                      th:text="${club.status == 'RECRUITING'} ? '모집중' : '모집마감'">모집중</span>
+                            </div>
+                            
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    <a th:href="@{/club/{no}(no=${club.no})}" class="text-decoration-none text-dark"
+                                       th:text="${club.name}">모임 이름</a>
+                                </h5>
+                                <p class="card-text text-muted small" 
+                                   th:text="${#strings.abbreviate(club.description, 60)}">모임 소개글...</p>
+                                
+                                <div class="club-meta d-flex justify-content-between align-items-center mt-3">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img th:src="@{/img/board/member-icon.png}" alt="멤버" class="icon-small">
+                                        <small th:text="${club.currentMembers} + '/' + ${club.maxMembers}">0/10</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img th:src="@{/img/board/location-icon.png}" alt="지역" class="icon-small">
+                                        <small th:text="${club.region}">서울</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요" class="icon-small">
+                                        <small th:text="${club.likeCount}">0</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+
+    <style>
+        .category-icon-large {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .category-icon-img {
+            width: 60px;
+            height: 60px;
+        }
+        .club-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: none;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+        .club-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+        .club-card-image {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+        }
+        .club-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .club-status {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+        }
+        .icon-small {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+</body>
 </html>

@@ -1,5 +1,208 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 모임 상세 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${club.name} + ' - 두루두룹'">모임 상세 - 두루두룹</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body class="board-detail-page">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <!-- Hero Image Section -->
+    <div class="hero-section">
+        <div class="hero-image-wrapper">
+            <img th:src="${club.thumbnail != null} ? ${club.thumbnail} : @{/img/board/hero-image.png}" alt="모임 대표 이미지">
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container board-container">
+        <!-- Club Info Card -->
+        <div class="board-card">
+            <!-- Header Section -->
+            <div class="board-header">
+                <div class="header-top">
+                    <h1 class="board-title" th:text="${club.name}">모임 이름</h1>
+                    <button class="btn-heart" id="btnClubLike" th:data-no="${club.no}">
+                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요">
+                        <span class="heart-badge" th:text="${club.likeCount}">0</span>
+                    </button>
+                </div>
+
+                <!-- Category & Host Info -->
+                <div class="board-meta">
+                    <div class="category-badge" th:text="${#strings.substring(club.category.name, 0, 1)}">책</div>
+                    <div class="leader-info">
+                        <span class="meta-label">호스트</span>
+                        <span class="meta-value" th:text="${club.host.username}">호스트 이름</span>
+                    </div>
+                </div>
+
+                <!-- Member & Join Button -->
+                <div class="board-actions">
+                    <div class="member-status">
+                        <img th:src="@{/img/board/member-icon.png}" alt="멤버">
+                        <span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명 참여 중'">0/10명 참여 중</span>
+                    </div>
+                    <!-- 호스트인 경우 수정 버튼 -->
+                    <a th:if="${isHost}" th:href="@{/club/{no}/edit(no=${club.no})}" class="btn btn-edit">
+                        <img th:src="@{/img/board/edit-icon.png}" alt="편집">
+                        정보 수정
+                    </a>
+                    <!-- 가입하지 않은 경우 가입 버튼 -->
+                    <button th:if="${myMembership == null and !isHost}" 
+                            class="btn btn-join" onclick="joinClub()" sec:authorize="isAuthenticated()">
+                        모임 가입하기
+                    </button>
+                    <!-- 승인 대기중인 경우 -->
+                    <span th:if="${myMembership != null and myMembership.status == 'PENDING'}" 
+                          class="badge bg-warning text-dark">승인 대기중</span>
+                    <!-- 멤버인 경우 -->
+                    <span th:if="${myMembership != null and myMembership.status == 'APPROVED'}" 
+                          class="badge bg-success">멤버</span>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="board-content">
+                <!-- Introduction -->
+                <div class="content-section">
+                    <h2 class="section-title">모임 소개</h2>
+                    <div class="section-text" th:utext="${club.description}">
+                        모임 소개글이 여기에 표시됩니다.
+                    </div>
+                </div>
+
+                <!-- Schedule & Location -->
+                <div class="content-section schedule-location">
+                    <!-- Location -->
+                    <div class="location-section">
+                        <div class="location-header">
+                            <img th:src="@{/img/board/location-icon.png}" alt="장소">
+                            <div class="location-info">
+                                <span class="location-label">활동 지역</span>
+                                <span class="location-value" th:text="${club.region}">서울</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Club Info Grid -->
+                <div class="content-section">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="info-card p-3 bg-light rounded">
+                                <small class="text-muted">카테고리</small>
+                                <p class="mb-0 fw-bold" th:text="${club.category.name}">카테고리</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-card p-3 bg-light rounded">
+                                <small class="text-muted">모집 상태</small>
+                                <p class="mb-0 fw-bold" 
+                                   th:text="${club.status == 'RECRUITING'} ? '모집중' : '모집마감'">모집중</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="info-card p-3 bg-light rounded">
+                                <small class="text-muted">조회수</small>
+                                <p class="mb-0 fw-bold" th:text="${club.viewCount}">0</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Posts Section (멤버만) -->
+        <div class="posts-section" th:if="${myMembership != null and myMembership.status == 'APPROVED'} or ${isHost}">
+            <div class="posts-header d-flex justify-content-between align-items-center">
+                <h2 class="section-title">게시글</h2>
+                <a th:href="@{/board/list(clubNo=${club.no})}" class="btn btn-outline-success btn-sm">
+                    전체보기 →
+                </a>
+            </div>
+
+            <!-- 최근 게시글 미리보기 -->
+            <div class="recent-posts">
+                <div th:if="${recentBoards == null or recentBoards.empty}" class="text-center py-4">
+                    <p class="text-muted">아직 게시글이 없습니다.</p>
+                    <a th:href="@{/board/insert(clubNo=${club.no})}" class="btn btn-join btn-sm">
+                        첫 게시글 작성하기
+                    </a>
+                </div>
+                <div th:if="${recentBoards != null and !recentBoards.empty}" class="list-group">
+                    <a th:each="board : ${recentBoards}" 
+                       th:href="@{/board/{no}(no=${board.no})}"
+                       class="list-group-item list-group-item-action">
+                        <div class="d-flex justify-content-between">
+                            <span th:text="${board.title}">게시글 제목</span>
+                            <small class="text-muted" th:text="${#temporals.format(board.createdAt, 'MM.dd')}">01.01</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Join CTA (비회원용) -->
+        <div class="join-cta-card" th:if="${myMembership == null and !isHost}">
+            <div class="join-cta-content">
+                <h3 class="join-cta-title">이 모임의 멤버가 되어보세요!</h3>
+                <p class="join-cta-text">멤버가 되면 게시글을 작성하고 모임 활동에 참여할 수 있습니다.</p>
+            </div>
+            <button class="btn btn-join-cta" onclick="joinClub()" sec:authorize="isAuthenticated()">가입하기</button>
+            <a th:href="@{/login}" class="btn btn-join-cta" sec:authorize="isAnonymous()">로그인하고 가입하기</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+
+    <script th:inline="javascript">
+        const clubNo = [[${club.no}]];
+
+        // 모임 가입
+        function joinClub() {
+            if (confirm('이 모임에 가입 신청하시겠습니까?')) {
+                $.ajax({
+                    url: '/club/' + clubNo + '/join',
+                    type: 'POST',
+                    success: function(result) {
+                        alert('가입 신청이 완료되었습니다. 호스트의 승인을 기다려주세요.');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 401) {
+                            alert('로그인이 필요합니다.');
+                            location.href = '/login';
+                        } else {
+                            alert('가입 신청에 실패했습니다.');
+                        }
+                    }
+                });
+            }
+        }
+
+        // 모임 좋아요
+        $('#btnClubLike').click(function() {
+            $.ajax({
+                url: '/api/likes/club/' + clubNo,
+                type: 'POST',
+                success: function(result) {
+                    location.reload();
+                },
+                error: function() {
+                    alert('로그인이 필요합니다.');
+                }
+            });
+        });
+    </script>
+</body>
 </html>

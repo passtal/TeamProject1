@@ -1,5 +1,148 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 게시글 수정 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 수정 - 두루두룹</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body class="board-update-page">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- 뒤로가기 -->
+                <div class="mb-4">
+                    <a th:href="@{/board/{no}(no=${board.no})}" class="btn btn-outline-secondary btn-sm">
+                        ← 게시글로 돌아가기
+                    </a>
+                </div>
+
+                <!-- 게시글 수정 카드 -->
+                <div class="board-card">
+                    <div class="board-header">
+                        <h2 class="section-title">게시글 수정</h2>
+                    </div>
+
+                    <div class="board-content">
+                        <form th:action="@{/board/update}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="no" th:value="${board.no}">
+                            <input type="hidden" name="clubNo" th:value="${board.clubNo}">
+
+                            <!-- 공지사항 여부 (호스트만) -->
+                            <div class="mb-4" th:if="${isHost}">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="isNotice" value="Y" 
+                                           id="isNotice" th:checked="${board.isNotice == 'Y'}">
+                                    <label class="form-check-label" for="isNotice">
+                                        <span class="badge bg-danger">공지</span> 공지사항으로 등록
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 제목 -->
+                            <div class="mb-4">
+                                <label for="title" class="form-label fw-bold">제목</label>
+                                <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                                       th:value="${board.title}" placeholder="게시글 제목을 입력해주세요" required>
+                            </div>
+
+                            <!-- 내용 -->
+                            <div class="mb-4">
+                                <label for="content" class="form-label fw-bold">내용</label>
+                                <textarea class="form-control" id="content" name="content" rows="10" 
+                                          placeholder="게시글 내용을 입력해주세요" required th:text="${board.content}"></textarea>
+                            </div>
+
+                            <!-- 기존 이미지 -->
+                            <div class="mb-4" th:if="${board.images != null and !board.images.empty}">
+                                <label class="form-label fw-bold">기존 이미지</label>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <div th:each="image : ${board.images}" class="position-relative">
+                                        <img th:src="${image.imageUrl}" class="img-thumbnail" 
+                                             style="max-width: 150px; max-height: 150px;">
+                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
+                                                th:onclick="'deleteImage(' + ${image.no} + ')'">×</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 새 이미지 업로드 -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">새 이미지 추가</label>
+                                <div class="image-upload-area p-4 border rounded text-center">
+                                    <input type="file" class="form-control" id="images" name="images" 
+                                           accept="image/*" multiple>
+                                    <small class="text-muted d-block mt-2">최대 5개의 이미지를 업로드할 수 있습니다.</small>
+                                </div>
+                                <div id="imagePreview" class="d-flex gap-2 flex-wrap mt-3"></div>
+                            </div>
+
+                            <!-- 버튼 -->
+                            <div class="d-flex justify-content-end gap-2">
+                                <a th:href="@{/board/{no}(no=${board.no})}" class="btn btn-outline-secondary">취소</a>
+                                <button type="submit" class="btn btn-join">수정하기</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+    
+    <script>
+        // 이미지 미리보기
+        document.getElementById('images').addEventListener('change', function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            const files = e.target.files;
+            if (files.length > 5) {
+                alert('이미지는 최대 5개까지 업로드할 수 있습니다.');
+                e.target.value = '';
+                return;
+            }
+
+            Array.from(files).forEach(function(file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.className = 'img-thumbnail';
+                    img.style.maxWidth = '150px';
+                    img.style.maxHeight = '150px';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // 이미지 삭제
+        function deleteImage(imageNo) {
+            if (confirm('이 이미지를 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: '/api/board/image/' + imageNo,
+                    type: 'DELETE',
+                    success: function() {
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('이미지 삭제에 실패했습니다.');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
 </html>

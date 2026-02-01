@@ -1,5 +1,185 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 모임 수정 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모임 수정 - 두루두룹</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body class="club-update-page">
+    <!-- Header -->
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <!-- Main Content -->
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <!-- 뒤로가기 -->
+                <div class="mb-4">
+                    <a th:href="@{/club/{no}(no=${club.no})}" class="btn btn-outline-secondary btn-sm">
+                        ← 모임으로 돌아가기
+                    </a>
+                </div>
+
+                <!-- 모임 수정 카드 -->
+                <div class="board-card">
+                    <div class="board-header">
+                        <h2 class="section-title">모임 정보 수정</h2>
+                    </div>
+
+                    <div class="board-content">
+                        <form th:action="@{/club/{no}/edit(no=${club.no})}" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="no" th:value="${club.no}">
+
+                            <!-- 모임 이름 -->
+                            <div class="mb-4">
+                                <label for="name" class="form-label fw-bold">모임 이름 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" id="name" name="name" 
+                                       th:value="${club.name}" placeholder="모임 이름을 입력해주세요" required maxlength="50">
+                            </div>
+
+                            <!-- 카테고리 -->
+                            <div class="mb-4">
+                                <label for="categoryNo" class="form-label fw-bold">카테고리 <span class="text-danger">*</span></label>
+                                <select class="form-select" id="categoryNo" name="categoryNo" required>
+                                    <option value="">카테고리를 선택해주세요</option>
+                                    <option th:each="category : ${categories}" 
+                                            th:value="${category.no}" 
+                                            th:selected="${category.no == club.categoryNo}"
+                                            th:text="${category.name}">카테고리</option>
+                                </select>
+                            </div>
+
+                            <!-- 세부 카테고리 -->
+                            <div class="mb-4" id="subCategoryDiv" th:style="${subCategories != null and !subCategories.empty} ? '' : 'display: none;'">
+                                <label for="subCategoryNo" class="form-label fw-bold">세부 카테고리</label>
+                                <select class="form-select" id="subCategoryNo" name="subCategoryNo">
+                                    <option value="">세부 카테고리를 선택해주세요</option>
+                                    <option th:each="sub : ${subCategories}" 
+                                            th:value="${sub.no}" 
+                                            th:selected="${sub.no == club.subCategoryNo}"
+                                            th:text="${sub.name}">세부카테고리</option>
+                                </select>
+                            </div>
+
+                            <!-- 모임 소개 -->
+                            <div class="mb-4">
+                                <label for="description" class="form-label fw-bold">모임 소개 <span class="text-danger">*</span></label>
+                                <textarea class="form-control" id="description" name="description" rows="6" 
+                                          required th:text="${club.description}"></textarea>
+                            </div>
+
+                            <!-- 활동 지역 -->
+                            <div class="mb-4">
+                                <label for="region" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="region" name="region" 
+                                       th:value="${club.region}" required>
+                            </div>
+
+                            <!-- 최대 인원 -->
+                            <div class="mb-4">
+                                <label for="maxMembers" class="form-label fw-bold">최대 인원 <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="maxMembers" name="maxMembers" 
+                                       min="2" max="100" th:value="${club.maxMembers}" required>
+                            </div>
+
+                            <!-- 모집 상태 -->
+                            <div class="mb-4">
+                                <label for="status" class="form-label fw-bold">모집 상태</label>
+                                <select class="form-select" id="status" name="status">
+                                    <option value="RECRUITING" th:selected="${club.status == 'RECRUITING'}">모집중</option>
+                                    <option value="CLOSED" th:selected="${club.status == 'CLOSED'}">모집마감</option>
+                                </select>
+                            </div>
+
+                            <!-- 현재 대표 이미지 -->
+                            <div class="mb-4" th:if="${club.thumbnail != null}">
+                                <label class="form-label fw-bold">현재 대표 이미지</label>
+                                <div class="text-center">
+                                    <img th:src="${club.thumbnail}" class="img-fluid rounded" style="max-height: 200px;">
+                                </div>
+                            </div>
+
+                            <!-- 새 대표 이미지 -->
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">새 대표 이미지</label>
+                                <div class="image-upload-area p-4 border rounded text-center">
+                                    <input type="file" class="form-control" id="thumbnail" name="thumbnail" 
+                                           accept="image/*">
+                                    <small class="text-muted d-block mt-2">새 이미지를 선택하면 기존 이미지가 교체됩니다.</small>
+                                </div>
+                                <div id="imagePreview" class="mt-3 text-center"></div>
+                            </div>
+
+                            <!-- 버튼 -->
+                            <div class="d-flex justify-content-between pt-4 border-top">
+                                <button type="button" class="btn btn-outline-danger" onclick="deleteClub()">모임 삭제</button>
+                                <div class="d-flex gap-2">
+                                    <a th:href="@{/club/{no}(no=${club.no})}" class="btn btn-outline-secondary">취소</a>
+                                    <button type="submit" class="btn btn-join">수정하기</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+    
+    <script th:inline="javascript">
+        const clubNo = [[${club.no}]];
+
+        // 카테고리 변경 시 세부 카테고리 로드
+        $('#categoryNo').change(function() {
+            const categoryNo = $(this).val();
+            if (categoryNo) {
+                $.ajax({
+                    url: '/api/categories/' + categoryNo + '/sub',
+                    type: 'GET',
+                    success: function(subCategories) {
+                        if (subCategories && subCategories.length > 0) {
+                            let options = '<option value="">세부 카테고리를 선택해주세요</option>';
+                            subCategories.forEach(function(sub) {
+                                options += `<option value="${sub.no}">${sub.name}</option>`;
+                            });
+                            $('#subCategoryNo').html(options);
+                            $('#subCategoryDiv').show();
+                        } else {
+                            $('#subCategoryDiv').hide();
+                        }
+                    }
+                });
+            } else {
+                $('#subCategoryDiv').hide();
+            }
+        });
+
+        // 이미지 미리보기
+        $('#thumbnail').change(function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#imagePreview').html(`<img src="${e.target.result}" class="img-fluid rounded" style="max-height: 200px;">`);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 모임 삭제
+        function deleteClub() {
+            if (confirm('정말 이 모임을 삭제하시겠습니까? 모든 게시글과 멤버 정보가 삭제됩니다.')) {
+                location.href = '/club/' + clubNo + '/delete';
+            }
+        }
+    </script>
+</body>
 </html>
