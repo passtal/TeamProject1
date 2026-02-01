@@ -1,10 +1,10 @@
-package com.aloha.carrot;
+package com.aloha.durudurub;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CarrotApplicationTests {
+class DurudurubApplicationTests {
 
 	@Test
 	void contextLoads() {

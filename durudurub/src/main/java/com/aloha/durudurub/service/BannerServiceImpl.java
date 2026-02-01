@@ -20,32 +20,32 @@ public class BannerServiceImpl implements BannerService {
     private final BannerMapper bannerMapper;
 
     @Override
-    public List<Banner> list() throws Exception {
-        List<Banner> list = bannerMapper.list();
+    public List<Banner> bannerList() throws Exception {
+        List<Banner> list = bannerMapper.bannerList();
         return list;
     }
 
     @Override
-    public Banner select(Integer no) throws Exception {
-        Banner banner = bannerMapper.select(no);
+    public Banner bannerSelect(Integer no) throws Exception {
+        Banner banner = bannerMapper.bannerSelect(no);
         return banner;
     }
 
     @Override
-    public boolean insert(Banner banner) throws Exception {
-        int result = bannerMapper.insert(banner);
+    public boolean bannerInsert(Banner banner) throws Exception {
+        int result = bannerMapper.bannerInsert(banner);
         return result > 0;
     }
 
     @Override
-    public boolean update(Banner banner) throws Exception {
-        int result = bannerMapper.update(banner);
+    public boolean bannerUpdate(Banner banner) throws Exception {
+        int result = bannerMapper.bannerUpdate(banner);
         return result > 0;
     }
     
     @Override
-    public boolean delete(Integer no) throws Exception {
-        int result = bannerMapper.delete(no);
+    public boolean bannerDelete(Integer no) throws Exception {
+        int result = bannerMapper.bannerDelete(no);
         return result > 0;
     }
 

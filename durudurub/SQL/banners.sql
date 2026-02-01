@@ -22,7 +22,3 @@ CREATE TABLE `banners` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`no`)
 );
-
-INSERT INTO `banners` (`title`, `image_url`, `link_url`, `position`, `seq`) VALUES
-('두루두루 오픈 기념 이벤트', '/static/img/banner/event1.jpg', '/event/1', 'MAIN', 1),
-('새로운 모임을 찾아보세요', '/static/img/banner/event2.jpg', '/clubs', 'MAIN', 2);

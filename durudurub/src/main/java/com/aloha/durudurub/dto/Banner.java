@@ -14,6 +14,8 @@ public class Banner {
     private String title;
     private String imageUrl;
     private String linkUrl;
+    private String position;
+    private String description;
     private String isActive;
     private Date startDate;
     private Date endDate;

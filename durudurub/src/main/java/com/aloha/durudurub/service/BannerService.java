@@ -8,16 +8,15 @@ import com.aloha.durudurub.dto.Banner;
  * 배너 서비스
  */
 public interface BannerService {
-    // TODO: 구현
 
     // 배너 목록
-    List<Banner> list() throws Exception;
+    List<Banner> bannerList() throws Exception;
     // 배너 조회
-    Banner select(Integer no) throws Exception;
+    Banner bannerSelect(Integer no) throws Exception;
     // 배너 등록
-    boolean insert(Banner banner) throws Exception;
+    boolean bannerInsert(Banner banner) throws Exception;
     // 배너 수정
-    boolean update(Banner banner) throws Exception;
+    boolean bannerUpdate(Banner banner) throws Exception;
     // 배너 삭제
-    boolean delete(Integer no) throws Exception;
+    boolean bannerDelete(Integer no) throws Exception;
 }
