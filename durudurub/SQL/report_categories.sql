@@ -1,0 +1,17 @@
+-- 18. report_categories (신고 카테고리)
+
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS `report_categories`;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE `report_categories` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `name` VARCHAR(50) NOT NULL COMMENT '신고 카테고리',
+    `description` VARCHAR(200) NULL COMMENT '카테고리 설명',
+    `seq` INT DEFAULT 0 COMMENT '정렬순서',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`no`)
+);
