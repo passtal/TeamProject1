@@ -1,3 +1,4 @@
+// 테스트 전, 페이지마다 콘솔 넣고 오류 찾기
 // mypage - index
 
 // 회원 정보 조회
@@ -99,8 +100,6 @@ function userDelete() {
             // status : AJAX 요청 상태를 문자열로 나타낸 것
             if (xhr.status === 404) {
                 alert("잘못된 요청입니다");
-            } else if (xhr.status === 403) {
-                alert("관리자 권한이 없습니다");
             } else {
                 alert("서버 내부 오류입니다.")
             }
@@ -108,6 +107,123 @@ function userDelete() {
     })
     closeModal(); // 모달 닫기
 }
+// -----------------------------------------------------------------
+// 내모임 관리
+
+// 상위 카테고리 (참여중 / 리더 / 신청 중) - type 이용해봄
+function myclubList(type) {
+    $.ajax({
+        url: `http://127.0.0.1:8080/user/mypage/club/list`,
+        method: 'GET',
+        data: { type: type}, // 버튼 : myclubList('APPROVED') / myclubList('HOST') / myclubList('PENDING')
+        dataType: 'html', // HTML(fragment) 문자열
+        success: function (html) {
+            // 리스트 영역 교체
+            // #myclubList : 해당 영역 안에 서버에서 받아온 HTML 통째로 넣기
+            // 버튼마다 변경되는 리스트 fragment 필요! (HTML 구현)
+            $("#myclubList").html(html);
+        },
+        error: function (xhr, status, error) {
+            // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+            // status : AJAX 요청 상태를 문자열로 나타낸 것
+            if (xhr.status === 404) {
+                alert("잘못된 요청입니다");
+            } else {
+                alert("서버 내부 오류입니다.")
+            }
+        }
+    })
+}
+
+// 상위 카테고리 (개수) - countApproved / countHost / countPending
+function countList(type, diff) {
+    // 타입에 따라 바뀌는 객체 매핑
+    const map = {
+        APPROVED: "#countApproved",
+        PENDING: "#countPending",
+        HOST: "#countHost"
+    }
+    // 선택된 타입을 제이쿼리 객체로 담기
+    let changeType = $(map[type])
+    // 숫자로 반환
+    let count = Number(changeType.text())
+    // 반환된 숫자와 받은 파라미터 계산 (0 최소)
+    changeType.text(Math.max(0, count + diff))
+}
+
+// 모임 탈퇴 - 모달 열기 (회원탈퇴 버튼)
+function clubOpenModel() {
+    $("#leave-model").show()
+    // $("#leave-model").css("display", "flex")
+}
+// 모임 탈퇴 - 모달 닫기 
+function clubCloseModel() {
+    $("#leave-model").hide()
+}
+
+// // 탈퇴하기 버튼
+// $(document).on("click", ".btn-leave", function () {
+//     // this 필요!
+//     const $btn = $(this);
+//     const clubNo = $btn.data("clubno");
+
+//     $.ajax({
+//         url: `http://127.0.0.1:8080/api/user/mypage/club/${clubNo}`,
+//         method: 'DELETE',
+//         success: function (result, status, xhr) {
+//             alert("탈퇴가 완료되었습니다")
+//             // 가입된 모임리스트 수 감소
+//             countList("APPROVED", -1)
+//             // 탈퇴한 모임리스트 카드 삭제
+//             btn.closest(".club-card").remove();
+//             // 탈퇴 후 /user/mypage/club 으로 이동
+//             window.location.href = "/user/mypage/club"; 
+//         }, 
+//         error: function (xhr, status, error) {
+//             // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+//             // status : AJAX 요청 상태를 문자열로 나타낸 것
+//             if (xhr.status === 404) {
+//                 alert("잘못된 요청입니다");
+//             } else {
+//                 alert("서버 내부 오류입니다.")
+//             }
+//         }
+//     })
+//     clubCloseModel(); // 모달 닫기
+// })
+
+// // 신청취소 버튼
+// $(document).on("click", ".btn-joincancel", function () {
+
+//     const $btn = $(this);
+//     const clubNo = $btn.data("clubno");
+
+//     $.ajax({
+//         url: `http://127.0.0.1:8080/api/user/mypage/club/${clubNo}`,
+//         method: 'DELETE',
+//         success: function (result, status, xhr) {
+//             alert("모임 가입 신청이 취소되었습니다")
+//             // 신청한 모임리스트 수 감소
+//             countList("PENDING", -1)
+//             // 신청한 모임리스트 카드 삭제
+//             $(this).closest(".club-card").remove();
+//             // 탈퇴 후 /user/mypage/club 으로 이동
+//             window.location.href = "/user/mypage/club"; 
+//         }, 
+//         error: function (xhr, status, error) {
+//             // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+//             // status : AJAX 요청 상태를 문자열로 나타낸 것
+//             if (xhr.status === 404) {
+//                 alert("잘못된 요청입니다");
+//             } else {
+//                 alert("서버 내부 오류입니다.")
+//             }
+//         }
+//     })
+//     clubOpenModel(); // 모달 닫기
+// })
+
+
     
 
 

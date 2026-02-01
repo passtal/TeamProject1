@@ -1,5 +1,6 @@
 // URL 수정 필수!
 // 배너 클릭 시 조회 수 증가
+// 테스트 전, 페이지마다 콘솔 넣고 오류 찾기
 
 let no = document.getElementById("no").value // 전역 변수
 

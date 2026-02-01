@@ -102,4 +102,21 @@
         SELECT COUNT(*) FROM club_members WHERE club_no = #{clubNo} AND user_no = #{userNo}
     </select>
 
+    <!-- 마이페이지 : 내모임 관리 -->
+    <!-- 참여 중인 모임 -->
+    <select id="joinedClubList" resultType="Club">
+        SELECT c.*
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        WHERE m.user_no = #{userNo} AND m.status = 'APPROVED'
+            ORDER BY m.joined_at DESC
+    </select>
+    <!-- 신청 중인 모임 -->
+    <select id="pendingClubList" resultType="Club">
+        SELECT c.*
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        WHERE m.user_no = #{userNo} AND m.status = 'PENDING'
+            ORDER BY m.joined_at DESC
+    </select>
 </mapper>
