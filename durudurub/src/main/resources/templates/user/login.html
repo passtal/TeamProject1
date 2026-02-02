@@ -33,12 +33,12 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="email" class="form-label">이메일</label>
+                    <label for="userId" class="form-label">이메일(아이디)</label>
                     <input type="email" 
                            class="form-control" 
-                           id="email" 
-                           name="email" 
-                           placeholder="이메일을 입력하세요" 
+                           id="userId" 
+                           name="userId" 
+                           placeholder="이메일(아이디)을 입력하세요" 
                            required>
                 </div>
 
@@ -66,9 +66,9 @@
                     <div class="checkbox-group">
                         <input type="checkbox" 
                                class="checkbox-input" 
-                               id="rememberEmail" 
-                               name="rememberEmail">
-                        <label for="rememberEmail" class="checkbox-label">이메일 저장</label>
+                               id="rememberUserId" 
+                               name="rememberUserId">
+                        <label for="rememberUserId" class="checkbox-label">이메일(아이디) 저장</label>
                     </div>
                     <button type="button" 
                             class="btn-find-password" 
@@ -91,37 +91,72 @@
         </div>
     </div>
 
-    <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleBtn = document.querySelector('.btn-password-toggle');
-            
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        passwordInput.type = (passwordInput.type === 'password') ? 'text' : 'password';
+    }
+
+    // ===== 쿠키 유틸 =====
+    function setCookie(name, value, days) {
+        const maxAge = days * 24 * 60 * 60; // seconds
+        document.cookie =
+            encodeURIComponent(name) + "=" + encodeURIComponent(value) +
+            "; Max-Age=" + maxAge +
+            "; Path=/" +
+            "; SameSite=Lax";
+        // 배포가 HTTPS면 Secure 권장:
+        // + "; Secure"
+    }
+
+    function getCookie(name) {
+        const cookies = document.cookie ? document.cookie.split("; ") : [];
+        for (const c of cookies) {
+            const idx = c.indexOf("=");
+            const k = decodeURIComponent(c.substring(0, idx));
+            const v = decodeURIComponent(c.substring(idx + 1));
+            if (k === name) return v;
+        }
+        return "";
+    }
+
+    function deleteCookie(name) {
+        document.cookie =
+            encodeURIComponent(name) + "=; Max-Age=0; Path=/; SameSite=Lax";
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const userIdInput = document.getElementById('userId');
+        const rememberCheckbox = document.getElementById('rememberUserId');
+        const form = document.querySelector('.login-form');
+
+        const COOKIE_NAME = "savedUserId";
+
+        // ✅ 1) 페이지 로딩 시 쿠키 읽어서 userId 채우기
+        const savedUserId = getCookie(COOKIE_NAME);
+        if (savedUserId) {
+            userIdInput.value = savedUserId;
+            rememberCheckbox.checked = true;
         }
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const emailInput = document.getElementById('email');
-            const rememberCheckbox = document.getElementById('rememberEmail');
-            
-            const savedEmail = localStorage.getItem('savedEmail');
-            if (savedEmail) {
-                emailInput.value = savedEmail;
-                rememberCheckbox.checked = true;
+        // ✅ 2) 제출 시 체크박스에 따라 저장/삭제
+        form.addEventListener('submit', function() {
+            const userId = userIdInput.value.trim();
+
+            if (rememberCheckbox.checked && userId) {
+                setCookie(COOKIE_NAME, userId, 30); // 30일 저장
+            } else {
+                deleteCookie(COOKIE_NAME);
             }
-            
-            const form = document.querySelector('.login-form');
-            form.addEventListener('submit', function() {
-                if (rememberCheckbox.checked) {
-                    localStorage.setItem('savedEmail', emailInput.value);
-                } else {
-                    localStorage.removeItem('savedEmail');
-                }
-            });
         });
-    </script>
+
+        // (선택) 체크 해제 즉시 쿠키 삭제
+        rememberCheckbox.addEventListener('change', function() {
+            if (!rememberCheckbox.checked) deleteCookie(COOKIE_NAME);
+        });
+    });
+</script>
+
+
 </body>
 </html>
