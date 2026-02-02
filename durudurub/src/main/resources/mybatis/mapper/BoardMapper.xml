@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.aloha.sample.dao.BoardMapper">
+<mapper namespace="com.aloha.durudurub.dao.BoardMapper">
 
-    <resultMap id="boardResultMap" type="com.aloha.sample.dto.Board">
+    <resultMap id="boardResultMap" type="com.aloha.durudurub.dto.Board">
         <id property="no" column="no"/>
         <result property="clubNo" column="club_no"/>
         <result property="writerNo" column="writer_no"/>
@@ -16,7 +16,7 @@
         <result property="isNotice" column="is_notice"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <association property="writer" javaType="com.aloha.sample.dto.User">
+        <association property="writer" javaType="com.aloha.durudurub.dto.User">
             <id property="no" column="writer_user_no"/>
             <result property="username" column="writer_username"/>
             <result property="profileImg" column="writer_profile_img"/>
@@ -74,13 +74,13 @@
     </select>
 
     <!-- 게시글 등록 -->
-    <insert id="insert" parameterType="com.aloha.sample.dto.Board" useGeneratedKeys="true" keyProperty="no">
+    <insert id="insert" parameterType="com.aloha.durudurub.dto.Board" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO club_boards (club_no, writer_no, title, content, is_notice)
         VALUES (#{clubNo}, #{writerNo}, #{title}, #{content}, COALESCE(#{isNotice}, 'N'))
     </insert>
 
     <!-- 게시글 수정 -->
-    <update id="update" parameterType="com.aloha.sample.dto.Board">
+    <update id="update" parameterType="com.aloha.durudurub.dto.Board">
         UPDATE club_boards
         SET title = #{title}, content = #{content}, is_notice = #{isNotice}
         WHERE no = #{no}
@@ -119,7 +119,7 @@
     <!-- ===== 게시글 이미지 ===== -->
 
     <!-- 이미지 목록 조회 -->
-    <select id="listImageByBoard" resultType="com.aloha.sample.dto.BoardImage">
+    <select id="listImageByBoard" resultType="com.aloha.durudurub.dto.BoardImage">
         SELECT no, board_no AS boardNo, image_url AS imageUrl, seq
         FROM club_board_images
         WHERE board_no = #{boardNo}
@@ -127,7 +127,7 @@
     </select>
 
     <!-- 이미지 등록 -->
-    <insert id="insertImage" parameterType="com.aloha.sample.dto.BoardImage" useGeneratedKeys="true" keyProperty="no">
+    <insert id="insertImage" parameterType="com.aloha.durudurub.dto.BoardImage" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO club_board_images (board_no, image_url, seq)
         VALUES (#{boardNo}, #{imageUrl}, #{seq})
     </insert>

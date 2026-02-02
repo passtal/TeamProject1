@@ -85,7 +85,7 @@ public class UserApiController {
     @PostMapping("/join")
     public ResponseEntity<?> join(@RequestBody User user) {
         try {
-            int userNo = userService.signup(user); // 성공 시 userNo 리턴하도록 구현되어 있어야 함
+            int userNo = userService.insert(user); // 성공 시 userNo 리턴하도록 구현되어 있어야 함
 
             if (userNo <= 0) {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);

@@ -25,7 +25,7 @@
     </select>
 
     <!-- 회원별 좋아요 모임 목록 -->
-    <select id="listClubLikeByUser" resultType="com.aloha.sample.dto.ClubLike">
+    <select id="listClubLikeByUser" resultType="com.aloha.durudurub.dto.ClubLike">
         SELECT no, club_no AS clubNo, user_no AS userNo, created_at AS createdAt
         FROM club_likes
         WHERE user_no = #{userNo}
@@ -33,7 +33,7 @@
     </select>
 
     <!-- 게시글 좋아요 등록 -->
-    <insert id="insertBoardLike" parameterType="com.aloha.sample.dto.BoardLike">
+    <insert id="insertBoardLike" parameterType="com.aloha.durudurub.dto.BoardLike">
         INSERT INTO club_board_likes (board_no, user_no) VALUES (#{boardNo}, #{userNo})
     </insert>
 
@@ -53,7 +53,7 @@
     </select>
 
     <!-- 댓글 좋아요 등록 -->
-    <insert id="insertCommentLike" parameterType="com.aloha.sample.dto.CommentLike">
+    <insert id="insertCommentLike" parameterType="com.aloha.durudurub.dto.CommentLike">
         INSERT INTO club_comment_likes (comment_no, user_no) VALUES (#{commentNo}, #{userNo})
     </insert>
 
