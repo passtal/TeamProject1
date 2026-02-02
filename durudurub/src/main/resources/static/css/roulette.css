@@ -1,0 +1,361 @@
+/* Roulette Game Styles */
+
+.roulette-container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(145.99deg, rgba(0, 166, 81, 0.1) 0%, rgba(0, 166, 81, 0.05) 100%), #ffffff;
+    padding: 48px 16px 80px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Back Button */
+.back-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 56px;
+    align-self: flex-start;
+    max-width: 864px;
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.back-button svg {
+    flex-shrink: 0;
+}
+
+.back-button a {
+    font-size: 16px;
+    color: #364153;
+    text-decoration: none;
+}
+
+.back-button a:hover {
+    text-decoration: underline;
+}
+
+/* Main Container */
+.main-container {
+    width: 100%;
+    max-width: 864px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Wheel Section */
+.wheel-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.wheel-section h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #101828;
+    text-align: center;
+    margin: 0;
+}
+
+.wheel-container {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    margin: 0 auto;
+}
+
+#rouletteCanvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.wheel-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 30px solid #00a651;
+    z-index: 10;
+}
+
+.spin-button {
+    background: #00a651;
+    border: none;
+    border-radius: 9999px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    height: 60px;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 0 auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.spin-button:hover {
+    background: #008a43;
+    transform: translateY(-2px);
+    box-shadow: 0px 12px 20px 0px rgba(0, 0, 0, 0.15), 0px 6px 8px 0px rgba(0, 0, 0, 0.12);
+}
+
+.spin-button:active {
+    transform: translateY(0);
+}
+
+.spin-button:disabled {
+    background: #d1d5dc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.spin-button svg {
+    flex-shrink: 0;
+}
+
+/* Settings Section */
+.settings-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.settings-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings-header h3 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #101828;
+    margin: 0;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+}
+
+.add-button,
+.reset-button {
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.add-button {
+    background: #00a651;
+    color: white;
+}
+
+.add-button:hover {
+    background: #008a43;
+}
+
+.reset-button {
+    background: #6a7282;
+    color: white;
+}
+
+.reset-button:hover {
+    background: #545b6a;
+}
+
+.add-button svg,
+.reset-button svg {
+    flex-shrink: 0;
+}
+
+/* Items Grid */
+.items-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.item-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.item-color {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.item-input {
+    flex: 1;
+    height: 42px;
+    border: 1px solid #d1d5dc;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #0a0a0a;
+}
+
+.item-input::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+.item-input:focus {
+    outline: none;
+    border-color: #00a651;
+}
+
+.delete-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    padding: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-button:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.delete-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Instructions Section */
+.instructions-section {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.instructions-section h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #101828;
+    margin: 0;
+}
+
+.instructions-section ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.instructions-section li {
+    font-size: 16px;
+    color: #364153;
+    padding-left: 20px;
+    position: relative;
+}
+
+.instructions-section li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: #00a651;
+    font-weight: bold;
+}
+
+/* Result Box */
+.result-box {
+    background: linear-gradient(90deg, #fdc700 0%, #ff8904 100%);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: center;
+    opacity: 0.96;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 0.96;
+        transform: translateY(0);
+    }
+}
+
+.result-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: white;
+    margin: 0 0 8px 0;
+    line-height: 36px;
+}
+
+.result-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    line-height: 32px;
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+    .roulette-container {
+        padding: 32px 16px;
+    }
+
+    .wheel-container {
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (max-width: 500px) {
+    .items-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .wheel-container {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1;
+    }
+}
