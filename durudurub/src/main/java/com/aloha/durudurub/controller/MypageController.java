@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+// @RequestMapping("/user/mypage")
 @RequestMapping("/user/mypage/club")
 @RequiredArgsConstructor
 public class MypageController {
@@ -30,8 +31,29 @@ public class MypageController {
     private final UserService userService;
     private final ClubService clubService;
     
-    // club index (기본) - 동기, 페이지 이동
+    /* 
+    마이페이지 메인
     @GetMapping()
+    public String mypagePage(Model model, Principal principal) throws Exception {
+        if (principal != null) {
+            model.addAttribute("user", userService.selectByUserId(principal.getName()));
+        }
+        return "admin/mypage";
+    }
+    
+    // 내 모임 관리 페이지
+    @GetMapping("/clubs")
+    public String clubManagementPage(Model model, Principal principal) throws Exception {
+        if (principal != null) {
+            model.addAttribute("user", userService.selectByUserId(principal.getName()));
+        }
+        return "admin/club-management";
+    }
+    */
+    
+   // club index (기본) - 동기, 페이지 이동
+   // @GetMapping("/club")
+    @GetMapping("")
     public String clubPage(
         @RequestParam(defaultValue = "APPROVED") String type,
         Model model
@@ -41,6 +63,7 @@ public class MypageController {
     }
 
     // 리스트 조회 (타입별 조회) - 비동기, 내부 페이지만 변경
+    // @GetMapping("/club/list")
     @GetMapping("/list")
     public String clubListFragment(
         @RequestParam(defaultValue = "APPROVED") String type,

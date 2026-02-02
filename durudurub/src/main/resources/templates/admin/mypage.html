@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <title>마이페이지 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body layout:fragment="content">
+
+<div class="mypage-container">
+    <!-- 왼쪽 컬럼 -->
+    <div class="left-column">
+        <!-- 멤버십 정보 카드 -->
+        <div class="membership-card">
+            <div class="membership-decorations">
+                <div class="decoration-circle circle-1"></div>
+                <div class="decoration-circle circle-2"></div>
+            </div>
+            <div class="membership-content">
+                <div class="membership-header">
+                    <h3 class="section-title">멤버십 정보</h3>
+                    <span class="material-symbols-outlined membership-icon">stars</span>
+                </div>
+                <div class="membership-body">
+                    <div class="membership-badge">
+                        <span class="badge-free">FREE</span>
+                    </div>
+                    <p class="membership-description">무료 플랜을 이용하고 계십니다</p>
+                    <div class="membership-features">
+                        <div class="feature-item">
+                            <span class="feature-dot"></span>
+                            <span class="feature-text">AI 검색 3회 제한</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-dot"></span>
+                            <span class="feature-text">광고 노출</span>
+                        </div>
+                    </div>
+                    <button class="btn-premium">프리미엄 구독하기</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 기본 정보 카드 -->
+        <div class="info-card">
+            <div class="card-header">
+                <h2 class="card-title">기본 정보</h2>
+                <button class="btn-edit-icon">
+                    <span class="material-symbols-outlined">edit</span>
+                    <span>수정</span>
+                </button>
+            </div>
+            <div class="info-content">
+                <!-- 프로필 이미지 -->
+                <div class="profile-section">
+                    <div class="profile-avatar">
+                        <img th:src="${user?.profileImage != null ? user.profileImage : '/img/default-profile.png'}" 
+                             src="/img/default-profile.png"
+                             alt="프로필 이미지" 
+                             class="profile-image">
+                    </div>
+                </div>
+
+                <!-- 정보 필드들 -->
+                <div class="info-fields">
+                    <!-- 닉네임 -->
+                    <div class="info-field">
+                        <label class="field-label">
+                            <span class="material-symbols-outlined">person</span>
+                            <span>닉네임</span>
+                        </label>
+                        <div class="field-value">
+                            <span th:text="${user?.username ?: 'test'}">test</span>
+                        </div>
+                    </div>
+
+                    <!-- 이메일 -->
+                    <div class="info-field">
+                        <label class="field-label">
+                            <span class="material-symbols-outlined">mail</span>
+                            <span>이메일</span>
+                        </label>
+                        <div class="field-value">
+                            <span th:text="${user?.email ?: 'test'}">test</span>
+                        </div>
+                    </div>
+
+                    <!-- 활동 지역 -->
+                    <div class="info-field">
+                        <label class="field-label">
+                            <span class="material-symbols-outlined">location_on</span>
+                            <span>활동 지역</span>
+                        </label>
+                        <div class="field-value field-value-placeholder">
+                            <span th:text="${user?.location ?: '미입력'}">미입력</span>
+                        </div>
+                    </div>
+
+                    <!-- 나이 & 성별 -->
+                    <div class="info-field-row">
+                        <div class="info-field info-field-half">
+                            <label class="field-label">
+                                <span class="material-symbols-outlined">person</span>
+                                <span>나이</span>
+                            </label>
+                            <div class="field-value field-value-placeholder">
+                                <span th:text="${user?.age ?: '미입력'}">미입력</span>
+                            </div>
+                        </div>
+                        <div class="info-field info-field-half">
+                            <label class="field-label">
+                                <span class="material-symbols-outlined">person</span>
+                                <span>성별</span>
+                            </label>
+                            <div class="field-value">
+                                <span th:text="${user?.gender ?: '여성'}">여성</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 가입일 -->
+                    <div class="info-field">
+                        <label class="field-label">
+                            <span class="material-symbols-outlined">calendar_today</span>
+                            <span>가입일</span>
+                        </label>
+                        <div class="field-value">
+                            <span th:text="${#temporals.format(user?.regDate ?: #temporals.createNow(), 'yyyy년 MM월 dd일')}">2025년 1월 20일</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 활동 통계 카드 -->
+        <div class="stats-card">
+            <h2 class="card-title">활동 통계</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <p class="stat-label">참여 중인 모임</p>
+                            <p class="stat-value">3개</p>
+                        </div>
+                        <span class="material-symbols-outlined stat-icon">groups</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-content">
+                        <div class="stat-info">
+                            <p class="stat-label">즐겨찾기</p>
+                            <p class="stat-value">5개</p>
+                        </div>
+                        <span class="material-symbols-outlined stat-icon">favorite</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 오른쪽 컬럼 -->
+    <div class="right-column">
+        <!-- 빠른 메뉴 카드 -->
+        <div class="quick-menu-card">
+            <h3 class="section-title">빠른 메뉴</h3>
+            <div class="menu-list">
+                <a href="/user/mypage/clubs" class="menu-item">내 모임 관리</a>
+                <a href="/mypage/favorites" class="menu-item">즐겨찾기 목록</a>
+            </div>
+        </div>
+
+        <!-- 계정 관리 카드 -->
+        <div class="account-card">
+            <h3 class="section-title">계정 관리</h3>
+            <button id="deleteAccountBtn" class="menu-item menu-item-danger">회원 탈퇴</button>
+        </div>
+    </div>
+</div>
+
+<!-- 회원 탈퇴 모달 -->
+<div id="deleteAccountModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="icon-wrapper">
+                <span class="material-symbols-outlined error-icon">warning</span>
+            </div>
+        </div>
+        <h2 class="modal-title">회원 탈퇴</h2>
+        <p class="modal-text">회원 탈퇴하면 되돌릴 수 없습니다.</p>
+        <p class="modal-text">정말 탈퇴하시겠습니까?</p>
+        <div class="modal-actions">
+            <button id="cancelBtn" class="modal-btn modal-btn-cancel">취소</button>
+            <button id="confirmDeleteBtn" class="modal-btn modal-btn-delete">탈퇴하기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 모달 열기
+document.getElementById('deleteAccountBtn').addEventListener('click', function() {
+    document.getElementById('deleteAccountModal').style.display = 'flex';
+});
+
+// 모달 닫기 (취소 버튼)
+document.getElementById('cancelBtn').addEventListener('click', function() {
+    document.getElementById('deleteAccountModal').style.display = 'none';
+});
+
+// 모달 외부 클릭시 닫기
+document.getElementById('deleteAccountModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 탈퇴 확인 버튼 클릭
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    // TODO: 실제 회원 탈퇴 처리
+    window.location.href = '/user/delete';
+});
+</script>
+
+</body>
+</html>
