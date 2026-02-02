@@ -1,0 +1,258 @@
+/* 두루두룹 메인 페이지 스타일 */
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: #f0f9f4;
+    padding: 148px 0 100px 0;
+}
+
+.hero-container {
+    max-width: 1216px;
+    margin: 0 auto;
+    padding: 0 223px;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-text {
+    max-width: 584px;
+}
+
+.hero-title {
+    font-size: 60px;
+    font-weight: bold;
+    line-height: 75px;
+    color: #101828;
+    margin-bottom: 24px;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    line-height: 32.5px;
+    color: #4a5565;
+    margin-bottom: 32px;
+}
+
+.hero-btn {
+    background-color: #00a651;
+    color: white;
+    padding: 16px 30px;
+    border-radius: 999px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0px 10px 15px 0px rgba(0,0,0,0.1), 0px 4px 6px 0px rgba(0,0,0,0.1);
+}
+
+.hero-btn:hover {
+    background-color: #008a43;
+    color: white;
+}
+
+.hero-image-wrapper {
+    position: relative;
+    width: 584px;
+    height: 500px;
+    margin-left: 48px;
+}
+
+.hero-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.hero-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 166, 81, 0.2), transparent);
+    border-radius: 24px;
+    pointer-events: none;
+}
+
+/* Ad Banner */
+.ad-section {
+    padding: 24px 0 48px 0;
+    max-width: 1216px;
+    margin: 0 auto;
+    padding-left: 223px;
+    padding-right: 223px;
+}
+
+.ad-sponsored {
+    font-size: 12px;
+    color: #6a7282;
+    margin-bottom: 8px;
+}
+
+.ad-banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -4px rgba(0,0,0,0.1);
+}
+
+.ad-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+}
+
+.ad-banner-content {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    color: white;
+    z-index: 10;
+}
+
+.ad-banner-brand {
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 8px;
+}
+
+.ad-banner-title {
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 45px;
+    margin-bottom: 8px;
+}
+
+.ad-banner-subtitle {
+    font-size: 18px;
+    line-height: 28px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 16px;
+}
+
+.ad-banner-btn {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: none;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ad-banner-dots {
+    position: absolute;
+    bottom: 16px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.ad-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.5);
+}
+
+.ad-dot.active {
+    width: 24px;
+    border-radius: 999px;
+    background-color: white;
+}
+
+/* Category Section */
+.category-section {
+    padding: 128px 0 80px 0;
+    max-width: 1216px;
+    margin: 0 auto;
+    padding-left: 223px;
+    padding-right: 223px;
+}
+
+.category-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.category-title {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 36px;
+    color: #101828;
+    margin-bottom: 12px;
+}
+
+.category-subtitle {
+    font-size: 16px;
+    line-height: 24px;
+    color: #4a5565;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    max-width: 896px;
+    margin: 0 auto;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+}
+
+.category-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.category-icon img {
+    width: 36px;
+    height: 36px;
+}
+
+.category-name {
+    font-size: 14px;
+    line-height: 20px;
+    color: #364153;
+}
