@@ -5,13 +5,13 @@
 <mapper namespace="com.aloha.durudurub.dao.BannerMapper">
     <!-- TODO: 구현 -->
     <!-- 배너 목록 -->
-    <select id="bannerList" resultType="Banner">
+    <select id="bannerList" resultType="com.aloha.durudurub.dto.Banner">
         SELECT *
         FROM banners
         ORDER BY created_at DESC
     </select>
     <!-- 배너 조회 -->
-    <select id="bannerSelect" resultType="Banner">
+    <select id="bannerSelect" resultType="com.aloha.durudurub.dto.Banner">
         SELECT *
         FROM banners
         WHERE no = #{no}

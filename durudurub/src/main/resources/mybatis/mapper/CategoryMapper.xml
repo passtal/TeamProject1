@@ -5,7 +5,7 @@
 <mapper namespace="com.aloha.durudurub.dao.CategoryMapper">
     
     <!-- resultmap -->
-     <resultMap id="categoryResultMap" type="com.aloha.durudurub.dto.category">
+     <resultMap id="categoryResultMap" type="com.aloha.durudurub.dto.Category">
         <id property="no" column="no"/>
         <result property="name" column="name"/>
         <result property="description" column="description"/>
@@ -13,7 +13,7 @@
         <result property="seq" column="seq"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
-        <collection property="subCategoryList" ofType="com.aloha.durudurub.dto.subCategory">
+        <collection property="subCategoryList" ofType="com.aloha.durudurub.dto.SubCategory">
             <id property="no" column="sub_no"/>
             <result property="categoryNo" column="sub_category_no"/>
             <result property="name" column="sub_name"/>
