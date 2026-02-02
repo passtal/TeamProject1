@@ -1,0 +1,313 @@
+/* User Login Page Styles */
+
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Allow selection for input fields */
+input,
+textarea {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+/* Login Page Layout */
+.login-page {
+    background: #FBF7F0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+}
+
+/* Main Container */
+.login-container {
+    width: 100%;
+    max-width: 448px;
+    position: relative;
+}
+
+/* Login Card */
+.login-card {
+    background: #FFFFFF;
+    border-radius: 24px;
+    padding: 32px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 
+                0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Close Button */
+.btn-close-login {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.btn-close-login:hover {
+    opacity: 0.7;
+}
+
+.btn-close-login svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Header Section */
+.login-header {
+    margin-bottom: 32px;
+}
+
+.login-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.2em;
+    text-align: center;
+    color: #00A651;
+    margin-bottom: 8px;
+}
+
+.login-subtitle {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    text-align: center;
+    color: #4A5565;
+    margin: 0;
+}
+
+/* Form Section */
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form Group */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Label */
+.form-label {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.428em;
+    color: #364153;
+}
+
+/* Input Fields */
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.15em;
+    color: #000000;
+    background: #FFFFFF;
+    border: 1px solid #D1D5DC;
+    border-radius: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.form-control::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #00A651;
+}
+
+/* Password Input Wrapper */
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .form-control {
+    padding-right: 48px;
+}
+
+.btn-password-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-password-toggle svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Options Row */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-input {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkbox-label {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.428em;
+    color: #364153;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Find Password Button */
+.btn-find-password {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.428em;
+    text-align: center;
+    color: #4A5565;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.btn-find-password:hover {
+    color: #00A651;
+    text-decoration: underline;
+}
+
+/* Login Button */
+.btn-login {
+    width: 100%;
+    padding: 14px 32px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    text-align: center;
+    color: #FFFFFF;
+    background: #00A651;
+    border: none;
+    border-radius: 33554400px; /* Very large value for fully rounded */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login:hover {
+    background: #008F45;
+}
+
+.btn-login:active {
+    background: #007A3A;
+}
+
+/* Signup Prompt */
+.signup-prompt {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.signup-prompt-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.428em;
+    color: #4A5565;
+}
+
+.btn-signup {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    color: #00A651;
+    background: transparent;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.btn-signup:hover {
+    color: #008F45;
+    text-decoration: underline;
+}
+
+/* Error Message */
+.error-message {
+    width: 100%;
+    padding: 12px 17px;
+    background: #FEF2F2;
+    border: 1px solid #FFC9C9;
+    border-radius: 14px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.428em;
+    color: #C10007;
+    margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 24px;
+    }
+
+    .login-title {
+        font-size: 24px;
+    }
+
+    .login-subtitle {
+        font-size: 14px;
+    }
+}
