@@ -21,6 +21,10 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+.container-fluid {
+    height: 70px;
+}
+
 .navbar-brand {
     font-weight: 700;
     font-size: 1.25rem;
@@ -38,7 +42,42 @@
 }
 
 .search-container .input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+
     min-width: 350px;
+}
+
+.search-container button {
+    border: none;
+}
+
+.search-container .left-btn {
+    position: absolute;
+    background: none;
+    z-index: 10;
+    left: 0;
+}
+
+.search-container .left-btn:hover {
+    background-color: transparent;
+    color: #6c757d;
+    border: none;
+}
+
+
+.search-container .right-btn {
+    position: absolute;
+    background: none;
+    z-index: 10;
+    right: 0;
+}
+
+.search-container .right-btn:hover {
+    background-color: transparent;
+    color: #6c757d;
+    border: none;
 }
 
 .search-container .form-control {
