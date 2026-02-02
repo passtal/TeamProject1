@@ -5,13 +5,11 @@
       >
 <!-- ⭐ layout:decorate="~{/레이아웃 경로/레이아웃 파일명}" -->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>메인 화면</title>
 </head>
 <!-- ⭐ layout:fragment="레이아웃 프레그먼트 이름" -->
 <body layout:fragment="content">
-
+    <h1 style="background:red; color:white;">I AM INDEX</h1>
     <!-- Main Content Wrapper -->
     <main>
         <!-- Hero Section -->
@@ -54,7 +52,7 @@
                     <div class="row h-100 g-0">
                         <!-- Ad Image -->
                         <div class="col-lg-6">
-                            <img th:src="@{/img/ad-banner.png}" alt="Coffee House" class="img-fluid h-100" style="object-fit: cover;">
+                            <img th:src="@{/img/banner/ad-banner.png}" alt="Coffee House" class="img-fluid h-100" style="object-fit: cover;">
                         </div>
 
                         <!-- Ad Content -->
@@ -176,6 +174,6 @@
             </div>
         </section>
     </main>
-
+<th:block th:replace="~{fragments/footer :: footer}"></th:block>
 </body>
 </html>
