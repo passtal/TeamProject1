@@ -41,7 +41,7 @@ public class UserApiController {
                 return new ResponseEntity<>(Map.of("ok", false, "message", "이메일을 입력하세요."), HttpStatus.BAD_REQUEST);
             }
 
-            boolean duplicated = userService.existsUserId(userId);
+            boolean duplicated = userService.existsByUserId(userId);
             if (duplicated) {
                 return new ResponseEntity<>(Map.of("ok", false, "message", "이미 사용 중인 이메일입니다."), HttpStatus.OK);
             }
@@ -64,7 +64,7 @@ public class UserApiController {
                 return new ResponseEntity<>(Map.of("ok", false, "message", "닉네임을 입력하세요."), HttpStatus.BAD_REQUEST);
             }
 
-            boolean duplicated = userService.existsUsername(username);
+            boolean duplicated = userService.existsByUsername(username);
             if (duplicated) {
                 return new ResponseEntity<>(Map.of("ok", false, "message", "이미 사용 중인 닉네임입니다."), HttpStatus.OK);
             }
