@@ -1,5 +1,170 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 모임 목록 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+
+      <!-- 임시 css -->
+       <link rel="stylesheet" href="../../static/css/list.css">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>모임 둘러보기 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/clubList.css}">
+</head>
+<body>
+    <main layout:fragment="content">
+        <!-- 모임 탐색 페이지 -->
+        <section class="explore-page">
+            <div class="explore-container">
+                <!-- 카테고리 필터 -->
+                <div class="category-filter">
+                    <!-- 전체 버튼 -->
+                    <button class="filter-btn active" data-category="all">
+                        <span class="emoji">🔍</span>
+                        <span>전체</span>
+                    </button>
+                    
+                    <button th:each="category : ${categories}" 
+                            class="filter-btn" 
+                            th:data-category="${category.name}">
+                        <span class="emoji" th:text="${category.icon != null ? category.icon : '📁'}">📚</span>
+                        <span th:text="${category.name}">카테고리</span>
+                    </button>
+                </div>
+                
+                <!-- 결과 카운트 -->
+                <p class="result-count">
+                    <span id="club-count" th:text="${#lists.size(clubs)}">0</span>개의 모임 (최신순)
+                </p>
+                
+                <!-- 모임 카드 그리드 -->
+                <div class="club-grid" id="club-grid">
+                    <a th:each="club : ${clubs}" 
+                       th:href="@{/club/detail/{no}(no=${club.no})}" 
+                       class="club-card" 
+                       th:data-category="${club.categoryName}">
+                        <div class="club-card-image">
+                            <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=192&fit=crop'}" 
+                                 th:alt="${club.title}"
+                                 onerror="this.src='https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=192&fit=crop'">
+                            <button class="like-btn" onclick="toggleLike(event, this)">
+                                <svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 17.5L8.825 16.45C4.4 12.525 1.5 10.025 1.5 7C1.5 4.5 3.5 2.5 6 2.5C7.36 2.5 8.67 3.09 9.5 4.04C10.33 3.09 11.64 2.5 13 2.5C15.5 2.5 17.5 4.5 17.5 7C17.5 10.025 14.6 12.525 10.175 16.45L10 17.5Z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="club-card-content">
+                            <div class="club-card-header">
+                                <span class="club-category" th:text="${club.categoryName}">카테고리</span>
+                                <div class="club-members">
+                                    <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 8C9.66 8 11 6.66 11 5C11 3.34 9.66 2 8 2C6.34 2 5 3.34 5 5C5 6.66 6.34 8 8 8ZM8 9.5C5.83 9.5 1.5 10.59 1.5 12.75V14H14.5V12.75C14.5 10.59 10.17 9.5 8 9.5Z"/>
+                                    </svg>
+                                    <span th:text="${club.currentMembers} + '/' + ${club.maxMembers}">0/0</span>
+                                </div>
+                            </div>
+                            <h3 class="club-title" th:text="${club.title}">모임 제목</h3>
+                            <p class="club-description" th:text="${club.description}">모임 설명</p>
+                            <div class="club-location">
+                                <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8 2C5.79 2 4 3.79 4 6C4 9 8 14 8 14C8 14 12 9 12 6C12 3.79 10.21 2 8 2ZM8 7.5C7.17 7.5 6.5 6.83 6.5 6C6.5 5.17 7.17 4.5 8 4.5C8.83 4.5 9.5 5.17 9.5 6C9.5 6.83 8.83 7.5 8 7.5Z"/>
+                                </svg>
+                                <span th:text="${club.location}">위치</span>
+                            </div>
+                            <div class="club-creator">
+                                <div class="creator-avatar" th:text="${#strings.substring(club.hostName, 0, 1)}">호</div>
+                                <span class="creator-name" th:text="${club.hostName}">호스트</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 필터링 결과 없을 때 -->
+                <div class="empty-state" id="empty-state" style="display: none;">
+                    <div class="empty-state-icon">🔍</div>
+                    <h3>해당 카테고리의 모임이 없습니다</h3>
+                    <p>다른 카테고리를 선택해보세요</p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <th:block layout:fragment="script">
+        <script th:inline="javascript">
+            document.addEventListener('DOMContentLoaded', function() {
+                console.log('Club list page loaded');
+                
+                // 카테고리 필터 기능
+                const filterButtons = document.querySelectorAll('.filter-btn');
+                console.log('Filter buttons found:', filterButtons.length);
+                
+                filterButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const category = this.getAttribute('data-category');
+                        console.log('Category clicked:', category);
+                        
+                        // 버튼 활성화 상태 변경
+                        filterButtons.forEach(btn => btn.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        filterClubs(category);
+                    });
+                });
+            });
+            
+            function filterClubs(category) {
+                const cards = document.querySelectorAll('.club-card');
+                let visibleCount = 0;
+                
+                console.log('Filtering by category:', category);
+                console.log('Total cards:', cards.length);
+                
+                if (category === 'all') {
+                    cards.forEach(card => {
+                        card.style.display = '';
+                        visibleCount++;
+                    });
+                } else {
+                    cards.forEach(card => {
+                        const cardCategory = card.getAttribute('data-category');
+                        console.log('Card category:', cardCategory, 'Match:', cardCategory === category);
+                        
+                        if (cardCategory === category) {
+                            card.style.display = '';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+                
+                document.getElementById('club-count').textContent = visibleCount;
+                console.log('Visible count:', visibleCount);
+                
+                // 빈 상태 표시
+                const emptyState = document.getElementById('empty-state');
+                const clubGrid = document.getElementById('club-grid');
+                
+                if (visibleCount === 0) {
+                    emptyState.style.display = 'block';
+                    clubGrid.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    clubGrid.style.display = '';
+                }
+            }
+            
+            // 좋아요 토글
+            function toggleLike(event, button) {
+                event.preventDefault();
+                event.stopPropagation();
+                button.classList.toggle('liked');
+                
+                // 좋아요 상태 전송
+                const clubId = button.closest('.club-card').getAttribute('href').split('/').pop();
+                console.log('좋아요 토글:', clubId);
+            }
+        </script>
+    </th:block>
+</body>
 </html>

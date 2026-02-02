@@ -1,5 +1,664 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 사다리 게임 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>사다리 게임 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/ladder.css}">
+</head>
+<body>
+    <main layout:fragment="content" class="ladder-page">
+        <!-- 뒤로가기 버튼 -->
+        <div class="back-button-container">
+            <a href="/game/list" class="back-button">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12.5 15L7.5 10L12.5 5" stroke="#364153" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>게임 선택으로 돌아가기</span>
+            </a>
+        </div>
+
+        <!-- 메인 컨테이너 -->
+        <div class="ladder-container">
+            <!-- 사다리 설정 -->
+            <div class="ladder-settings">
+                <h2>사다리 설정</h2>
+                
+                <div class="settings-content">
+                    <!-- 참가자 수 조절 -->
+                    <div class="setting-section">
+                        <label class="setting-label">참가자 수: <span id="participantCount">4</span>명</label>
+                        <div class="slider-container">
+                            <button class="slider-button" id="decreaseBtn">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 10H15" stroke="#364153" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                            <div class="slider-track">
+                                <div class="slider-fill" id="sliderFill"></div>
+                            </div>
+                            <button class="slider-button" id="increaseBtn">
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 5V15M5 10H15" stroke="#364153" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 참가자 이름 입력 -->
+                    <div class="setting-section">
+                        <label class="setting-label">참가자 이름</label>
+                        <div class="input-grid" id="participantInputs">
+                            <input type="text" class="text-input" placeholder="참가자1" value="참가자1">
+                            <input type="text" class="text-input" placeholder="참가자2" value="참가자2">
+                            <input type="text" class="text-input" placeholder="참가자3" value="참가자3">
+                            <input type="text" class="text-input" placeholder="참가자4" value="참가자4">
+                        </div>
+                    </div>
+
+                    <!-- 결과/상품 입력 -->
+                    <div class="setting-section">
+                        <label class="setting-label">결과/상품</label>
+                        <div class="input-grid" id="prizeInputs">
+                            <input type="text" class="text-input" placeholder="1등" value="1등">
+                            <input type="text" class="text-input" placeholder="2등" value="2등">
+                            <input type="text" class="text-input" placeholder="3등" value="3등">
+                            <input type="text" class="text-input" placeholder="4등" value="4등">
+                        </div>
+                    </div>
+
+                    <!-- 사다리 생성 버튼 -->
+                    <button class="generate-button" id="generateBtn">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.5 10.833C17.5 14.975 14.142 18.333 10 18.333C5.858 18.333 2.5 14.975 2.5 10.833C2.5 6.692 5.858 3.333 10 3.333C11.392 3.333 12.708 3.7 13.842 4.333M17.5 3.333L10 10.833L7.917 8.75" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        사다리 생성
+                    </button>
+                </div>
+            </div>
+
+            <!-- 사다리 타기 (숨김 처리) -->
+            <div class="ladder-game" id="ladderGame" style="display: none;">
+                <h2>사다리 타기</h2>
+                
+                <!-- 참가자 버튼들 -->
+                <div class="participant-buttons" id="participantButtons">
+                    <!-- JavaScript로 동적 생성 -->
+                </div>
+
+                <!-- 모든 결과 보기 버튼 -->
+                <button class="show-all-button" id="showAllBtn">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 5V15M5 10L10 15L15 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    모든 결과 보기
+                </button>
+
+                <!-- 사다리 캔버스 -->
+                <div class="ladder-canvas-wrapper">
+                    <canvas id="ladderCanvas" class="ladder-canvas hidden"></canvas>
+                    <div class="ladder-overlay" id="ladderOverlay">
+                        <div class="ladder-overlay-text">🎲 사다리가 준비되었습니다!</div>
+                        <div class="ladder-overlay-subtext">참가자 버튼을 클릭하여 결과를 확인하세요</div>
+                    </div>
+                </div>
+
+                <!-- 결과/상품 표시 -->
+                <div class="prize-display" id="prizeDisplay">
+                    <!-- JavaScript로 동적 생성 -->
+                </div>
+
+                <!-- 게임 결과 메시지 (숨김 처리) -->
+                <div class="result-message" id="resultMessage" style="display: none;">
+                    <div id="resultList"></div>
+                    <button class="retry-button" id="retryBtn" style="display: none;">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.5 10C17.5 14.142 14.142 17.5 10 17.5C5.858 17.5 2.5 14.142 2.5 10C2.5 5.858 5.858 2.5 10 2.5C11.683 2.5 13.25 3.025 14.542 3.917M17.5 2.5V6.667H13.333" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        다시하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- 게임 방법 -->
+            <div class="game-instructions">
+                <h3>게임 방법</h3>
+                <ul class="instruction-list">
+                    <li><span class="bullet">•</span><span>참가자 수를 선택하고 참가자 이름과 결과/상품을 입력하세요.</span></li>
+                    <li><span class="bullet">•</span><span>"사다리 생성" 버튼을 눌러 무작위 사다리를 생성합니다.</span></li>
+                    <li><span class="bullet">•</span><span>참가자 버튼을 클릭하여 사다리를 타고 결과를 확인하세요.</span></li>
+                    <li><span class="bullet">•</span><span>빨간 선이 경로를 표시하고 최종 결과를 알려줍니다.</span></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    
+    <script th:src="@{/js/ladder.js}"></script>
+    <script>
+
+// 사다리 게임 JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    const participantCountEl = document.getElementById('participantCount');
+    const decreaseBtn = document.getElementById('decreaseBtn');
+    const increaseBtn = document.getElementById('increaseBtn');
+    const sliderFill = document.getElementById('sliderFill');
+    const participantInputs = document.getElementById('participantInputs');
+    const prizeInputs = document.getElementById('prizeInputs');
+    const generateBtn = document.getElementById('generateBtn');
+
+    let participantCount = 4;
+    const minParticipants = 2;
+    const maxParticipants = 8;
+
+    // 슬라이더 업데이트
+    function updateSlider() {
+        const percentage = ((participantCount - minParticipants) / (maxParticipants - minParticipants)) * 100;
+        sliderFill.style.width = percentage + '%';
+        participantCountEl.textContent = participantCount;
+    }
+
+    // 입력 필드 업데이트
+    function updateInputs() {
+        // 참가자 입력 필드
+        participantInputs.innerHTML = '';
+        for (let i = 1; i <= participantCount; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'text-input';
+            input.placeholder = '참가자' + i;
+            input.value = '참가자' + i;
+            participantInputs.appendChild(input);
+        }
+
+        // 결과/상품 입력 필드
+        prizeInputs.innerHTML = '';
+        for (let i = 1; i <= participantCount; i++) {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'text-input';
+            input.placeholder = i + '등';
+            input.value = i + '등';
+            prizeInputs.appendChild(input);
+        }
+    }
+
+    // 참가자 수 감소
+    decreaseBtn.addEventListener('click', function() {
+        if (participantCount > minParticipants) {
+            participantCount--;
+            updateSlider();
+            updateInputs();
+        }
+    });
+
+    // 참가자 수 증가
+    increaseBtn.addEventListener('click', function() {
+        if (participantCount < maxParticipants) {
+            participantCount++;
+            updateSlider();
+            updateInputs();
+        }
+    });
+
+    // 사다리 생성 버튼
+    generateBtn.addEventListener('click', function() {
+        // 참가자 이름 수집
+        const participants = [];
+        const participantInputFields = participantInputs.querySelectorAll('input');
+        participantInputFields.forEach(input => {
+            const name = input.value.trim();
+            if (name) {
+                participants.push(name);
+            }
+        });
+
+        // 결과/상품 수집
+        const prizes = [];
+        const prizeInputFields = prizeInputs.querySelectorAll('input');
+        prizeInputFields.forEach(input => {
+            const prize = input.value.trim();
+            if (prize) {
+                prizes.push(prize);
+            }
+        });
+
+        // 유효성 검사
+        if (participants.length !== participantCount) {
+            alert('모든 참가자 이름을 입력해주세요.');
+            return;
+        }
+
+        if (prizes.length !== participantCount) {
+            alert('모든 결과/상품을 입력해주세요.');
+            return;
+        }
+
+        // 사다리 게임 생성 및 표시
+        generateLadder(participants, prizes);
+    });
+
+    // 사다리 생성 및 표시 함수
+    function generateLadder(participants, prizes) {
+        const ladderGame = document.getElementById('ladderGame');
+        const participantButtons = document.getElementById('participantButtons');
+        const prizeDisplay = document.getElementById('prizeDisplay');
+        const canvas = document.getElementById('ladderCanvas');
+        const ctx = canvas.getContext('2d');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultList = document.getElementById('resultList');
+
+        // 이전 결과 초기화
+        clickedParticipants.clear();
+        resultList.innerHTML = '';
+        resultMessage.style.display = 'none';
+
+        // 사다리 게임 섹션 먼저 표시
+        ladderGame.style.display = 'block';
+
+        // 캔버스 크기 설정 (표시 후에 설정해야 offsetWidth가 정상적으로 계산됨)
+        setTimeout(() => {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = 565;
+
+            // 사다리 데이터 생성
+            const ladderData = createLadderData(participants.length);
+
+            // 참가자 버튼 생성
+            participantButtons.innerHTML = '';
+            participants.forEach((name, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'participant-btn';
+                btn.textContent = name;
+                btn.dataset.index = index;
+                btn.addEventListener('click', () => animateLadder(index, ladderData, prizes, participants));
+                participantButtons.appendChild(btn);
+            });
+
+            // 결과/상품 표시
+            prizeDisplay.innerHTML = '';
+            prizes.forEach(prize => {
+                const box = document.createElement('div');
+                box.className = 'prize-box';
+                box.textContent = prize;
+                prizeDisplay.appendChild(box);
+            });
+
+            // 사다리 그리기
+            drawLadder(ctx, canvas.width, canvas.height, participants.length, ladderData);
+
+            // 사다리 게임으로 스크롤
+            ladderGame.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            
+            // 모든 결과 보기 버튼 이벤트 등록
+            const showAllBtn = document.getElementById('showAllBtn');
+            if (showAllBtn) {
+                const newShowAllBtn = showAllBtn.cloneNode(true);
+                showAllBtn.parentNode.replaceChild(newShowAllBtn, showAllBtn);
+                newShowAllBtn.addEventListener('click', () => showAllResults(ladderData, prizes, participants));
+            }
+        }, 10);
+    }
+
+    // 사다리 시뮬레이션 (특정 시작점에서 도착점 계산)
+    function simulateLadderPath(startIndex, ladderData, participantCount) {
+        let currentCol = startIndex;
+        
+        ladderData.forEach((row) => {
+            // 왼쪽에 가로선이 있는지 확인
+            if (currentCol > 0 && row[currentCol - 1]) {
+                currentCol--;
+            }
+            // 오른쪽에 가로선이 있는지 확인
+            else if (currentCol < participantCount - 1 && row[currentCol]) {
+                currentCol++;
+            }
+        });
+        
+        return currentCol;
+    }
+
+    // 사다리 데이터 생성 (순열 기반으로 중복 없는 결과 보장)
+    function createLadderData(participantCount) {
+        let attempts = 0;
+        const maxAttempts = 100;
+        
+        while (attempts < maxAttempts) {
+            attempts++;
+            
+            const rows = 15;
+            const ladderData = [];
+            
+            for (let rowIndex = 0; rowIndex < rows; rowIndex++) {
+                const row = [];
+                const isLastRows = rowIndex >= rows - 2; // 마지막 2줄
+                let prevHasLine = false;
+                
+                for (let colIndex = 0; colIndex < participantCount - 1; colIndex++) {
+                    if (isLastRows) {
+                        row.push(false);
+                    } else if (prevHasLine) {
+                        // 이전에 가로선이 있으면 이번엔 false
+                        row.push(false);
+                        prevHasLine = false;
+                    } else {
+                        // 60% 확률로 가로선 생성
+                        const hasLine = Math.random() > 0.4;
+                        row.push(hasLine);
+                        prevHasLine = hasLine;
+                    }
+                }
+                ladderData.push(row);
+            }
+            
+            // 시뮬레이션으로 결과 검증
+            const results = [];
+            for (let i = 0; i < participantCount; i++) {
+                const result = simulateLadderPath(i, ladderData, participantCount);
+                results.push(result);
+            }
+            
+            // 중복 검사
+            const uniqueResults = new Set(results);
+            if (uniqueResults.size === participantCount) {
+                console.log(`사다리 생성 성공 (시도 ${attempts}회)`);
+                return ladderData;
+            }
+        }
+        
+        console.error('사다리 생성 실패, 기본 사다리 반환');
+        // 최악의 경우 빈 사다리 반환 (모든 참가자가 직진)
+        return Array(15).fill(null).map(() => Array(participantCount - 1).fill(false));
+    }
+
+    // 사다리 그리기
+    function drawLadder(ctx, width, height, participantCount, ladderData) {
+        ctx.clearRect(0, 0, width, height);
+        ctx.strokeStyle = '#00a651';
+        ctx.lineWidth = 2;
+
+        const padding = 80;
+        const usableWidth = width - padding * 2;
+        const columnSpacing = usableWidth / (participantCount - 1);
+        const rowHeight = height / (ladderData.length + 1);
+
+        // 세로선 그리기
+        for (let i = 0; i < participantCount; i++) {
+            const x = padding + i * columnSpacing;
+            ctx.beginPath();
+            ctx.moveTo(x, 20);
+            ctx.lineTo(x, height - 20);
+            ctx.stroke();
+            
+            // 시작점 원 그리기
+            ctx.beginPath();
+            ctx.arc(x, 20, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = '#00a651';
+            ctx.fill();
+            
+            // 끝점 원 그리기
+            ctx.beginPath();
+            ctx.arc(x, height - 20, 5, 0, 2 * Math.PI);
+            ctx.fillStyle = '#00a651';
+            ctx.fill();
+        }
+
+        // 가로선 그리기
+        ladderData.forEach((row, rowIndex) => {
+            const y = 20 + (rowIndex + 1) * rowHeight;
+            row.forEach((hasLine, colIndex) => {
+                if (hasLine) {
+                    const x1 = padding + colIndex * columnSpacing;
+                    const x2 = padding + (colIndex + 1) * columnSpacing;
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y);
+                    ctx.lineTo(x2, y);
+                    ctx.stroke();
+                }
+            });
+        });
+    }
+
+    // 사다리 타기 애니메이션 (참가자 배열 교환 방식)
+    const participantColors = ['#ff0000', '#0066ff', '#ff6600', '#9900ff', '#00cc66', '#ff00cc', '#ffcc00', '#00ccff'];
+    const clickedParticipants = new Set(); // 이미 클릭한 참가자 추적
+    let isAutoPlaying = false; // 자동 재생 중인지 체크
+
+    function animateLadder(startIndex, ladderData, prizes, participantNames, isAuto = false) {
+        const canvas = document.getElementById('ladderCanvas');
+        const ctx = canvas.getContext('2d');
+        const participantCount = prizes.length;
+        const participantButtons = document.querySelectorAll('.participant-btn');
+        const resultMessage = document.getElementById('resultMessage');
+        const resultList = document.getElementById('resultList');
+        const ladderOverlay = document.getElementById('ladderOverlay');
+        
+        // 첫 번째 클릭 시 사다리 보이기
+        if (clickedParticipants.size === 0 && !isAuto) {
+            canvas.classList.remove('hidden');
+            if (ladderOverlay) {
+                ladderOverlay.classList.add('hidden');
+            }
+        }
+        
+        // 이미 클릭한 참가자면 무시
+        if (clickedParticipants.has(startIndex)) {
+            return;
+        }
+        
+        // 클릭한 참가자 추가
+        clickedParticipants.add(startIndex);
+        
+        // 클릭한 버튼만 비활성화
+        participantButtons[startIndex].disabled = true;
+        participantButtons[startIndex].classList.add('clicked');
+        
+        const padding = 80;
+        const usableWidth = canvas.width - padding * 2;
+        const columnSpacing = usableWidth / (participantCount - 1);
+        const rowHeight = canvas.height / (ladderData.length + 1);
+
+        // 경로 계산
+        let currentCol = startIndex;
+        const path = [{x: padding + currentCol * columnSpacing, y: 20}];
+
+        ladderData.forEach((row, rowIndex) => {
+            const y = 20 + (rowIndex + 1) * rowHeight;
+            
+            // 현재 위치에서 왼쪽에 가로선이 있는지 확인
+            if (currentCol > 0 && row[currentCol - 1]) {
+                path.push({x: padding + currentCol * columnSpacing, y: y});
+                currentCol--;
+                path.push({x: padding + currentCol * columnSpacing, y: y});
+            }
+            // 현재 위치에서 오른쪽에 가로선이 있는지 확인
+            else if (currentCol < participantCount - 1 && row[currentCol]) {
+                path.push({x: padding + currentCol * columnSpacing, y: y});
+                currentCol++;
+                path.push({x: padding + currentCol * columnSpacing, y: y});
+            }
+            else {
+                path.push({x: padding + currentCol * columnSpacing, y: y});
+            }
+        });
+
+        path.push({x: padding + currentCol * columnSpacing, y: canvas.height - 20});
+
+        // 애니메이션
+        let step = 0;
+        const animationSpeed = 15;
+        const pathColor = participantColors[startIndex % participantColors.length];
+
+        const animate = setInterval(() => {
+            if (step < path.length - 1) {
+                ctx.strokeStyle = pathColor;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(path[step].x, path[step].y);
+                ctx.lineTo(path[step + 1].x, path[step + 1].y);
+                ctx.stroke();
+                step++;
+            } else {
+                clearInterval(animate);
+                
+                // 결과
+                const prizeBoxes = document.querySelectorAll('.prize-box');
+                if (!prizeBoxes[currentCol].classList.contains('winner')) {
+                    prizeBoxes[currentCol].classList.add('winner');
+                }
+                
+                // 참가자 이름
+                const participantName = participantNames[startIndex];
+                
+                // 결과 메시지 추가
+                const resultItem = document.createElement('p');
+                resultItem.className = 'result-item';
+                resultItem.textContent = `🎉 ${participantName}님의 결과는 "${prizes[currentCol]}"입니다!`;
+                resultList.appendChild(resultItem);
+                
+                resultMessage.style.display = 'block';
+                
+                // 모든 참가자가 결과를 확인했는지 체크
+                if (clickedParticipants.size === participantCount) {
+                    setTimeout(() => {
+                        const finalMessage = document.createElement('p');
+                        finalMessage.className = 'result-item';
+                        finalMessage.style.marginTop = '16px';
+                        finalMessage.style.fontSize = '18px';
+                        finalMessage.textContent = '✅ 모든 참가자의 결과가 확인되었습니다!';
+                        resultList.appendChild(finalMessage);
+                        
+                        // 다시하기 버튼 표시
+                        const retryBtn = document.getElementById('retryBtn');
+                        retryBtn.style.display = 'flex';
+                        
+                        // 자동 재생 종료
+                        isAutoPlaying = false;
+                        
+                        // 모든 결과 보기 버튼 비활성화
+                        const showAllBtn = document.getElementById('showAllBtn');
+                        if (showAllBtn) {
+                            showAllBtn.disabled = true;
+                        }
+                    }, 300);
+                }
+            }
+        }, animationSpeed);
+    }
+
+    // 모든 결과 보기 기능
+    function showAllResults(ladderData, prizes, participantNames) {
+        if (isAutoPlaying) return;
+        
+        isAutoPlaying = true;
+        const participantCount = participantNames.length;
+        const showAllBtn = document.getElementById('showAllBtn');
+        const participantButtons = document.querySelectorAll('.participant-btn');
+        const canvas = document.getElementById('ladderCanvas');
+        const ladderOverlay = document.getElementById('ladderOverlay');
+        
+        // 사다리 보이기
+        canvas.classList.remove('hidden');
+        if (ladderOverlay) {
+            ladderOverlay.classList.add('hidden');
+        }
+        
+        // 모든 버튼 비활성화
+        showAllBtn.disabled = true;
+        participantButtons.forEach(btn => btn.disabled = true);
+        
+        let currentIndex = 0;
+        
+        function playNext() {
+            if (currentIndex < participantCount) {
+                if (clickedParticipants.has(currentIndex)) {
+                    currentIndex++;
+                    playNext();
+                    return;
+                }
+                
+                animateLadder(currentIndex, ladderData, prizes, participantNames, true);
+                
+                // 애니메이션 시간 + 추가 대기
+                setTimeout(() => {
+                    currentIndex++;
+                    playNext();
+                }, 1500);
+            }
+        }
+        
+        playNext();
+    }
+
+    // 다시하기 버튼 이벤트
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'retryBtn') {
+            const ladderGame = document.getElementById('ladderGame');
+            const resultMessage = document.getElementById('resultMessage');
+            const resultList = document.getElementById('resultList');
+            const retryBtn = document.getElementById('retryBtn');
+            const canvas = document.getElementById('ladderCanvas');
+            const ctx = canvas.getContext('2d');
+            const participantButtons = document.querySelectorAll('.participant-btn');
+            const prizeBoxes = document.querySelectorAll('.prize-box');
+            const ladderOverlay = document.getElementById('ladderOverlay');
+            
+            // 초기화
+            clickedParticipants.clear();
+            resultList.innerHTML = '';
+            retryBtn.style.display = 'none';
+            resultMessage.style.display = 'none';
+            isAutoPlaying = false;
+            
+            // 사다리 가리기
+            canvas.classList.add('hidden');
+            if (ladderOverlay) {
+                ladderOverlay.classList.remove('hidden');
+            }
+            
+            // 참가자 버튼 초기화
+            participantButtons.forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('clicked', 'inactive');
+            });
+            
+            // 결과 박스 초기화
+            prizeBoxes.forEach(box => {
+                box.classList.remove('winner');
+            });
+            
+            // 모든 결과 보기 버튼 초기화
+            const showAllBtn = document.getElementById('showAllBtn');
+            if (showAllBtn) {
+                showAllBtn.disabled = false;
+            }
+            
+            // 캔버스 초기화 및 새 사다리 생성
+            const participantCount = participantButtons.length;
+            const ladderData = createLadderData(participantCount);
+            drawLadder(ctx, canvas.width, canvas.height, participantCount, ladderData);
+            
+            // 참가자 이름과 상품 정보 가져오기
+            const participants = Array.from(participantButtons).map(btn => btn.textContent);
+            const prizes = Array.from(prizeBoxes).map(box => box.textContent);
+            
+            // 이벤트 리스너 재등록
+            participantButtons.forEach((btn, index) => {
+                const oldBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(oldBtn, btn);
+                oldBtn.addEventListener('click', () => animateLadder(index, ladderData, prizes, participants));
+            });
+            
+            // 사다리 게임으로 스크롤
+            ladderGame.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+
+    // 초기 설정
+    updateSlider();
+});
+
+    </script>
+</body>
 </html>

@@ -23,14 +23,12 @@ public class HomeController {
     @GetMapping("/")
     public String index(Model model) {
         try {
-            // 카테고리 목록을 모델에 추가 (대분류만)
             List<Category> categories = categoryService.list();
             if (categories == null) {
                 categories = new ArrayList<>();
             }
             model.addAttribute("categories", categories);
         } catch (Exception e) {
-            // 에러 발생시 빈 리스트 추가
             e.printStackTrace();
             model.addAttribute("categories", new ArrayList<>());
         }
