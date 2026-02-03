@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${category.name} + ' 모임 - 두루두룹'">카테고리 모임 - 두루두룹</title>
+    <title th:text="${category.name} + ' 모임 - 두루두룹'">카테고리 모임</title>
     <th:block th:replace="~{fragments/head :: head}"></th:block>
 </head>
 <body class="category-page">
@@ -39,7 +39,7 @@
                        th:href="@{/club/list(category=${category.no}, sub=${sub.no})}"
                        class="btn btn-sm rounded-pill"
                        th:classappend="${subCategoryNo == sub.no} ? 'btn-success' : 'btn-outline-secondary'"
-                       th:text="${sub.name}">세부카테고리</a>
+                       th:text="${sub.name}">서브카테고리</a>
                 </div>
             </div>
         </section>

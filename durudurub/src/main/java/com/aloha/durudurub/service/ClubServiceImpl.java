@@ -181,5 +181,23 @@ public class ClubServiceImpl implements ClubService {
     public int decrementMemberCount(int clubNo) {
         return clubMapper.decrementCommentCount(clubNo);
     }
+
+
+    // 마이페이지: 내모임 관리
+    // 참여중인 모임
+    @Override
+    public List<Club> joinedClubList(int userNo) throws Exception {
+        return memberMapper.joinedClubList(userNo);
+    }
+    // 승인 대기 중인 모임
+    @Override
+    public List<Club> pendingClubList(int userNo) throws Exception {
+        return memberMapper.pendingClubList(userNo);
+    }
+    // 모임장별 모임 목록
+    @Override
+    public List<Club> listByHost(int hostNo) {
+        return clubMapper.listByHost(hostNo);
+    }
     
 }

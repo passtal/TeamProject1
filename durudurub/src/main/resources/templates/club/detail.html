@@ -4,26 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${club.name} + ' - 두루두룹'">모임 상세 - 두루두룹</title>
+    <title th:text="${club.name} + ' - 두루두룹'">모임 상세</title>
     <th:block th:replace="~{fragments/head :: head}"></th:block>
     <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
 <body class="board-detail-page">
-    <!-- Header -->
+    <!-- 헤더 -->
     <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-    <!-- Hero Image Section -->
     <div class="hero-section">
         <div class="hero-image-wrapper">
             <img th:src="${club.thumbnail != null} ? ${club.thumbnail} : @{/img/board/hero-image.png}" alt="모임 대표 이미지">
         </div>
     </div>
 
-    <!-- Main Container -->
     <div class="container board-container">
-        <!-- Club Info Card -->
         <div class="board-card">
-            <!-- Header Section -->
+            <!-- 헤더 섹션ㄴ -->
             <div class="board-header">
                 <div class="header-top">
                     <h1 class="board-title" th:text="${club.name}">모임 이름</h1>
@@ -33,7 +30,7 @@
                     </button>
                 </div>
 
-                <!-- Category & Host Info -->
+                <!-- 호스트 이름 -->
                 <div class="board-meta">
                     <div class="category-badge" th:text="${#strings.substring(club.category.name, 0, 1)}">책</div>
                     <div class="leader-info">
@@ -42,7 +39,7 @@
                     </div>
                 </div>
 
-                <!-- Member & Join Button -->
+                <!-- 멤버 가입 버튼 -->
                 <div class="board-actions">
                     <div class="member-status">
                         <img th:src="@{/img/board/member-icon.png}" alt="멤버">
@@ -67,9 +64,8 @@
                 </div>
             </div>
 
-            <!-- Content Section -->
             <div class="board-content">
-                <!-- Introduction -->
+                <!-- 모임 소개글 섹션 -->
                 <div class="content-section">
                     <h2 class="section-title">모임 소개</h2>
                     <div class="section-text" th:utext="${club.description}">
@@ -77,7 +73,7 @@
                     </div>
                 </div>
 
-                <!-- Schedule & Location -->
+                <!-- 활동 지역 섹션 -->
                 <div class="content-section schedule-location">
                     <!-- Location -->
                     <div class="location-section">
@@ -91,7 +87,7 @@
                     </div>
                 </div>
 
-                <!-- Club Info Grid -->
+                <!-- 모임 활동 정보 섹션 -->
                 <div class="content-section">
                     <div class="row g-3">
                         <div class="col-md-4">
@@ -148,7 +144,7 @@
             </div>
         </div>
 
-        <!-- Join CTA (비회원용) -->
+        <!-- 비회원 전용 팝업?화면? → 회원만 가능하다고 고지하는 내용 -->
         <div class="join-cta-card" th:if="${myMembership == null and !isHost}">
             <div class="join-cta-content">
                 <h3 class="join-cta-title">이 모임의 멤버가 되어보세요!</h3>
@@ -159,10 +155,10 @@
         </div>
     </div>
 
-    <!-- Footer -->
+    <!-- 푸터 -->
     <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
-    <!-- Scripts -->
+    <!-- 스크립트 -->
     <th:block th:replace="~{fragments/scripts :: script}"></th:block>
 
     <script th:inline="javascript">

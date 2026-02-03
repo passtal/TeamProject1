@@ -4,15 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>게시글 목록 - 두루두룹</title>
+    <title>게시글 목록</title>
     <th:block th:replace="~{fragments/head :: head}"></th:block>
     <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
 <body class="board-list-page">
-    <!-- Header -->
     <th:block th:replace="~{fragments/header :: header}"></th:block>
 
-    <!-- Main Content -->
     <main class="container py-5">
         <!-- 모임 정보 헤더 -->
         <div class="club-info-header mb-4">
@@ -34,7 +32,7 @@
 
         <!-- 공지사항 -->
         <div class="notice-section mb-4" th:if="${notices != null and !notices.empty}">
-            <h5 class="text-muted mb-3">📢 공지사항</h5>
+            <h5 class="text-muted mb-3">공지사항</h5>
             <div class="list-group">
                 <a th:each="notice : ${notices}" 
                    th:href="@{/board/{no}(no=${notice.no})}"

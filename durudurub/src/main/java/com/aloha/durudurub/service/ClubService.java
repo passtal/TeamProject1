@@ -66,4 +66,12 @@ public interface ClubService {
 
     int decrementMemberCount(int clubNo);
     
+    // 마이페이지: 내모임 관리
+    // 참여 중인 모임
+    List<Club> joinedClubList(int userNo) throws Exception;
+    // 승인 대기 중인 모임
+    List<Club> pendingClubList(int userNo) throws Exception;
+    
+    // 모임장별 모임 목록
+    List<Club> listByHost(int hostNo) throws Exception;
 }

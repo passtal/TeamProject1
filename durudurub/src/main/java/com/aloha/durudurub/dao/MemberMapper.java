@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
 
 /**
@@ -34,4 +35,9 @@ public interface MemberMapper {
     int deleteByClubAndUser(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
     
     boolean countByClubAndUser(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
+
+    // 마이페이지: 내모임 관리
+    // 참여 중인 모임 리스트
+    List<Club> joinedClubList(@Param("userNo") int userNo) throws Exception;
+    List<Club> pendingClubList(@Param("userNo") int userNo) throws Exception;
 }
