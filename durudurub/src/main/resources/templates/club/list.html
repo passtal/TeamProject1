@@ -4,12 +4,14 @@
       layout:decorate="~{/layouts/main_layout}">
 
       <!-- 임시 css -->
-       <link rel="stylesheet" href="../../static/css/list.css">
+       <!-- <link rel="stylesheet" href="../../static/css/list.css"> -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>모임 둘러보기 - 두루두룹</title>
-    <link rel="stylesheet" th:href="@{/css/clubList.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/category/list.css}">
+    </th:block>
 </head>
 <body>
     <main layout:fragment="content">
@@ -19,17 +21,24 @@
                 <!-- 카테고리 필터 -->
                 <div class="category-filter">
                     <!-- 전체 버튼 -->
-                    <button class="filter-btn active" data-category="all">
+                    <button class="filter-btn active" data-category="all" data-type="all">
                         <span class="emoji">🔍</span>
                         <span>전체</span>
                     </button>
                     
                     <button th:each="category : ${categories}" 
                             class="filter-btn" 
-                            th:data-category="${category.name}">
+                            th:data-category="${category.name}"
+                            th:data-category-no="${category.no}"
+                            data-type="main">
                         <span class="emoji" th:text="${category.icon != null ? category.icon : '📁'}">📚</span>
                         <span th:text="${category.name}">카테고리</span>
                     </button>
+                </div>
+                
+                <!-- 소분류 카테고리 필터 (동적 생성) -->
+                <div class="subcategory-filter" id="subcategory-filter" style="display: none; margin-top: 1rem;">
+                    <!-- JavaScript로 동적 생성 -->
                 </div>
                 
                 <!-- 결과 카운트 -->
@@ -91,26 +100,218 @@
     
     <th:block layout:fragment="script">
         <script th:inline="javascript">
+            let allClubs = []; // 전체 모임 데이터 저장
+            
             document.addEventListener('DOMContentLoaded', function() {
                 console.log('Club list page loaded');
                 
-                // 카테고리 필터 기능
-                const filterButtons = document.querySelectorAll('.filter-btn');
+                // 초기 모임 데이터 저장
+                allClubs = Array.from(document.querySelectorAll('.club-card')).map(card => ({
+                    element: card,
+                    category: card.getAttribute('data-category')
+                }));
+                
+                // 대분류 카테고리 필터 기능
+                const filterButtons = document.querySelectorAll('.category-filter .filter-btn');
                 console.log('Filter buttons found:', filterButtons.length);
                 
                 filterButtons.forEach(button => {
                     button.addEventListener('click', function() {
+                        const type = this.getAttribute('data-type');
+                        const categoryNo = this.getAttribute('data-category-no');
                         const category = this.getAttribute('data-category');
-                        console.log('Category clicked:', category);
                         
                         // 버튼 활성화 상태 변경
                         filterButtons.forEach(btn => btn.classList.remove('active'));
                         this.classList.add('active');
                         
-                        filterClubs(category);
+                        if (type === 'all') {
+                            // 전체 보기
+                            hideSubCategories();
+                            showAllClubs();
+                        } else if (type === 'main' && categoryNo) {
+                            // 대분류 선택 - 소분류 로드
+                            loadSubCategories(categoryNo, category);
+                        } else {
+                            // 기존 클라이언트 사이드 필터
+                            hideSubCategories();
+                            filterClubs(category);
+                        }
                     });
                 });
             });
+            
+            // 소분류 카테고리 로드
+            function loadSubCategories(categoryNo, categoryName) {
+                fetch(`/club/api/subcategories/${categoryNo}`)
+                    .then(response => response.json())
+                    .then(subCategories => {
+                        const subCategoryFilter = document.getElementById('subcategory-filter');
+                        
+                        if (subCategories && subCategories.length > 0) {
+                            // 소분류 버튼 생성
+                            let html = '<button class="filter-btn sub-btn active" data-category-no="' + categoryNo + '" data-type="main-all">'
+                                     + '<span class="emoji">📂</span>'
+                                     + '<span>' + categoryName + ' 전체</span>'
+                                     + '</button>';
+                            
+                            subCategories.forEach(sub => {
+                                html += '<button class="filter-btn sub-btn" data-sub-no="' + sub.no + '" data-type="sub">'
+                                      + '<span class="emoji">📄</span>'
+                                      + '<span>' + sub.name + '</span>'
+                                      + '</button>';
+                            });
+                            
+                            subCategoryFilter.innerHTML = html;
+                            subCategoryFilter.style.display = 'flex';
+                            
+                            // 소분류 버튼 이벤트 등록
+                            const subButtons = subCategoryFilter.querySelectorAll('.sub-btn');
+                            subButtons.forEach(btn => {
+                                btn.addEventListener('click', function() {
+                                    const type = this.getAttribute('data-type');
+                                    const subNo = this.getAttribute('data-sub-no');
+                                    const catNo = this.getAttribute('data-category-no');
+                                    
+                                    // 소분류 버튼 활성화
+                                    subButtons.forEach(b => b.classList.remove('active'));
+                                    this.classList.add('active');
+                                    
+                                    if (type === 'main-all') {
+                                        loadClubsByCategory(catNo);
+                                    } else if (type === 'sub') {
+                                        loadClubsBySubCategory(subNo);
+                                    }
+                                });
+                            });
+                            
+                            // 대분류 전체 모임 로드
+                            loadClubsByCategory(categoryNo);
+                        } else {
+                            // 소분류가 없으면 대분류로 필터링
+                            hideSubCategories();
+                            loadClubsByCategory(categoryNo);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('소분류 로드 실패:', error);
+                        hideSubCategories();
+                        loadClubsByCategory(categoryNo);
+                    });
+            }
+            
+            // 대분류별 모임 로드
+            function loadClubsByCategory(categoryNo) {
+                fetch(`/club/api/clubs/category/${categoryNo}`)
+                    .then(response => response.json())
+                    .then(clubs => {
+                        renderClubs(clubs);
+                    })
+                    .catch(error => {
+                        console.error('모임 로드 실패:', error);
+                        updateEmptyState(0);
+                    });
+            }
+            
+            // 소분류별 모임 로드
+            function loadClubsBySubCategory(subCategoryNo) {
+                fetch(`/club/api/clubs/sub/${subCategoryNo}`)
+                    .then(response => response.json())
+                    .then(clubs => {
+                        renderClubs(clubs);
+                    })
+                    .catch(error => {
+                        console.error('모임 로드 실패:', error);
+                        updateEmptyState(0);
+                    });
+            }
+            
+            // 모임 렌더링
+            function renderClubs(clubs) {
+                const clubGrid = document.getElementById('club-grid');
+                
+                if (!clubs || clubs.length === 0) {
+                    clubGrid.innerHTML = '';
+                    updateEmptyState(0);
+                    return;
+                }
+                
+                let html = '';
+                clubs.forEach(club => {
+                    const thumbnailImg = club.thumbnailImg || 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=192&fit=crop';
+                    const hostInitial = club.hostName ? club.hostName.charAt(0) : '호';
+                    
+                    html += `
+                        <a href="/club/detail/${club.no}" class="club-card" data-category="${club.categoryName}">
+                            <div class="club-card-image">
+                                <img src="${thumbnailImg}" alt="${club.title}" 
+                                     onerror="this.src='https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=192&fit=crop'">
+                                <button class="like-btn" onclick="toggleLike(event, this)">
+                                    <svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 17.5L8.825 16.45C4.4 12.525 1.5 10.025 1.5 7C1.5 4.5 3.5 2.5 6 2.5C7.36 2.5 8.67 3.09 9.5 4.04C10.33 3.09 11.64 2.5 13 2.5C15.5 2.5 17.5 4.5 17.5 7C17.5 10.025 14.6 12.525 10.175 16.45L10 17.5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="club-card-content">
+                                <div class="club-card-header">
+                                    <span class="club-category">${club.categoryName}</span>
+                                    <div class="club-members">
+                                        <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 8C9.66 8 11 6.66 11 5C11 3.34 9.66 2 8 2C6.34 2 5 3.34 5 5C5 6.66 6.34 8 8 8ZM8 9.5C5.83 9.5 1.5 10.59 1.5 12.75V14H14.5V12.75C14.5 10.59 10.17 9.5 8 9.5Z"/>
+                                        </svg>
+                                        <span>${club.currentMembers}/${club.maxMembers}</span>
+                                    </div>
+                                </div>
+                                <h3 class="club-title">${club.title}</h3>
+                                <p class="club-description">${club.description || ''}</p>
+                                <div class="club-location">
+                                    <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 2C5.79 2 4 3.79 4 6C4 9 8 14 8 14C8 14 12 9 12 6C12 3.79 10.21 2 8 2ZM8 7.5C7.17 7.5 6.5 6.83 6.5 6C6.5 5.17 7.17 4.5 8 4.5C8.83 4.5 9.5 5.17 9.5 6C9.5 6.83 8.83 7.5 8 7.5Z"/>
+                                    </svg>
+                                    <span>${club.location}</span>
+                                </div>
+                                <div class="club-creator">
+                                    <div class="creator-avatar">${hostInitial}</div>
+                                    <span class="creator-name">${club.hostName}</span>
+                                </div>
+                            </div>
+                        </a>
+                    `;
+                });
+                
+                clubGrid.innerHTML = html;
+                updateEmptyState(clubs.length);
+            }
+            
+            // 소분류 숨기기
+            function hideSubCategories() {
+                const subCategoryFilter = document.getElementById('subcategory-filter');
+                subCategoryFilter.style.display = 'none';
+                subCategoryFilter.innerHTML = '';
+            }
+            
+            // 전체 모임 표시
+            function showAllClubs() {
+                const cards = document.querySelectorAll('.club-card');
+                cards.forEach(card => card.style.display = '');
+                updateEmptyState(cards.length);
+            }
+            
+            // 빈 상태 업데이트
+            function updateEmptyState(count) {
+                document.getElementById('club-count').textContent = count;
+                
+                const emptyState = document.getElementById('empty-state');
+                const clubGrid = document.getElementById('club-grid');
+                
+                if (count === 0) {
+                    emptyState.style.display = 'block';
+                    clubGrid.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    clubGrid.style.display = '';
+                }
+            }
             
             function filterClubs(category) {
                 const cards = document.querySelectorAll('.club-card');
@@ -138,20 +339,7 @@
                     });
                 }
                 
-                document.getElementById('club-count').textContent = visibleCount;
-                console.log('Visible count:', visibleCount);
-                
-                // 빈 상태 표시
-                const emptyState = document.getElementById('empty-state');
-                const clubGrid = document.getElementById('club-grid');
-                
-                if (visibleCount === 0) {
-                    emptyState.style.display = 'block';
-                    clubGrid.style.display = 'none';
-                } else {
-                    emptyState.style.display = 'none';
-                    clubGrid.style.display = '';
-                }
+                updateEmptyState(visibleCount);
             }
             
             // 좋아요 토글

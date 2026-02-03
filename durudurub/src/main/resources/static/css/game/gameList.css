@@ -1,7 +1,189 @@
-/* 두루두룹 메인 페이지 스타일 */
+/* 게임 목록 페이지 스타일 */
 
-body {
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.game-page {
     font-family: Arial, sans-serif;
+}
+
+/* 게임 페이지 메인 */
+main.game-page {
+    background: linear-gradient(135deg, rgba(0, 166, 81, 0.1) 0%, rgba(0, 166, 81, 0.05) 100%);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* 페이지 헤더 */
+main.game-page .game-content {
+    max-width: 1216px;
+    margin: 0 auto;
+    padding: 0;
+    background: transparent;
+}
+
+main.game-page .game-content > div:first-child {
+    padding: 60px 0 50px;
+    border-bottom: 1px solid #F3F4F6;
+    background: transparent;
+}
+
+main.game-page .game-content > div:first-child h2 {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #101828;
+    margin: 0;
+    text-align: center;
+}
+
+/* 게임 소개 섹션 */
+.game-intro {
+    padding: 48px 32px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.game-intro h2 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.11;
+    color: #101828;
+    margin: 0 0 16px;
+}
+
+.game-intro p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.56;
+    color: #4A5565;
+    margin: 0;
+}
+
+/* 게임 카드 그리드 */
+.game-cards {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 0 64px 48px;
+    max-width: 1216px;
+    margin: 0 auto;
+}
+
+.game-card {
+    flex: 0 1 calc(33.333% - 27px);
+    max-width: 368px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    height: 208px;
+}
+
+.game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 12px -4px rgba(0, 0, 0, 0.15), 0px 16px 24px -6px rgba(0, 0, 0, 0.15);
+}
+
+.game-card:not(:last-child) {
+    margin-right: 0;
+}
+
+/* 게임 아이콘 */
+.game-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.game-icon.purple {
+    background: linear-gradient(135deg, #AD46FF 0%, #9810FA 100%);
+}
+
+.game-icon.orange {
+    background: linear-gradient(135deg, #FF6900 0%, #F54900 100%);
+}
+
+.game-icon.green {
+    background: linear-gradient(135deg, #00C950 0%, #00A63E 100%);
+}
+
+.game-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+/* 게임 카드 텍스트 */
+.game-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.33;
+    color: #101828;
+    margin: 0 0 8px;
+}
+
+.game-card p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #4A5565;
+    margin: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1280px) {
+    .game-cards {
+        padding: 0 32px 48px;
+    }
+}
+
+@media (max-width: 992px) {
+    .game-cards {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 32px 48px;
+    }
+
+    .game-card:not(:last-child) {
+        margin-right: 0;
+    }
+
+    .game-card {
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-intro h2 {
+        font-size: 28px;
+    }
+
+    .game-intro p {
+        font-size: 16px;
+    }
+
+    .game-card h3 {
+        font-size: 20px;
+    }
+
+    .game-card p {
+        font-size: 14px;
+    }
 }
 
 /* Hero Section */
