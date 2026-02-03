@@ -42,8 +42,8 @@
               <!-- 로그인 전후 : 추후 AI 까지 적용하기! -->
               <!-- 비로그인 -->
               <th:block sec:authorize="isAnonymous()">
-                <a th:href="@{/login}" class="minigameIcon btn btn-outline-success rounded-pill">회원가입</a>
-                <a th:href="@{/join}" class="minigameIcon btn btn-outline-success rounded-pill">로그인</a>
+                <a th:href="@{/join}" class="minigameIcon btn btn-outline-success rounded-pill">회원가입</a>
+                <a th:href="@{/login}" class="minigameIcon btn btn-outline-success rounded-pill">로그인</a>
               </th:block>
               <!-- 로그인 후 : user -->
               <th:block sec:authorize="( hasRole('USER') )">
@@ -54,8 +54,8 @@
                       <!-- user -->
                       <div id="user-dropdown" class="hidden">
                           <ul>
-                              <li><a href="" class="mypage">마이페이지</a></li>
-                              <li><a href="" class="myclub">내모임</a></li>
+                              <li><a th:href="@{/user/mypage}" class="mypage">마이페이지</a></li>
+                              <li><a th:href="@{/user/mypage/club-management}" class="myclub">내모임</a></li>
                               <hr>
                               <li><a href="" class="logout">로그아웃</a></li>
                           </ul>

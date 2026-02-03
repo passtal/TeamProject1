@@ -3,31 +3,28 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>내 모임 관리 - 두루두룹</title>
-    <link rel="stylesheet" th:href="@{/css/mypage/club-management.css}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage-club.css}">
 </head>
 <body layout:fragment="content">
 
 <div class="club-management-container">
     <!-- 탭 메뉴 -->
     <div class="tab-menu">
-        <button class="tab-btn active" data-tab="participating">
-            <span class="material-symbols-outlined">groups</span>
+        <button class="tab-btn active" onclick="myclubList('APPROVED')">
+            <span class="material-symbols-outlined">group</span>
             <span>참여 중인 모임</span>
-            <span class="badge">2</span>
+            <span class="badge" id="countApproved">2</span>
         </button>
-        <button class="tab-btn" data-tab="leader">
-            <span class="material-symbols-outlined">workspace_premium</span>
+        <button class="tab-btn" onclick="myclubList('PENDING')">
+            <span class="material-symbols-outlined">crown</span>
             <span>리더인 모임</span>
-            <span class="badge">1</span>
+            <span class="badge" id="countPending">1</span>
         </button>
-        <button class="tab-btn" data-tab="pending">
+        <button class="tab-btn" onclick="myclubList('HOST')">
             <span class="material-symbols-outlined">schedule</span>
             <span>신청 중인 모임</span>
-            <span class="badge">1</span>
+            <span class="badge" id="countHost">1</span>
         </button>
     </div>
 
@@ -36,7 +33,7 @@
         <div class="club-card">
             <div class="club-info">
                 <div class="club-icon">
-                    <span class="material-symbols-outlined">groups</span>
+                    <span class="material-symbols-outlined">group</span>
                 </div>
                 <div class="club-details">
                     <div class="club-title-row">
@@ -57,7 +54,7 @@
         <div class="club-card">
             <div class="club-info">
                 <div class="club-icon">
-                    <span class="material-symbols-outlined">groups</span>
+                    <span class="material-symbols-outlined">group</span>
                 </div>
                 <div class="club-details">
                     <div class="club-title-row">
@@ -82,7 +79,7 @@
             <div class="club-card">
                 <div class="club-info">
                     <div class="club-icon">
-                        <span class="material-symbols-outlined">groups</span>
+                        <span class="material-symbols-outlined">group</span>
                     </div>
                     <div class="club-details">
                         <div class="club-title-row">
@@ -330,238 +327,8 @@
     </div>
 </div>
 
-<script>
-// 탭 전환
-document.querySelectorAll('.tab-btn').forEach(button => {
-    button.addEventListener('click', function() {
-        // 모든 탭 버튼과 컨텐츠에서 active 제거
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-        
-        // 클릭된 탭 활성화
-        this.classList.add('active');
-        const tabId = this.getAttribute('data-tab');
-        document.getElementById(tabId).classList.add('active');
-    });
-});
-
-// 탈퇴 버튼
-document.querySelectorAll('.btn-leave').forEach(button => {
-    button.addEventListener('click', function() {
-        document.getElementById('leaveClubModal').style.display = 'flex';
-    });
-});
-
-// 모임 삭제 버튼
-document.querySelectorAll('.btn-leader-delete').forEach(button => {
-    button.addEventListener('click', function() {
-        document.getElementById('deleteClubModal').style.display = 'flex';
-    });
-});
-
-// 멤버 관리 토글
-document.querySelectorAll('.btn-leader-manage').forEach(button => {
-    button.addEventListener('click', function() {
-        const clubId = this.getAttribute('data-club-id');
-        const managementArea = document.getElementById('memberManagement-' + clubId);
-        const icon = this.querySelector('.material-symbols-outlined:last-child');
-        
-        if (managementArea.style.display === 'none' || managementArea.style.display === '') {
-            managementArea.style.display = 'block';
-            icon.textContent = 'expand_less';
-        } else {
-            managementArea.style.display = 'none';
-            icon.textContent = 'expand_more';
-        }
-    });
-});
-
-// 승인 버튼
-document.querySelectorAll('.btn-approve').forEach(button => {
-    button.addEventListener('click', function() {
-        // 멤버 이름 가져오기
-        const memberItem = this.closest('.member-item');
-        const memberName = memberItem.querySelector('.member-name').textContent;
-        
-        // 모달에 이름 설정
-        document.querySelector('.approve-member-name').textContent = memberName;
-        
-        // 모달 표시
-        document.getElementById('approveMemberModal').style.display = 'flex';
-    });
-});
-
-// 거부 버튼
-document.querySelectorAll('.btn-reject').forEach(button => {
-    button.addEventListener('click', function() {
-        // 멤버 이름 가져오기
-        const memberItem = this.closest('.member-item');
-        const memberName = memberItem.querySelector('.member-name').textContent;
-        
-        // 모달에 이름 설정
-        document.querySelector('.reject-member-name').textContent = memberName;
-        
-        // 모달 표시
-        document.getElementById('rejectMemberModal').style.display = 'flex';
-    });
-});
-
-// 신청 취소 버튼
-document.querySelectorAll('.btn-cancel-request').forEach(button => {
-    button.addEventListener('click', function() {
-        document.getElementById('cancelRequestModal').style.display = 'flex';
-    });
-});
-
-// 모달 닫기
-document.getElementById('modalCancelBtn').addEventListener('click', function() {
-    document.getElementById('leaveClubModal').style.display = 'none';
-});
-
-// 모달 외부 클릭시 닫기
-document.getElementById('leaveClubModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-    }
-});
-
-// 모달 X 버튼
-document.getElementById('modalCloseBtn').addEventListener('click', function() {
-    document.getElementById('leaveClubModal').style.display = 'none';
-});
-
-// 탈퇴 확인 버튼
-document.getElementById('modalConfirmBtn').addEventListener('click', function() {
-    // TODO: 실제 모임 탈퇴 처리
-    console.log('모임 탈퇴 처리');
-    document.getElementById('leaveClubModal').style.display = 'none';
-});
-
-// 모임 삭제 모달 닫기
-document.getElementById('deleteModalCancelBtn').addEventListener('click', function() {
-    document.getElementById('deleteClubModal').style.display = 'none';
-});
-
-document.getElementById('deleteModalCloseBtn').addEventListener('click', function() {
-    document.getElementById('deleteClubModal').style.display = 'none';
-});
-
-// 모임 삭제 모달 외부 클릭시 닫기
-document.getElementById('deleteClubModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-    }
-});
-
-// 모임 삭제 확인 버튼
-document.getElementById('deleteModalConfirmBtn').addEventListener('click', function() {
-    // TODO: 실제 모임 삭제 처리
-    console.log('모임 삭제 처리');
-    document.getElementById('deleteClubModal').style.display = 'none';
-});
-
-// 멤버 승인 모달 닫기
-document.getElementById('approveModalCancelBtn').addEventListener('click', function() {
-    document.getElementById('approveMemberModal').style.display = 'none';
-});
-
-document.getElementById('approveModalCloseBtn').addEventListener('click', function() {
-    document.getElementById('approveMemberModal').style.display = 'none';
-});
-
-// 멤버 승인 모달 외부 클릭시 닫기
-document.getElementById('approveMemberModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-    }
-});
-
-// 멤버 승인 확인 버튼
-document.getElementById('approveModalConfirmBtn').addEventListener('click', function() {
-    // TODO: 실제 멤버 승인 처리
-    console.log('멤버 승인 처리');
-    document.getElementById('approveMemberModal').style.display = 'none';
-});
-
-// 멤버 거부 모달 닫기
-document.getElementById('rejectModalCancelBtn').addEventListener('click', function() {
-    document.getElementById('rejectMemberModal').style.display = 'none';
-});
-
-document.getElementById('rejectModalCloseBtn').addEventListener('click', function() {
-    document.getElementById('rejectMemberModal').style.display = 'none';
-});
-
-// 멤버 거부 모달 외부 클릭시 닫기
-document.getElementById('rejectMemberModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-    }
-});
-
-// 멤버 거부 확인 버튼
-document.getElementById('rejectModalConfirmBtn').addEventListener('click', function() {
-    // TODO: 실제 멤버 거부 처리
-    console.log('멤버 거부 처리');
-    document.getElementById('rejectMemberModal').style.display = 'none';
-});
-
-// 추방하기 버튼
-document.querySelectorAll('.btn-remove-member').forEach(button => {
-    button.addEventListener('click', function() {
-        const memberItem = this.closest('.member-item');
-        const memberName = memberItem.querySelector('.member-name').textContent;
-        document.querySelector('.remove-member-name').textContent = memberName;
-        document.getElementById('removeMemberModal').style.display = 'flex';
-    });
-});
-
-// 멤버 추방 모달 닫기
-document.getElementById('removeModalCancelBtn').addEventListener('click', function() {
-    document.getElementById('removeMemberModal').style.display = 'none';
-});
-
-document.getElementById('removeModalCloseBtn').addEventListener('click', function() {
-    document.getElementById('removeMemberModal').style.display = 'none';
-});
-
-// 멤버 추방 모달 외부 클릭시 닫기
-document.getElementById('removeMemberModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-    }
-});
-
-// 멤버 추방 확인 버튼
-document.getElementById('removeModalConfirmBtn').addEventListener('click', function() {
-    // TODO: 실제 멤버 추방 처리
-    console.log('멤버 추방 처리');
-    document.getElementById('removeMemberModal').style.display = 'none';
-});
-
-// 신청 취소 모달 닫기
-document.getElementById('cancelRequestModalCancelBtn').addEventListener('click', function() {
-    document.getElementById('cancelRequestModal').style.display = 'none';
-});
-
-document.getElementById('cancelRequestModalCloseBtn').addEventListener('click', function() {
-    document.getElementById('cancelRequestModal').style.display = 'none';
-});
-
-// 신청 취소 모달 외부 클릭시 닫기
-document.getElementById('cancelRequestModal').addEventListener('click', function(e) {
-    if (e.target === this) {
-        this.style.display = 'none';
-    }
-});
-
-// 신청 취소 확인 버튼
-document.getElementById('cancelRequestModalConfirmBtn').addEventListener('click', function() {
-    // TODO: 실제 신청 취소 처리
-    console.log('신청 취소 처리');
-    document.getElementById('cancelRequestModal').style.display = 'none';
-});
-</script>
+<!-- static/js/userpage.js 정적 경로 -->
+<script th:src="@{/js/userpage.js}"></script>
 
 </body>
 </html>

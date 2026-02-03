@@ -3,11 +3,14 @@ package com.aloha.durudurub.controller;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.service.ClubService;
@@ -18,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
-@RequestMapping("/user/mypage")
+@RequestMapping("/users/mypage")
 @RequiredArgsConstructor
 public class MypageController {
 
@@ -31,26 +34,42 @@ public class MypageController {
         if (principal != null) {
             model.addAttribute("user", userService.selectByUserId(principal.getName()));
         }
-        return "Mypage/mypage";
+        return "mypage/mypage";
     }
     
-    // 내 모임 관리 페이지
-    @GetMapping("/club-management")
-    public String clubManagementPage(Model model, Principal principal) throws Exception {
-        if (principal != null) {
-            model.addAttribute("user", userService.selectByUserId(principal.getName()));
-        }
-        return "Mypage/club-management";
+    // 회원 탈퇴 모달
+    @DeleteMapping("/modal")
+    @ResponseBody
+    public ResponseEntity<Void> deleteUser(Principal principal) throws Exception {
+        // if (principal == null) return ResponseEntity.status(401).build();
+
+        int userNo = userService.selectByUserId(principal.getName()).getNo();
+        userService.delete(userNo);
+        
+        return ResponseEntity.noContent().build();
     }
+
+    // 내모임 관리 페이지
+    // @GetMapping("/club-management")
+    // public String clubManagementPage(Model model, Principal principal) throws Exception {
+    //     if (principal != null) {
+    //         model.addAttribute("user", userService.selectByUserId(principal.getName()));
+    //     }
+    //     return "mypage/club-management";
+    // }
     
    // club index (기본) - 동기, 페이지 이동
    @GetMapping("/club")
     public String clubPage(
         @RequestParam(defaultValue = "APPROVED") String type,
-        Model model
-    ) {
+        Model model,
+        Principal principal
+    ) throws Exception {
+        // if (principal != null) {
+        //     model.addAttribute("user", userService.selectByUserId(principal.getName()));
+        // }
         model.addAttribute("type", type);
-        return "Mypage/club";
+        return "mypage/mypage-club";
     }
 
     // 리스트 조회 (타입별 조회) - 비동기, 내부 페이지만 변경
@@ -80,7 +99,7 @@ public class MypageController {
         model.addAttribute("hostClubCount", clubService.listByHost(userNo).size());
 
         // HTML fragments 정의 필요!
-        return "Mypage/club/fragments :: myclubList";
+        return "mypage/club/fragments :: myclubList";
     }
 
     // // 탈퇴 및 신청취소
