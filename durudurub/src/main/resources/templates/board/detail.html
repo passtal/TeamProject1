@@ -16,7 +16,7 @@
     <main class="container py-5">
         <!-- 뒤로가기 -->
         <div class="mb-4">
-            <a th:href="@{/board/list(clubNo=${club.no})}" class="btn btn-outline-secondary btn-sm">
+            <a th:href="@{/club/{clubNo}/board(clubNo=${club.no})}" class="btn btn-outline-secondary btn-sm">
                 ← 목록으로
             </a>
         </div>
@@ -46,11 +46,11 @@
                     </div>
                 </div>
 
-                <!-- 수정/삭제 버튼 (작성자만) -->
-                <div class="board-actions" th:if="${isWriter}">
+                <!-- 수정/삭제 버튼 (작성자 또는 호스트) -->
+                <div class="board-actions" th:if="${isWriter or isHost}">
                     <div></div>
                     <div class="d-flex gap-2">
-                        <a th:href="@{/board/update(no=${board.no})}" class="btn btn-edit">
+                        <a th:href="@{/club/{clubNo}/board/{no}/update(clubNo=${club.no}, no=${board.no})}" class="btn btn-edit">
                             <img th:src="@{/img/board/edit-icon.png}" alt="수정">
                             수정
                         </a>
@@ -68,8 +68,8 @@
                 </div>
 
                 <!-- 게시글 이미지 (있는 경우) -->
-                <div class="board-images" th:if="${board.images != null and !board.images.empty}">
-                    <div th:each="image : ${board.images}" class="board-image-item">
+                <div class="board-images" th:if="${board.imageList != null and !board.imageList.empty}">
+                    <div th:each="image : ${board.imageList}" class="board-image-item">
                         <img th:src="${image.imageUrl}" alt="게시글 이미지">
                     </div>
                 </div>
@@ -138,17 +138,35 @@
         // 댓글 렌더링
         function renderComments(comments) {
             let html = '';
+            const currentUserNo = [[${#authentication.principal?.user?.no ?: 0}]];
+            
             comments.forEach(function(comment) {
+                let actionButtons = '';
+                
+                // 댓글 작성자만 수정/삭제 가능
+                if (comment.writerNo === currentUserNo) {
+                    actionButtons = `
+                        <button class="btn btn-sm btn-outline-secondary me-1" onclick="editComment(${comment.no})">수정</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteComment(${comment.no})">삭제</button>
+                    `;
+                }
+                
                 html += `
-                    <div class="comment-item mb-3 p-3 bg-light rounded">
+                    <div class="comment-item mb-3 p-3 bg-light rounded" data-comment-no="${comment.no}">
                         <div class="d-flex gap-3">
                             <div class="author-avatar">${comment.writer.username.substring(0, 1)}</div>
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <strong>${comment.writer.username}</strong>
-                                    <small class="text-muted">${formatDate(comment.createdAt)}</small>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <small class="text-muted">${formatDate(comment.createdAt)}</small>
+                                        ${actionButtons}
+                                    </div>
                                 </div>
-                                <p class="mb-0">${comment.content}</p>
+                                <p class="mb-2 comment-content-text">${escapeHtml(comment.content)}</p>
+                                <button class="btn btn-sm btn-outline-danger btn-comment-like" onclick="toggleCommentLike(${comment.no}, this)">
+                                    ♥ <span class="comment-like-count">${comment.likeCount || 0}</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -185,11 +203,13 @@
 
         // 좋아요
         $('#btnLike').click(function() {
+            const btn = $(this);
             $.ajax({
                 url: '/api/likes/board/' + boardNo,
                 type: 'POST',
                 success: function(result) {
-                    location.reload();
+                    btn.find('.heart-badge').text(result.count);
+                    btn.toggleClass('liked', result.liked);
                 },
                 error: function() {
                     alert('로그인이 필요합니다.');
@@ -200,8 +220,79 @@
         // 게시글 삭제
         function deleteBoard() {
             if (confirm('정말 삭제하시겠습니까?')) {
-                location.href = '/board/delete?no=' + boardNo;
+                $.ajax({
+                    url: '/api/boards/' + boardNo,
+                    type: 'DELETE',
+                    success: function() {
+                        alert('게시글이 삭제되었습니다.');
+                        location.href = '/club/' + clubNo + '/board';
+                    },
+                    error: function() {
+                        alert('게시글 삭제에 실패했습니다.');
+                    }
+                });
             }
+        }
+        
+        // 댓글 삭제
+        function deleteComment(commentNo) {
+            if (confirm('댓글을 삭제하시겠습니까?')) {
+                $.ajax({
+                    url: '/api/comments/' + commentNo,
+                    type: 'DELETE',
+                    success: function() {
+                        loadComments();
+                    },
+                    error: function() {
+                        alert('댓글 삭제에 실패했습니다.');
+                    }
+                });
+            }
+        }
+        
+        // 댓글 수정
+        function editComment(commentNo) {
+            const commentItem = $(`[data-comment-no="${commentNo}"]`);
+            const contentEl = commentItem.find('.comment-content-text');
+            const currentContent = contentEl.text();
+            
+            const newContent = prompt('댓글 수정:', currentContent);
+            if (newContent && newContent.trim() !== '' && newContent !== currentContent) {
+                $.ajax({
+                    url: '/api/comments/' + commentNo,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ content: newContent.trim() }),
+                    success: function() {
+                        loadComments();
+                    },
+                    error: function() {
+                        alert('댓글 수정에 실패했습니다.');
+                    }
+                });
+            }
+        }
+        
+        // 댓글 좋아요
+        function toggleCommentLike(commentNo, btn) {
+            $.ajax({
+                url: '/api/likes/comment/' + commentNo,
+                type: 'POST',
+                success: function(result) {
+                    $(btn).find('.comment-like-count').text(result.count);
+                    $(btn).toggleClass('liked', result.liked);
+                },
+                error: function() {
+                    alert('로그인이 필요합니다.');
+                }
+            });
+        }
+        
+        // HTML 이스케이프
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
 
         // 날짜 포맷팅

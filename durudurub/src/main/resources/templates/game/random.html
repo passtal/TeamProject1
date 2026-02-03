@@ -1,5 +1,369 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 랜덤 뽑기 게임 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <title>당첨자 추첨</title>
+    <link rel="stylesheet" th:href="@{/css/random.css}">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="random-container">
+            <!-- Back Button -->
+            <div class="back-button">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M12.5 15L7.5 10L12.5 5" stroke="#364153" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <a href="/game/list">게임 선택으로 돌아가기</a>
+            </div>
+
+            <!-- Main Container -->
+            <div class="main-container">
+                <!-- Draw Section -->
+                <div class="draw-section">
+                    <h2>🎁 당첨자 추첨 🎁</h2>
+                    <div class="result-display" id="resultDisplay">
+                        <p class="result-message" id="resultMessage">추첨을 시작해주세요</p>
+                        <p class="participant-count" id="participantCount">총 5명 참가 중</p>
+                        <div class="winner-announcement" id="winnerAnnouncement" style="display: none;">
+                            <p class="announcement-title">🎉 당첨자 발표 🎉</p>
+                            <div class="winner-box" id="winnerBox">
+                                참가자1
+                            </div>
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button class="draw-button" id="drawButton">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                <path d="M12 2V6M12 18V22M22 12H18M6 12H2" stroke="#9810fa" stroke-width="2" stroke-linecap="round"/>
+                            </svg>
+                            추첨 시작
+                        </button>
+                        <button class="retry-button" id="retryButton" style="display: none;">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M2 10C2 5.58172 5.58172 2 10 2C14.4183 2 18 5.58172 18 10C18 14.4183 14.4183 18 10 18" stroke="#364153" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M6 18L10 18L10 14" stroke="#364153" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            다시 추첨
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Bottom Grid -->
+                <div class="bottom-grid">
+                    <!-- Participants Section -->
+                    <div class="participants-section">
+                        <div class="participants-header">
+                            <h3>참가자 목록</h3>
+                            <div class="button-group">
+                                <button class="add-button" id="addParticipantButton">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M8 3V13M3 8H13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    추가
+                                </button>
+                                <button class="clear-button" id="clearAllButton">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M13 3L3 13M3 3L13 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                    전체 삭제
+                                </button>
+                            </div>
+                        </div>
+                        <div class="participants-list" id="participantsList">
+                            <!-- Participants will be dynamically added here -->
+                        </div>
+                    </div>
+
+                    <!-- Settings Section -->
+                    <div class="settings-section">
+                        <h3>추첨 설정</h3>
+                        <div class="settings-content">
+                            <div class="slider-container">
+                                <label id="winnerCountLabel">당첨자 수: 1명</label>
+                                <input type="range" id="winnerCountSlider" min="1" max="5" value="1" class="slider">
+                                <div class="slider-labels">
+                                    <span>1명</span>
+                                    <span>5명</span>
+                                </div>
+                            </div>
+                            <div class="info-box">
+                                <p><strong id="totalParticipants">5명</strong> 중 <strong id="selectedWinners">1명</strong>을 추첨합니다</p>
+                                <p class="probability" id="probability">당첨 확률: 20.0%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructions Section -->
+                <div class="instructions-section">
+                    <h3>게임 방법</h3>
+                    <ul>
+                        <li>참가자 이름을 입력하세요.</li>
+                        <li>당첨자 수를 설정하고 "추첨 시작" 버튼을 클릭합니다.</li>
+                        <li>추첨 애니메이션 후 당첨자가 발표됩니다.</li>
+                        <li>공정한 무작위 추첨으로 모든 참가자에게 동등한 기회가 주어집니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script th:src="@{/js/random.js}"></script> -->
+    <script>
+    // Random JavaScript
+    let participants = [
+        '참가자1',
+        '참가자2',
+        '참가자3',
+        '참가자4',
+        '참가자5'
+    ];
+
+    let isDrawing = false;
+
+    // DOM elements
+    const drawButton = document.getElementById('drawButton');
+    const retryButton = document.getElementById('retryButton');
+    const addParticipantButton = document.getElementById('addParticipantButton');
+    const clearAllButton = document.getElementById('clearAllButton');
+    const participantsList = document.getElementById('participantsList');
+    const winnerCountSlider = document.getElementById('winnerCountSlider');
+    const winnerCountLabel = document.getElementById('winnerCountLabel');
+    const resultMessage = document.getElementById('resultMessage');
+    const participantCount = document.getElementById('participantCount');
+    const totalParticipants = document.getElementById('totalParticipants');
+    const selectedWinners = document.getElementById('selectedWinners');
+    const probability = document.getElementById('probability');
+    const resultDisplay = document.getElementById('resultDisplay');
+    const winnerAnnouncement = document.getElementById('winnerAnnouncement');
+    const winnerBox = document.getElementById('winnerBox');
+
+    // Initialize
+    function init() {
+        renderParticipants();
+        updateSliderMax();
+        updateProbability();
+        
+        drawButton.addEventListener('click', startDraw);
+        retryButton.addEventListener('click', retryDraw);
+        addParticipantButton.addEventListener('click', addParticipant);
+        clearAllButton.addEventListener('click', clearAll);
+        winnerCountSlider.addEventListener('input', updateWinnerCount);
+    }
+
+    // Render participants list
+    function renderParticipants() {
+        participantsList.innerHTML = '';
+        
+        participants.forEach((name, index) => {
+            const row = document.createElement('div');
+            row.className = 'participant-row';
+            
+            const number = document.createElement('div');
+            number.className = 'participant-number';
+            number.textContent = index + 1;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'participant-input';
+            input.value = name;
+            input.placeholder = `참가자${index + 1}`;
+            input.addEventListener('input', (e) => {
+                participants[index] = e.target.value;
+                updateParticipantCount();
+            });
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-participant-button';
+            deleteBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M15 5L5 15M5 5L15 15" stroke="#364153" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            `;
+            deleteBtn.addEventListener('click', () => deleteParticipant(index));
+            
+            row.appendChild(number);
+            row.appendChild(input);
+            row.appendChild(deleteBtn);
+            participantsList.appendChild(row);
+        });
+        
+        updateParticipantCount();
+    }
+
+    // Update participant count display
+    function updateParticipantCount() {
+        const count = participants.filter(p => p.trim() !== '').length;
+        participantCount.textContent = `총 ${count}명 참가 중`;
+        totalParticipants.textContent = `${count}명`;
+        updateSliderMax();
+        updateProbability();
+    }
+
+    // Update slider max value
+    function updateSliderMax() {
+        const count = participants.filter(p => p.trim() !== '').length;
+        winnerCountSlider.max = Math.max(1, count);
+        if (parseInt(winnerCountSlider.value) > count) {
+            winnerCountSlider.value = count;
+            updateWinnerCount();
+        }
+    }
+
+    // Update winner count display
+    function updateWinnerCount() {
+        const value = winnerCountSlider.value;
+        winnerCountLabel.textContent = `당첨자 수: ${value}명`;
+        selectedWinners.textContent = `${value}명`;
+        updateProbability();
+    }
+
+    // Update probability display
+    function updateProbability() {
+        const count = participants.filter(p => p.trim() !== '').length;
+        const winners = parseInt(winnerCountSlider.value);
+        const prob = count > 0 ? (winners / count * 100).toFixed(1) : 0;
+        probability.textContent = `당첨 확률: ${prob}%`;
+    }
+
+    // Add new participant
+    function addParticipant() {
+        const newIndex = participants.length + 1;
+        participants.push(`참가자${newIndex}`);
+        renderParticipants();
+    }
+
+    // Delete participant
+    function deleteParticipant(index) {
+        if (participants.length <= 1) {
+            alert('최소 1명의 참가자가 필요합니다.');
+            return;
+        }
+        
+        participants.splice(index, 1);
+        renderParticipants();
+    }
+
+    // Clear all participants
+    function clearAll() {
+        if (confirm('모든 참가자를 삭제하시겠습니까?')) {
+            participants = ['참가자1'];
+            renderParticipants();
+        }
+    }
+
+    // Start draw animation
+    async function startDraw() {
+        if (isDrawing) return;
+        
+        const validParticipants = participants.filter(p => p.trim() !== '');
+        const winnerCount = parseInt(winnerCountSlider.value);
+        
+        if (validParticipants.length === 0) {
+            alert('참가자를 입력해주세요.');
+            return;
+        }
+        
+        if (winnerCount > validParticipants.length) {
+            alert('당첨자 수는 참가자 수보다 클 수 없습니다.');
+            return;
+        }
+        
+        isDrawing = true;
+        drawButton.disabled = true;
+        
+        // Hide winner announcement
+        winnerAnnouncement.style.display = 'none';
+        resultDisplay.classList.remove('has-winner');
+        resultMessage.style.display = 'block';
+        participantCount.style.display = 'block';
+        
+        // Remove winner class from all inputs
+        document.querySelectorAll('.participant-input').forEach(input => {
+            input.classList.remove('winner');
+        });
+        
+        // Shuffle animation with deceleration effect (3 seconds total)
+        resultMessage.textContent = '추첨 중...';
+        const totalIterations = 25; // Total number of iterations
+        const minInterval = 40; // Starting interval (fast)
+        const maxInterval = 200; // Ending interval (slow)
+        
+        for (let i = 0; i < totalIterations; i++) {
+            const randomIndex = Math.floor(Math.random() * validParticipants.length);
+            resultMessage.textContent = validParticipants[randomIndex];
+            resultMessage.classList.add('shuffling');
+            
+            // Calculate deceleration - exponential slowdown
+            const progress = i / totalIterations;
+            const easedProgress = Math.pow(progress, 2); // Quadratic easing
+            const currentInterval = minInterval + (maxInterval - minInterval) * easedProgress;
+            
+            await new Promise(resolve => setTimeout(resolve, currentInterval));
+            resultMessage.classList.remove('shuffling');
+        }
+        
+        // Select winners
+        const shuffled = [...validParticipants].sort(() => Math.random() - 0.5);
+        const winners = shuffled.slice(0, winnerCount);
+        
+        // Display winners in new format
+        resultMessage.style.display = 'none';
+        participantCount.style.display = 'none';
+        resultDisplay.classList.add('has-winner');
+        winnerAnnouncement.style.display = 'flex';
+        
+        if (winners.length === 1) {
+            winnerBox.textContent = winners[0];
+        } else {
+            winnerBox.textContent = winners.join(', ');
+        }
+        
+        // Show retry button, hide draw button
+        drawButton.style.display = 'none';
+        retryButton.style.display = 'flex';
+        
+        // Highlight winner inputs
+        const inputs = document.querySelectorAll('.participant-input');
+        inputs.forEach(input => {
+            if (winners.includes(input.value.trim())) {
+                input.classList.add('winner');
+            }
+        });
+        
+        isDrawing = false;
+    }
+
+    // Retry draw
+    function retryDraw() {
+        // Reset display
+        resultDisplay.classList.remove('has-winner');
+        winnerAnnouncement.style.display = 'none';
+        resultMessage.style.display = 'block';
+        participantCount.style.display = 'block';
+        resultMessage.textContent = '추첨을 시작해주세요';
+        
+        // Show draw button, hide retry button
+        drawButton.style.display = 'flex';
+        drawButton.disabled = false;
+        retryButton.style.display = 'none';
+        
+        // Remove winner class from all inputs
+        document.querySelectorAll('.participant-input').forEach(input => {
+            input.classList.remove('winner');
+        });
+    }
+
+    // Initialize on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+    </script>
+</body>
 </html>

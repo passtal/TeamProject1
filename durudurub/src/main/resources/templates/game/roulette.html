@@ -1,5 +1,346 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 돌림판 게임 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main_layout}">
+
+<head>
+    <title>행운의 룰렛</title>
+    <link rel="stylesheet" th:href="@{/css/roulette.css}">
+</head>
+
+<body>
+    <div layout:fragment="content">
+        <div class="roulette-container">
+            <!-- Back Button -->
+            <div class="back-button">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M12.5 15L7.5 10L12.5 5" stroke="#364153" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <a href="/game/list">게임 선택으로 돌아가기</a>
+            </div>
+
+            <!-- Main Container -->
+            <div class="main-container">
+                <!-- Roulette Wheel Section -->
+                <div class="wheel-section">
+                    <h2>행운의 룰렛</h2>
+                    <div class="wheel-container">
+                        <canvas id="rouletteCanvas" width="500" height="500"></canvas>
+                        <div class="wheel-pointer"></div>
+                    </div>
+                    <button class="spin-button" id="spinButton">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 2V6M12 18V22M22 12H18M6 12H2" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        룰렛 돌리기
+                    </button>
+                    <div class="result-box" id="resultBox" style="display: none;">
+                        <p class="result-title">🎉 축하합니다! 🎉</p>
+                        <p class="result-text" id="resultText">당첨: 1등</p>
+                    </div>
+                </div>
+
+                <!-- Items Settings Section -->
+                <div class="settings-section">
+                    <div class="settings-header">
+                        <h3>룰렛 항목 설정</h3>
+                        <div class="button-group">
+                            <button class="add-button" id="addItemButton">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M8 3V13M3 8H13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                추가
+                            </button>
+                            <button class="reset-button" id="resetButton">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M13 3L3 13M3 3L13 13" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                                초기화
+                            </button>
+                        </div>
+                    </div>
+                    <div class="items-grid" id="itemsGrid">
+                        <!-- Items will be dynamically added here -->
+                    </div>
+                </div>
+
+                <!-- Instructions Section -->
+                <div class="instructions-section">
+                    <h3>게임 방법</h3>
+                    <ul>
+                        <li>항목을 추가하거나 수정하여 원하는 내용을 입력하세요.</li>
+                        <li>"룰렛 돌리기" 버튼을 눌러 룰렛을 회전시킵니다.</li>
+                        <li>룰렛이 멈추면 상단 화살표가 가리키는 항목이 당첨됩니다.</li>
+                        <li>최소 2개부터 최대 12개까지 항목을 설정할 수 있습니다.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script th:src="@{/js/roulette.js}"></script> -->
+     <script>
+        // Roulette Game JavaScript
+
+    // Default colors for roulette segments
+    const defaultColors = [
+        '#ff6b6b', // red
+        '#4ecdc4', // cyan
+        '#45b7d1', // blue
+        '#ffa07a', // salmon
+        '#98d8c8', // mint
+        '#f7dc6f', // yellow
+        '#bb8fce', // purple
+        '#85c1e2', // sky blue
+        '#f1948a', // pink
+        '#7fb3d5', // light blue
+        '#aed581', // lime
+        '#ffab91'  // peach
+    ];
+
+    // Initial items
+    let items = [
+        { label: '1등', color: '#ff6b6b' },
+        { label: '2등', color: '#4ecdc4' },
+        { label: '3등', color: '#45b7d1' },
+        { label: '4등', color: '#ffa07a' },
+        { label: '5등', color: '#98d8c8' },
+        { label: '6등', color: '#f7dc6f' }
+    ];
+
+    let isSpinning = false;
+    let currentRotation = 0;
+
+    // DOM elements
+    const canvas = document.getElementById('rouletteCanvas');
+    const ctx = canvas.getContext('2d');
+    const spinButton = document.getElementById('spinButton');
+    const addItemButton = document.getElementById('addItemButton');
+    const resetButton = document.getElementById('resetButton');
+    const itemsGrid = document.getElementById('itemsGrid');
+
+    // Initialize
+    function init() {
+        renderItems();
+        drawWheel();
+        
+        spinButton.addEventListener('click', spinWheel);
+        addItemButton.addEventListener('click', addItem);
+        resetButton.addEventListener('click', resetItems);
+    }
+
+    // Render item inputs
+    function renderItems() {
+        itemsGrid.innerHTML = '';
+        
+        items.forEach((item, index) => {
+            const itemRow = document.createElement('div');
+            itemRow.className = 'item-row';
+            
+            const colorBox = document.createElement('div');
+            colorBox.className = 'item-color';
+            colorBox.style.backgroundColor = item.color;
+            
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'item-input';
+            input.value = item.label;
+            input.placeholder = `${index + 1}등`;
+            input.addEventListener('input', (e) => {
+                items[index].label = e.target.value;
+                drawWheel();
+            });
+            
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-button';
+            deleteBtn.innerHTML = `
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M15 5L5 15M5 5L15 15" stroke="#364153" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            `;
+            deleteBtn.addEventListener('click', () => deleteItem(index));
+            
+            itemRow.appendChild(colorBox);
+            itemRow.appendChild(input);
+            itemRow.appendChild(deleteBtn);
+            itemsGrid.appendChild(itemRow);
+        });
+    }
+
+    // Draw roulette wheel
+    function drawWheel() {
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = 220;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const sliceAngle = (2 * Math.PI) / items.length;
+        
+        items.forEach((item, index) => {
+            const startAngle = index * sliceAngle + currentRotation;
+            const endAngle = (index + 1) * sliceAngle + currentRotation;
+            
+            // Draw slice
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+            ctx.closePath();
+            ctx.fillStyle = item.color;
+            ctx.fill();
+            
+            // Draw border
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            // Draw text
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(startAngle + sliceAngle / 2);
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 18px Arial';
+            ctx.fillText(item.label || `${index + 1}등`, radius * 0.65, 0);
+            ctx.restore();
+        });
+        
+        // Draw center circle
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 40, 0, 2 * Math.PI);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.strokeStyle = '#d1d5dc';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    // Spin wheel animation
+    function spinWheel() {
+        if (isSpinning) return;
+        if (items.length < 2) {
+            alert('최소 2개의 항목이 필요합니다.');
+            return;
+        }
+        
+        // Hide result box
+        document.getElementById('resultBox').style.display = 'none';
+        
+        isSpinning = true;
+        spinButton.disabled = true;
+        
+        const spinDuration = 4000; // 4 seconds
+        const minSpins = 5;
+        const extraRotation = Math.random() * 2 * Math.PI;
+        const totalRotation = minSpins * 2 * Math.PI + extraRotation;
+        
+        const startTime = Date.now();
+        const startRotation = currentRotation;
+        
+        function animate() {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / spinDuration, 1);
+            
+            // Easing function (ease-out)
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            
+            currentRotation = startRotation + totalRotation * easeOut;
+            drawWheel();
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                isSpinning = false;
+                spinButton.disabled = false;
+                showResult();
+            }
+        }
+        
+        animate();
+    }
+
+    // Show result
+    function showResult() {
+        // Calculate which segment the pointer is pointing at
+        // Pointer is at top (12 o'clock = -90 degrees = -PI/2 radians = 3*PI/2 when normalized)
+        const sliceAngle = (2 * Math.PI) / items.length;
+        
+        // Normalize current rotation to 0-2PI range
+        const normalizedRotation = ((currentRotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+        
+        // Pointer position is at top (-PI/2 or equivalently 3*PI/2)
+        // We need to find which slice's range includes this angle
+        // Add PI/2 to shift from top being at -PI/2 to being at 0
+        const adjustedAngle = (normalizedRotation + Math.PI / 2) % (2 * Math.PI);
+        
+        // Find the winning index by determining which slice contains the top position
+        // We need to account for the wheel rotating, so we look at where index 0 started
+        const winningIndex = Math.floor((2 * Math.PI - adjustedAngle) / sliceAngle) % items.length;
+        const winner = items[winningIndex];
+        
+        // Show result box
+        const resultBox = document.getElementById('resultBox');
+        const resultText = document.getElementById('resultText');
+        resultText.textContent = `당첨: ${winner.label}`;
+        resultBox.style.display = 'block';
+    }
+
+    // Add new item
+    function addItem() {
+        if (items.length >= 12) {
+            alert('최대 12개까지 항목을 추가할 수 있습니다.');
+            return;
+        }
+        
+        const newIndex = items.length;
+        const newItem = {
+            label: `${newIndex + 1}등`,
+            color: defaultColors[newIndex % defaultColors.length]
+        };
+        
+        items.push(newItem);
+        renderItems();
+        drawWheel();
+    }
+
+    // Delete item
+    function deleteItem(index) {
+        if (items.length <= 2) {
+            alert('최소 2개의 항목이 필요합니다.');
+            return;
+        }
+        
+        items.splice(index, 1);
+        renderItems();
+        drawWheel();
+    }
+
+    // Reset to default items
+    function resetItems() {
+        if (confirm('초기화하시겠습니까?')) {
+            items = [
+                { label: '1등', color: '#ff6b6b' },
+                { label: '2등', color: '#4ecdc4' },
+                { label: '3등', color: '#45b7d1' },
+                { label: '4등', color: '#ffa07a' },
+                { label: '5등', color: '#98d8c8' },
+                { label: '6등', color: '#f7dc6f' }
+            ];
+            currentRotation = 0;
+            document.getElementById('resultBox').style.display = 'none';
+            renderItems();
+            drawWheel();
+        }
+    }
+
+    // Initialize on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+     </script>
+</body>
 </html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/base_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 - 두루두룹</title>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/user/login.css}">
+    
+</head>
+
+<body layout:fragment="content" class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <button type="button" class="btn-close-login" onclick="window.location.href='/'">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6 6L18 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <div class="login-header">
+                <h1 class="login-title">두루두룹</h1>
+                <p class="login-subtitle">다시 만나서 반가워요!</p>
+            </div>
+
+            <form th:action="@{/login}" method="post" class="login-form">
+                <div class="error-message" id="errorMessage" th:if="${param.error}">
+                    아이디 또는 비밀번호가 올바르지 않습니다.
+                </div>
+                
+                <div class="form-group">
+                    <label for="userId" class="form-label">이메일(아이디)</label>
+                    <input type="email" 
+                           class="form-control" 
+                           id="userId" 
+                           name="userId" 
+                           placeholder="이메일(아이디)을 입력하세요" 
+                           required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">비밀번호</label>
+                    <div class="password-input-wrapper">
+                        <input type="password" 
+                               class="form-control" 
+                               id="password" 
+                               name="password" 
+                               placeholder="비밀번호를 입력하세요" 
+                               required>
+                        <button type="button" 
+                                class="btn-password-toggle" 
+                                onclick="togglePassword()">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M1.66667 10C1.66667 10 4.16667 4.16667 10 4.16667C15.8333 4.16667 18.3333 10 18.3333 10C18.3333 10 15.8333 15.8333 10 15.8333C4.16667 15.8333 1.66667 10 1.66667 10Z" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <div class="checkbox-group">
+                        <input type="checkbox" 
+                               class="checkbox-input" 
+                               id="rememberUserId" 
+                               name="rememberUserId">
+                        <label for="rememberUserId" class="checkbox-label">이메일(아이디) 저장</label>
+                    </div>
+                    <button type="button" 
+                            class="btn-find-password" 
+                            onclick="window.location.href='/user/find-password'">
+                        비밀번호 찾기
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-login">로그인</button>
+
+                <div class="signup-prompt">
+                    <span class="signup-prompt-text">아직 회원이 아니신가요?</span>
+                    <button type="button" 
+                            class="btn-signup" 
+                            onclick="window.location.href='/signup'">
+                        회원가입하기
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        passwordInput.type = (passwordInput.type === 'password') ? 'text' : 'password';
+    }
+
+    // ===== 쿠키 유틸 =====
+    function setCookie(name, value, days) {
+        const maxAge = days * 24 * 60 * 60; // seconds
+        document.cookie =
+            encodeURIComponent(name) + "=" + encodeURIComponent(value) +
+            "; Max-Age=" + maxAge +
+            "; Path=/" +
+            "; SameSite=Lax";
+        // 배포가 HTTPS면 Secure 권장:
+        // + "; Secure"
+    }
+
+    function getCookie(name) {
+        const cookies = document.cookie ? document.cookie.split("; ") : [];
+        for (const c of cookies) {
+            const idx = c.indexOf("=");
+            const k = decodeURIComponent(c.substring(0, idx));
+            const v = decodeURIComponent(c.substring(idx + 1));
+            if (k === name) return v;
+        }
+        return "";
+    }
+
+    function deleteCookie(name) {
+        document.cookie =
+            encodeURIComponent(name) + "=; Max-Age=0; Path=/; SameSite=Lax";
+    }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const userIdInput = document.getElementById('userId');
+        const rememberCheckbox = document.getElementById('rememberUserId');
+        const form = document.querySelector('.login-form');
+
+        const COOKIE_NAME = "savedUserId";
+
+        // ✅ 1) 페이지 로딩 시 쿠키 읽어서 userId 채우기
+        const savedUserId = getCookie(COOKIE_NAME);
+        if (savedUserId) {
+            userIdInput.value = savedUserId;
+            rememberCheckbox.checked = true;
+        }
+
+        // ✅ 2) 제출 시 체크박스에 따라 저장/삭제
+        form.addEventListener('submit', function() {
+            const userId = userIdInput.value.trim();
+
+            if (rememberCheckbox.checked && userId) {
+                setCookie(COOKIE_NAME, userId, 30); // 30일 저장
+            } else {
+                deleteCookie(COOKIE_NAME);
+            }
+        });
+
+        // (선택) 체크 해제 즉시 쿠키 삭제
+        rememberCheckbox.addEventListener('change', function() {
+            if (!rememberCheckbox.checked) deleteCookie(COOKIE_NAME);
+        });
+    });
+</script>
+
+
+</body>
+</html>
