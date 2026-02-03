@@ -25,7 +25,7 @@
         <!-- 게시글 목록 헤더 -->
         <div class="board-list-header d-flex justify-content-between align-items-center mb-4">
             <h3 class="section-title mb-0">게시글</h3>
-            <a th:href="@{/board/insert(clubNo=${club.no})}" class="btn btn-join" sec:authorize="isAuthenticated()">
+            <a th:href="@{/club/{clubNo}/board/write(clubNo=${club.no})}" class="btn btn-join" sec:authorize="isAuthenticated()">
                 게시글 작성
             </a>
         </div>
@@ -35,7 +35,7 @@
             <h5 class="text-muted mb-3">공지사항</h5>
             <div class="list-group">
                 <a th:each="notice : ${notices}" 
-                   th:href="@{/board/{no}(no=${notice.no})}"
+                   th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${notice.no})}"
                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center notice-item">
                     <div>
                         <span class="badge bg-danger me-2">공지</span>
@@ -50,7 +50,7 @@
         <div class="board-list">
             <div th:if="${boards == null or boards.empty}" class="text-center py-5">
                 <p class="text-muted">아직 게시글이 없습니다.</p>
-                <a th:href="@{/board/insert(clubNo=${club.no})}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                <a th:href="@{/club/{clubNo}/board/write(clubNo=${club.no})}" class="btn btn-join" sec:authorize="isAuthenticated()">
                     첫 게시글 작성하기
                 </a>
             </div>
@@ -59,7 +59,7 @@
                 <div th:each="board : ${boards}" class="list-group-item board-item">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="board-item-content">
-                            <a th:href="@{/board/{no}(no=${board.no})}" class="board-item-title">
+                            <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="board-item-title">
                                 <h5 class="mb-1" th:text="${board.title}">게시글 제목</h5>
                             </a>
                             <p class="mb-2 text-muted board-item-preview" th:text="${#strings.abbreviate(board.content, 100)}">

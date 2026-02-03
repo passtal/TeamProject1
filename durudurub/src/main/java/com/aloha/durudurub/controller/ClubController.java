@@ -128,7 +128,7 @@ public class ClubController {
         List<Category> categories = categoryService.list();
         model.addAttribute("categories", categories);
         model.addAttribute("club", new Club());
-        return "club/create";
+        return "club/insert";
     }
 
     /**

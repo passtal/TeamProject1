@@ -21,14 +21,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     
-    // @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
     
-    // @Autowired
-    private AuthMapper authMapper;
+    private final AuthMapper authMapper;
     
-    // @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     
     @Override
     public List<User> list() {

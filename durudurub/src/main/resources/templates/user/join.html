@@ -191,10 +191,7 @@
                 <!-- Login Prompt -->
                 <div class="login-prompt">
                     <span class="login-prompt-text">이미 계정이 있으신가요?</span>
-                    <button type="button" 
-                            class="btn-login" 
-                            <a th:href="@{/login}">로그인하기</a>
-                    </button>
+                    <a th:href="@{/login}" class="btn-login">로그인하기</a>
                 </div>
 
             </form>
@@ -474,22 +471,24 @@
                 return;
             }
 
-            // API는 JSON만 받으므로 프로필이미지를 지금 단계에서 전송 x
-            const payload = {
-                userId: userId,
-                password: password,
-                username: username,
-                address: address,
-                gender: gender,
-                age: ageStr ? Number(ageStr) : 0
-            };
+            // FormData로 multipart/form-data 전송 (프로필 이미지 포함)
+            const formData = new FormData();
+            formData.append("userId", userId);
+            formData.append("password", password);
+            formData.append("username", username);
+            formData.append("address", address);
+            formData.append("gender", gender);
+            formData.append("age", ageStr ? Number(ageStr) : 0);
+            
+            // 프로필 이미지 파일 추가
+            const profileInput = document.getElementById("profileImgFile");
+            if (profileInput.files && profileInput.files[0]) {
+                formData.append("profileImgFile", profileInput.files[0]);
+            }
 
             fetch("/api/users/join", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=UTF-8"
-                },
-                body: JSON.stringify(payload)
+                body: formData
             })
             .then(res => {
                 if(res.ok) {
@@ -500,7 +499,7 @@
             .then(data => {
                 toast("회원가입이 완료되었습니다. 2초 후 로그인 페이지로 이동합니다.");
                 setTimeout(() => {
-                    window.location.href = "/user/login";
+                    window.location.href = "/login";
                 }, 2000);
             })
             .catch(err => {
