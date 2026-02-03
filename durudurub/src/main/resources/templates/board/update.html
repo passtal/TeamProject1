@@ -28,7 +28,7 @@
                     <div class="board-header">
                         <h2 class="section-title">게시글 수정</h2>
                     </div>
-
+                    
                     <div class="board-content">
                         <form th:action="@{/board/update}" method="post" enctype="multipart/form-data">
                             <input type="hidden" name="no" th:value="${board.no}">

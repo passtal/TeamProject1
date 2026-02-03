@@ -108,7 +108,7 @@ public class ClubController {
 
     /**
      * 세부 카테고리 조회하기 (API)
-     * @param categoryNo
+     * @param categoryNo ERROR
      * @return
      */
     @GetMapping("/api/subcategories/{categoryNo}")
@@ -128,7 +128,7 @@ public class ClubController {
         List<Category> categories = categoryService.list();
         model.addAttribute("categories", categories);
         model.addAttribute("club", new Club());
-        return "club/insert";
+        return "club/create";
     }
 
     /**

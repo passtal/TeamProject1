@@ -2,6 +2,8 @@ package com.aloha.durudurub.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.aloha.durudurub.dto.Auth;
 import com.aloha.durudurub.dto.User;
 
@@ -37,5 +39,7 @@ public interface UserService {
     int insertAuth(Auth auth);
     
     int deleteAuth(int userNo, String auth);
+
+    int insert (User user, MultipartFile profileImgFile);
     
 }

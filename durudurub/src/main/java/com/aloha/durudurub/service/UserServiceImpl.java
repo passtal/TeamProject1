@@ -118,4 +118,18 @@ public class UserServiceImpl implements UserService {
     public int deleteAuth(int userNo, String auth) {
         return authMapper.delete(userNo, auth);
     }
+    
+    @Override
+    @Transactional
+    public int insert(User user, org.springframework.web.multipart.MultipartFile profileImgFile) {
+        // 프로필 이미지 처리 (필요시 파일 저장 로직 추가)
+        if (profileImgFile != null && !profileImgFile.isEmpty()) {
+            // TODO: 파일 저장 로직 구현
+            // 임시로 파일명만 저장
+            user.setProfileImg(profileImgFile.getOriginalFilename());
+        }
+        
+        // 기존 insert 메서드 호출
+        return insert(user);
+    }
 }

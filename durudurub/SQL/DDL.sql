@@ -354,9 +354,9 @@ CREATE TABLE `notices` (
     `title` VARCHAR(200) NOT NULL COMMENT '제목',
     `content` TEXT NOT NULL COMMENT '내용',
     `is_important` CHAR(1) DEFAULT 'N' COMMENT '중요 공지 여부',
-    'view_count' INT DEFAULT 0 COMMENT '조회수'
+    `view_counts` INT DEFAULT 0 COMMENT '조회수',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`no`),
     FOREIGN KEY (`writer_no`) REFERENCES `users`(`no`) ON DELETE CASCADE
-)
+);
