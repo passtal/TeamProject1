@@ -7,7 +7,7 @@
     3. 모바일용 아이콘 -->
 
 <th:block th:fragment="header">
-  <header>
+  <header class="header">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
       <div class="container-fluid">
           <a class="navbar-brand d-flex align-items-center gap-1" href="/">
@@ -39,10 +39,12 @@
                 </svg>
                 미니게임
               </a>
+              <a href="#" class="minigameIcon btn btn-outline-success rounded-pill">회원가입</a>
+              <a href="#" class="minigameIcon btn btn-outline-success rounded-pill">로그인</a>
               <!-- user / admin 구분 -->
-              <button class="btn btn-link p-0" type="button">
+              <!-- <button class="btn btn-link p-0" type="button">
                   <img th:src="@{/img/icons/navbar-notification.png}" alt="알림" class="user-icon">
-              </button>
+              </button> -->
           </div>
       </div>
     </nav>

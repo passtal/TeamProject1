@@ -32,6 +32,6 @@ public class HomeController {
             e.printStackTrace();
             model.addAttribute("categories", new ArrayList<>());
         }
-        return "index copy";
+        return "index";
     }
 }

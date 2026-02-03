@@ -14,339 +14,6 @@
 }
 
 /* ========================================
-   Navbar Styles
-   ======================================== */
-
-.navbar {
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.container-fluid {
-    height: 70px;
-    padding-left: 32px;
-    padding-right: 32px;
-}
-
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.25rem;
-    color: var(--primary-color);
-    margin-right: 0px;
-}
-
-.navbar-brand:hover {
-    color: var(--primary-color);
-}
-
-.logo-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--light-gray);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-container .input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    max-width: 450px;
-}
-
-.search-container button {
-    border: none;
-}
-
-.search-container .left-btn {
-    position: absolute;
-    background: none;
-    z-index: 10;
-    left: 0;
-}
-
-.search-container .left-btn:hover {
-    background-color: transparent;
-    color: #6c757d;
-    border: none;
-}
-
-
-.search-container .right-btn {
-    position: absolute;
-    background: none;
-    z-index: 10;
-    right: 0;
-}
-
-.search-container .right-btn:hover {
-    background-color: transparent;
-    color: #6c757d;
-    border: none;
-}
-
-.search-container .form-control {
-    border: 1px solid var(--border-color);
-    padding: 0.75rem 1.25rem;
-    height: 46px;
-}
-
-.search-container .form-control:focus {
-    border-color: var(--primary-color);
-    border-width: 2px;
-    box-shadow: none;
-}
-
-.search-container .form-control::placeholder {
-    color: rgba(10, 10, 10, 0.5);
-}
-
-.navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.navbar-right .minigameIcon {
-    font-size: 1.125rem;   
-
-    border-width: 2px;
-    
-    padding-left: 1.5rem;          
-    padding-right: 1.5rem;
-    padding-top: 0.625rem;          
-    padding-bottom: 0.625rem;
-
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-
-}
-.navbar-right .btn-outline-success {
-    border-color: var(--primary-color);
-    color: var(--primary-color);
-}
-
-.navbar-right .btn-outline-success:hover {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-/* ========================================
-   Hero Section
-   ======================================== */
-
-.hero-section {
-    background: linear-gradient(135deg, #F0F9F4 0%, #ffffff 100%);
-    padding: 80px 0;
-}
-
-.hero-section h1 {
-    font-size: 3.5rem;
-    line-height: 1.2;
-    color: var(--dark-color);
-}
-
-.hero-section .lead {
-    font-size: 1.25rem;
-    line-height: 1.625;
-    color: var(--text-muted);
-}
-
-.hero-image-container {
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-}
-
-.hero-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-/* ========================================
-   Ad Banner Section
-   ======================================== */
-
-.ad-section {
-    background-color: var(--light-gray);
-    padding: 60px 0;
-}
-
-.ad-banner {
-    background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
-    min-height: 320px;
-    position: relative;
-    overflow: hidden;
-}
-
-.ad-banner img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.ad-banner .badge {
-    background-color: #4A90E2;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
-.ad-banner h3 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
-/* Pagination Dots */
-.pagination-dots {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.5);
-    transition: all 0.3s ease;
-}
-
-.dot.active {
-    background-color: white;
-    width: 24px;
-    border-radius: 4px;
-}
-
-.carousel-controls {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.carousel-controls .btn {
-    background-color: white;
-    border: none;
-    color: #101828;
-}
-
-/* ========================================
-   Category Section
-   ======================================== */
-
-.category-section {
-    background-color: white;
-    padding: 80px 0;
-}
-
-.category-section h2 {
-    font-size: 2.5rem;
-    color: var(--dark-color);
-}
-
-.category-section .lead {
-    color: var(--text-muted);
-    font-size: 1.125rem;
-}
-
-.category-btn {
-    transition: all 0.3s ease;
-    cursor: pointer;
-    background-color: white !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-.category-btn:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
-    border-color: var(--primary-color) !important;
-}
-
-.category-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 80px;
-}
-
-.icon-img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    max-width: 60px;
-    max-height: 60px;
-}
-
-.navbar-icon {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-.user-icon {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-}
-
-.logo-img {
-    object-fit: contain;
-}
-
-.social-icon {
-    display: flex;                 /* flex */
-    align-items: center;           
-    justify-content: center;
-   align-content: center;
-}
-
-.category-btn p {
-    font-size: 1rem;
-    margin-bottom: 0;
-}
-
-/* ========================================
-   Footer Styles
-   ======================================== */
-
-.footer {
-    background-color: #F9FAFB;
-    border-top: 1px solid var(--border-color);
-    padding-top: 3rem;
-}
-
-.footer h5,
-.footer h6 {
-    color: var(--dark-color);
-    font-weight: 700;
-}
-
-.footer a {
-    color: var(--text-muted);
-    transition: color 0.3s ease;
-}
-
-.footer a:hover {
-    color: var(--primary-color);
-}
-
-.footer .btn {
-    width: 40px;
-    height: 40px;
-    padding: 0.5rem;
-    border-radius: 50%;
-}
-
-.footer .btn-outline-secondary {
-    border-color: var(--border-color);
-}
-
-.footer .btn-outline-secondary:hover {
-    border-color: var(--primary-color);
-    background-color: var(--primary-color);
-}
-
-/* ========================================
    Responsive Design
    ======================================== */
 
@@ -355,7 +22,7 @@
         font-size: 2.5rem;
     }
 
-    .search-container .input-group {
+    .header.search-container .input-group {
         min-width: 250px;
     }
 
@@ -365,7 +32,7 @@
 }
 
 @media (max-width: 768px) {
-    .navbar {
+    .header .navbar {
         flex-wrap: wrap;
     }
 
@@ -381,11 +48,11 @@
         font-size: 1rem;
     }
 
-    .search-container {
+    .header .search-container {
         margin: 1rem auto !important;
     }
 
-    .search-container .input-group {
+    .header .search-container .input-group {
         min-width: 100%;
     }
 
@@ -419,16 +86,16 @@
 }
 
 @media (max-width: 576px) {
-    .navbar-brand {
+    .header .navbar-brand {
         font-size: 1rem;
     }
 
-    .navbar-right {
+    .header .navbar-right {
         width: 100%;
         margin-top: 1rem;
     }
 
-    .navbar-right .btn {
+    .header .navbar-right .btn {
         font-size: 0.875rem;
         padding: 0.5rem 1rem;
     }
