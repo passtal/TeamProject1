@@ -22,6 +22,8 @@ public class Club {
     private int currentMembers;
     private Date deadLine;
     private String location;
+    private Double lat;
+    private Double lng;
     private Date clubDate;
     private String status;
     private int viewCount;

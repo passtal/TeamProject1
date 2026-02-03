@@ -27,9 +27,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 /**
  * 게시판 컨트롤러
+ * 모임 내 게시판 - /club/{clubNo}/board
  */
 @Controller
-@RequestMapping("/board")
+@RequestMapping("/club/{clubNo}/board")
 public class BoardController {
     
     @Autowired
@@ -47,11 +48,10 @@ public class BoardController {
 
     /**
      * 게시글 목록(list)
-     * @param param
-     * @return
+     * GET /club/{clubNo}/board
      */
-    @GetMapping("/board/list")
-    public String list(@PathVariable ("clubNo") int clubNo,
+    @GetMapping("")
+    public String list(@PathVariable("clubNo") int clubNo,
                         @RequestParam(value = "page", defaultValue = "1") int page,
                         Principal principal,
                         Model model) {
@@ -72,10 +72,9 @@ public class BoardController {
 
     /**
      * 게시글 상세보기(detail)
-     * @param no
-     * @return
+     * GET /club/{clubNo}/board/{no}
      */
-    @GetMapping("/board/{no}")
+    @GetMapping("/{no}")
     public String detail(@PathVariable("clubNo") int clubNo,
                         @PathVariable("no") int no,
                         Principal principal,
@@ -95,16 +94,15 @@ public class BoardController {
         model.addAttribute("club", club);
         model.addAttribute("board", board);
         model.addAttribute("comments", comments);
-        model.addAttribute("isWriter", board.getWriter());
-        model.addAttribute("isHost", club.getHost());
+        model.addAttribute("isWriter", board.getWriterNo() == currentUser.getNo());
+        model.addAttribute("isHost", club.getHostNo() == currentUser.getNo());
 
         return "board/detail";
     }
 
     /**
      * 게시글 작성 페이지
-     * @param param
-     * @return
+     * GET /club/{clubNo}/board/write
      */
     @GetMapping("/write")
     public String write(@PathVariable("clubNo") int clubNo,
@@ -122,14 +120,13 @@ public class BoardController {
         model.addAttribute("board", new Board());
         model.addAttribute("isHost", isHost);
 
-        return "board/write";
+        return "board/insert";
     }
 
     
     /**
      * 글쓰기 처리
-     * @param entity
-     * @return
+     * POST /club/{clubNo}/board/write
      */    
     @PostMapping("/write")
     public String writePro(@PathVariable("clubNo") int clubNo,
@@ -156,18 +153,17 @@ public class BoardController {
         int result = boardService.insert(board);
 
         if (result > 0) {
-            rttr.addAttribute("message", "게시글이 작성되었습니다.");
+            rttr.addFlashAttribute("message", "게시글이 작성되었습니다.");
             return "redirect:/club/" + clubNo + "/board/" + board.getNo();
         }
 
-        rttr.addAttribute("error", "요청이 실패했습니다.");
-        return "redirect:/club/" + clubNo + "board/write";
+        rttr.addFlashAttribute("error", "요청이 실패했습니다.");
+        return "redirect:/club/" + clubNo + "/board/write";
     }
 
     /**
-     * 게시글 수정
-     * @param no
-     * @return
+     * 게시글 수정 페이지
+     * GET /club/{clubNo}/board/{no}/edit
      */
     @GetMapping("/{no}/edit")
     public String edit(@PathVariable("clubNo") int clubNo,
@@ -191,13 +187,12 @@ public class BoardController {
         model.addAttribute("board", board);
         model.addAttribute("isHost", club.getHostNo() == user.getNo());
         
-        return "board/edit";
+        return "board/update";
     }
 
     /**
      * 게시글 수정 처리
-     * @param no
-     * @return
+     * POST /club/{clubNo}/board/{no}/edit
      */
     @PostMapping("/{no}/edit")
     public String editPro(@PathVariable("clubNo") int clubNo,
@@ -232,8 +227,7 @@ public class BoardController {
     
     /**
      * 게시글 삭제
-     * @param no
-     * @return
+     * POST /club/{clubNo}/board/{no}/delete
      */
     @PostMapping("/{no}/delete")
     public String delete(@PathVariable("clubNo") int clubNo,

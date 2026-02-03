@@ -138,6 +138,8 @@ CREATE TABLE `clubs` (
     `current_members` INT DEFAULT 1 COMMENT '현재 참가자 수',
     `deadline` DATE NULL COMMENT '마감일',
     `location` VARCHAR(255) NULL COMMENT '모임 장소',
+    `lat` DECIMAL(10, 8) NULL COMMENT '위도',
+    `lng` DECIMAL(11, 8) NULL COMMENT '경도',
     `club_date` DATETIME NULL COMMENT '모임 일시',
     `status` ENUM('RECRUITING', 'CLOSED', 'COMPLETED') DEFAULT 'RECRUITING' COMMENT '모임상태',     -- 이거 serviceImpl이랑 jsp를 어떻게 구현하느냐에 따라서 지워질수도
     `view_count` INT DEFAULT 0 COMMENT '조회수',

@@ -99,17 +99,19 @@ public class ClubController {
             User user = userService.selectByUserId(principal.getName());
             ClubMember myMembership = clubService.selectMember(no, user.getNo());
             model.addAttribute("myMembership", myMembership);
-            model.addAttribute("isHost", club.getNo());
+            model.addAttribute("isHost", club.getHostNo() == user.getNo());
+        } else {
+            model.addAttribute("isHost", false);
         }
         return "club/detail";
     }
 
     /**
-     * 세부 카테고리 조회하기
-     * @param param
+     * 세부 카테고리 조회하기 (API)
+     * @param categoryNo
      * @return
      */
-    @GetMapping("/{categoryNo}")
+    @GetMapping("/api/subcategories/{categoryNo}")
     @ResponseBody
     public List<SubCategory> getSubCategories(@PathVariable("categoryNo") int categoryNo) {
         return categoryService.listBySubCategory(categoryNo);
@@ -126,7 +128,7 @@ public class ClubController {
         List<Category> categories = categoryService.list();
         model.addAttribute("categories", categories);
         model.addAttribute("club", new Club());
-        return "club/create";
+        return "club/insert";
     }
 
     /**
@@ -185,7 +187,7 @@ public class ClubController {
         model.addAttribute("categories", categories);
         model.addAttribute("subCategories", subCategories);
         
-        return "club/edit";
+        return "club/update";
     }
     
     /**

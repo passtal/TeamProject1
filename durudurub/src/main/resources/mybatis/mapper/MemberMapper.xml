@@ -104,7 +104,7 @@
 
     <!-- 마이페이지 : 내모임 관리 -->
     <!-- 참여 중인 모임 -->
-    <select id="joinedClubList" resultType="Club">
+    <select id="joinedClubList" resultType="com.aloha.durudurub.dto.Club">
         SELECT c.*
         FROM club_members m
         JOIN clubs c ON m.club_no = c.no
@@ -112,7 +112,7 @@
             ORDER BY m.joined_at DESC
     </select>
     <!-- 신청 중인 모임 -->
-    <select id="pendingClubList" resultType="Club">
+    <select id="pendingClubList" resultType="com.aloha.durudurub.dto.Club">
         SELECT c.*
         FROM club_members m
         JOIN clubs c ON m.club_no = c.no

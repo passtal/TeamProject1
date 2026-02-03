@@ -2,7 +2,7 @@ package com.aloha.durudurub.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,19 +12,22 @@ import com.aloha.durudurub.dao.UserMapper;
 import com.aloha.durudurub.dto.Auth;
 import com.aloha.durudurub.dto.User;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 회원 서비스 구현체
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     
-    @Autowired
+    // @Autowired
     private UserMapper userMapper;
     
-    @Autowired
+    // @Autowired
     private AuthMapper authMapper;
     
-    @Autowired
+    // @Autowired
     private PasswordEncoder passwordEncoder;
     
     @Override

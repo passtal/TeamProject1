@@ -5,10 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${title} + ' - 두루두룹'">모임 상세보기</title>
+    <title th:text="${club.title} + ' - 두루두룹'">모임 상세보기</title>
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" th:href="@{/css/board-detail.css}">
+    <link rel="stylesheet" th:href="@{/css/club-detail.css}">
     <!-- Leaflet CSS for Map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
@@ -17,7 +17,7 @@
 
     <div class="hero-section">
         <div class="hero-image-wrapper">
-            <img th:src="@{/img/board/hero-image.png}" alt="모임 대표 이미지">
+            <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : '/img/board/hero-image.png'}" alt="모임 대표 이미지">
         </div>
     </div>
 
@@ -25,18 +25,18 @@
         <div class="board-card">
             <div class="board-header">
                 <div class="header-top">
-                    <h1 class="board-title" th:text="${title}">독서 모임 - 매주 한 권 완독하기</h1>
-                    <button class="btn-heart">
+                    <h1 class="board-title" th:text="${club.title}">독서 모임 - 매주 한 권 완독하기</h1>
+                    <button class="btn-heart" id="btnClubLike" th:data-no="${club.no}" th:classappend="${club.liked ? 'liked' : ''}">
                         <img th:src="@{/img/board/heart-icon.png}" alt="좋아요">
-                        <span class="heart-badge" th:text="${likeCount}">42</span>
+                        <span class="heart-badge" th:text="${club.likeCount}">42</span>
                     </button>
                 </div>
 
                 <div class="board-meta">
-                    <div class="category-badge" th:text="${category}">책</div>
+                    <div class="category-badge" th:text="${club.category.name}">책</div>
                     <div class="leader-info">
                         <span class="meta-label">리더</span>
-                        <span class="meta-value" th:text="${leader}">책벌레</span>
+                        <span class="meta-value" th:text="${club.host.username}">책벌레</span>
                     </div>
                 </div>
 
@@ -44,15 +44,17 @@
                 <div class="board-actions">
                     <div class="member-status">
                         <img th:src="@{/img/board/member-icon.png}" alt="멤버">
-                        <span th:text="${currentMembers} + '/' + ${maxMembers} + '명 참여 중'">12/15명 참여 중</span>
+                        <span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명 참여 중'">12/15명 참여 중</span>
                     </div>
-                    <!-- 리더인 경우 정보 수정 버튼 -->
-                    <button th:if="${isLeader}" class="btn btn-edit" onclick="editBoardInfo()">
+                    <!-- 호스트인 경우 정보 수정 버튼 -->
+                    <button th:if="${isHost}" class="btn btn-edit" onclick="editClubInfo()">
                         <img th:src="@{/img/board/edit-icon.png}" alt="편집">
                         정보 수정
                     </button>
-                    <!-- 리더가 아닌 경우 가입하기 버튼 -->
-                    <a th:unless="${isLeader}" th:href="@{/board/{id}/join(id=${boardId})}" class="btn btn-join">모임 가입하기</a>
+                    <!-- 호스트가 아니고, 아직 가입하지 않은 경우 가입하기 버튼 -->
+                    <a th:if="${myMembership == null and !isHost}" th:href="@{/club/{no}/join(no=${club.no})}" class="btn btn-join">모임 가입하기</a>
+                    <!-- 이미 가입한 경우 -->
+                    <span th:if="${myMembership != null and !isHost}" class="badge bg-success">참여 중</span>
                 </div>
             </div>
 
@@ -61,8 +63,7 @@
                 <!-- Introduction -->
                 <div class="content-section">
                     <h2 class="section-title">모임 소개</h2>
-                    <p class="section-text">매주 일요일 14:00에 진행되는 독서 모임 - 매주 한 권 완독하기입니다. 함께 즐거운 시간을 보내요!</p>
-                    <p class="section-text">새로운 사람들과 함께 즐거운 시간을 보내고 싶다면 지금 바로 참여해보세요! 초보자도 환영하며, 편안한 분위기에서 함께 활동합니다.</p>
+                    <div class="section-text" th:utext="${club.description}">모임 설명이 여기에 표시됩니다.</div>
                 </div>
 
                 <!-- Schedule & Location -->
@@ -70,42 +71,22 @@
                     <!-- Schedule -->
                     <div class="schedule-section">
                         <div class="schedule-header">
-                            <h2 class="section-title">다가오는 모임 일정</h2>
-                            <!-- 리더인 경우 일정 추가 버튼 -->
-                            <button th:if="${isLeader}" class="btn btn-add-schedule" onclick="addSchedule()">
-                                <img th:src="@{/img/board/edit-icon.png}" alt="추가">
-                                일정 추가
-                            </button>
+                            <h2 class="section-title">모임 일시</h2>
                         </div>
                         <div class="schedule-list">
-                            <div class="schedule-item active">
+                            <div class="schedule-item active" th:if="${club.clubDate != null}">
                                 <div class="schedule-content">
                                     <img th:src="@{/img/board/calendar-icon.png}" alt="달력">
-                                    <span>2월 1일 (일) 오전 9:00</span>
+                                    <span th:text="${#temporals.format(club.clubDate, 'yyyy년 M월 d일 (E) a h:mm')}">2월 1일 (일) 오전 9:00</span>
                                 </div>
-                                <!-- 리더인 경우 삭제 버튼 -->
-                                <button th:if="${isLeader}" class="btn-delete-schedule" onclick="deleteSchedule(1)">
-                                    <img th:src="@{/img/board/delete-icon.png}" alt="삭제">
-                                </button>
                             </div>
-                            <div class="schedule-item">
+                            <div class="schedule-item" th:if="${club.deadLine != null}">
                                 <div class="schedule-content">
-                                    <img th:src="@{/img/board/calendar-icon.png}" alt="달력">
-                                    <span>2월 8일 (일) 오전 9:00</span>
+                                    <img th:src="@{/img/board/calendar-icon.png}" alt="마감일">
+                                    <span>모집 마감: <span th:text="${#temporals.format(club.deadLine, 'yyyy년 M월 d일')}"></span></span>
                                 </div>
-                                <button th:if="${isLeader}" class="btn-delete-schedule" onclick="deleteSchedule(2)">
-                                    <img th:src="@{/img/board/delete-icon.png}" alt="삭제">
-                                </button>
                             </div>
-                            <div class="schedule-item">
-                                <div class="schedule-content">
-                                    <img th:src="@{/img/board/calendar-icon.png}" alt="달력">
-                                    <span>2월 15일 (일) 오전 9:00</span>
-                                </div>
-                                <button th:if="${isLeader}" class="btn-delete-schedule" onclick="deleteSchedule(3)">
-                                    <img th:src="@{/img/board/delete-icon.png}" alt="삭제">
-                                </button>
-                            </div>
+                            <p th:if="${club.clubDate == null}" class="text-muted">일정이 아직 정해지지 않았습니다.</p>
                         </div>
                     </div>
 
@@ -115,165 +96,42 @@
                             <img th:src="@{/img/board/location-icon.png}" alt="장소">
                             <div class="location-info">
                                 <span class="location-label">장소</span>
-                                <span class="location-value" th:text="${location}">강남구</span>
+                                <span class="location-value" th:text="${club.location ?: '미정'}">강남구</span>
                             </div>
                         </div>
                         <!-- Map Container -->
-                        <div id="map" class="map-container"></div>
+                        <div id="map" class="map-container" th:if="${club.lat != null and club.lng != null}"></div>
+                        <p th:if="${club.lat == null or club.lng == null}" class="text-muted mt-2">지도 위치가 설정되지 않았습니다.</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Posts Section -->
-        <div class="posts-section">
-            <!-- Posts Header -->
-            <div class="posts-header">
-                <h2 class="section-title">게시글</h2>
-                <div class="posts-info">
-                    <img th:src="@{/img/board/lock-icon.png}" alt="잠금">
-                    <span>멤버만 작성 가능</span>
-                </div>
-            </div>
-
-            <!-- Join CTA Card (리더가 아닌 경우만) -->
-            <div th:unless="${isLeader}" class="join-cta-card">
-                <div class="join-cta-content">
-                    <h3 class="join-cta-title">이 모임의 멤버가 되어보세요!</h3>
-                    <p class="join-cta-text">멤버가 되면 게시글을 작성하고 모임 활동에 참여할 수 있습니다.</p>
-                </div>
-                <a th:href="@{/board/{id}/join(id=${boardId})}" class="btn btn-join-cta">가입하기</a>
-            </div>
-
-            <!-- 게시글 작성 폼 (리더인 경우만) -->
-            <div th:if="${isLeader}" class="post-write-form">
-                <div class="post-author">
-                    <div class="author-avatar" th:text="${#strings.substring(leader, 0, 1)}">T</div>
-                    <div class="write-form-content">
-                        <textarea class="post-textarea" placeholder="게시글을 작성해보세요..." rows="1"></textarea>
-                        <div class="write-form-actions">
-                            <button class="btn-add-photo">
-                                <img th:src="@{/img/board/photo-icon.png}" alt="사진">
-                                사진 추가
-                            </button>
-                            <button class="btn btn-post-submit" disabled>작성하기</button>
-                        </div>
+        <!-- Members Section -->
+        <div class="members-section mt-4">
+            <h2 class="section-title">멤버 목록 (<span th:text="${club.currentMembers}">0</span>명)</h2>
+            <div class="member-list d-flex flex-wrap gap-3 mt-3">
+                <div th:each="member : ${members}" class="member-item d-flex align-items-center gap-2 p-2 bg-light rounded">
+                    <div class="member-avatar" th:text="${#strings.substring(member.user.username, 0, 1)}">김</div>
+                    <div class="member-info">
+                        <span class="member-name" th:text="${member.user.username}">멤버이름</span>
+                        <span th:if="${member.role == 'HOST'}" class="badge bg-primary ms-1">호스트</span>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Posts List -->
-            <div class="posts-list">
-                <!-- Post 1 -->
-                <div class="post-item">
-                    <div class="post-author">
-                        <div class="author-avatar">김</div>
-                        <div class="author-info">
-                            <div class="author-meta">
-                                <span class="author-name">김민수</span>
-                                <span class="post-divider">·</span>
-                                <span class="post-date">2일 전</span>
-                            </div>
-                            <p class="post-content">첫 모임 너무 재미있었어요! 다음에도 참여할게요.</p>
-                            <div class="post-image">
-                                <img th:src="@{/img/board/post-image-1.png}" alt="게시글 이미지">
-                            </div>
-                            <div class="post-actions">
-                                <button class="btn-like-post">
-                                    <img th:src="@{/img/board/like-icon.png}" alt="좋아요">
-                                    <span>12</span>
-                                </button>
-                                <button class="btn-comment">
-                                    <img th:src="@{/img/board/comment-icon.png}" alt="댓글">
-                                    <span>2</span>
-                                </button>
-                            </div>
-
-                            <!-- 댓글 섹션 -->
-                            <div class="comments-section">
-                                <div class="comment-item">
-                                    <div class="comment-avatar">박</div>
-                                    <div class="comment-content">
-                                        <div class="comment-meta">
-                                            <button class="comment-author">박지은</button>
-                                            <span class="comment-separator">·</span>
-                                            <span class="comment-date">1일 전</span>
-                                        </div>
-                                        <p class="comment-text">저도 정말 즐거웠어요!</p>
-                                    </div>
-                                </div>
-                                <div class="comment-item">
-                                    <div class="comment-avatar">이</div>
-                                    <div class="comment-content">
-                                        <div class="comment-meta">
-                                            <button class="comment-author">이준호</button>
-                                            <span class="comment-separator">·</span>
-                                            <span class="comment-date">1일 전</span>
-                                        </div>
-                                        <p class="comment-text">다음에 또 만나요~</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post 2 -->
-                <div class="post-item">
-                    <div class="post-author">
-                        <div class="author-avatar">지</div>
-                        <div class="author-info">
-                            <div class="author-meta">
-                                <span class="author-name">지은</span>
-                                <span class="post-divider">·</span>
-                                <span class="post-date">5일 전</span>
-                            </div>
-                            <p class="post-content">다들 너무 친절하셔서 좋았습니다. 감사합니다!</p>
-                            <div class="post-actions">
-                                <button class="btn-like-post">
-                                    <img th:src="@{/img/board/like-icon.png}" alt="좋아요">
-                                    <span>8</span>
-                                </button>
-                                <button class="btn-comment">
-                                    <img th:src="@{/img/board/comment-icon.png}" alt="댓글">
-                                    <span>0</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Post 3 -->
-                <div class="post-item">
-                    <div class="post-author">
-                        <div class="author-avatar">박</div>
-                        <div class="author-info">
-                            <div class="author-meta">
-                                <span class="author-name">박준호</span>
-                                <span class="post-divider">·</span>
-                                <span class="post-date">1주 전</span>
-                            </div>
-                            <p class="post-content">다음 모임 장소는 어디인가요?</p>
-                            <div class="post-actions">
-                                <button class="btn-like-post">
-                                    <img th:src="@{/img/board/like-icon.png}" alt="좋아요">
-                                    <span>5</span>
-                                </button>
-                                <button class="btn-comment">
-                                    <img th:src="@{/img/board/comment-icon.png}" alt="댓글">
-                                    <span>0</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <!-- 게시판 링크 -->
+        <div class="board-link-section mt-4">
+            <a th:href="@{/club/{no}/board(no=${club.no})}" class="btn btn-outline-primary btn-lg w-100">
+                → 게시판 바로가기
+            </a>
         </div>
     </div>
     
 
-    <!-- 리더 전용 -->
-    <div th:if="${isLeader}" class="modal fade" id="editCommunityModal" tabindex="-1" aria-hidden="true">
+    <!-- 호스트 전용 정보 수정 모달 -->
+    <div th:if="${isHost}" class="modal fade" id="editClubModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content edit-modal">
                 <!-- Modal Header -->
@@ -288,205 +146,146 @@
 
                 <!-- Modal Body -->
                 <div class="modal-body edit-modal-body">
-                    <form id="editBoardForm">
+                    <form id="editClubForm">
                         <!-- 모임 제목 -->
-                        <div class="form-group">
-                            <label for="boardTitle" class="form-label">모임 제목</label>
-                            <input type="text" class="form-control" id="boardTitle" th:value="${title}" placeholder="test 리더의 독서 모임">
+                        <div class="form-group mb-3">
+                            <label for="clubTitle" class="form-label">모임 제목</label>
+                            <input type="text" class="form-control" id="clubTitle" th:value="${club.title}" placeholder="모임 제목을 입력하세요">
                         </div>
 
                         <!-- 모임 설명 -->
-                        <div class="form-group">
-                            <label for="boardDescription" class="form-label">모임 설명</label>
-                            <textarea class="form-control form-textarea" id="boardDescription" rows="4" placeholder="모임에 대한 설명을 입력하세요"></textarea>
+                        <div class="form-group mb-3">
+                            <label for="clubDescription" class="form-label">모임 설명</label>
+                            <textarea class="form-control" id="clubDescription" rows="4" th:text="${club.description}" placeholder="모임에 대한 설명을 입력하세요"></textarea>
                         </div>
 
                         <!-- 최대 인원 -->
-                        <div class="form-group">
+                        <div class="form-group mb-3">
                             <label for="maxMembers" class="form-label">최대 인원</label>
-                            <input type="number" class="form-control" id="maxMembers" th:value="${maxMembers}" placeholder="20">
+                            <input type="number" class="form-control" id="maxMembers" th:value="${club.maxMembers}" min="1" placeholder="20">
                         </div>
 
                         <!-- 모임 장소 -->
-                        <div class="form-group">
-                            <label for="boardLocation" class="form-label">모임 장소</label>
-                            <input type="text" class="form-control" id="boardLocation" th:value="${location}" placeholder="서울 강남구 테헤란로 152">
+                        <div class="form-group mb-3">
+                            <label for="clubLocation" class="form-label">모임 장소</label>
+                            <input type="text" class="form-control" id="clubLocation" th:value="${club.location}" placeholder="서울 강남구 테헤란로 152">
                         </div>
 
-                        <!-- 모임 일정 추가 -->
-                        <div class="form-group">
-                            <label class="form-label">모임 일정 추가</label>
-                            <div class="schedule-add-row">
-                                <input type="date" class="form-control schedule-date" id="scheduleDate">
-                                <input type="time" class="form-control schedule-time" id="scheduleTime">
-                                <button type="button" class="btn btn-add-schedule-inline" onclick="addScheduleToList()">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                        <path d="M8 3.33333V12.6667M3.33333 8H12.6667" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round"/>
-                                    </svg>
-                                </button>
+                        <!-- 위도/경도 -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">좌표 (선택)</label>
+                            <div class="d-flex gap-2">
+                                <input type="number" step="0.00000001" class="form-control" id="clubLat" th:value="${club.lat}" placeholder="위도 (예: 37.5172)">
+                                <input type="number" step="0.00000001" class="form-control" id="clubLng" th:value="${club.lng}" placeholder="경도 (예: 127.0473)">
                             </div>
                         </div>
 
-                        <!-- 모임 일정 목록 -->
-                        <div class="form-group">
-                            <label class="form-label">모임 일정 목록</label>
-                            <div class="schedule-list-modal" id="scheduleListModal">
-                                <div class="schedule-item-modal">
-                                    <span>2월 1일 (일) 오전 9:00</span>
-                                    <button type="button" class="btn-delete-schedule-modal" onclick="deleteScheduleFromModal(this)">
-                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                            <path d="M13.3333 4L10.6667 13.3333M10 1.33333L6 13.3333M5.33333 4L2.66667 13.3333" stroke="#99A1AF" stroke-width="1.33333" stroke-linecap="round"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="schedule-item-modal">
-                                    <span>2월 8일 (일) 오전 9:00</span>
-                                    <button type="button" class="btn-delete-schedule-modal" onclick="deleteScheduleFromModal(this)">
-                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                            <path d="M13.3333 4L10.6667 13.3333M10 1.33333L6 13.3333M5.33333 4L2.66667 13.3333" stroke="#99A1AF" stroke-width="1.33333" stroke-linecap="round"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <div class="schedule-item-modal">
-                                    <span>2월 15일 (일) 오전 9:00</span>
-                                    <button type="button" class="btn-delete-schedule-modal" onclick="deleteScheduleFromModal(this)">
-                                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                            <path d="M13.3333 4L10.6667 13.3333M10 1.33333L6 13.3333M5.33333 4L2.66667 13.3333" stroke="#99A1AF" stroke-width="1.33333" stroke-linecap="round"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
+                        <!-- 모임 일시 -->
+                        <div class="form-group mb-3">
+                            <label for="clubDate" class="form-label">모임 일시</label>
+                            <input type="datetime-local" class="form-control" id="clubDate" 
+                                   th:value="${club.clubDate != null ? #temporals.format(club.clubDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </div>
+
+                        <!-- 모집 마감일 -->
+                        <div class="form-group mb-3">
+                            <label for="clubDeadline" class="form-label">모집 마감일</label>
+                            <input type="date" class="form-control" id="clubDeadline" 
+                                   th:value="${club.deadLine != null ? #temporals.format(club.deadLine, 'yyyy-MM-dd') : ''}">
                         </div>
                     </form>
                 </div>
 
                 <div class="modal-footer edit-modal-footer">
-                    <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">취소</button>
-                    <button type="button" class="btn btn-save" onclick="saveBoardInfo()">저장하기</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveClubInfo()">저장하기</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Leaflet JS -->
+    <!-- @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@ -->
+    <!-- @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@ -->
+     
+    <!-- Leaflet JS -->    
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script th:inline="javascript">
+        const clubNo = [[${club.no}]];
+        const clubLat = [[${club.lat}]];
+        const clubLng = [[${club.lng}]];
+        const clubLocation = [[${club.location}]];
+        
         // Initialize Map
         document.addEventListener('DOMContentLoaded', function() {
-            // 강남구 좌표
-            const map = L.map('map').setView([37.5172, 127.0473], 13);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '© OpenStreetMap contributors'
-            }).addTo(map);
-
-            // 마커 추가
-            L.marker([37.5172, 127.0473]).addTo(map)
-                .bindPopup('강남구')
-                .openPopup();
-        });
-
-        // Like Button Toggle
-        document.querySelectorAll('.btn-like-post').forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.classList.toggle('liked');
-            });
-        });
-
-        // Post Textarea Auto-expand
-        const textarea = document.querySelector('.post-textarea');
-        const submitBtn = document.querySelector('.btn-post-submit');
-        
-        if (textarea) {
-            textarea.addEventListener('input', function() {
-                // Auto-expand textarea
-                this.style.height = 'auto';
-                this.style.height = this.scrollHeight + 'px';
+            // 좌표가 있는 경우에만 지도 초기화
+            if (clubLat && clubLng) {
+                const map = L.map('map').setView([clubLat, clubLng], 15);
                 
-                // Enable/disable submit button
-                if (submitBtn) {
-                    submitBtn.disabled = this.value.trim().length === 0;
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // 마커 추가
+                L.marker([clubLat, clubLng]).addTo(map)
+                    .bindPopup(clubLocation || '모임 장소')
+                    .openPopup();
+            }
+        });
+
+        // @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@
+        // @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@
+
+
+        // 모임 좋아요 토글 (비동기)
+        $('#btnClubLike').click(function() {
+            const btn = $(this);
+            $.ajax({
+                url: '/api/likes/club/' + clubNo,
+                type: 'POST',
+                success: function(result) {
+                    btn.find('.heart-badge').text(result.count);
+                    btn.toggleClass('liked', result.liked);
+                },
+                error: function() {
+                    alert('로그인이 필요합니다.');
                 }
             });
-        }
+        });
 
-        // Leader Functions
-        function editBoardInfo() {
-            // 모달 열기 (Bootstrap 5)
-            const modal = new bootstrap.Modal(document.getElementById('editCommunityModal'));
+        // 호스트 기능: 모임 정보 수정 모달 열기
+        function editClubInfo() {
+            const modal = new bootstrap.Modal(document.getElementById('editClubModal'));
             modal.show();
         }
 
-        function saveBoardInfo() {
-            // TODO: Implement save board info
-            const title = document.getElementById('boardTitle').value;
-            const description = document.getElementById('boardDescription').value;
-            const maxMembers = document.getElementById('maxMembers').value;
-            const location = document.getElementById('boardLocation').value;
+        // 호스트 기능: 모임 정보 저장 (비동기)
+        function saveClubInfo() {
+            const data = {
+                no: clubNo,
+                title: document.getElementById('clubTitle').value,
+                description: document.getElementById('clubDescription').value,
+                maxMembers: document.getElementById('maxMembers').value,
+                location: document.getElementById('clubLocation').value,
+                lat: document.getElementById('clubLat').value || null,
+                lng: document.getElementById('clubLng').value || null,
+                clubDate: document.getElementById('clubDate').value || null,
+                deadLine: document.getElementById('clubDeadline').value || null
+            };
             
-            console.log('Saving board info:', { title, description, maxMembers, location });
-            alert('모임 정보가 저장되었습니다.');
-            
-            // 모달 닫기
-            const modal = bootstrap.Modal.getInstance(document.getElementById('editCommunityModal'));
-            modal.hide();
+            $.ajax({
+                url: '/api/clubs/' + clubNo,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(result) {
+                    alert('모임 정보가 저장되었습니다.');
+                    location.reload();
+                },
+                error: function() {
+                    alert('모임 정보 저장에 실패했습니다.');
+                }
+            });
         }
-
-        function addScheduleToList() {
-            const dateInput = document.getElementById('scheduleDate');
-            const timeInput = document.getElementById('scheduleTime');
-            
-            if (!dateInput.value || !timeInput.value) {
-                alert('날짜와 시간을 선택해주세요.');
-                return;
-            }
-            
-            // 날짜 포맷 변환 (예: 2월 1일 (일) 오전 9:00)
-            const date = new Date(dateInput.value + 'T' + timeInput.value);
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-            const dayName = dayNames[date.getDay()];
-            const hours = date.getHours();
-            const minutes = date.getMinutes();
-            const period = hours < 12 ? '오전' : '오후';
-            const displayHours = hours % 12 || 12;
-            const displayMinutes = minutes.toString().padStart(2, '0');
-            
-            const formattedDate = `${month}월 ${day}일 (${dayName}) ${period} ${displayHours}:${displayMinutes}`;
-            
-            // 일정 목록에 추가
-            const scheduleList = document.getElementById('scheduleListModal');
-            const scheduleItem = document.createElement('div');
-            scheduleItem.className = 'schedule-item-modal';
-            scheduleItem.innerHTML = `
-                <span>${formattedDate}</span>
-                <button type="button" class="btn-delete-schedule-modal" onclick="deleteScheduleFromModal(this)">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M13.3333 4L10.6667 13.3333M10 1.33333L6 13.3333M5.33333 4L2.66667 13.3333" stroke="#99A1AF" stroke-width="1.33333" stroke-linecap="round"/>
-                    </svg>
-                </button>
-            `;
-            scheduleList.appendChild(scheduleItem);
-            
-            // 입력 필드 초기화
-            dateInput.value = '';
-            timeInput.value = '';
-        }
-
-        function deleteScheduleFromModal(btn) {
-            if (confirm('이 일정을 삭제하시겠습니까?')) {
-                btn.closest('.schedule-item-modal').remove();
-            }
-        }
-
-        function addSchedule() {
-            alert('일정 추가 기능은 개발 중입니다.');
-        }
-
-        function deleteSchedule(scheduleId) {
-            if (confirm('이 일정을 삭제하시겠습니까?')) {
-                console.log('Delete schedule:', scheduleId);
-                alert('일정 삭제 기능은 개발 중입니다.');
-            }
-        }
+    </script>
+</body>
+</html>

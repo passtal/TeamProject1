@@ -1,0 +1,1332 @@
+/* 내 모임 관리 페이지 스타일 */
+.club-management-container {
+    max-width: 1088px;
+    margin: 133px auto 0;
+    padding: 0 226.5px;
+    min-height: calc(100vh - 133px);
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* 탭 메뉴 */
+.tab-menu {
+    display: flex;
+    gap: 8px;
+    padding: 8px;
+    background-color: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 14px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+}
+
+.tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #4A5565;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.tab-btn .material-symbols-outlined {
+    font-size: 20px;
+}
+
+.tab-btn.active {
+    background-color: #00A651;
+    color: #FFFFFF;
+}
+
+.tab-btn .badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 1px 8px 0;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.tab-btn:not(.active) .badge {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: inherit;
+}
+
+.tab-btn:hover:not(.active) {
+    background-color: #F9FAFB;
+}
+
+/* 탭 컨텐츠 */
+.tab-content {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.tab-content.active {
+    display: flex;
+}
+
+/* 모임 카드 */
+.club-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    background-color: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 14px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+.club-card:hover {
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.club-info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex: 1;
+}
+
+.club-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(180deg, #00A651 0%, #008F46 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.club-icon .material-symbols-outlined {
+    font-size: 32px;
+    color: #FFFFFF;
+    font-weight: 700;
+}
+
+.club-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.club-title-row {
+    display: flex;
+    align-items: center;
+}
+
+.club-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.club-category {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.club-members {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #6A7282;
+    margin: 0;
+}
+
+.club-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* 버튼 스타일 */
+.btn-leave,
+.btn-cancel,
+.btn-manage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 80px;
+    height: 36px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-leave {
+    color: #E7000B;
+}
+
+.btn-leave:hover {
+    background-color: #FFE2E2;
+}
+
+.btn-leave .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.btn-cancel {
+    color: #4A5565;
+    border: 1px solid #D1D5DC;
+}
+
+.btn-cancel:hover {
+    background-color: #F9FAFB;
+}
+
+.btn-manage {
+    color: #00A651;
+    border: 1px solid #00A651;
+}
+
+.btn-manage:hover {
+    background-color: #E6F7ED;
+}
+
+/* 리더인 모임 버튼 */
+.leader-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 112.92px;
+}
+
+.btn-leader-manage,
+.btn-leader-delete {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+    height: 36px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-leader-manage {
+    background-color: transparent;
+    color: #00A651;
+}
+
+.btn-leader-manage:hover {
+    background-color: #E6F7ED;
+}
+
+.btn-leader-manage .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.btn-leader-delete {
+    background-color: transparent;
+    color: #E7000B;
+}
+
+.btn-leader-delete:hover {
+    background-color: #FFE2E2;
+}
+
+.btn-leader-delete .material-symbols-outlined {
+    font-size: 16px;
+}
+
+/* 왕관 아이콘 */
+.leader-crown {
+    font-size: 20px;
+    color: #F0B100;
+    margin-left: 8px;
+    font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+}
+
+/* 주황색 그라데이션 아이콘 */
+.gradient-orange {
+    background: linear-gradient(135deg, #FF8904 0%, #F54900 100%);
+}
+
+/* 승인 대기 뱃지 */
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    margin-left: 8px;
+}
+
+.status-badge.pending {
+    background-color: #FFEDD4;
+    color: #CA3500;
+}
+
+/* 신청 취소 버튼 */
+.btn-cancel-request {
+    height: 36px;
+    padding: 0 16px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #E7000B;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-cancel-request:hover {
+    background-color: #FEF2F2;
+}
+
+.btn-cancel-request .material-symbols-outlined {
+    font-size: 16px;
+}
+
+/* 반응형 */
+@media (max-width: 1440px) {
+    .club-management-container {
+        padding: 0 100px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .club-management-container {
+        padding: 0 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .club-management-container {
+        padding: 0 20px;
+        margin-top: 100px;
+    }
+
+    .tab-menu {
+        flex-direction: column;
+    }
+
+    .tab-btn {
+        justify-content: flex-start;
+    }
+
+    .club-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .club-actions {
+        width: 100%;
+    }
+
+    .btn-leave,
+    .btn-cancel,
+    .btn-manage {
+        width: 100%;
+    }
+}
+
+/* 모임 탈퇴 모달 */
+.leave-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.leave-modal-content {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    width: 448px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.leave-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.leave-modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.leave-modal-close {
+    width: 24px;
+    height: 24px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.leave-modal-close .material-symbols-outlined {
+    font-size: 24px;
+    color: #99A1AF;
+}
+
+.leave-modal-close:hover .material-symbols-outlined {
+    color: #364153;
+}
+
+.leave-modal-warning {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 17px;
+    background-color: #FEF2F2;
+    border: 1px solid #FFC9C9;
+    border-radius: 10px;
+}
+
+.leave-modal-warning-title {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+    margin: 0;
+}
+
+.leave-modal-warning-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.leave-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.leave-modal-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.leave-modal-btn-cancel {
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.leave-modal-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.leave-modal-btn-confirm {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.leave-modal-btn-confirm:hover {
+    background-color: #C40009;
+}
+
+/* 모임 삭제 모달 */
+.delete-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.delete-modal-content {
+    width: 448px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+}
+
+.delete-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.delete-modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.delete-modal-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-modal-close .material-symbols-outlined {
+    font-size: 24px;
+    color: #99A1AF;
+}
+
+.delete-modal-warning {
+    background-color: #FEF2F2;
+    border: 1px solid #FFC9C9;
+    border-radius: 10px;
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.delete-modal-warning-title {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+    margin: 0;
+}
+
+.delete-club-name {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: #101828;
+}
+
+.delete-modal-warning-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.delete-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.delete-modal-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.delete-modal-btn-cancel {
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.delete-modal-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.delete-modal-btn-confirm {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.delete-modal-btn-confirm:hover {
+    background-color: #C40009;
+}
+
+/* 멤버 관리 영역 */
+.club-card-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.member-management-area {
+    margin-top: 0;
+    padding: 25px 0 0;
+    border-top: 1px solid #E5E7EB;
+}
+
+.member-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.member-section:last-child {
+    margin-bottom: 0;
+}
+
+.member-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-icon {
+    font-size: 16px;
+}
+
+.pending-icon {
+    color: #FF6900;
+}
+
+.section-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 20px;
+    color: #101828;
+    margin: 0;
+}
+
+.member-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.member-item.pending {
+    background-color: #FFF7ED;
+}
+
+.member-item.approved {
+    background-color: #F9FAFB;
+}
+
+.member-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.member-name {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #101828;
+    margin: 0;
+}
+
+.member-date {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6A7282;
+    margin: 0;
+}
+
+.member-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.btn-approve,
+.btn-reject {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.btn-approve {
+    background-color: #00A651;
+    color: #FFFFFF;
+}
+
+.btn-approve:hover {
+    background-color: #008F46;
+}
+
+.btn-approve .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.btn-reject {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.btn-reject:hover {
+    background-color: #C40009;
+}
+
+.btn-reject .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.btn-remove-member {
+    height: 32px;
+    padding: 0 14px;
+    background-color: transparent;
+    border: none;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #E7000B;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-remove-member:hover {
+    background-color: #FEF2F2;
+}
+
+/* 멤버 승인 모달 */
+.approve-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.approve-modal-content {
+    width: 448px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+}
+
+.approve-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.approve-modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.approve-modal-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.approve-modal-close .material-symbols-outlined {
+    font-size: 24px;
+    color: #99A1AF;
+}
+
+.approve-modal-info {
+    background-color: #F0FDF4;
+    border: 1px solid #B9F8CF;
+    border-radius: 10px;
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.approve-modal-info-title {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+    margin: 0;
+}
+
+.approve-member-name {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: #101828;
+}
+
+.approve-modal-info-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.approve-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.approve-modal-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.approve-modal-btn-cancel {
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.approve-modal-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.approve-modal-btn-confirm {
+    background-color: #00A651;
+    color: #FFFFFF;
+}
+
+.approve-modal-btn-confirm:hover {
+    background-color: #008F46;
+}
+
+/* 멤버 거부 모달 */
+.reject-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.reject-modal-content {
+    width: 448px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+}
+
+.reject-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.reject-modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.reject-modal-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reject-modal-close .material-symbols-outlined {
+    font-size: 24px;
+    color: #99A1AF;
+}
+
+.reject-modal-warning {
+    background-color: #FEF2F2;
+    border: 1px solid #FFC9C9;
+    border-radius: 10px;
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.reject-modal-warning-title {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+    margin: 0;
+}
+
+.reject-member-name {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: #101828;
+}
+
+.reject-modal-warning-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.reject-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.reject-modal-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.reject-modal-btn-cancel {
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.reject-modal-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.reject-modal-btn-confirm {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.reject-modal-btn-confirm:hover {
+    background-color: #C40009;
+}
+
+/* 멤버 추방 모달 */
+.remove-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.remove-modal-content {
+    width: 448px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+}
+
+.remove-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.remove-modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.remove-modal-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-modal-close .material-symbols-outlined {
+    font-size: 24px;
+    color: #99A1AF;
+}
+
+.remove-modal-warning {
+    background-color: #FEF2F2;
+    border: 1px solid #FFC9C9;
+    border-radius: 10px;
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.remove-modal-warning-title {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+    margin: 0;
+}
+
+.remove-member-name {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: #101828;
+}
+
+.remove-modal-warning-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.remove-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.remove-modal-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.remove-modal-btn-cancel {
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.remove-modal-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.remove-modal-btn-confirm {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.remove-modal-btn-confirm:hover {
+    background-color: #C40009;
+}
+
+/* 신청 취소 모달 */
+.cancel-request-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.cancel-request-modal-content {
+    width: 448px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+}
+
+.cancel-request-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cancel-request-modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.cancel-request-modal-close {
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cancel-request-modal-close .material-symbols-outlined {
+    font-size: 24px;
+    color: #99A1AF;
+}
+
+.cancel-request-modal-warning {
+    background-color: #FEF2F2;
+    border: 1px solid #FFC9C9;
+    border-radius: 10px;
+    padding: 17px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.cancel-request-modal-warning-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+    margin: 0;
+}
+
+.cancel-request-modal-warning-subtext {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.cancel-request-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.cancel-request-modal-btn {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.cancel-request-modal-btn-cancel {
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.cancel-request-modal-btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.cancel-request-modal-btn-confirm {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.cancel-request-modal-btn-confirm:hover {
+    background-color: #C40009;
+}
+
+@media (max-width: 768px) {
+    .leave-modal-content {
+        width: calc(100% - 40px);
+        max-width: 448px;
+    }
+
+    .delete-modal-content {
+        width: calc(100% - 40px);
+        max-width: 448px;
+    }
+
+    .approve-modal-content {
+        width: calc(100% - 40px);
+        max-width: 448px;
+    }
+
+    .reject-modal-content {        width: calc(100% - 40px);
+        max-width: 448px;
+    }
+
+    .remove-modal-content {
+        width: calc(100% - 40px);
+        max-width: 448px;
+    }
+}
+    .cancel-request-modal-content {
+        width: calc(100% - 40px);
+        max-width: 448px;
+    }

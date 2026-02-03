@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 모임 관리 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/club-management.css}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body layout:fragment="content">
+
+<div class="club-management-container">
+    <!-- 탭 메뉴 -->
+    <div class="tab-menu">
+        <button class="tab-btn active" data-tab="participating">
+            <span class="material-symbols-outlined">groups</span>
+            <span>참여 중인 모임</span>
+            <span class="badge">2</span>
+        </button>
+        <button class="tab-btn" data-tab="leader">
+            <span class="material-symbols-outlined">workspace_premium</span>
+            <span>리더인 모임</span>
+            <span class="badge">1</span>
+        </button>
+        <button class="tab-btn" data-tab="pending">
+            <span class="material-symbols-outlined">schedule</span>
+            <span>신청 중인 모임</span>
+            <span class="badge">1</span>
+        </button>
+    </div>
+
+    <!-- 참여 중인 모임 -->
+    <div class="tab-content active" id="participating">
+        <div class="club-card">
+            <div class="club-info">
+                <div class="club-icon">
+                    <span class="material-symbols-outlined">groups</span>
+                </div>
+                <div class="club-details">
+                    <div class="club-title-row">
+                        <h3 class="club-title">주말 등산 모임</h3>
+                    </div>
+                    <p class="club-category">동</p>
+                    <p class="club-members">멤버 12/20명</p>
+                </div>
+            </div>
+            <div class="club-actions">
+                <button class="btn-leave">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>탈퇴</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="club-card">
+            <div class="club-info">
+                <div class="club-icon">
+                    <span class="material-symbols-outlined">groups</span>
+                </div>
+                <div class="club-details">
+                    <div class="club-title-row">
+                        <h3 class="club-title">독서 토론 클럽</h3>
+                    </div>
+                    <p class="club-category">문화</p>
+                    <p class="club-members">멤버 8/15명</p>
+                </div>
+            </div>
+            <div class="club-actions">
+                <button class="btn-leave">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span>탈퇴</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 리더인 모임 -->
+    <div class="tab-content" id="leader">
+        <div class="club-card-wrapper">
+            <div class="club-card">
+                <div class="club-info">
+                    <div class="club-icon">
+                        <span class="material-symbols-outlined">groups</span>
+                    </div>
+                    <div class="club-details">
+                        <div class="club-title-row">
+                            <h3 class="club-title">사진 촬영 동호회</h3>
+                            <span class="material-symbols-outlined leader-crown">chess_queen</span>
+                            
+                        </div>
+                        <p class="club-category">취미</p>
+                        <p class="club-members">멤버 15/25명</p>
+                    </div>
+                </div>
+                <div class="club-actions leader-actions">
+                    <button class="btn-leader-manage" data-club-id="1">
+                        <span>멤버 관리</span>
+                        <span class="material-symbols-outlined">expand_more</span>
+                    </button>
+                    <button class="btn-leader-delete">
+                        <span class="material-symbols-outlined">logout</span>
+                        <span>모임 삭제</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 멤버 관리 영역 (토글) -->
+            <div class="member-management-area" id="memberManagement-1" style="display: none;">
+                <!-- 가입 요청 섹션 -->
+                <div class="member-section">
+                    <div class="member-section-header">
+                        <span class="material-symbols-outlined section-icon pending-icon">notifications_active</span>
+                        <h4 class="section-title">가입 요청 (2)</h4>
+                    </div>
+                    <div class="member-list">
+                        <div class="member-item pending">
+                            <div class="member-info">
+                                <p class="member-name">박민수</p>
+                                <p class="member-date">신청일: 2025-01-27</p>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn-approve">
+                                    <span class="material-symbols-outlined">check</span>
+                                    <span>승인</span>
+                                </button>
+                                <button class="btn-reject">
+                                    <span class="material-symbols-outlined">close</span>
+                                    <span>거부</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="member-item pending">
+                            <div class="member-info">
+                                <p class="member-name">최지혜</p>
+                                <p class="member-date">신청일: 2025-01-27</p>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn-approve">
+                                    <span class="material-symbols-outlined">check</span>
+                                    <span>승인</span>
+                                </button>
+                                <button class="btn-reject">
+                                    <span class="material-symbols-outlined">close</span>
+                                    <span>거부</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 승인된 멤버 섹션 -->
+                <div class="member-section">
+                    <div class="member-section-header">
+                        <h4 class="section-title">승인된 멤버 (2)</h4>
+                    </div>
+                    <div class="member-list">
+                        <div class="member-item approved">
+                            <div class="member-info">
+                                <p class="member-name">김철수</p>
+                                <p class="member-date">가입일: 2025-01-15</p>
+                            </div>
+                            <button class="btn-remove-member">추방하기</button>
+                        </div>
+                        <div class="member-item approved">
+                            <div class="member-info">
+                                <p class="member-name">이영희</p>
+                                <p class="member-date">가입일: 2025-01-20</p>
+                            </div>
+                            <button class="btn-remove-member">추방하기</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 신청 중인 모임 -->
+    <div class="tab-content" id="pending">
+        <div class="club-card">
+            <div class="club-info">
+                <div class="club-icon gradient-orange">
+                    <span class="material-symbols-outlined">restaurant</span>
+                </div>
+                <div class="club-details">
+                    <div class="club-title-row">
+                        <h3 class="club-title">요리 레시피 공유</h3>
+                        <span class="status-badge pending">승인 대기 중</span>
+                    </div>
+                    <p class="club-category">요리</p>
+                    <p class="club-members">멤버 10/20명</p>
+                </div>
+            </div>
+            <div class="club-actions">
+                <button class="btn-cancel-request">
+                    <span class="material-symbols-outlined">close</span>
+                    신청 취소
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 모임 탈퇴 모달 -->
+<div id="leaveClubModal" class="leave-modal">
+    <div class="leave-modal-content">
+        <div class="leave-modal-header">
+            <h3 class="leave-modal-title">모임 탈퇴</h3>
+            <button id="modalCloseBtn" class="leave-modal-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="leave-modal-warning">
+            <p class="leave-modal-warning-title">모임에서 탈퇴 하시겠습니까?</p>
+            <p class="leave-modal-warning-text">탈퇴하면 더 이상 모임 활동을 할 수 없습니다.</p>
+        </div>
+        <div class="leave-modal-actions">
+            <button id="modalCancelBtn" class="leave-modal-btn leave-modal-btn-cancel">취소</button>
+            <button id="modalConfirmBtn" class="leave-modal-btn leave-modal-btn-confirm">탈퇴하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 모임 삭제 모달 -->
+<div id="deleteClubModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-modal-header">
+            <h3 class="delete-modal-title">모임 삭제</h3>
+            <button id="deleteModalCloseBtn" class="delete-modal-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="delete-modal-warning">
+            <p class="delete-modal-warning-title">
+                <span class="delete-club-name">사진 촬영 동호회</span> 모임을 삭제하시겠습니까?
+            </p>
+            <p class="delete-modal-warning-text">삭제하면 해당 모임은 영구적으로 삭제됩니다.</p>
+        </div>
+        <div class="delete-modal-actions">
+            <button id="deleteModalCancelBtn" class="delete-modal-btn delete-modal-btn-cancel">취소</button>
+            <button id="deleteModalConfirmBtn" class="delete-modal-btn delete-modal-btn-confirm">삭제하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 멤버 승인 모달 -->
+<div id="approveMemberModal" class="approve-modal">
+    <div class="approve-modal-content">
+        <div class="approve-modal-header">
+            <h3 class="approve-modal-title">멤버 승인</h3>
+            <button id="approveModalCloseBtn" class="approve-modal-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="approve-modal-info">
+            <p class="approve-modal-info-title">
+                <span class="approve-member-name">박민수</span>님의 가입을 승인하시겠습니까?
+            </p>
+            <p class="approve-modal-info-text">승인하면 멤버가 모임에 참여하여 게시글 작성 및 활동이 가능합니다.</p>
+        </div>
+        <div class="approve-modal-actions">
+            <button id="approveModalCancelBtn" class="approve-modal-btn approve-modal-btn-cancel">취소</button>
+            <button id="approveModalConfirmBtn" class="approve-modal-btn approve-modal-btn-confirm">승인하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 멤버 거부 모달 -->
+<div id="rejectMemberModal" class="reject-modal">
+    <div class="reject-modal-content">
+        <div class="reject-modal-header">
+            <h3 class="reject-modal-title">가입 거부</h3>
+            <button id="rejectModalCloseBtn" class="reject-modal-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="reject-modal-warning">
+            <p class="reject-modal-warning-title">
+                <span class="reject-member-name">박민수</span>님의 가입을 거부하시겠습니까?
+            </p>
+            <p class="reject-modal-warning-text">거부하면 해당 사용자는 모임에 참여할 수 없습니다.</p>
+        </div>
+        <div class="reject-modal-actions">
+            <button id="rejectModalCancelBtn" class="reject-modal-btn reject-modal-btn-cancel">취소</button>
+            <button id="rejectModalConfirmBtn" class="reject-modal-btn reject-modal-btn-confirm">거부하기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 멤버 추방 모달 -->
+<div id="removeMemberModal" class="remove-modal">
+    <div class="remove-modal-content">
+        <div class="remove-modal-header">
+            <h3 class="remove-modal-title">멤버 내보내기</h3>
+            <button id="removeModalCloseBtn" class="remove-modal-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="remove-modal-warning">
+            <p class="remove-modal-warning-title">
+                <span class="remove-member-name">김철수</span>님을 모임에서 내보내시겠습니까?
+            </p>
+            <p class="remove-modal-warning-text">내보내면 해당 멤버는 더 이상 모임 활동을 할 수 없습니다.</p>
+        </div>
+        <div class="remove-modal-actions">
+            <button id="removeModalCancelBtn" class="remove-modal-btn remove-modal-btn-cancel">취소</button>
+            <button id="removeModalConfirmBtn" class="remove-modal-btn remove-modal-btn-confirm">내보내기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 신청 취소 모달 -->
+<div id="cancelRequestModal" class="cancel-request-modal">
+    <div class="cancel-request-modal-content">
+        <div class="cancel-request-modal-header">
+            <h3 class="cancel-request-modal-title">가입 신청 취소</h3>
+            <button id="cancelRequestModalCloseBtn" class="cancel-request-modal-close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="cancel-request-modal-warning">
+            <p class="cancel-request-modal-warning-text">모임의 가입 신청을 취소하시겠습니까?</p>
+            <p class="cancel-request-modal-warning-subtext">취소하면 해당 모임의 가입 신청이 삭제됩니다.</p>
+        </div>
+        <div class="cancel-request-modal-actions">
+            <button id="cancelRequestModalCancelBtn" class="cancel-request-modal-btn cancel-request-modal-btn-cancel">취소</button>
+            <button id="cancelRequestModalConfirmBtn" class="cancel-request-modal-btn cancel-request-modal-btn-confirm">취소하기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// 탭 전환
+document.querySelectorAll('.tab-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        // 모든 탭 버튼과 컨텐츠에서 active 제거
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // 클릭된 탭 활성화
+        this.classList.add('active');
+        const tabId = this.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+    });
+});
+
+// 탈퇴 버튼
+document.querySelectorAll('.btn-leave').forEach(button => {
+    button.addEventListener('click', function() {
+        document.getElementById('leaveClubModal').style.display = 'flex';
+    });
+});
+
+// 모임 삭제 버튼
+document.querySelectorAll('.btn-leader-delete').forEach(button => {
+    button.addEventListener('click', function() {
+        document.getElementById('deleteClubModal').style.display = 'flex';
+    });
+});
+
+// 멤버 관리 토글
+document.querySelectorAll('.btn-leader-manage').forEach(button => {
+    button.addEventListener('click', function() {
+        const clubId = this.getAttribute('data-club-id');
+        const managementArea = document.getElementById('memberManagement-' + clubId);
+        const icon = this.querySelector('.material-symbols-outlined:last-child');
+        
+        if (managementArea.style.display === 'none' || managementArea.style.display === '') {
+            managementArea.style.display = 'block';
+            icon.textContent = 'expand_less';
+        } else {
+            managementArea.style.display = 'none';
+            icon.textContent = 'expand_more';
+        }
+    });
+});
+
+// 승인 버튼
+document.querySelectorAll('.btn-approve').forEach(button => {
+    button.addEventListener('click', function() {
+        // 멤버 이름 가져오기
+        const memberItem = this.closest('.member-item');
+        const memberName = memberItem.querySelector('.member-name').textContent;
+        
+        // 모달에 이름 설정
+        document.querySelector('.approve-member-name').textContent = memberName;
+        
+        // 모달 표시
+        document.getElementById('approveMemberModal').style.display = 'flex';
+    });
+});
+
+// 거부 버튼
+document.querySelectorAll('.btn-reject').forEach(button => {
+    button.addEventListener('click', function() {
+        // 멤버 이름 가져오기
+        const memberItem = this.closest('.member-item');
+        const memberName = memberItem.querySelector('.member-name').textContent;
+        
+        // 모달에 이름 설정
+        document.querySelector('.reject-member-name').textContent = memberName;
+        
+        // 모달 표시
+        document.getElementById('rejectMemberModal').style.display = 'flex';
+    });
+});
+
+// 신청 취소 버튼
+document.querySelectorAll('.btn-cancel-request').forEach(button => {
+    button.addEventListener('click', function() {
+        document.getElementById('cancelRequestModal').style.display = 'flex';
+    });
+});
+
+// 모달 닫기
+document.getElementById('modalCancelBtn').addEventListener('click', function() {
+    document.getElementById('leaveClubModal').style.display = 'none';
+});
+
+// 모달 외부 클릭시 닫기
+document.getElementById('leaveClubModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 모달 X 버튼
+document.getElementById('modalCloseBtn').addEventListener('click', function() {
+    document.getElementById('leaveClubModal').style.display = 'none';
+});
+
+// 탈퇴 확인 버튼
+document.getElementById('modalConfirmBtn').addEventListener('click', function() {
+    // TODO: 실제 모임 탈퇴 처리
+    console.log('모임 탈퇴 처리');
+    document.getElementById('leaveClubModal').style.display = 'none';
+});
+
+// 모임 삭제 모달 닫기
+document.getElementById('deleteModalCancelBtn').addEventListener('click', function() {
+    document.getElementById('deleteClubModal').style.display = 'none';
+});
+
+document.getElementById('deleteModalCloseBtn').addEventListener('click', function() {
+    document.getElementById('deleteClubModal').style.display = 'none';
+});
+
+// 모임 삭제 모달 외부 클릭시 닫기
+document.getElementById('deleteClubModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 모임 삭제 확인 버튼
+document.getElementById('deleteModalConfirmBtn').addEventListener('click', function() {
+    // TODO: 실제 모임 삭제 처리
+    console.log('모임 삭제 처리');
+    document.getElementById('deleteClubModal').style.display = 'none';
+});
+
+// 멤버 승인 모달 닫기
+document.getElementById('approveModalCancelBtn').addEventListener('click', function() {
+    document.getElementById('approveMemberModal').style.display = 'none';
+});
+
+document.getElementById('approveModalCloseBtn').addEventListener('click', function() {
+    document.getElementById('approveMemberModal').style.display = 'none';
+});
+
+// 멤버 승인 모달 외부 클릭시 닫기
+document.getElementById('approveMemberModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 멤버 승인 확인 버튼
+document.getElementById('approveModalConfirmBtn').addEventListener('click', function() {
+    // TODO: 실제 멤버 승인 처리
+    console.log('멤버 승인 처리');
+    document.getElementById('approveMemberModal').style.display = 'none';
+});
+
+// 멤버 거부 모달 닫기
+document.getElementById('rejectModalCancelBtn').addEventListener('click', function() {
+    document.getElementById('rejectMemberModal').style.display = 'none';
+});
+
+document.getElementById('rejectModalCloseBtn').addEventListener('click', function() {
+    document.getElementById('rejectMemberModal').style.display = 'none';
+});
+
+// 멤버 거부 모달 외부 클릭시 닫기
+document.getElementById('rejectMemberModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 멤버 거부 확인 버튼
+document.getElementById('rejectModalConfirmBtn').addEventListener('click', function() {
+    // TODO: 실제 멤버 거부 처리
+    console.log('멤버 거부 처리');
+    document.getElementById('rejectMemberModal').style.display = 'none';
+});
+
+// 추방하기 버튼
+document.querySelectorAll('.btn-remove-member').forEach(button => {
+    button.addEventListener('click', function() {
+        const memberItem = this.closest('.member-item');
+        const memberName = memberItem.querySelector('.member-name').textContent;
+        document.querySelector('.remove-member-name').textContent = memberName;
+        document.getElementById('removeMemberModal').style.display = 'flex';
+    });
+});
+
+// 멤버 추방 모달 닫기
+document.getElementById('removeModalCancelBtn').addEventListener('click', function() {
+    document.getElementById('removeMemberModal').style.display = 'none';
+});
+
+document.getElementById('removeModalCloseBtn').addEventListener('click', function() {
+    document.getElementById('removeMemberModal').style.display = 'none';
+});
+
+// 멤버 추방 모달 외부 클릭시 닫기
+document.getElementById('removeMemberModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 멤버 추방 확인 버튼
+document.getElementById('removeModalConfirmBtn').addEventListener('click', function() {
+    // TODO: 실제 멤버 추방 처리
+    console.log('멤버 추방 처리');
+    document.getElementById('removeMemberModal').style.display = 'none';
+});
+
+// 신청 취소 모달 닫기
+document.getElementById('cancelRequestModalCancelBtn').addEventListener('click', function() {
+    document.getElementById('cancelRequestModal').style.display = 'none';
+});
+
+document.getElementById('cancelRequestModalCloseBtn').addEventListener('click', function() {
+    document.getElementById('cancelRequestModal').style.display = 'none';
+});
+
+// 신청 취소 모달 외부 클릭시 닫기
+document.getElementById('cancelRequestModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+        this.style.display = 'none';
+    }
+});
+
+// 신청 취소 확인 버튼
+document.getElementById('cancelRequestModalConfirmBtn').addEventListener('click', function() {
+    // TODO: 실제 신청 취소 처리
+    console.log('신청 취소 처리');
+    document.getElementById('cancelRequestModal').style.display = 'none';
+});
+</script>
+</body>
+</html>

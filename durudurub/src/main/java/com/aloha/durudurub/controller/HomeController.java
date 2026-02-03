@@ -32,6 +32,30 @@ public class HomeController {
             e.printStackTrace();
             model.addAttribute("categories", new ArrayList<>());
         }
-        return "index copy";
+        return "index";
+    }
+
+    /**
+     * 로그인 페이지
+     */
+    @GetMapping("/login")
+    public String login() {
+        return "user/login";
+    }
+
+    /**
+     * 회원가입 페이지
+     */
+    @GetMapping("/signup")
+    public String signup() {
+        return "user/join";
+    }
+
+    /**
+     * 비밀번호 찾기 페이지
+     */
+    @GetMapping("/user/find-password")
+    public String findPassword() {
+        return "user/find-password";
     }
 }

@@ -40,7 +40,7 @@
                         <span th:if="${categoryNo == null}">모든 모임</span>
                         <span th:if="${categoryNo != null}" th:text="${currentCategory.name + ' 모임'}">카테고리 모임</span>
                     </h3>
-                    <a th:href="@{/club/insert}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                    <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
                         + 새 모임 만들기
                     </a>
                 </div>
@@ -49,7 +49,7 @@
                 <div class="row g-4">
                     <div th:if="${clubs == null or clubs.empty}" class="col-12 text-center py-5">
                         <p class="text-muted">아직 모임이 없습니다.</p>
-                        <a th:href="@{/club/insert}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                        <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
                             첫 모임 만들기
                         </a>
                     </div>
