@@ -1,35 +1,71 @@
-<!-- 공통 레이아웃 -->
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <!-- meta -->
-    <th:block th:replace="~{fragments/meta :: meta}"></th:block>
-    <!-- link : css -->
-    <th:block th:replace="~{fragments/head::head}"></th:block>
-    <title th:text="${pageTitle} ?: '두루두룹 - 함께 하면 더 즐거운 순간'">두루두룹</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">두루두룹</title>
+    
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+    <!-- Icon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    
+    <!-- 페이지별 추가 CSS -->
+    <th:block layout:fragment="css"></th:block>
 </head>
 <body>
-    <!-- common -->
-    <!-- <th:block th:replace="~{fragments/common::common}"> -->
-    <!-- header -->
-    <th:block th:replace="~{fragments/header::header}"></th:block>
-    <!-- content : 레이아웃의 프레그먼트 영역 이름
-        **참고 사항** 
-        <body layout:fragment="content"> 
-        위의 코드 body 태그에 프레그먼트 영역 이름 추가 필수! 
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-        위의 링크 상단 html 에 포함 필수! -->
-    <th:block layout:fragment="content"></th:block>
-    <!-- footer -->
-    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
-    <!-- script -->
-    <th:block th:replace="~{fragments/script::script}"></th:block>
+    <!-- 헤더 -->
+    <header th:replace="~{fragments/header :: header}"></header>
+    
+    <!-- 메인 컨텐츠 -->
+    <main layout:fragment="content">
+        <!-- 각 페이지의 내용이 여기에 들어갑니다 -->
+    </main>
+    
+    <!-- 푸터 -->
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    
+    <!-- 플로팅 버튼 (상단으로 이동) -->
+    <button class="floating-btn" onclick="scrollToTop()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </button>
+    
+    <!-- 공통 스크립트 -->
+    <script th:inline="javascript">
+        // 상단으로 스크롤
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // 스크롤 시 플로팅 버튼 표시/숨김
+        $(window).scroll(function() {
+            if ($(this).scrollTop() > 300) {
+                $('.floating-btn').fadeIn();
+            } else {
+                $('.floating-btn').fadeOut();
+            }
+        });
+        
+        // 페이지 로드 시 플로팅 버튼 숨김
+        $(document).ready(function() {
+            $('.floating-btn').hide();
+        });
+    </script>
+    
+    <!-- 페이지별 추가 스크립트 -->
+    <th:block layout:fragment="script"></th:block>
+
+    <!-- Footer Fragment -->
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
 </body>
 </html>
-<!-- footer : 없음
-    **참고 사항** 
-    index 화면에서만 footer 필요하므로
-    index.html : layout + footer 필요!
-    나머지.html : footer 필요 없음! -->
-    
-<!-- 수업 시간 layout 프로젝트 참고!-->

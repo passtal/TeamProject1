@@ -10,6 +10,12 @@
     <!-- layout:fragment="레이아웃의 프레그먼트 영역 이름" -->
     <th:block layout:fragment="content"></th:block>
 
-    <th:block th:replace="~{fragments/script :: script}"></th:block>
+    <!-- Icon -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400..700,0..1" />
+    
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
 </body>
 </html>

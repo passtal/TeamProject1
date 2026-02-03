@@ -1,0 +1,267 @@
+/* 드래그 방지 */
+* {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 공지사항 페이지 전체 */
+.notice-page {
+    min-height: 100vh;
+    background-color: #F9FAFB;
+    padding: 206px 519px 80px 519px;
+}
+
+.notice-container {
+    width: 100%;
+    max-width: 882px;
+    margin: 0 auto;
+}
+
+/* 헤더 */
+.notice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.notice-title {
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 40px;
+    color: #101828;
+    margin: 0;
+}
+
+.btn-write {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    background-color: #00A651;
+    border: none;
+    border-radius: 10px;
+    color: #FFFFFF;
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 24px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-write:hover {
+    background-color: #008A44;
+}
+
+.btn-write svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* 공지사항 목록 */
+.notice-list {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* 공지사항 아이템 */
+.notice-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.notice-item:hover {
+    background-color: rgba(0, 166, 81, 0.05);
+}
+
+.notice-item.important:hover {
+    background-color: #FEE2E2;
+}
+
+.notice-item:last-child {
+    border-bottom: none;
+}
+
+/* 중요 공지 */
+.notice-item.important {
+    background-color: #FEF2F2;
+}
+
+.notice-item-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 32px;
+}
+
+/* 왼쪽 아이콘 (중요 공지만) */
+.notice-left {
+    display: flex;
+    align-items: center;
+}
+
+.notice-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* 오른쪽 컨텐츠 */
+.notice-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 일반 공지는 아이콘 없이 notice-right만 */
+.notice-item:not(.important) .notice-item-content {
+    display: block;
+}
+
+.notice-item:not(.important) .notice-right {
+    width: 100%;
+}
+
+/* 태그들 */
+.notice-tags {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.notice-tag {
+    display: inline-flex;
+    padding: 4px 12px;
+    border-radius: 33554400px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+/* 태그 색상 */
+.tag-notice {
+    background-color: #DBEAFE;
+    color: #1447E6;
+}
+
+.tag-important {
+    background-color: #E7000B;
+    color: #FFFFFF;
+}
+
+.tag-event {
+    background-color: #FCE7F3;
+    color: #C6005C;
+}
+
+.tag-update {
+    background-color: #DCFCE7;
+    color: #008236;
+}
+
+.tag-maintenance {
+    background-color: #FFEDD4;
+    color: #CA3500;
+}
+
+/* 제목 */
+.notice-item-title {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #101828;
+}
+
+.notice-item-title a {
+    color: #101828;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.notice-item-title a:hover {
+    color: #00A651;
+}
+
+/* 메타 정보 (날짜, 조회수) */
+.notice-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.notice-date {
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #6A7282;
+}
+
+.notice-views {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 22px;
+    color: #6A7282;
+}
+
+.notice-views svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+/* 반응형 */
+@media (max-width: 1920px) {
+    .notice-page {
+        padding: 120px 240px 80px 240px;
+    }
+}
+
+@media (max-width: 1440px) {
+    .notice-page {
+        padding: 80px 120px 60px 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .notice-page {
+        padding: 40px 20px;
+    }
+
+    .notice-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .btn-write {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .notice-item-content {
+        padding: 16px;
+    }
+
+    .notice-item-title {
+        font-size: 16px;
+        line-height: 24px;
+    }
+}

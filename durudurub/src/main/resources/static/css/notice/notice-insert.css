@@ -1,0 +1,268 @@
+/* 공지사항 작성 페이지 스타일 */
+* {
+    user-select: none;
+}
+
+.notice-insert-page {
+    padding: 32px 647px 80px 647px;
+    background-color: #F9FAFB;
+    min-height: 100vh;
+}
+
+/* 상단 헤더 */
+.notice-header {
+    width: 100%;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.header-container {
+    max-width: 864px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s;
+}
+
+.btn-back:hover {
+    background-color: #F3F4F6;
+    border-radius: 8px;
+}
+
+.btn-back .material-symbols-outlined {
+    font-size: 24px;
+    color: #364153;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.33;
+    color: #101828;
+    margin: 0;
+}
+
+/* 폼 컨테이너 */
+.notice-form {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 48px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.form-content {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* 폼 그룹 */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-label {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.43;
+    color: #364153;
+}
+
+/* 텍스트 입력 필드 */
+.form-input {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border: 1px solid #D1D5DC;
+    border-radius: 10px;
+    font-size: 18px;
+    line-height: 1.15;
+    color: #0A0A0A;
+    background-color: #FFFFFF;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #00A651;
+}
+
+.form-input::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+/* 카테고리 버튼 */
+.category-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.category-btn {
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #F3F4F6;
+    color: #364153;
+}
+
+.category-btn:hover {
+    background-color: #E5E7EB;
+}
+
+.category-btn.active {
+    background-color: #00A651;
+    color: #FFFFFF;
+}
+
+/* 체크박스 그룹 */
+.checkbox-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.form-checkbox {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: #00A651;
+}
+
+.checkbox-label {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.43;
+    color: #364153;
+    cursor: pointer;
+}
+
+/* 텍스트 영역 */
+.form-textarea {
+    display: flex;
+    padding: 16px 20px;
+    border: 1px solid #D1D5DC;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #0A0A0A;
+    background-color: #FFFFFF;
+    resize: vertical;
+    transition: border-color 0.2s;
+    font-family: Arial, sans-serif;
+}
+
+.form-textarea:focus {
+    outline: none;
+    border-color: #00A651;
+}
+
+.form-textarea::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+.form-hint {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.43;
+    color: #6A7282;
+    margin: 0;
+}
+
+/* 버튼 영역 */
+.form-actions {
+    display: flex;
+    gap: 12px;
+    padding-top: 16px;
+}
+
+.btn-cancel,
+.btn-submit {
+    flex: 1;
+    height: 58px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-cancel {
+    background-color: transparent;
+    color: #364153;
+    border: 1px solid #D1D5DC;
+}
+
+.btn-cancel:hover {
+    background-color: #F9FAFB;
+    border-color: #9CA3AF;
+}
+
+.btn-submit {
+    background-color: #00A651;
+    color: #FFFFFF;
+}
+
+.btn-submit:hover {
+    background-color: #008F47;
+}
+
+/* 반응형 (화면이 작을 경우) */
+@media (max-width: 1600px) {
+    .notice-insert-page {
+        padding: 24px 300px 80px 300px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .notice-insert-page {
+        padding: 24px 100px 80px 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .notice-insert-page {
+        padding: 24px 24px 80px 24px;
+    }
+
+    .category-buttons {
+        flex-wrap: wrap;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn-cancel,
+    .btn-submit {
+        width: 100%;
+    }
+}
