@@ -23,11 +23,18 @@
 
 .container-fluid {
     height: 70px;
+    padding-left: 32px;
+    padding-right: 32px;
 }
 
 .navbar-brand {
     font-weight: 700;
     font-size: 1.25rem;
+    color: var(--primary-color);
+    margin-right: 0px;
+}
+
+.navbar-brand:hover {
     color: var(--primary-color);
 }
 
@@ -46,7 +53,7 @@
     display: flex;
     align-items: center;
 
-    min-width: 350px;
+    max-width: 450px;
 }
 
 .search-container button {
@@ -83,6 +90,13 @@
 .search-container .form-control {
     border: 1px solid var(--border-color);
     padding: 0.75rem 1.25rem;
+    height: 46px;
+}
+
+.search-container .form-control:focus {
+    border-color: var(--primary-color);
+    border-width: 2px;
+    box-shadow: none;
 }
 
 .search-container .form-control::placeholder {
@@ -95,6 +109,21 @@
     gap: 1rem;
 }
 
+.navbar-right .minigameIcon {
+    font-size: 1.125rem;   
+
+    border-width: 2px;
+    
+    padding-left: 1.5rem;          
+    padding-right: 1.5rem;
+    padding-top: 0.625rem;          
+    padding-bottom: 0.625rem;
+
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+
+}
 .navbar-right .btn-outline-success {
     border-color: var(--primary-color);
     color: var(--primary-color);
@@ -254,14 +283,21 @@
     object-fit: contain;
 }
 
+.user-icon {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+}
+
 .logo-img {
     object-fit: contain;
 }
 
 .social-icon {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
+    display: flex;                 /* flex */
+    align-items: center;           
+    justify-content: center;
+   align-content: center;
 }
 
 .category-btn p {
