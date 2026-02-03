@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <!-- <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE">두루두룹</title> -->
     <!-- meta -->
     <th:block th:replace="~{fragments/meta :: meta}"></th:block>
     <!-- link -->
     <th:block th:replace="~{fragments/link::link}"></th:block>
-    <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
     <!-- 헤더 -->
@@ -21,7 +20,7 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         위의 링크 상단 html 에 포함 필수! -->
     <th:block layout:fragment="content"></th:block>
-    <!-- Footer Fragment -->
+    <!-- JS / J쿼리 -->
     <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
 </body>
 </html>

@@ -2,8 +2,9 @@
 /* TODO: 구현 */
 
 // header
+// user or admin 에 따라 드롭다운 달라짐
 $(document).ready(function() {
-    $('.profile-icon').on('click', function() {
+    $('icon-container').on('click', function() {
         const userDropdown = $('#user-dropdown')
         const adminDropdown = $('#admin-dropdown')
         

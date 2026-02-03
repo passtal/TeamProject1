@@ -14,14 +14,15 @@ body {
 
 /* 메인 컨테이너 */
 .mypage-container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+
     max-width: 1216px;
     margin: 0 auto;
-    margin-left: calc(50% + 40px);
-    transform: translateX(-50%);
-    padding: 133px 0 80px;
     display: grid;
     grid-template-columns: 546.66px 261.34px;
-    gap: 110px;
+    gap: 30px;
+    justify-content: center;
 }
 
 /* ============================================
@@ -452,10 +453,7 @@ body {
    ============================================ */
 @media (max-width: 1440px) {
     .mypage-container {
-        max-width: 100%;
-        padding: 80px 120px;
-        gap: 60px;
-        grid-template-columns: 1fr 300px;
+        gap: 40px;
     }
 }
 
