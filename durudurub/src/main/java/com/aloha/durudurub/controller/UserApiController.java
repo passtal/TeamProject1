@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.UserService;
@@ -27,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/users")
 public class UserApiController {
 
-    @Autowired
+    @Autowired 
     private UserService userService;
 
     /**
@@ -77,15 +79,32 @@ public class UserApiController {
     }
 
     /**
-     * 회원가입 (AJAX)
-     * - JSON으로 User 받음
-     * - 성공 시 "SUCCESS" 반환
+     * 회원가입 (AJAX) - multipart (프로필 사진 포함)
      * /api/users/join
      */
-    @PostMapping("/join")
-    public ResponseEntity<?> join(@RequestBody User user) {
+    @PostMapping(value="/join", consumes = "multipart/form-data")
+    public ResponseEntity<?> join(
+            @RequestParam("userId") String userId,
+            @RequestParam("password") String password,
+            @RequestParam("username") String username,
+            @RequestParam(value = "age", required = false, defaultValue = "0") int age,
+            @RequestParam(value = "gender", required = false) String gender,
+            @RequestParam(value = "address", required = false) String address,
+            @RequestPart(value = "profileImgFile", required = false) MultipartFile profileImgFile
+    ) {
         try {
-            int userNo = userService.insert(user); // 성공 시 userNo 리턴하도록 구현되어 있어야 함
+            // ✅ 기존 User DTO로 묶어서 서비스로 넘김 (폴더 추가 없이)
+            User user = new User();
+            user.setUserId(userId);
+            user.setPassword(password);
+            user.setUsername(username);
+            user.setAge(age);
+            user.setGender(gender);
+            user.setAddress(address);
+
+            // ✅ 서비스에 파일까지 넘기는 메서드가 필요
+            // 1) userService.insert(user, profileImgFile) 로 오버로딩 추천
+            int userNo = userService.insert(user, profileImgFile);
 
             if (userNo <= 0) {
                 return new ResponseEntity<>("FAIL", HttpStatus.BAD_REQUEST);
@@ -93,7 +112,6 @@ public class UserApiController {
             return new ResponseEntity<>("SUCCESS", HttpStatus.CREATED);
 
         } catch (IllegalArgumentException e) {
-            // 유효성/중복 등 사용자 입력 문제는 400으로 메시지 반환
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 
         } catch (Exception e) {
