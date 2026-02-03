@@ -12,19 +12,20 @@ import com.aloha.durudurub.dao.UserMapper;
 import com.aloha.durudurub.dto.Auth;
 import com.aloha.durudurub.dto.User;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * 회원 서비스 구현체
  */
 @Service
+@RequiredArgsConstructor // 임시
 public class UserServiceImpl implements UserService {
     
-    @Autowired
+    // @Autowired
     private UserMapper userMapper;
-    
-    @Autowired
+    // @Autowired
     private AuthMapper authMapper;
-    
-    @Autowired
+    // @Autowired
     private PasswordEncoder passwordEncoder;
     
     @Override

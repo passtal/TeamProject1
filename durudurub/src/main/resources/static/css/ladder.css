@@ -1,0 +1,428 @@
+/* 사다리 게임 페이지 스타일 */
+
+.ladder-page {
+    min-height: 100vh;
+    background: linear-gradient(148.7deg, rgba(0, 166, 81, 0.1) 0%, rgba(0, 166, 81, 0.05) 100%);
+    padding: 48px 16px;
+}
+
+/* 뒤로가기 버튼 */
+.back-button-container {
+    max-width: 896px;
+    margin: 0 auto 48px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #364153;
+    font-size: 16px;
+    line-height: 24px;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.back-button:hover {
+    opacity: 0.7;
+}
+
+.back-button svg {
+    flex-shrink: 0;
+}
+
+/* 메인 컨테이너 */
+.ladder-container {
+    max-width: 896px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* 사다리 설정 박스 */
+.ladder-settings {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+}
+
+.ladder-settings h2 {
+    font-size: 20px;
+    font-weight: bold;
+    color: #101828;
+    line-height: 28px;
+    margin: 0 0 16px;
+}
+
+.settings-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 설정 섹션 */
+.setting-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setting-label {
+    font-size: 14px;
+    color: #364153;
+    line-height: 20px;
+    font-weight: normal;
+}
+
+/* 슬라이더 */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.slider-button {
+    width: 36px;
+    height: 36px;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.slider-button:hover {
+    background: #e5e7eb;
+}
+
+.slider-track {
+    flex: 1;
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 100px;
+    position: relative;
+    overflow: hidden;
+}
+
+.slider-fill {
+    height: 100%;
+    background: #00a651;
+    border-radius: 100px;
+    width: 50%;
+    transition: width 0.3s ease;
+}
+
+/* 입력 필드 그리드 */
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.text-input {
+    border: 1px solid #d1d5dc;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #0a0a0a;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.text-input::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+.text-input:focus {
+    border-color: #00a651;
+}
+
+/* 사다리 생성 버튼 */
+.generate-button {
+    width: 100%;
+    height: 48px;
+    background: #00a651;
+    border: none;
+    border-radius: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.generate-button:hover {
+    background: #008f45;
+}
+
+/* 게임 방법 박스 */
+.game-instructions {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+}
+
+.game-instructions h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: #101828;
+    line-height: 28px;
+    margin: 0 0 12px;
+}
+
+.instruction-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.instruction-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #364153;
+}
+
+.instruction-list .bullet {
+    color: #00a651;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.instruction-list span:last-child {
+    flex: 1;
+}
+
+/* 사다리 타기 섹션 */
+.ladder-game {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.1), 
+                0px 4px 6px 0px rgba(0, 0, 0, 0.1);
+}
+
+.ladder-game h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #101828;
+    line-height: 32px;
+    margin: 0 0 24px;
+    text-align: center;
+}
+
+/* 참가자 버튼들 */
+.participant-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding: 0 50px;
+}
+
+.participant-btn {
+    background: #00a651;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex: 1;
+    max-width: 120px;
+}
+
+.participant-btn:hover:not(:disabled) {
+    background: #008f45;
+}
+
+.participant-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* 모든 결과 보기 버튼 */
+.show-all-button {
+    width: 100%;
+    height: 48px;
+    background: #0066ff;
+    border: none;
+    border-radius: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 16px;
+}
+
+.show-all-button:hover:not(:disabled) {
+    background: #0052cc;
+}
+
+.show-all-button:disabled {
+    background: #d1d5dc;
+    cursor: not-allowed;
+}
+
+/* 사다리 캔버스 */
+.ladder-canvas {
+    width: 100%;
+    height: 565px;
+    border: 2px solid #e5e7eb;
+    border-radius: 14px;
+    display: block;
+    margin-bottom: 16px;
+    background: white;
+    transition: filter 0.3s ease;
+}
+
+.ladder-canvas.hidden {
+    filter: blur(20px);
+    pointer-events: none;
+}
+
+/* 사다리 가림막 컨테이너 */
+.ladder-canvas-wrapper {
+    position: relative;
+}
+
+.ladder-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+    z-index: 10;
+}
+
+.ladder-overlay.hidden {
+    display: none;
+}
+
+.ladder-overlay-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #101828;
+    text-align: center;
+}
+
+.ladder-overlay-subtext {
+    font-size: 16px;
+    color: #4a5565;
+    text-align: center;
+}
+
+/* 결과/상품 표시 */
+.prize-display {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 66px;
+}
+
+.prize-box {
+    background: #f3f4f6;
+    color: #364153;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    flex: 1;
+    max-width: 120px;
+    transition: all 0.3s ease;
+}
+
+.prize-box.winner {
+    background: #fdc700;
+    color: #101828;
+}
+
+/* 게임 결과 메시지 */
+.result-message {
+    background: rgba(0, 166, 81, 0.1);
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 24px;
+}
+
+.result-message #resultList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.result-item {
+    font-size: 20px;
+    font-weight: bold;
+    color: #00a651;
+    line-height: 28px;
+    text-align: center;
+    margin: 0;
+}
+
+/* 다시하기 버튼 */
+.retry-button {
+    width: 100%;
+    max-width: 300px;
+    height: 48px;
+    background: #00a651;
+    border: none;
+    border-radius: 100px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin: 16px auto 0;
+}
+
+.retry-button:hover {
+    background: #008f45;
+}
+
+/* 참가자 버튼 활성/비활성 상태 */
+.participant-btn.clicked {
+    background: #d1d5dc;
+    cursor: not-allowed;
+}
+
+.participant-btn.inactive {
+    opacity: 0.5;
+}

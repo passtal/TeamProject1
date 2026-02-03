@@ -2,6 +2,8 @@ package com.aloha.durudurub.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
 
@@ -65,7 +67,7 @@ public interface ClubService {
     int incrementMemberCount(int clubNo);
 
     int decrementMemberCount(int clubNo);
-    
+
     // 마이페이지: 내모임 관리
     // 참여 중인 모임
     List<Club> joinedClubList(int userNo) throws Exception;

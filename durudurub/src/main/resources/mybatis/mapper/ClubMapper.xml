@@ -207,5 +207,4 @@
     <select id="count" resultType="int">
         SELECT COUNT (*) FROM clubs
     </select>
-
 </mapper>

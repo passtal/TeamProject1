@@ -1,5 +1,61 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 랜덤 게임 목록 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>미니게임 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/gameList.css}">
+</head>
+<body>
+    <main layout:fragment="content" class="game-page">
+        <!-- 게임 컨텐츠 -->
+        <div class="game-content">
+            <!-- 소개 섹션 -->
+            <div class="game-intro">
+                <h2>재미있는 미니 게임</h2>
+                <p>원하는 게임을 선택해서 즐겨보세요!</p>
+            </div>
+            
+            <!-- 게임 카드 그리드 -->
+            <div class="game-cards">
+                <!-- 사다리 게임 -->
+                <a href="/game/ladder" class="game-card">
+                    <div class="game-icon purple">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M8 4H10V28H8V4ZM14 4H16V28H14V4ZM20 4H22V28H20V4ZM26 4H28V28H26V4ZM6 10H30V12H6V10ZM6 16H30V18H6V16ZM6 22H30V24H6V22Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <h3>사다리 게임</h3>
+                    <p>사다리를 타고 내려가 결과를 확인하세요</p>
+                </a>
+                
+                <!-- 원판 돌리기 -->
+                <a href="/game/roulette" class="game-card">
+                    <div class="game-icon orange">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="12" stroke="white" stroke-width="2" fill="none"/>
+                            <path d="M16 4V16L24 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="16" cy="16" r="2" fill="white"/>
+                        </svg>
+                    </div>
+                    <h3>원판 돌리기</h3>
+                    <p>행운의 룰렛을 돌려 당첨을 확인하세요</p>
+                </a>
+                
+                <!-- 당첨자 추첨 -->
+                <a href="/game/random" class="game-card">
+                    <div class="game-icon green">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16 4C9.37 4 4 9.37 4 16C4 22.63 9.37 28 16 28C22.63 28 28 22.63 28 16C28 9.37 22.63 4 16 4ZM16 10C17.1 10 18 10.9 18 12C18 13.1 17.1 14 16 14C14.9 14 14 13.1 14 12C14 10.9 14.9 10 16 10ZM20 22H12V20H14V16H12V14H16V20H18V22H20Z" fill="white"/>
+                        </svg>
+                    </div>
+                    <h3>당첨자 추첨</h3>
+                    <p>참가자 중 당첨자를 무작위로 추첨합니다</p>
+                </a>
+            </div>
+        </div>
+    </main>
+</body>
 </html>

@@ -1,7 +1,6 @@
 /* 404페이지 */
 .wrapper {
   min-height: 100vh;
-  /* background: linear-gradient(to bottom right, #ebf4ff, #e0e7ff); blue-50 → indigo-50 */
   display: flex;
   justify-content: center;
   align-items: center;

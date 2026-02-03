@@ -4,8 +4,8 @@
 <head>
     <!-- meta -->
     <th:block th:replace="~{fragments/meta :: meta}"></th:block>
-    <!-- link : css -->
-    <th:block th:replace="~{fragments/head::head}"></th:block>
+    <!-- link -->
+    <th:block th:replace="~{fragments/link::link}"></th:block>
     <title th:text="${pageTitle} ?: '두루두룹 - 함께 하면 더 즐거운 순간'">두루두룹</title>
 </head>
 <body>
@@ -18,8 +18,6 @@
         xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
         위의 링크 상단 html 에 포함 필수! -->
     <th:block layout:fragment="content"></th:block>
-    <!-- footer -->
-    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
     <!-- script -->
     <th:block th:replace="~{fragments/script::script}"></th:block>
 </body>
