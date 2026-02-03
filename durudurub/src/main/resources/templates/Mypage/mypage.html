@@ -6,6 +6,7 @@
 <head>
     <title>마이페이지 - 두루두룹</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage.css}">
+    <link rel="stylesheet" th:href="@{/css/mypage/mypage-edit.css}">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
 <body layout:fragment="content">
@@ -46,21 +47,34 @@
 
         <!-- 기본 정보 카드 -->
         <div class="info-card">
-            <div class="card-header">
+            <!-- 읽기 모드 헤더 -->
+            <div class="card-header" id="viewModeHeader">
                 <h2 class="card-title">기본 정보</h2>
-                <button class="btn-edit-icon">
+                <button class="btn-edit-icon" id="btnEditMode">
                     <span class="material-symbols-outlined">edit</span>
                     <span>수정</span>
                 </button>
             </div>
-            <div class="info-content">
+            
+            <!-- 수정 모드 헤더 -->
+            <div class="card-header" id="editModeHeader" style="display: none;">
+                <h2 class="card-title">기본 정보</h2>
+                <div class="edit-actions">
+                    <button class="btn-cancel" id="btnCancelEdit">취소</button>
+                    <button class="btn-save" id="btnSaveEdit">저장</button>
+                </div>
+            </div>
+            
+            <!-- 읽기 모드 -->
+            <div class="info-content" id="viewMode">
                 <!-- 프로필 이미지 -->
                 <div class="profile-section">
                     <div class="profile-avatar">
-                        <img th:src="${user?.profileImage != null ? user.profileImage : '/img/default-profile.png'}" 
+                        <img th:src="${user?.profileImg != null ? user.profileImg : '/img/default-profile.png'}" 
                              src="/img/default-profile.png"
                              alt="프로필 이미지" 
-                             class="profile-image">
+                             class="profile-image"
+                             id="profileImageView">
                     </div>
                 </div>
 
@@ -73,7 +87,7 @@
                             <span>닉네임</span>
                         </label>
                         <div class="field-value">
-                            <span th:text="${user?.username ?: 'test'}">test</span>
+                            <span id="usernameView" th:text="${user?.username ?: 'test'}">test</span>
                         </div>
                     </div>
 
@@ -83,8 +97,8 @@
                             <span class="material-symbols-outlined">mail</span>
                             <span>이메일</span>
                         </label>
-                        <div class="field-value">
-                            <span th:text="${user?.email ?: 'test'}">test</span>
+                        <div class="field-value readonly-field">
+                            <span id="emailView" th:text="${user?.userId ?: 'test@example.com'}">test@example.com</span>
                         </div>
                     </div>
 
@@ -95,7 +109,7 @@
                             <span>활동 지역</span>
                         </label>
                         <div class="field-value field-value-placeholder">
-                            <span th:text="${user?.location ?: '미입력'}">미입력</span>
+                            <span id="addressView" th:text="${user?.address ?: '예: 서울특별시'}">예: 서울특별시</span>
                         </div>
                     </div>
 
@@ -107,7 +121,7 @@
                                 <span>나이</span>
                             </label>
                             <div class="field-value field-value-placeholder">
-                                <span th:text="${user?.age ?: '미입력'}">미입력</span>
+                                <span id="ageView" th:text="${user?.age > 0 ? user.age + '세' : '예: 25'}">예: 25</span>
                             </div>
                         </div>
                         <div class="info-field info-field-half">
@@ -116,7 +130,7 @@
                                 <span>성별</span>
                             </label>
                             <div class="field-value">
-                                <span th:text="${user?.gender ?: '여성'}">여성</span>
+                                <span id="genderView" th:text="${user?.gender ?: '선택 안함'}">선택 안함</span>
                             </div>
                         </div>
                     </div>
@@ -127,8 +141,110 @@
                             <span class="material-symbols-outlined">calendar_today</span>
                             <span>가입일</span>
                         </label>
-                        <div class="field-value">
-                            <span th:text="${#temporals.format(user?.regDate ?: #temporals.createNow(), 'yyyy년 MM월 dd일')}">2025년 1월 20일</span>
+                        <div class="field-value readonly-field">
+                            <span th:text="${#temporals.format(user?.createdAt ?: #temporals.createNow(), 'yyyy년 M월 d일')}">2025년 1월 20일</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 수정 모드 -->
+            <div class="info-content" id="editMode" style="display: none;">
+                <!-- 프로필 이미지 수정 -->
+                <div class="profile-section-edit">
+                    <div class="profile-avatar-edit">
+                        <img th:src="${user?.profileImg != null ? user.profileImg : '/img/default-profile.png'}" 
+                             src="/img/default-profile.png"
+                             alt="프로필 이미지" 
+                             class="profile-image-edit"
+                             id="profileImageEdit">
+                    </div>
+                    <button class="btn-change-photo" id="btnChangePhoto">
+                        <span class="change-photo-text">사진 변경</span>
+                    </button>
+                    <input type="file" id="profileImageInput" accept="image/*" style="display: none;">
+                </div>
+
+                <!-- 정보 입력 필드들 -->
+                <div class="info-fields-edit">
+                    <!-- 닉네임 -->
+                    <div class="info-field-edit">
+                        <label class="field-label-edit">
+                            <span class="material-symbols-outlined">person</span>
+                            <span>닉네임</span>
+                        </label>
+                        <input type="text" 
+                               class="field-input" 
+                               id="usernameInput" 
+                               th:value="${user?.username ?: 'test'}" 
+                               value="test"
+                               placeholder="닉네임을 입력하세요">
+                    </div>
+
+                    <!-- 이메일 (읽기 전용) -->
+                    <div class="info-field-edit">
+                        <label class="field-label-edit">
+                            <span class="material-symbols-outlined">mail</span>
+                            <span>이메일</span>
+                        </label>
+                        <div class="field-input-readonly">
+                            <span id="emailEdit" th:text="${user?.userId ?: 'test@example.com'}">test@example.com</span>
+                        </div>
+                    </div>
+
+                    <!-- 활동 지역 -->
+                    <div class="info-field-edit">
+                        <label class="field-label-edit">
+                            <span class="material-symbols-outlined">location_on</span>
+                            <span>활동 지역</span>
+                        </label>
+                        <input type="text" 
+                               class="field-input" 
+                               id="addressInput" 
+                               th:value="${user?.address}" 
+                               placeholder="예: 서울특별시">
+                    </div>
+
+                    <!-- 나이 & 성별 -->
+                    <div class="info-field-row-edit">
+                        <div class="info-field-edit info-field-half-edit">
+                            <label class="field-label-edit">
+                                <span class="material-symbols-outlined">person</span>
+                                <span>나이</span>
+                            </label>
+                            <div class="age-input-group">
+                                <input type="number" 
+                                       class="field-input field-input-number" 
+                                       id="ageInput" 
+                                       th:value="${user?.age > 0 ? user.age : ''}" 
+                                       placeholder="예: 25"
+                                       min="1"
+                                       max="120">
+                                <span class="age-suffix">세</span>
+                            </div>
+                        </div>
+                        <div class="info-field-edit info-field-half-edit">
+                            <label class="field-label-edit">
+                                <span class="material-symbols-outlined">person</span>
+                                <span>성별</span>
+                            </label>
+                            <select class="field-select" id="genderSelect" th:value="${user?.gender}">
+                                <option value="">선택 안함</option>
+                                <option value="남성" th:selected="${user?.gender == '남성'}">남성</option>
+                                <option value="여성" th:selected="${user?.gender == '여성'}">여성</option>
+                                <option value="기타" th:selected="${user?.gender == '기타'}">기타</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- 가입일 (읽기 전용) -->
+                    <div class="info-field-edit">
+                        <label class="field-label-edit">
+                            <span class="material-symbols-outlined">calendar_today</span>
+                            <span>가입일</span>
+                        </label>
+                        <div class="field-input-readonly">
+                            <span th:text="${#temporals.format(user?.createdAt ?: #temporals.createNow(), 'yyyy년 M월 d일')}">2025년 1월 20일</span>
                         </div>
                     </div>
                 </div>
@@ -198,7 +314,155 @@
     </div>
 </div>
 
-<script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+// 수정 모드 토글
+const btnEditMode = document.getElementById('btnEditMode');
+const btnCancelEdit = document.getElementById('btnCancelEdit');
+const btnSaveEdit = document.getElementById('btnSaveEdit');
+const viewMode = document.getElementById('viewMode');
+const editMode = document.getElementById('editMode');
+const viewModeHeader = document.getElementById('viewModeHeader');
+const editModeHeader = document.getElementById('editModeHeader');
+
+// 사용자 정보 (Thymeleaf에서 주입)
+const userNo = /*[[${user?.no}]]*/ 0;
+const userIdEmail = /*[[${user?.userId}]]*/ '';
+
+// 수정 모드로 전환
+btnEditMode.addEventListener('click', function() {
+    viewMode.style.display = 'none';
+    editMode.style.display = 'block';
+    viewModeHeader.style.display = 'none';
+    editModeHeader.style.display = 'flex';
+    
+    // 현재 값으로 입력 필드 채우기
+    document.getElementById('usernameInput').value = document.getElementById('usernameView').textContent.trim();
+    document.getElementById('addressInput').value = document.getElementById('addressView').textContent.trim() === '예: 서울특별시' ? '' : document.getElementById('addressView').textContent.trim();
+    
+    const ageText = document.getElementById('ageView').textContent.trim();
+    if (ageText !== '예: 25' && ageText.includes('세')) {
+        document.getElementById('ageInput').value = ageText.replace('세', '').trim();
+    }
+    
+    const genderText = document.getElementById('genderView').textContent.trim();
+    document.getElementById('genderSelect').value = genderText === '선택 안함' ? '' : genderText;
+});
+
+// 취소 버튼
+btnCancelEdit.addEventListener('click', function() {
+    if (confirm('변경 사항을 취소하시겠습니까?')) {
+        editMode.style.display = 'none';
+        viewMode.style.display = 'block';
+        editModeHeader.style.display = 'none';
+        viewModeHeader.style.display = 'flex';
+    }
+});
+
+// 프로필 이미지 변경
+document.getElementById('btnChangePhoto').addEventListener('click', function() {
+    document.getElementById('profileImageInput').click();
+});
+
+document.getElementById('profileImageInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('profileImageEdit').src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// 저장 버튼 - Ajax로 서버에 전송
+btnSaveEdit.addEventListener('click', async function() {
+    const username = document.getElementById('usernameInput').value.trim();
+    const address = document.getElementById('addressInput').value.trim();
+    const age = document.getElementById('ageInput').value;
+    const gender = document.getElementById('genderSelect').value;
+    
+    // 유효성 검사
+    if (!username) {
+        alert('닉네임을 입력해주세요.');
+        return;
+    }
+    
+    // 프로필 이미지 업로드 (파일이 선택된 경우)
+    const profileImageFile = document.getElementById('profileImageInput').files[0];
+    let profileImgUrl = null;
+    
+    if (profileImageFile) {
+        const formData = new FormData();
+        formData.append('file', profileImageFile);
+        
+        try {
+            const imgResponse = await fetch('/user/profile-img', {
+                method: 'PUT',
+                body: formData
+            });
+            
+            if (!imgResponse.ok) {
+                throw new Error('프로필 이미지 업로드 실패');
+            }
+            
+            profileImgUrl = await imgResponse.text();
+        } catch (error) {
+            console.error('프로필 이미지 업로드 오류:', error);
+            alert('프로필 이미지 업로드에 실패했습니다.');
+            return;
+        }
+    }
+    
+    // 사용자 정보 업데이트
+    const userData = {
+        no: userNo,
+        userId: userIdEmail,
+        username: username,
+        address: address || null,
+        age: age ? parseInt(age) : 0,
+        gender: gender || null
+    };
+    
+    if (profileImgUrl) {
+        userData.profileImg = profileImgUrl;
+    }
+    
+    try {
+        const response = await fetch('/user', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+        
+        if (response.ok) {
+            alert('정보가 성공적으로 수정되었습니다.');
+            // 화면 업데이트
+            document.getElementById('usernameView').textContent = username;
+            document.getElementById('addressView').textContent = address || '예: 서울특별시';
+            document.getElementById('ageView').textContent = age ? age + '세' : '예: 25';
+            document.getElementById('genderView').textContent = gender || '선택 안함';
+            
+            if (profileImgUrl) {
+                document.getElementById('profileImageView').src = profileImgUrl;
+            }
+            
+            // 읽기 모드로 전환
+            editMode.style.display = 'none';
+            viewMode.style.display = 'block';
+            editModeHeader.style.display = 'none';
+            viewModeHeader.style.display = 'flex';
+        } else {
+            alert('정보 수정에 실패했습니다.');
+        }
+    } catch (error) {
+        console.error('정보 수정 오류:', error);
+        alert('서버 오류가 발생했습니다.');
+    }
+});
+
 // 모달 열기
 document.getElementById('deleteAccountBtn').addEventListener('click', function() {
     document.getElementById('deleteAccountModal').style.display = 'flex';
@@ -221,6 +485,7 @@ document.getElementById('confirmDeleteBtn').addEventListener('click', function()
     // TODO: 실제 회원 탈퇴 처리
     window.location.href = '/user/delete';
 });
+/*]]>*/
 </script>
 
 </body>
