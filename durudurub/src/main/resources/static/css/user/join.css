@@ -150,10 +150,10 @@ input[type=number] {
     border-color: #008F45;
 }
 
-/* Form Groups */
+/* Form Groups
     flex-direction: column;
     gap: 20px;
-}
+} */
 
 /* Profile Photo Section */
 .profile-section {
@@ -242,7 +242,6 @@ input[type=number] {
 .profile-upload-icon svg {
     width: 16px;
     height: 16px;
-}
     position: absolute;
     bottom: 0;
     right: 0;
