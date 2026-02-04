@@ -3,6 +3,7 @@ package com.aloha.durudurub.controller;
 import java.security.Principal;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.service.ClubService;
@@ -61,7 +63,7 @@ public class MypageController {
    // club index (기본) - 동기, 페이지 이동
    @GetMapping("/club")
     public String clubPage(
-        @RequestParam(defaultValue = "APPROVED") String type,
+        @RequestParam(name="type", defaultValue = "APPROVED") String type,
         Model model,
         Principal principal
     ) throws Exception {
@@ -76,10 +78,15 @@ public class MypageController {
     @GetMapping("/club/list")
     // @GetMapping("/list")
     public String clubListFragment(
-        @RequestParam(defaultValue = "APPROVED") String type,
+        @RequestParam(name="type", defaultValue = "APPROVED") String type,
         Model model,
         Principal principal
     ) throws Exception {
+
+        // 임시 코드
+        if (principal == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
 
         int userNo = userService.selectByUserId(principal.getName()).getNo();
 
@@ -99,7 +106,7 @@ public class MypageController {
         model.addAttribute("hostClubCount", clubService.listByHost(userNo).size());
 
         // HTML fragments 정의 필요!
-        return "mypage/club/fragments :: myclubList";
+        return "mypage/mypage-club :: myclubListFragment";
     }
 
     // // 탈퇴 및 신청취소

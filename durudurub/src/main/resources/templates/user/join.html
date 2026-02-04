@@ -1,513 +1,287 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/base_layout}">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- meta -->
+    <th:block th:replace="~{fragments/meta :: meta}"></th:block>
+    <!-- link -->
+    <th:block th:replace="~{fragments/link::link}"></th:block>
     <title>회원가입 - 두루두룹</title>
     
     <!-- Custom CSS -->
     <link rel="stylesheet" th:href="@{/css/user/join.css}">
 
+    <th:block th:replace="~{fragments/meta :: meta}"></th:block>
+    <th:block th:replace="~{fragments/link::link}"></th:block>
+
+    <title>회원가입 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/user/join.css}">
 </head>
 
 <body layout:fragment="content" class="join-page">
-    <!-- Main Container -->
-    <div class="join-container">
-        <div class="join-card">
-            <!-- Close Button -->
-            <button type="button" class="btn-close-join" th:onclick="|location.href='@{/}'|">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M18 6L6 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M6 6L18 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
+<div class="join-container">
+    <div class="join-card">
 
-            <!-- Header -->
-            <div class="join-header">
-                <h1 class="join-title">두루두룹</h1>
-                <p class="join-subtitle">새로운 모임을 시작해보세요</p>
+        <button type="button" class="btn-close-join" th:onclick="|location.href='@{/}'|">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 6L18 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </button>
+
+        <div class="join-header">
+            <h1 class="join-title">두루두룹</h1>
+            <p class="join-subtitle">새로운 모임을 시작해보세요</p>
+        </div>
+
+        <div th:if="${error}" th:text="${error}"
+             style="color:#DC2626; margin-bottom:16px; text-align:center;"></div>
+
+        <form class="join-form" id="joinForm" onsubmit="return false;" enctype="multipart/form-data">
+
+            <!-- 프로필 사진 -->
+            <div class="profile-section">
+                <div class="profile-upload-wrapper">
+                    <label for="profileImgFile" class="profile-preview" id="profilePreview">
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 20L9.33333 14.6667C9.86667 14.1333 10.6667 14.1333 11.2 14.6667L16 19.4667" stroke="#99A1AF" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14.6667 18.1333L16.5333 16.2667C17.0667 15.7333 17.8667 15.7333 18.4 16.2667L24 21.8667" stroke="#99A1AF" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M24 12V28H8C5.79086 28 4 26.2091 4 24V8C4 5.79086 5.79086 4 8 4H24C26.2091 4 28 5.79086 28 8V12" stroke="#99A1AF" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </label>
+
+                    <label for="profileImgFile" class="profile-upload-icon">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10L6 6C6.26667 5.73333 6.73333 5.73333 7 6L10 9" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M8.66667 7.66667L9.66667 6.66667C9.93333 6.4 10.4 6.4 10.6667 6.66667L14 10" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M14 6V14H4C2.89543 14 2 13.1046 2 12V4C2 2.89543 2.89543 2 4 2H12C13.1046 2 14 2.89543 14 4V6" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </label>
+
+                    <input id="profileImgFile" name="profileImgFile" type="file" accept="image/*" hidden>
+                </div>
+                <p class="profile-photo-label">프로필 사진 (선택)</p>
             </div>
 
-            <!-- Error Message -->
-            <div th:if="${error}" th:text="${error}" style="color: #DC2626; margin-bottom: 16px; text-align: center;"></div>
-
-            <!-- AJAX 회원가입 api/users/join으로 보냄-->
-            <form class="join-form" id="joinForm" onsubmit="return false;" enctype="multipart/form-data">
-                
-                <!-- 프로필 사진 -->
-                <div class="profile-section">
-                    <div class="profile-upload-wrapper">
-                        <label for="profileImgFile" class="profile-preview" id="profilePreview">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 20L9.33333 14.6667C9.86667 14.1333 10.6667 14.1333 11.2 14.6667L16 19.4667" stroke="#99A1AF" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M14.6667 18.1333L16.5333 16.2667C17.0667 15.7333 17.8667 15.7333 18.4 16.2667L24 21.8667" stroke="#99A1AF" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M24 12V28H8C5.79086 28 4 26.2091 4 24V8C4 5.79086 5.79086 4 8 4H24C26.2091 4 28 5.79086 28 8V12" stroke="#99A1AF" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </label>
-                        <label for="profileImgFile" class="profile-upload-icon">
-                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M2 10L6 6C6.26667 5.73333 6.73333 5.73333 7 6L10 9" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M8.66667 7.66667L9.66667 6.66667C9.93333 6.4 10.4 6.4 10.6667 6.66667L14 10" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M14 6V14H4C2.89543 14 2 13.1046 2 12V4C2 2.89543 2.89543 2 4 2H12C13.1046 2 14 2.89543 14 4V6" stroke="#FFFFFF" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </label>
-                        <input id="profileImgFile" name="profileImgFile" type="file" accept="image/*" hidden>
-                    </div>
-                    <p class="profile-photo-label">프로필 사진 (선택)</p>
+            <!-- 이메일 -->
+            <div class="form-group">
+                <label for="userId" class="form-label">이메일</label>
+                <div class="input-with-button">
+                    <input id="userId" name="userId" type="email" class="form-control"
+                           placeholder="이메일을 입력하세요" required>
+                    <button type="button" id="checkUserIdBtn" class="btn-dup-check">중복확인</button>
                 </div>
+            </div>
 
-                <!-- 이메일 -->
-                <div class="form-group">
-                    <label for="userId" class="form-label">이메일</label>
-                    <div class="input-with-button">
-                        <input id="userId" 
-                               name="userId" 
-                               type="email" 
-                               class="form-control" 
-                               placeholder="이메일을 입력하세요" 
-                               required>
-                        <button type="button" id="checkUserIdBtn" class="btn-check">중복확인</button>
-                    </div>
+            <!-- 비밀번호 -->
+            <div class="form-group">
+                <label for="password" class="form-label">비밀번호</label>
+                <div class="password-input-wrapper">
+                    <input id="password" name="password" type="password" class="form-control"
+                           placeholder="6자 이상 입력하세요" required>
+                    <button type="button" class="btn-password-toggle" data-target="#password" aria-label="비밀번호 보기">
+                        👁
+                    </button>
                 </div>
+            </div>
 
-                <!-- 비밀번호 -->
-                <div class="form-group">
-                    <label for="password" class="form-label">비밀번호</label>
-                    <div class="password-input-wrapper">
-                        <input id="password" 
-                               name="password" 
-                               type="password" 
-                               class="form-control" 
-                               placeholder="6자 이상 입력하세요" 
-                               required>
-                        <button type="button" 
-                                class="btn-password-toggle" 
-                                data-target="#password" aria-label="비밀번호 보기">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.66667 10C1.66667 10 4.16667 4.16667 10 4.16667C15.8333 4.16667 18.3333 10 18.3333 10C18.3333 10 15.8333 15.8333 10 15.8333C4.16667 15.8333 1.66667 10 1.66667 10Z" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
+            <!-- 비밀번호 확인 -->
+            <div class="form-group">
+                <label for="passwordConfirm" class="form-label">비밀번호 확인</label>
+                <div class="password-input-wrapper">
+                    <input id="passwordConfirm" type="password" class="form-control"
+                           placeholder="비밀번호를 다시 입력하세요" required>
+                    <button type="button" class="btn-password-toggle" data-target="#passwordConfirm" aria-label="비밀번호 보기">
+                        👁
+                    </button>
                 </div>
+            </div>
 
-                <!-- 비밀번호 확인 (프론트용) -->
-                <div class="form-group">
-                    <label for="passwordConfirm" class="form-label">비밀번호 확인</label>
-                    <div class="password-input-wrapper">
-                        <input id="passwordConfirm" 
-                               type="password" 
-                               class="form-control" 
-                               placeholder="비밀번호를 다시 입력하세요" 
-                               required>
-                        <button type="button" 
-                                class="btn-password-toggle" 
-                                data-target="#passwordConfirm"
-                                aria-label="비밀번호 보기">
-                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.66667 10C1.66667 10 4.16667 4.16667 10 4.16667C15.8333 4.16667 18.3333 10 18.3333 10C18.3333 10 15.8333 15.8333 10 15.8333C4.16667 15.8333 1.66667 10 1.66667 10Z" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                                <circle cx="10" cy="10" r="2.5" stroke="#6A7282" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
-                    </div>
+            <!-- 닉네임 -->
+            <div class="form-group">
+                <label for="username" class="form-label">닉네임</label>
+                <div class="input-with-button">
+                    <input id="username" name="username" type="text" class="form-control"
+                           placeholder="닉네임을 입력하세요" required>
+                    <button type="button" id="checkUsernameBtn" class="btn-dup-check">중복확인</button>
                 </div>
+            </div>
 
-                <!-- 닉네임 -->
-                <div class="form-group">
-                    <label for="username" class="form-label">닉네임</label>
-                    <div class="input-with-button">
-                        <input id="username" 
-                               name="username" 
-                               type="text" 
-                               class="form-control" 
-                               placeholder="닉네임을 입력하세요" 
-                               required>
-                        <button type="button" id="checkUsernameBtn" class="btn-check">중복확인</button>
-                    </div>
-                </div>
+            <!-- 나이 -->
+            <div class="form-group">
+                <label for="age" class="form-label">나이</label>
+                <input id="age" name="age" type="number" class="form-control" placeholder="나이를 입력하세요">
+            </div>
 
-                <!-- 나이 -->
-                <div class="form-group">
-                    <label for="age" class="form-label">나이</label>
-                    <input id="age" 
-                           name="age" 
-                           type="number" 
-                           class="form-control" 
-                           placeholder="나이를 입력하세요">
-                </div>
-
-                <!-- 성별 -->
-                <div class="form-group">
-                    <label class="form-label">성별</label>
-                    <div class="gender-group">
-                        <div class="gender-option">
-                            <input type="radio" id="genderMale" name="gender" value="남성">
-                            <label for="genderMale" class="gender-label">
-                                <div class="gender-radio-button"></div>
-                                <span class="gender-text">남성</span>
-                            </label>
-                        </div>
-                        <div class="gender-option">
-                            <input type="radio" id="genderFemale" name="gender" value="여성">
-                            <label for="genderFemale" class="gender-label">
-                                <div class="gender-radio-button"></div>
-                                <span class="gender-text">여성</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 주소 -->
-                <div class="form-group">
-                    <label for="address" class="form-label">주소</label>
-                    <input id="address" 
-                           name="address" 
-                           type="text" 
-                           class="form-control" 
-                           placeholder="주소를 입력하세요">
-                </div>
-
-                <!-- 약관 동의 -->
-                <div class="terms-section">
-                    <div class="terms-item">
-                        <input type="checkbox" id="terms1" class="terms-checkbox">
-                        <label for="terms1" class="terms-label">
-                            <span class="terms-required">(필수)</span> 이용약관에 동의합니다
+            <!-- 성별 -->
+            <div class="form-group">
+                <label class="form-label">성별</label>
+                <div class="gender-group">
+                    <div class="gender-option">
+                        <input type="radio" id="genderMale" name="gender" value="남성">
+                        <label for="genderMale" class="gender-label">
+                            <div class="gender-radio-button"></div>
+                            <span class="gender-text">남성</span>
                         </label>
                     </div>
-                    <div class="terms-item">
-                        <input type="checkbox" id="terms2" class="terms-checkbox">
-                        <label for="terms2" class="terms-label">
-                            <span class="terms-required">(필수)</span> 개인정보 처리방침에 동의합니다
+                    <div class="gender-option">
+                        <input type="radio" id="genderFemale" name="gender" value="여성">
+                        <label for="genderFemale" class="gender-label">
+                            <div class="gender-radio-button"></div>
+                            <span class="gender-text">여성</span>
                         </label>
                     </div>
                 </div>
+            </div>
 
-                <button type="button" id="joinBtn" class="btn-submit">회원가입</button>
+            <!-- 주소 -->
+            <div class="form-group">
+                <label for="address" class="form-label">주소</label>
+                <input id="address" name="address" type="text" class="form-control" placeholder="주소를 입력하세요">
+            </div>
 
-                <!-- Login Prompt -->
-                <div class="login-prompt">
-                    <span class="login-prompt-text">이미 계정이 있으신가요?</span>
-                    <a th:href="@{/login}" class="btn-login">로그인하기</a>
+            <!-- 약관 -->
+            <div class="terms-section">
+                <div class="terms-item">
+                    <input type="checkbox" id="terms1" class="terms-checkbox">
+                    <label for="terms1" class="terms-label"><span class="terms-required">(필수)</span> 이용약관에 동의합니다</label>
                 </div>
+                <div class="terms-item">
+                    <input type="checkbox" id="terms2" class="terms-checkbox">
+                    <label for="terms2" class="terms-label"><span class="terms-required">(필수)</span> 개인정보 처리방침에 동의합니다</label>
+                </div>
+            </div>
 
-            </form>
-        </div>
+            <button type="button" id="joinBtn" class="btn-submit">회원가입</button>
+
+            <div class="login-prompt">
+                <span class="login-prompt-text">이미 계정이 있으신가요?</span>
+                <a th:href="@{/login}" class="btn-login">로그인하기</a>
+            </div>
+        </form>
     </div>
-    
-    <div id="toast" aria-live="polite" aria-atomic="true"></div>
-    
-    <script>
-        let userIdOk = false;
-        let usernameOk = false;
+</div>
 
-        function toast(msg) {
-            const el = document.getElementById("toast");
-            el.textContent = msg;
-            el.style.display = "block";
-            clearTimeout(window._toastTimer);
-            window._toastTimer = setTimeout(() => {
-                el.style.display = "none";
-            }, 2000);
-        }
+<div id="toast" aria-live="polite" aria-atomic="true"></div>
 
-        function togglePassword(fieldId) {
-            const passwordInput = document.getElementById(fieldId);
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-            } else {
-                passwordInput.type = 'password';
-            }
-        }
+<script>
+    let userIdOk = false;
+    let usernameOk = false;
 
-        function isValidEmail(email) {
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        }
+    function toast(msg) {
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.style.display = "block";
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => el.style.display = "none", 2000);
+    }
 
-        function checkAge(ageStr) {
-            if (!ageStr) return true;
-            const age = Number(ageStr);
-            if (!Number.isFinite(age)) { 
-                toast("올바른 나이를 입력해주세요"); 
-                return false; 
-            }
-            if (age < 15) { 
-                toast("15세 미만은 이용 불가능합니다"); 
-                return false; 
-            }
-            if (age > 130) { 
-                toast("올바른 나이를 입력해주세요"); 
-                return false; 
-            }
-            return true;
-        }
+    function isValidEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 
-         // 프로필 이미지 미리보기
-        document.getElementById("profileImgFile").addEventListener("change", function () {
-            const file = this.files && this.files[0];
-            if (!file) return;
-            const url = URL.createObjectURL(file);
-            document.getElementById("profilePreview").innerHTML = '<img src="' + url + '" alt="profile" style="width:100%;height:100%;object-fit:cover;">';
+    // 프로필 이미지 미리보기
+    document.getElementById("profileImgFile").addEventListener("change", function () {
+        const file = this.files && this.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        document.getElementById("profilePreview").innerHTML =
+            '<img src="' + url + '" alt="profile" style="width:100%;height:100%;object-fit:cover;">';
+    });
+
+    // 비밀번호 보기 토글 (너 코드 클래스명에 맞춤)
+    document.querySelectorAll(".btn-password-toggle").forEach(btn => {
+        btn.addEventListener("click", function() {
+            const target = this.getAttribute("data-target");
+            const input = document.querySelector(target);
+            if (!input) return;
+            input.type = (input.type === "password") ? "text" : "password";
         });
+    });
 
-        // 비밀번호 토글
-        document.querySelectorAll(".toggle-password").forEach(btn => {
-            btn.addEventListener("click", function() {
-                const target = this.getAttribute("data-target");
-                const input = document.querySelector(target);
-                input.type = input.type === "password" ? "text" : "password";
+    // 이메일 중복 확인
+    document.getElementById("checkUserIdBtn").addEventListener("click", function(){
+        const userId = document.getElementById("userId").value.trim();
+
+        if(!userId) return toast("이메일을 입력하세요");
+        if(!isValidEmail(userId)) return toast("이메일 형식이 올바르지 않습니다");
+
+        fetch("/api/user/check-id?userId=" + encodeURIComponent(userId))
+            .then(res => res.json())
+            .then(exists => {
+                // 백엔드는 exists(boolean)만 내려줌 (네 UserController 기준)
+                userIdOk = !exists;
+                toast(userIdOk ? "사용 가능한 이메일입니다." : "이미 사용 중인 이메일입니다.");
+            })
+            .catch(() => {
+                userIdOk = false;
+                toast("서버 오류로 이메일 확인 실패");
             });
-        });
+    });
 
-        // 이메일 중복 체크 버튼
-        document.getElementById("checkUserIdBtn").addEventListener("click", function(){
-            const userId = document.getElementById("userId").value.trim();
+    // 닉네임 중복 확인
+    document.getElementById("checkUsernameBtn").addEventListener("click", function(){
+        const username = document.getElementById("username").value.trim();
 
-            if(!userId){
-                userIdOk = false;
-                toast("이메일을 입력하세요");
-                return;
-            }
+        if(!username) return toast("닉네임을 입력하세요");
 
-            if(!isValidEmail(userId)){
-                userIdOk = false;
-                toast("이메일 형식이 올바르지 않습니다");
-                return;
-            }
-
-            fetch("/api/users/check-userid?userId=" + encodeURIComponent(userId))
-                .then(res => res.json())
-                .then(data => {
-                    userIdOk = !!data.ok;
-                    toast(data.message);
-                })
-                .catch(() => {
-                    userIdOk = false;
-                    toast("서버 오류로 이메일 확인 실패");
-                });
-        });
-
-        // 닉네임 중복 체크 버튼
-        document.getElementById("checkUsernameBtn").addEventListener("click", function(){
-            const username = document.getElementById("username").value.trim();
-
-            if(!username){
-                usernameOk = false;
-                toast("닉네임을 입력하세요");
-                return;
-            }
-
-            fetch("/api/users/check-username?username=" + encodeURIComponent(username))
-                .then(res => res.json())
-                .then(data => {
-                    usernameOk = !!data.ok;
-                    toast(data.message);
-                })
-                .catch(() => {
-                    usernameOk = false;
-                    toast("서버 오류로 닉네임 확인 실패");
-                });
-        });
-
-        // 이메일 중복 체크 (blur) 버튼
-        document.getElementById("checkUserIdBtn").addEventListener("click", function(){
-            const userId = document.getElementById("userId").value.trim();
-
-            if(!userId){
-                userIdOk = false;
-                toast("이메일을 입력하세요");
-                return;
-            }
-
-            if(!isValidEmail(userId)){
-                userIdOk = false;
-                toast("이메일 형식이 올바르지 않습니다");
-                return;
-            }
-
-            fetch("/api/users/check-userid?userId=" + encodeURIComponent(userId))
-                .then(res => res.json())
-                .then(data => {
-                    userIdOk = !!data.ok;
-                    toast(data.message);
-                })
-                .catch(() => {
-                    userIdOk = false;
-                    toast("서버 오류로 이메일 확인 실패");
-                });
-        });
-
-        // 닉네임 중복 체크 버튼
-        document.getElementById("checkUsernameBtn").addEventListener("click", function(){
-            const username = document.getElementById("username").value.trim();
-
-            if(!username){
-                usernameOk = false;
-                toast("닉네임을 입력하세요");
-                return;
-            }
-
-            fetch("/api/users/check-username?username=" + encodeURIComponent(username))
-                .then(res => res.json())
-                .then(data => {
-                    usernameOk = !!data.ok;
-                    toast(data.message);
-                })
-                .catch(() => {
-                    usernameOk = false;
-                    toast("서버 오류로 닉네임 확인 실패");
-                });
-        });
-
-        // 이메일 중복 체크 (blur)
-        document.getElementById("userId").addEventListener("blur", function(){
-            const userId = this.value.trim();
-
-            if(!userId){
-                userIdOk = false;
-                toast("이메일을 입력하세요");
-                return;
-            }
-
-            if(!isValidEmail(userId)){
-                userIdOk = false;
-                toast("이메일 형식이 올바르지 않습니다");
-                return;
-            }
-
-            fetch("/api/users/check-userid?userId=" + encodeURIComponent(userId))
-                .then(res => res.json())
-                .then(data => {
-                    userIdOk = !!data.ok;
-                    if(!data.ok) toast(data.message);
-                })
-                .catch(() => {
-                    userIdOk = false;
-                    toast("서버 오류로 이메일 확인 실패");
-                });
-        });
-
-        // 닉네임 중복 체크
-        document.getElementById("username").addEventListener("blur", function(){
-            const username = this.value.trim();
-
-            if(!username){
-                usernameOk = false;
-                toast("닉네임을 입력하세요");
-                return;
-            }
-
-            fetch("/api/users/check-username?username=" + encodeURIComponent(username))
-                .then(res => res.json())
-                .then(data => {
-                    usernameOk = !!data.ok;
-                    if(!data.ok) toast(data.message);
-                })
-                .catch(() => {
-                    usernameOk = false;
-                    toast("서버 오류로 닉네임 확인 실패");
-                });
-        });
-
-        // 나이 입력 시 체크
-        document.getElementById("age").addEventListener("blur", function(){
-            checkAge(this.value.trim());
-        });
-
-        // 회원가입 버튼 클릭 -> AJAX 회원가입
-        document.getElementById("joinBtn").addEventListener("click", function(){
-            const userId = document.getElementById("userId").value.trim();
-            const password = document.getElementById("password").value.trim();
-            const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
-            const username = document.getElementById("username").value.trim();
-            const ageStr = document.getElementById("age").value.trim();
-            const genderInput = document.querySelector("input[name='gender']:checked");
-            const gender = genderInput ? genderInput.value : "";
-            const address = document.getElementById("address").value.trim();
-
-            // 필수값
-            if(!userId || !password || !passwordConfirm || !username){
-                toast("필수 입력값을 확인해주세요.")
-                return;
-            }
-
-            // 이메일 형식
-            if(!isValidEmail(userId)){
-                toast("이메일 형식이 올바르지 않습니다.")
-                return;
-            }
-
-            // 비밀번호 조건
-            if(password.length < 6){
-                toast("비밀번호는 6자 이상 입력해주세요.")
-                return;
-            }
-
-            // 비밀번호 확인
-            if(password !== passwordConfirm){
-                toast("비밀번호 재확인이 일치하지 않습니다.")
-                return;
-            }
-
-            // 나이 제한
-            if(!checkAge(ageStr)){
-                return;
-            }
-
-            // 약관 동의
-            const terms1 = document.getElementById("terms1").checked;
-            const terms2 = document.getElementById("terms2").checked;
-            if(!terms1 || !terms2){
-                toast("필수 약관에 동의해주세요.")
-                return;
-            }
-
-            // 중복체크 통과
-            if(!userIdOk || !usernameOk){
-                toast("이메일/닉네임 중복 확인을 완료해주세요.")
-                return;
-            }
-
-            // FormData로 multipart/form-data 전송 (프로필 이미지 포함)
-            const formData = new FormData();
-            formData.append("userId", userId);
-            formData.append("password", password);
-            formData.append("username", username);
-            formData.append("address", address);
-            formData.append("gender", gender);
-            formData.append("age", ageStr ? Number(ageStr) : 0);
-            
-            // 프로필 이미지 파일 추가
-            const profileInput = document.getElementById("profileImgFile");
-            if (profileInput.files && profileInput.files[0]) {
-                formData.append("profileImgFile", profileInput.files[0]);
-            }
-
-            fetch("/api/users/join", {
-                method: "POST",
-                body: formData
+        fetch("/api/user/check-username?username=" + encodeURIComponent(username))
+            .then(res => res.json())
+            .then(exists => {
+                usernameOk = !exists;
+                toast(usernameOk ? "사용 가능한 닉네임입니다." : "이미 사용 중인 닉네임입니다.");
             })
-            .then(res => {
-                if(res.ok) {
-                    return res.text();
-                }
-                return res.text().then(text => { throw new Error(text); });
-            })
-            .then(data => {
+            .catch(() => {
+                usernameOk = false;
+                toast("서버 오류로 닉네임 확인 실패");
+            });
+    });
+
+    // 회원가입
+    document.getElementById("joinBtn").addEventListener("click", function(){
+        const userId = document.getElementById("userId").value.trim();
+        const password = document.getElementById("password").value.trim();
+        const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
+        const username = document.getElementById("username").value.trim();
+        const ageStr = document.getElementById("age").value.trim();
+        const genderInput = document.querySelector("input[name='gender']:checked");
+        const gender = genderInput ? genderInput.value : "";
+        const address = document.getElementById("address").value.trim();
+
+        if(!userId || !password || !passwordConfirm || !username) return toast("필수 입력값을 확인해주세요.");
+        if(!isValidEmail(userId)) return toast("이메일 형식이 올바르지 않습니다.");
+        if(password.length < 6) return toast("비밀번호는 6자 이상 입력해주세요.");
+        if(password !== passwordConfirm) return toast("비밀번호 재확인이 일치하지 않습니다.");
+
+        const terms1 = document.getElementById("terms1").checked;
+        const terms2 = document.getElementById("terms2").checked;
+        if(!terms1 || !terms2) return toast("필수 약관에 동의해주세요.");
+
+        if(!userIdOk || !usernameOk) return toast("이메일/닉네임 중복 확인을 완료해주세요.");
+
+        const formData = new FormData();
+        formData.append("userId", userId);
+        formData.append("password", password);
+        formData.append("username", username);
+        formData.append("address", address);
+        formData.append("gender", gender);
+        formData.append("age", ageStr ? Number(ageStr) : 0);
+
+        const profileInput = document.getElementById("profileImgFile");
+        if (profileInput.files && profileInput.files[0]) {
+            formData.append("profileImgFile", profileInput.files[0]);
+        }
+
+        fetch("/api/user/join", { method: "POST", body: formData })
+            .then(res => res.ok ? res.text() : res.text().then(t => { throw new Error(t); }))
+            .then(() => {
                 toast("회원가입이 완료되었습니다. 2초 후 로그인 페이지로 이동합니다.");
-                setTimeout(() => {
-                    window.location.href = "/login";
-                }, 2000);
+                setTimeout(() => window.location.href = "/login", 2000);
             })
-            .catch(err => {
-                const msg = err.message || "회원가입에 실패했습니다.";
-                toast(msg);
-            });
-        });
-    </script>
-
+            .catch(err => toast(err.message || "회원가입에 실패했습니다."));
+    });
+</script>
 </body>
 </html>

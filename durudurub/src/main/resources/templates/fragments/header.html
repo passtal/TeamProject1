@@ -51,12 +51,16 @@
                           <img th:src="@{/img/icons/navbar-notification.png}" alt="알림" class="user-icon">
                       </button>
                       <!-- user -->
-                      <div id="user-dropdown" class="hidden">
+                      <div id="user-dropdown" class="hidden" style="display: none;">
                           <ul>
-                              <li><a th:href="@{/user/mypage}" class="mypage">마이페이지</a></li>
-                              <li><a th:href="@{/user/mypage/club-management}" class="myclub">내모임</a></li>
+                              <li><a th:href="@{/users/mypage}" class="mypage">마이페이지</a></li>
+                              <li><a th:href="@{/users/mypage/club}" class="myclub">내모임</a></li>
                               <hr>
-                              <li><a href="" class="logout">로그아웃</a></li>
+                              <li>
+                                  <form th:action="@{/logout}" method="post" style="display:inline;">
+                                      <button type="submit" class="logout btn btn-link p-0">로그아웃</button>
+                                  </form>
+                              </li>
                           </ul>
                       </div>
                   </div>
@@ -70,10 +74,14 @@
                       <!-- user -->
                       <div id="admin-dropdown" class="hidden">
                           <ul>
-                              <li><a href="" class="notice">공지사항</a></li>
-                              <li><a href="" class="adminpage">관리자 페이지</a></li>
+                              <li><a th:href="@{/admin/notice}" class="notice">공지사항</a></li>
+                              <li><a th:href="@{/admin}" class="adminpage">관리자 페이지</a></li>
                               <hr>
-                              <li><a href="" class="logout">로그아웃</a></li>
+                              <li>
+                                  <form th:action="@{/logout}" method="post" style="display:inline;">
+                                      <button type="submit" class="logout btn btn-link p-0">로그아웃</button>
+                                  </form>
+                              </li>
                           </ul>
                       </div>
                   </div>

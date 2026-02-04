@@ -310,4 +310,8 @@ textarea {
     .login-subtitle {
         font-size: 14px;
     }
+
+    header, nav.navbar, .navbar {
+    display: none !important;
+}
 }

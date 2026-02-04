@@ -26,178 +26,172 @@
             <span>신청 중인 모임</span>
             <span class="badge" id="countHost">1</span>
         </button>
+
+        <!-- myclubListFragment
+            : 1. JS -> type 값을 서버로 전달하면,
+              2. Controller -> type에 맞는 데이터 조회하고,
+              3. Thymeleaf(th:if, th:each) -> 서버에서 HTML을 생성한 후,
+              4. 완성된 fragment HTML을 AJAX로 받아와서 해당 영역에 교체
+        -->
+        <div id="myclubList"
+            th:replace="~{mypage/mypage-club :: myclubListFragment}">
+
+        </div>
     </div>
 
+    
     <!-- 참여 중인 모임 -->
-    <div class="tab-content active" id="participating">
-        <div class="club-card" data-club-no="1" style="cursor: pointer;">
-            <div class="club-info">
-                <div class="club-icon">
-                    <span class="material-symbols-outlined">group</span>
-                </div>
-                <div class="club-details">
-                    <div class="club-title-row">
-                        <h3 class="club-title">주말 등산 모임</h3>
-                    </div>
-                    <p class="club-category">동</p>
-                    <p class="club-members">멤버 12/20명</p>
-                </div>
-            </div>
-            <div class="club-actions">
-                <button class="btn-leave" onclick="event.stopPropagation();">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span>탈퇴</span>
-                </button>
-            </div>
-        </div>
+    <div th:fragment="myclubListFragment">
 
-        <div class="club-card" data-club-no="2" style="cursor: pointer;">
-            <div class="club-info">
-                <div class="club-icon">
-                    <span class="material-symbols-outlined">group</span>
-                </div>
-                <div class="club-details">
-                    <div class="club-title-row">
-                        <h3 class="club-title">독서 토론 클럽</h3>
-                    </div>
-                    <p class="club-category">문화</p>
-                    <p class="club-members">멤버 8/15명</p>
-                </div>
-            </div>
-            <div class="club-actions">
-                <button class="btn-leave" onclick="event.stopPropagation();">
-                    <span class="material-symbols-outlined">logout</span>
-                    <span>탈퇴</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 리더인 모임 -->
-    <div class="tab-content" id="leader">
-        <div class="club-card-wrapper">
-            <div class="club-card" data-club-no="3" style="cursor: pointer;">
+        <div th:if=""></div>
+        <div class="tab-content active" id="participating">
+            <div class="club-card" data-club-no="2" style="cursor: pointer;">
                 <div class="club-info">
                     <div class="club-icon">
                         <span class="material-symbols-outlined">group</span>
                     </div>
                     <div class="club-details">
                         <div class="club-title-row">
-                            <h3 class="club-title">사진 촬영 동호회</h3>
-                            <span class="material-symbols-outlined leader-crown">chess_queen</span>
-                            
+                            <h3 class="club-title">주말 등산 모임</h3>
                         </div>
-                        <p class="club-category">취미</p>
-                        <p class="club-members">멤버 15/25명</p>
+                        <p class="club-category">동</p>
+                        <p class="club-members">멤버 12/20명</p>
                     </div>
                 </div>
-                <div class="club-actions leader-actions">
-                    <button class="btn-leader-manage" data-club-id="1" onclick="event.stopPropagation();">
-                        <span>멤버 관리</span>
-                        <span class="material-symbols-outlined">expand_more</span>
-                    </button>
-                    <button class="btn-leader-delete" onclick="event.stopPropagation();">
+                <div class="club-actions">
+                    <button class="btn-leave" onclick="event.stopPropagation();">
                         <span class="material-symbols-outlined">logout</span>
-                        <span>모임 삭제</span>
+                        <span>탈퇴</span>
                     </button>
                 </div>
             </div>
-            
-            <!-- 멤버 관리 영역 (토글) -->
-            <div class="member-management-area" id="memberManagement-1" style="display: none;">
-                <!-- 가입 요청 섹션 -->
-                <div class="member-section">
-                    <div class="member-section-header">
-                        <span class="material-symbols-outlined section-icon pending-icon">notifications_active</span>
-                        <h4 class="section-title">가입 요청 (2)</h4>
+        </div>
+
+        <!-- 리더인 모임 -->
+        <div class="tab-content" id="leader">
+            <div class="club-card-wrapper">
+                <div class="club-card" data-club-no="3" style="cursor: pointer;">
+                    <div class="club-info">
+                        <div class="club-icon">
+                            <span class="material-symbols-outlined">group</span>
+                        </div>
+                        <div class="club-details">
+                            <div class="club-title-row">
+                                <h3 class="club-title">사진 촬영 동호회</h3>
+                                <span class="material-symbols-outlined leader-crown">chess_queen</span>
+                                
+                            </div>
+                            <p class="club-category">취미</p>
+                            <p class="club-members">멤버 15/25명</p>
+                        </div>
                     </div>
-                    <div class="member-list">
-                        <div class="member-item pending">
-                            <div class="member-info">
-                                <p class="member-name">박민수</p>
-                                <p class="member-date">신청일: 2025-01-27</p>
-                            </div>
-                            <div class="member-actions">
-                                <button class="btn-approve">
-                                    <span class="material-symbols-outlined">check</span>
-                                    <span>승인</span>
-                                </button>
-                                <button class="btn-reject">
-                                    <span class="material-symbols-outlined">close</span>
-                                    <span>거부</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="member-item pending">
-                            <div class="member-info">
-                                <p class="member-name">최지혜</p>
-                                <p class="member-date">신청일: 2025-01-27</p>
-                            </div>
-                            <div class="member-actions">
-                                <button class="btn-approve">
-                                    <span class="material-symbols-outlined">check</span>
-                                    <span>승인</span>
-                                </button>
-                                <button class="btn-reject">
-                                    <span class="material-symbols-outlined">close</span>
-                                    <span>거부</span>
-                                </button>
-                            </div>
-                        </div>
+                    <div class="club-actions leader-actions">
+                        <button class="btn-leader-manage" data-club-id="1" onclick="event.stopPropagation();">
+                            <span>멤버 관리</span>
+                            <span class="material-symbols-outlined">expand_more</span>
+                        </button>
+                        <button class="btn-leader-delete" onclick="event.stopPropagation();">
+                            <span class="material-symbols-outlined">logout</span>
+                            <span>모임 삭제</span>
+                        </button>
                     </div>
                 </div>
-
-                <!-- 승인된 멤버 섹션 -->
-                <div class="member-section">
-                    <div class="member-section-header">
-                        <h4 class="section-title">승인된 멤버 (2)</h4>
-                    </div>
-                    <div class="member-list">
-                        <div class="member-item approved">
-                            <div class="member-info">
-                                <p class="member-name">김철수</p>
-                                <p class="member-date">가입일: 2025-01-15</p>
-                            </div>
-                            <button class="btn-remove-member">추방하기</button>
+                
+                <!-- 멤버 관리 영역 (토글) -->
+                <div class="member-management-area" id="memberManagement-1" style="display: none;">
+                    <!-- 가입 요청 섹션 -->
+                    <div class="member-section">
+                        <div class="member-section-header">
+                            <span class="material-symbols-outlined section-icon pending-icon">notifications_active</span>
+                            <h4 class="section-title">가입 요청 (2)</h4>
                         </div>
-                        <div class="member-item approved">
-                            <div class="member-info">
-                                <p class="member-name">이영희</p>
-                                <p class="member-date">가입일: 2025-01-20</p>
+                        <div class="member-list">
+                            <div class="member-item pending">
+                                <div class="member-info">
+                                    <p class="member-name">박민수</p>
+                                    <p class="member-date">신청일: 2025-01-27</p>
+                                </div>
+                                <div class="member-actions">
+                                    <button class="btn-approve">
+                                        <span class="material-symbols-outlined">check</span>
+                                        <span>승인</span>
+                                    </button>
+                                    <button class="btn-reject">
+                                        <span class="material-symbols-outlined">close</span>
+                                        <span>거부</span>
+                                    </button>
+                                </div>
                             </div>
-                            <button class="btn-remove-member">추방하기</button>
+                            <div class="member-item pending">
+                                <div class="member-info">
+                                    <p class="member-name">최지혜</p>
+                                    <p class="member-date">신청일: 2025-01-27</p>
+                                </div>
+                                <div class="member-actions">
+                                    <button class="btn-approve">
+                                        <span class="material-symbols-outlined">check</span>
+                                        <span>승인</span>
+                                    </button>
+                                    <button class="btn-reject">
+                                        <span class="material-symbols-outlined">close</span>
+                                        <span>거부</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 승인된 멤버 섹션 -->
+                    <div class="member-section">
+                        <div class="member-section-header">
+                            <h4 class="section-title">승인된 멤버 (2)</h4>
+                        </div>
+                        <div class="member-list">
+                            <div class="member-item approved">
+                                <div class="member-info">
+                                    <p class="member-name">김철수</p>
+                                    <p class="member-date">가입일: 2025-01-15</p>
+                                </div>
+                                <button class="btn-remove-member">추방하기</button>
+                            </div>
+                            <div class="member-item approved">
+                                <div class="member-info">
+                                    <p class="member-name">이영희</p>
+                                    <p class="member-date">가입일: 2025-01-20</p>
+                                </div>
+                                <button class="btn-remove-member">추방하기</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 신청 중인 모임 -->
-    <div class="tab-content" id="pending">
-        <div class="club-card" data-club-no="4" style="cursor: pointer;">
-            <div class="club-info">
-                <div class="club-icon gradient-orange">
-                    <span class="material-symbols-outlined">restaurant</span>
-                </div>
-                <div class="club-details">
-                    <div class="club-title-row">
-                        <h3 class="club-title">요리 레시피 공유</h3>
-                        <span class="status-badge pending">승인 대기 중</span>
+        <!-- 신청 중인 모임 -->
+        <div class="tab-content" id="pending">
+            <div class="club-card" data-club-no="4" style="cursor: pointer;">
+                <div class="club-info">
+                    <div class="club-icon gradient-orange">
+                        <span class="material-symbols-outlined">restaurant</span>
                     </div>
-                    <p class="club-category">요리</p>
-                    <p class="club-members">멤버 10/20명</p>
+                    <div class="club-details">
+                        <div class="club-title-row">
+                            <h3 class="club-title">요리 레시피 공유</h3>
+                            <span class="status-badge pending">승인 대기 중</span>
+                        </div>
+                        <p class="club-category">요리</p>
+                        <p class="club-members">멤버 10/20명</p>
+                    </div>
                 </div>
-            </div>
-            <div class="club-actions">
-                <button class="btn-cancel-request" onclick="event.stopPropagation();">
-                    <span class="material-symbols-outlined">close</span>
-                    신청 취소
-                </button>
+                <div class="club-actions">
+                    <button class="btn-cancel-request" onclick="event.stopPropagation();">
+                        <span class="material-symbols-outlined">close</span>
+                        신청 취소
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <!-- 모임 탈퇴 모달 -->
 <div id="leaveClubModal" class="leave-modal">
