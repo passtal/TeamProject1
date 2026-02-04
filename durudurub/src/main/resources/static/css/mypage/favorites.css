@@ -1,0 +1,278 @@
+/* 즐겨찾기 목록 페이지 스타일 */
+
+* {
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FAF9F6;
+}
+
+/* 메인 컨테이너 */
+.favorites-container {
+    max-width: 1216px;
+    margin: 0 auto;
+    padding: 133px 0 80px;
+}
+
+/* 헤더 */
+.favorites-header {
+    margin-bottom: 24px;
+}
+
+.favorites-summary {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.favorites-count {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #00A651;
+}
+
+/* 그리드 레이아웃 */
+.favorites-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* 모임 카드 */
+.favorite-card {
+    background: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, opacity 0.3s;
+}
+
+.favorite-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* 이미지 컨테이너 */
+.card-image-container {
+    position: relative;
+    width: 100%;
+    height: 192px;
+    background: linear-gradient(180deg, #00A651 0%, #008F46 100%);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 즐겨찾기 버튼 */
+.btn-favorite {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.btn-favorite:hover {
+    transform: scale(1.1);
+}
+
+.btn-favorite .material-symbols-outlined {
+    font-size: 20px;
+    color: #FB2C36;
+    font-variation-settings: 'FILL' 1;
+}
+
+.btn-favorite.active .material-symbols-outlined {
+    font-variation-settings: 'FILL' 1;
+}
+
+/* 카드 콘텐츠 */
+.card-content {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 카테고리 배지 */
+.category-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: rgba(0, 166, 81, 0.1);
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #00A651;
+    width: fit-content;
+}
+
+/* 모임 제목 */
+.club-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+/* 모임 설명 */
+.club-description {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    height: 40px;
+}
+
+/* 카드 푸터 */
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.member-info {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.member-info .material-symbols-outlined {
+    font-size: 16px;
+    color: #6A7282;
+}
+
+.member-count {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #6A7282;
+}
+
+/* 모임 보기 버튼 */
+.btn-view-club {
+    width: 100%;
+    height: 48px;
+    background: #00A651;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-view-club:hover {
+    background: #008F46;
+}
+
+/* 빈 상태 */
+.empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    min-height: 400px;
+}
+
+.empty-icon {
+    font-size: 64px;
+    color: #D1D5DC;
+    margin-bottom: 16px;
+}
+
+.empty-text {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 28px;
+    color: #6A7282;
+    margin: 0 0 24px 0;
+}
+
+.btn-explore {
+    padding: 12px 24px;
+    background: #00A651;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #FFFFFF;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-explore:hover {
+    background: #008F46;
+}
+
+/* 반응형 */
+@media (max-width: 1440px) {
+    .favorites-container {
+        max-width: 100%;
+        padding: 80px 120px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .favorites-container {
+        padding: 60px 40px;
+    }
+
+    .favorites-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .favorites-container {
+        padding: 40px 20px;
+    }
+
+    .favorites-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -30,7 +30,7 @@
 
     <!-- 참여 중인 모임 -->
     <div class="tab-content active" id="participating">
-        <div class="club-card">
+        <div class="club-card" data-club-no="1" style="cursor: pointer;">
             <div class="club-info">
                 <div class="club-icon">
                     <span class="material-symbols-outlined">group</span>
@@ -44,14 +44,14 @@
                 </div>
             </div>
             <div class="club-actions">
-                <button class="btn-leave">
+                <button class="btn-leave" onclick="event.stopPropagation();">
                     <span class="material-symbols-outlined">logout</span>
                     <span>탈퇴</span>
                 </button>
             </div>
         </div>
 
-        <div class="club-card">
+        <div class="club-card" data-club-no="2" style="cursor: pointer;">
             <div class="club-info">
                 <div class="club-icon">
                     <span class="material-symbols-outlined">group</span>
@@ -65,7 +65,7 @@
                 </div>
             </div>
             <div class="club-actions">
-                <button class="btn-leave">
+                <button class="btn-leave" onclick="event.stopPropagation();">
                     <span class="material-symbols-outlined">logout</span>
                     <span>탈퇴</span>
                 </button>
@@ -76,7 +76,7 @@
     <!-- 리더인 모임 -->
     <div class="tab-content" id="leader">
         <div class="club-card-wrapper">
-            <div class="club-card">
+            <div class="club-card" data-club-no="3" style="cursor: pointer;">
                 <div class="club-info">
                     <div class="club-icon">
                         <span class="material-symbols-outlined">group</span>
@@ -92,11 +92,11 @@
                     </div>
                 </div>
                 <div class="club-actions leader-actions">
-                    <button class="btn-leader-manage" data-club-id="1">
+                    <button class="btn-leader-manage" data-club-id="1" onclick="event.stopPropagation();">
                         <span>멤버 관리</span>
                         <span class="material-symbols-outlined">expand_more</span>
                     </button>
-                    <button class="btn-leader-delete">
+                    <button class="btn-leader-delete" onclick="event.stopPropagation();">
                         <span class="material-symbols-outlined">logout</span>
                         <span>모임 삭제</span>
                     </button>
@@ -175,7 +175,7 @@
 
     <!-- 신청 중인 모임 -->
     <div class="tab-content" id="pending">
-        <div class="club-card">
+        <div class="club-card" data-club-no="4" style="cursor: pointer;">
             <div class="club-info">
                 <div class="club-icon gradient-orange">
                     <span class="material-symbols-outlined">restaurant</span>
@@ -190,7 +190,7 @@
                 </div>
             </div>
             <div class="club-actions">
-                <button class="btn-cancel-request">
+                <button class="btn-cancel-request" onclick="event.stopPropagation();">
                     <span class="material-symbols-outlined">close</span>
                     신청 취소
                 </button>

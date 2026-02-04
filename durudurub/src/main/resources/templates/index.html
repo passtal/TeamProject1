@@ -6,9 +6,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>두루두룹 - 함께 하면 더 즐거운 순간</title>
-    <link rel="stylesheet" th:href="@{/css/index.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/index.css}">
+    </th:block>
 </head>
-<body layout:fragment="content">
+<body>
+    <main layout:fragment="content">
 
     <!-- Hero Section -->
     <section class="hero-section">
@@ -28,8 +31,7 @@
                 </div>
                 <!-- Hero Image -->
                 <div class="hero-image-wrapper">
-                    <img src="https://www.figma.com/api/mcp/asset/737aa482-a091-4a55-9834-b89c4c7521f2" 
-                         alt="함께하는 즐거운 순간">
+                    <img src="https://www.figma.com/api/mcp/asset/737aa482-a091-4a55-9834-b89c4c7521f2" alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
             </div>
@@ -74,11 +76,14 @@
                th:href="@{/club/category/{no}(no=${category.no})}" 
                class="category-item">
                 <div class="category-icon" style="background-color: #f0f0f0;">
-                    <!-- icon이 http로 시작하면 img, 아니면 텍스트(이모지) -->
+                    <!-- icon이 http로 시작하면 img, bi-로 시작하면 Bootstrap Icon, 아니면 텍스트(이모지) -->
                     <img th:if="${category.icon != null and category.icon.startsWith('http')}" 
                          th:src="${category.icon}" 
                          th:alt="${category.name}">
-                    <span th:if="${category.icon != null and !category.icon.startsWith('http')}" 
+                    <i th:if="${category.icon != null and category.icon.startsWith('bi-')}"
+                       th:class="${category.icon}"
+                       style="font-size: 36px;"></i>
+                    <span th:if="${category.icon != null and !category.icon.startsWith('http') and !category.icon.startsWith('bi-')}" 
                           th:text="${category.icon}" 
                           style="font-size: 36px;">📁</span>
                 </div>
@@ -86,6 +91,7 @@
             </a>
         </div>
     </section>
-<th:block th:replace="~{fragments/footer::footer}"></th:block>
+
+    </main>
 </body>
 </html>

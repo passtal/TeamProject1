@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <title>즐겨찾기 목록 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/mypage/favorites.css}">
+</head>
+<body layout:fragment="content">
+
+<div class="favorites-container">
+    <!-- 헤더 -->
+    <div class="favorites-header">
+        <p class="favorites-summary">
+            총 <span class="favorites-count" th:text="${favoriteClubs != null ? favoriteClubs.size() : 0}">0</span>개의 모임을 즐겨찾기했습니다.
+        </p>
+    </div>
+
+    <!-- 즐겨찾기 모임 리스트 -->
+    <div class="favorites-grid">
+        <!-- 모임 카드 반복 -->
+        <div class="favorite-card" 
+             th:each="club : ${favoriteClubs}" 
+             th:data-club-no="${club.no}"
+             style="cursor: pointer;">
+            <div class="card-image-container">
+                <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : '/img/default-club.png'}" 
+                     src="/img/default-club.png"
+                     alt="모임 이미지" 
+                     class="card-image">
+                <button class="btn-favorite active" 
+                        th:data-club-no="${club.no}"
+                        onclick="event.stopPropagation();">
+                    <span class="material-symbols-outlined">favorite</span>
+                </button>
+            </div>
+            <div class="card-content">
+                <div class="card-info">
+                    <span class="category-badge" th:text="${club.category?.categoryName ?: '카테고리'}">카테고리</span>
+                    <h3 class="club-title" th:text="${club.title}">모임 제목</h3>
+                    <p class="club-description" th:text="${club.description}">모임 설명</p>
+                </div>
+                <div class="card-footer">
+                    <div class="member-info">
+                        <span class="material-symbols-outlined">groups</span>
+                        <span class="member-count">
+                            <span th:text="${club.currentMembers}">0</span>/<span th:text="${club.maxMembers}">0</span>명
+                        </span>
+                    </div>
+                </div>
+                <button class="btn-view-club" 
+                        th:data-club-no="${club.no}"
+                        onclick="event.stopPropagation();">
+                    모임 보기
+                </button>
+            </div>
+        </div>
+
+        <!-- 즐겨찾기가 없을 때 -->
+        <div class="empty-state" th:if="${favoriteClubs == null || favoriteClubs.isEmpty()}">
+            <span class="material-symbols-outlined empty-icon">favorite_border</span>
+            <p class="empty-text">즐겨찾기한 모임이 없습니다.</p>
+            <a href="/club" class="btn-explore">모임 둘러보기</a>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+// 모임 카드 클릭 시 상세 페이지로 이동
+document.querySelectorAll('.favorite-card[data-club-no]').forEach(card => {
+    card.addEventListener('click', function() {
+        const clubNo = this.getAttribute('data-club-no');
+        window.location.href = `/club/detail/${clubNo}`;
+    });
+});
+
+// 모임 보기 버튼 클릭
+document.querySelectorAll('.btn-view-club').forEach(button => {
+    button.addEventListener('click', function() {
+        const clubNo = this.getAttribute('data-club-no');
+        window.location.href = `/club/detail/${clubNo}`;
+    });
+});
+
+// 즐겨찾기 버튼 클릭 (Ajax)
+document.querySelectorAll('.btn-favorite').forEach(button => {
+    button.addEventListener('click', async function() {
+        const clubNo = this.getAttribute('data-club-no');
+        
+        try {
+            const response = await fetch(`/like/club/${clubNo}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                // 즐겨찾기 해제 성공 - 카드 제거
+                const card = this.closest('.favorite-card');
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    card.remove();
+                    
+                    // 카운트 업데이트
+                    const countElement = document.querySelector('.favorites-count');
+                    const currentCount = parseInt(countElement.textContent);
+                    countElement.textContent = currentCount - 1;
+                    
+                    // 모든 카드가 제거되면 빈 상태 표시
+                    const remainingCards = document.querySelectorAll('.favorite-card').length;
+                    if (remainingCards === 0) {
+                        location.reload();
+                    }
+                }, 300);
+            } else {
+                alert('즐겨찾기 해제에 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('즐겨찾기 처리 오류:', error);
+            alert('오류가 발생했습니다.');
+        }
+    });
+});
+/*]]>*/
+</script>
+
+</body>
+</html>

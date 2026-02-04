@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}"
+      th:with="isAdminPage=true">
+<head>
+    <title>모임 관리</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/admin/clubs.css}">
+    </th:block>
+</head>
+<body>
+    <main layout:fragment="content" class="main-content">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="header-left">
+                <h1>관리자 대시보드</h1>
+                <p>두루두룹 서비스 관리</p>
+            </div>
+            <button class="btn-main" onclick="location.href='/'">
+                메인으로
+            </button>
+        </header>
+
+        <!-- Admin Navigation -->
+        <nav class="admin-nav">
+            <button class="nav-tab" onclick="location.href='/admin/dashboard'">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>대시보드</span>
+            </button>
+            <button class="nav-tab" onclick="location.href='/admin/users'">
+                <span class="material-symbols-outlined">group</span>
+                <span>사용자 관리</span>
+            </button>
+            <button class="nav-tab active">
+                <span class="material-symbols-outlined">groups</span>
+                <span>모임 관리</span>
+            </button>
+            <button class="nav-tab" onclick="location.href='/admin/reports'">
+                <span class="material-symbols-outlined">report</span>
+                <span>신고 관리</span>
+            </button>
+            <button class="nav-tab" onclick="location.href='/admin/banners'">
+                <span class="material-symbols-outlined">image</span>
+                <span>광고 배너 관리</span>
+            </button>
+            <button class="nav-tab" onclick="location.href='/admin/categories'">
+                <span class="material-symbols-outlined">category</span>
+                <span>카테고리 관리</span>
+            </button>
+        </nav>
+
+        <!-- Clubs Section -->
+        <section class="clubs-section">
+            <div class="search-bar">
+                <span class="material-symbols-outlined">search</span>
+                <input type="text" id="clubSearch" placeholder="모임명 또는 카테고리 검색...">
+            </div>
+
+            <div class="table-container">
+                <table class="clubs-table">
+                    <thead>
+                        <tr>
+                            <th>모임명</th>
+                            <th>카테고리</th>
+                            <th>리더</th>
+                            <th>멤버 수</th>
+                            <th>생성일</th>
+                            <th>삭제</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Sample Data -->
+                        <tr onclick="showClubDetail('독서 모임', '취미', '김독서', '15', '2024-03-16T01:45:00', '1')">
+                            <td>독서 모임</td>
+                            <td>취미</td>
+                            <td>김독서</td>
+                            <td>15</td>
+                            <td>2024. 3. 16.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('조깅 모임', '운동', '이운동', '22', '2024-04-01T08:30:00', '2')">
+                            <td>조깅 모임</td>
+                            <td>운동</td>
+                            <td>이운동</td>
+                            <td>22</td>
+                            <td>2024. 4. 1.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('기타 동호회', '음악', '박음악', '8', '2024-04-12T14:20:00', '3')">
+                            <td>기타 동호회</td>
+                            <td>음악</td>
+                            <td>박음악</td>
+                            <td>8</td>
+                            <td>2024. 4. 12.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('제주도 여행', '여행', '최여행', '12', '2024-05-05T09:15:00', '4')">
+                            <td>제주도 여행</td>
+                            <td>여행</td>
+                            <td>최여행</td>
+                            <td>12</td>
+                            <td>2024. 5. 5.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('홈 베이킹', '요리', '정요리', '18', '2024-05-19T16:40:00', '5')">
+                            <td>홈 베이킹</td>
+                            <td>요리</td>
+                            <td>정요리</td>
+                            <td>18</td>
+                            <td>2024. 5. 19.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('보드게임 클럽', '게임', '강게임', '25', '2024-06-02T19:00:00', '6')">
+                            <td>보드게임 클럽</td>
+                            <td>게임</td>
+                            <td>강게임</td>
+                            <td>25</td>
+                            <td>2024. 6. 2.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('사진 촬영 모임', '사진', '윤사진', '14', '2024-06-20T11:30:00', '7')">
+                            <td>사진 촬영 모임</td>
+                            <td>사진</td>
+                            <td>윤사진</td>
+                            <td>14</td>
+                            <td>2024. 6. 20.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('영어 스터디', '학습', 'test', '10', '2024-07-01T07:00:00', '8')">
+                            <td>영어 스터디</td>
+                            <td>학습</td>
+                            <td>test</td>
+                            <td>10</td>
+                            <td>2024. 7. 1.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('테니스 동호회', '운동', '이운동', '16', '2024-07-10T13:25:00', '9')">
+                            <td>테니스 동호회</td>
+                            <td>운동</td>
+                            <td>이운동</td>
+                            <td>16</td>
+                            <td>2024. 7. 10.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr onclick="showClubDetail('[테스트] 두루두룹 운영진 모임', '기타', 'testleader', '5', '2024-07-15T22:10:00', '10')">
+                            <td>[테스트] 두루두룹 운영진 모임</td>
+                            <td>기타</td>
+                            <td>testleader</td>
+                            <td>5</td>
+                            <td>2024. 7. 15.</td>
+                            <td>
+                                <button class="btn-delete" onclick="deleteClub(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    
+        <!-- Club Detail Modal -->
+        <div class="modal-overlay" id="clubDetailModal" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>모임 상세 정보</h2>
+                <button class="btn-close-modal" onclick="closeClubDetail()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body-detail">
+                <div class="detail-row">
+                    <div class="detail-label">모임명</div>
+                    <div class="detail-value" id="detail-name"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">카테고리</div>
+                    <div class="detail-value" id="detail-category"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">리더</div>
+                    <div class="detail-value" id="detail-leader"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">멤버 수</div>
+                    <div class="detail-value" id="detail-members"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">생성일</div>
+                    <div class="detail-value" id="detail-created"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">상태</div>
+                    <div class="detail-badge">
+                        <span class="badge-active">활성</span>
+                    </div>
+                </div>
+                <div class="detail-row-id">
+                    <div class="detail-label-id">모임 ID</div>
+                    <div class="detail-id" id="detail-id"></div>
+                </div>
+            </div>
+            <div class="modal-footer-detail">
+                <button class="btn-modal-close" onclick="closeClubDetail()">닫기</button>
+                <button class="btn-modal-goto" onclick="gotoClub()">이동하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="deleteConfirmModal" style="display: none;">
+        <div class="modal-container-small">
+            <div class="modal-header">
+                <h2>모임 삭제 확인</h2>
+                <button class="btn-close-modal" onclick="closeDeleteConfirm()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body-small">
+                <p id="deleteMessage">정말로 모임 ID #1을 삭제하시겠습니까?</p>
+            </div>
+            <div class="modal-footer-confirm">
+                <button class="btn-cancel" onclick="closeDeleteConfirm()">취소</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 검색 기능
+        document.getElementById('clubSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const rows = document.querySelectorAll('.clubs-table tbody tr');
+            
+            rows.forEach(row => {
+                const clubName = row.cells[0].textContent.toLowerCase();
+                const category = row.cells[1].textContent.toLowerCase();
+                
+                if (clubName.includes(searchTerm) || category.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+
+        // 모임 상세 정보 표시
+        function showClubDetail(name, category, leader, members, createdDate, clubId) {
+            document.getElementById('detail-name').textContent = name;
+            document.getElementById('detail-category').textContent = category;
+            document.getElementById('detail-leader').textContent = leader;
+            document.getElementById('detail-members').textContent = members + '명';
+            document.getElementById('detail-created').textContent = formatDateTime(createdDate);
+            document.getElementById('detail-id').textContent = '#' + clubId;
+            
+            document.getElementById('clubDetailModal').style.display = 'flex';
+        }
+        
+        function closeClubDetail() {
+            document.getElementById('clubDetailModal').style.display = 'none';
+        }
+        
+        function gotoClub() {
+            const clubId = document.getElementById('detail-id').textContent.replace('#', '');
+            // TODO: 모임 페이지로 이동
+            window.location.href = '/club/' + clubId;
+        }
+        
+        // 날짜 포맷팅 함수
+        function formatDateTime(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const period = hours < 12 ? '오전' : '오후';
+            const displayHour = hours % 12 || 12;
+            const displayMinute = minutes.toString().padStart(2, '0');
+            
+            return `${year}년 ${month}월 ${day}일 ${period} ${displayHour.toString().padStart(2, '0')}:${displayMinute}`;
+        }
+
+        // 모임 삭제 기능
+        let rowToDelete = null;
+        
+        function deleteClub(btn, event) {
+            event.stopPropagation();
+            rowToDelete = btn.closest('tr');
+            const clubName = rowToDelete.cells[0].textContent;
+            const clubId = rowToDelete.getAttribute('data-club-id') || '1';
+            
+            document.getElementById('deleteMessage').textContent = `정말로 "${clubName}" 모임을 삭제하시겠습니까?`;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+        
+        function confirmDelete() {
+            if (rowToDelete) {
+                // TODO: Ajax로 서버에 삭제 요청
+                rowToDelete.remove();
+                rowToDelete = null;
+                closeDeleteConfirm();
+            }
+        }
+        
+        function closeDeleteConfirm() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            rowToDelete = null;
+        }
+        
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteConfirm();
+            }
+        });
+        
+        document.getElementById('clubDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeClubDetail();
+            }
+        });
+        </script>
+    </main>
+    
+    <th:block layout:fragment="script"></th:block>
+</body>
+</html>

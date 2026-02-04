@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/base_layout}">
+      layout:decorate="~{/layouts/main_layout}">
 
 <head>
-    <title>행운의 룰렛</title>
-    <link rel="stylesheet" th:href="@{/css/game/roulette.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>행운의 룰렛 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/game/roulette.css}">
+    </th:block>
 </head>
 
 <body>
-    <div layout:fragment="content">
+    <main layout:fragment="content" class="roulette-page">
         <div class="roulette-container">
             <!-- Back Button -->
             <div class="back-button">
@@ -342,5 +346,6 @@
     }
 
      </script>
+    </main>
 </body>
 </html>
