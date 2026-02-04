@@ -53,7 +53,7 @@ input[type=number] {
     background: #FFFFFF;
     border-radius: 24px;
     padding: 32px;
-    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1),
                 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
     position: relative;
 }
@@ -113,20 +113,23 @@ input[type=number] {
     gap: 16px;
 }
 
-/* Input with Button */
+/* ===== Input with Button (중요: 전역 적용) ===== */
 .input-with-button {
     display: flex;
     gap: 8px;
-    align-items: center;
+    align-items: stretch; /* 버튼 높이를 인풋과 맞춤 */
+    width: 100%;
 }
 
 .input-with-button .form-control {
     flex: 1;
+    min-width: 0; /* 줄어들 때 깨짐 방지 */
 }
 
-.btn-check {
+.btn-dup-check {
     flex-shrink: 0;
-    padding: 12px 16px;
+    height: 46px;          /* 인풋 높이와 맞추기 */
+    padding: 0 16px;       /* 높이는 height로 통일 */
     font-family: Arial, sans-serif;
     font-weight: 400;
     font-size: 14px;
@@ -140,20 +143,15 @@ input[type=number] {
     white-space: nowrap;
 }
 
-.btn-check:hover {
+.btn-dup-check:hover {
     background: #00A651;
     color: #FFFFFF;
 }
 
-.btn-check:active {
+.btn-dup-check:active {
     background: #008F45;
     border-color: #008F45;
 }
-
-/* Form Groups
-    flex-direction: column;
-    gap: 20px;
-} */
 
 /* Profile Photo Section */
 .profile-section {
@@ -220,6 +218,7 @@ input[type=number] {
     height: 32px;
 }
 
+/* 업로드 아이콘 버튼 */
 .profile-upload-icon {
     position: absolute;
     bottom: 0;
