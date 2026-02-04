@@ -241,6 +241,28 @@ input[type=number] {
 .profile-upload-icon svg {
     width: 16px;
     height: 16px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #00A651;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.profile-upload-button:hover {
+    background: #008F45;
+}
+
+.profile-upload-button svg {
+    width: 16px;
+    height: 16px;
 }
 
 /* Form Group */

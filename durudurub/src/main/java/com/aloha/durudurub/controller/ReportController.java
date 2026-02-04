@@ -23,15 +23,13 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/report")
 @RequiredArgsConstructor
 public class ReportController {
-    // TODO: 구현
-    // 임시 코드
 
     private final UserService userService;
     
     @GetMapping()
     public ResponseEntity<?> getAll() {
         try {
-            //TODO Implement Your Logic To Get Data From Service Layer Or Directly From Repository Layer
+            
             return new ResponseEntity<>("GetAll Results", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -41,7 +39,7 @@ public class ReportController {
     @GetMapping("/{id}")
     public ResponseEntity<?> getOne(@PathVariable Integer id) {
         try {
-            //TODO Implement Your Logic To Get Data From Service Layer Or Directly From Repository Layer
+            
             return new ResponseEntity<>("GetOne Result", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -51,7 +49,7 @@ public class ReportController {
     @PostMapping()
     public ResponseEntity<?> create(@RequestBody User dto) {
         try {
-            //TODO Implement Your Logic To Save Data And Return Result Through ResponseEntity
+            
             return new ResponseEntity<>("Create Result", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -61,7 +59,7 @@ public class ReportController {
     @PutMapping()
     public ResponseEntity<?> update(@RequestBody User dto) {
         try {
-            //TODO Implement Your Logic To Update Data And Return Result Through ResponseEntity
+            
             return new ResponseEntity<>("Update Result", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -71,7 +69,7 @@ public class ReportController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> destroy(@PathVariable Integer id) {
         try {
-            //TODO Implement Your Logic To Destroy Data And Return Result Through ResponseEntity
+            
             return new ResponseEntity<>("Destroy Result", HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

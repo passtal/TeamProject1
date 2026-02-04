@@ -13,7 +13,7 @@
     <link rel="stylesheet" th:href="@{/css/user/login.css}">
 </head>
 
-<body layout:fragment="content" class="login-page">
+<body class="login-page">
     <div class="login-container">
         <div class="login-card">
             <button type="button" class="btn-close-login" onclick="window.location.href='/'">
@@ -158,6 +158,7 @@
     });
 </script>
 
-
+<!-- script -->
+<th:block th:replace="~{fragments/scripts::scripts}"></th:block>
 </body>
 </html>

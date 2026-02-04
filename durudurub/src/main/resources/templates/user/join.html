@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- meta -->
+    <th:block th:replace="~{fragments/meta :: meta}"></th:block>
+    <!-- link -->
+    <th:block th:replace="~{fragments/link::link}"></th:block>
+    <title>회원가입 - 두루두룹</title>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/user/join.css}">
 
     <th:block th:replace="~{fragments/meta :: meta}"></th:block>
     <th:block th:replace="~{fragments/link::link}"></th:block>
