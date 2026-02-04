@@ -1,0 +1,373 @@
+/* 모임 관리 페이지 스타일 */
+
+.clubs-section {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    margin-bottom: 24px;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    height: 46px;
+}
+
+.search-bar .material-symbols-outlined {
+    color: #99A1AF;
+    font-size: 20px;
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: #374151;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: #9CA3AF;
+}
+
+/* Table Container */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.clubs-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.clubs-table thead {
+    background-color: #F9FAFB;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.clubs-table th {
+    padding: 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.clubs-table th:first-child {
+    width: 34.2%;
+}
+
+.clubs-table th:nth-child(2) {
+    width: 13.5%;
+}
+
+.clubs-table th:nth-child(3) {
+    width: 14.4%;
+}
+
+.clubs-table th:nth-child(4) {
+    width: 12.1%;
+}
+
+.clubs-table th:nth-child(5) {
+    width: 16.1%;
+}
+
+.clubs-table th:nth-child(6) {
+    width: 9.8%;
+}
+
+.clubs-table tbody tr {
+    border-bottom: 1px solid #F3F4F6;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.clubs-table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.clubs-table td {
+    padding: 21px 16px;
+    font-size: 14px;
+    color: #111827;
+}
+
+/* Delete Button */
+.btn-delete {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #FEE2E2;
+}
+
+.btn-delete .material-symbols-outlined {
+    font-size: 22px;
+    color: #EF4444;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-container-small {
+    width: 500px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.btn-close-modal {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.btn-close-modal:hover {
+    background-color: #F3F4F6;
+}
+
+.btn-close-modal .material-symbols-outlined {
+    font-size: 20px;
+    color: #6B7280;
+}
+
+.modal-body-small {
+    padding: 24px;
+    text-align: center;
+}
+
+.modal-body-small p {
+    font-size: 16px;
+    color: #374151;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.modal-footer-confirm {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.btn-cancel {
+    padding: 8px 25px;
+    background-color: #F3F4F6;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.btn-confirm-delete {
+    padding: 8px 25px;
+    background-color: #EF4444;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-confirm-delete:hover {
+    background-color: #DC2626;
+}
+
+/* 모임 상세 정보 모달 */
+.modal-container {
+    width: 500px;
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal-body-detail {
+    padding: 24px 24px 0;
+}
+
+.detail-row {
+    display: flex;
+    padding: 16px 0 0;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.detail-row-id {
+    display: flex;
+    padding: 16px 0 0;
+}
+
+.detail-label {
+    width: 120px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #6B7280;
+}
+
+.detail-label-id {
+    width: 120px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #6B7280;
+}
+
+.detail-value {
+    flex: 1;
+    font-size: 15px;
+    color: #111827;
+}
+
+.detail-badge {
+    flex: 1;
+}
+
+.detail-id {
+    flex: 1;
+    font-size: 14px;
+    font-family: Consolas, monospace;
+    color: #111827;
+}
+
+.badge-active {
+    display: inline-block;
+    padding: 4px 13px;
+    background-color: #DBEAFE;
+    color: #1E40AF;
+    border: 1px solid #60A5FA;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.modal-footer-detail {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px 24px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.btn-modal-close {
+    padding: 8px 25px;
+    background-color: #F3F4F6;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-modal-close:hover {
+    background-color: #E5E7EB;
+}
+
+.btn-modal-goto {
+    padding: 8px 27px;
+    background-color: #00A651;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-modal-goto:hover {
+    background-color: #008A43;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .clubs-section {
+        padding: 16px;
+    }
+    
+    .table-container {
+        overflow-x: scroll;
+    }
+    
+    .clubs-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-bar {
+        margin-bottom: 16px;
+    }
+    
+    .clubs-table th,
+    .clubs-table td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+    
+    .modal-container-small {
+        width: calc(100% - 32px);
+        margin: 16px;
+    }
+}

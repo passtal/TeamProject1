@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/main_layout}">
+      layout:decorate="~{/layouts/main_layout}">
 
 <head>
-    <title>당첨자 추첨</title>
-    <link rel="stylesheet" th:href="@{/css/random.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>당첨자 추첨 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/game/random.css}">
+    </th:block>
 </head>
 
 <body>
-    <div layout:fragment="content">
+    <main layout:fragment="content" class="random-page">
         <div class="random-container">
             <!-- Back Button -->
             <div class="back-button">
@@ -365,5 +369,6 @@
     }
 
     </script>
+    </main>
 </body>
 </html>

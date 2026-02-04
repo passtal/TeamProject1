@@ -1,5 +1,6 @@
 {
     "configurations": [
+        
         {
             "type": "java",
             "name": "Spring Boot-SampleApplication<durudurub-sample>",
@@ -12,10 +13,10 @@
         },
         {
             "type": "java",
-            "name": "Spring Boot-CarrotApplication<durudurub>",
+            "name": "Spring Boot-DurudurubApplication<durudurub>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "mainClass": "com.aloha.carrot.CarrotApplication",
+            "mainClass": "com.aloha.durudurub.DurudurubApplication",
             "projectName": "durudurub",
             "args": "",
             "envFile": "${workspaceFolder}/.env"

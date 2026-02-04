@@ -1,11 +1,14 @@
 package com.aloha.durudurub.service;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 // import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.durudurub.dao.AuthMapper;
 import com.aloha.durudurub.dao.UserMapper;
@@ -115,18 +118,53 @@ public class UserServiceImpl implements UserService {
     public int deleteAuth(int userNo, String auth) {
         return authMapper.delete(userNo, auth);
     }
-    
+
     @Override
-    @Transactional
-    public int insert(User user, org.springframework.web.multipart.MultipartFile profileImgFile) {
-        // 프로필 이미지 처리 (필요시 파일 저장 로직 추가)
-        if (profileImgFile != null && !profileImgFile.isEmpty()) {
-            // TODO: 파일 저장 로직 구현
-            // 임시로 파일명만 저장
-            user.setProfileImg(profileImgFile.getOriginalFilename());
+    public int insert(User user, MultipartFile profileImgFile) {
+        // ✅ 프로필 이미지 저장(선택)
+    if (profileImgFile != null && !profileImgFile.isEmpty()) {
+
+        // 1) 간단 검증: 이미지 파일인지 + 용량 제한(5MB)
+        String contentType = profileImgFile.getContentType();
+        long size = profileImgFile.getSize();
+
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("프로필 사진은 이미지 파일만 업로드할 수 있습니다.");
         }
-        
-        // 기존 insert 메서드 호출
+        long maxBytes = 5L * 1024 * 1024; // 5MB
+        if (size > maxBytes) {
+            throw new IllegalArgumentException("프로필 사진은 5MB 이하만 가능합니다.");
+        }
+
+        // 2) 저장 폴더 준비
+        String uploadDir = "C:/durudurub_upload/profile/profileImg";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+
+        // 3) 확장자 추출(원본 파일명 기반)
+        String original = profileImgFile.getOriginalFilename();
+        String ext = "";
+        if (original != null && original.contains(".")) {
+            ext = original.substring(original.lastIndexOf(".")); // ".jpg"
+        }
+
+        // 4) 저장 파일명(UUID)
+        String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
+
+        // 5) 실제 저장
+        File savedFile = new File(dir, savedName);
+        try {
+            profileImgFile.transferTo(savedFile);
+        } catch (Exception e) {
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다.");
+        }
+
+        // 6) DB에 저장할 '접근 URL' 세팅 (WebConfig에서 /upload/profile/** 매핑할 예정)
+        String publicUrl = "/upload/profile/" + savedName;
+        user.setProfileImg(publicUrl);
+    }
+
+        // ✅ 기존 회원가입 로직 재사용
         return insert(user);
     }
 }

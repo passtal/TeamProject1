@@ -6,7 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>미니게임 - 두루두룹</title>
-    <link rel="stylesheet" th:href="@{/css/gameList.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/game/gameList.css}">
+    </th:block>
 </head>
 <body>
     <main layout:fragment="content" class="game-page">

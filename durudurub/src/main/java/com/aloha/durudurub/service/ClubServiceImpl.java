@@ -182,7 +182,6 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.decrementCommentCount(clubNo);
     }
 
-
     // 마이페이지: 내모임 관리
     // 참여중인 모임
     @Override
@@ -199,5 +198,6 @@ public class ClubServiceImpl implements ClubService {
     public List<Club> listByHost(int hostNo) {
         return clubMapper.listByHost(hostNo);
     }
+
     
 }

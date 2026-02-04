@@ -1,168 +1,98 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${category.name} + ' 모임 - 두루두룹'">카테고리 모임</title>
-    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <title th:text="${category.name} + ' - 두루두룹'">카테고리 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/category/category.css}">
 </head>
-<body class="category-page">
-    <!-- Header -->
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
+<body layout:fragment="content">
 
-    <!-- Main Content -->
-    <main>
-        <!-- 카테고리 헤더 -->
-        <section class="category-header-section py-5 bg-light">
-            <div class="container text-center">
-                <div class="category-icon-large mx-auto mb-3">
-                    <img th:src="@{/img/icons/category-{name}.png(name=${#strings.toLowerCase(category.name)})}" 
-                         th:alt="${category.name}" class="category-icon-img"
-                         onerror="this.src='/img/icons/category-sports.png'">
-                </div>
-                <h1 class="fw-bold" th:text="${category.name}">카테고리</h1>
-                <p class="text-muted" th:text="${category.description}">카테고리 설명</p>
+    <!-- 카테고리 헤더 섹션 -->
+    <section class="category-header-section">
+        <div class="category-header-container">
+            <div class="category-header-content">
+                <h1 class="category-title" th:text="${category.name}">자기계발</h1>
+                <p class="category-subtitle" th:text="${category.name} + '와 관련된 다양한 모임을 만나보세요'">자기계발와 관련된 다양한 모임을 만나보세요</p>
             </div>
-        </section>
+            <a th:href="@{/club/insert}" class="create-club-btn">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 5V15M5 10H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                <span>모임 만들기</span>
+            </a>
+        </div>
+    </section>
 
-        <!-- 세부 카테고리 (있는 경우) -->
-        <section class="sub-category-section py-4 border-bottom" th:if="${subCategories != null and !subCategories.empty}">
-            <div class="container">
-                <div class="d-flex flex-wrap justify-content-center gap-2">
-                    <a th:href="@{/club/list(category=${category.no})}" 
-                       class="btn btn-sm rounded-pill"
-                       th:classappend="${subCategoryNo == null} ? 'btn-success' : 'btn-outline-secondary'">
-                        전체
-                    </a>
-                    <a th:each="sub : ${subCategories}"
-                       th:href="@{/club/list(category=${category.no}, sub=${sub.no})}"
-                       class="btn btn-sm rounded-pill"
-                       th:classappend="${subCategoryNo == sub.no} ? 'btn-success' : 'btn-outline-secondary'"
-                       th:text="${sub.name}">서브카테고리</a>
-                </div>
+    <!-- 모임 목록 섹션 -->
+    <section class="club-list-section">
+        <div class="club-list-container">
+            <!-- 서브 카테고리 필터 -->
+            <div class="subcategory-filter">
+                <button class="subcategory-btn active" data-subcategory="all">전체</button>
+                <button th:if="${subCategories != null}" 
+                        th:each="sub : ${subCategories}" 
+                        class="subcategory-btn" 
+                        th:data-subcategory="${sub.no}"
+                        th:text="${sub.name}">소분류</button>
             </div>
-        </section>
 
-        <!-- 모임 목록 -->
-        <section class="clubs-section py-5">
-            <div class="container">
-                <!-- 정렬 옵션 -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <p class="mb-0 text-muted">
-                        총 <strong th:text="${clubs != null} ? ${clubs.size()} : 0">0</strong>개의 모임
-                    </p>
-                    <div class="d-flex gap-2">
-                        <select class="form-select form-select-sm" style="width: auto;">
-                            <option>최신순</option>
-                            <option>인기순</option>
-                            <option>멤버순</option>
-                        </select>
-                        <a th:href="@{/club/insert}" class="btn btn-join btn-sm" sec:authorize="isAuthenticated()">
-                            + 모임 만들기
-                        </a>
-                    </div>
+            <!-- 모임 카드 리스트 -->
+            <div class="club-cards-list">
+                <!-- 모임이 없을 때 -->
+                <div th:if="${clubs == null or clubs.isEmpty()}" style="text-align: center; padding: 60px 20px; color: #6a7282;">
+                    <p style="font-size: 18px; margin: 0;">등록된 모임이 없습니다.</p>
                 </div>
-
-                <!-- 모임 카드 그리드 -->
-                <div class="row g-4">
-                    <div th:if="${clubs == null or clubs.empty}" class="col-12 text-center py-5">
-                        <p class="text-muted">이 카테고리에는 아직 모임이 없습니다.</p>
-                        <a th:href="@{/club/insert}" class="btn btn-join" sec:authorize="isAuthenticated()">
-                            첫 모임 만들기
-                        </a>
+                
+                <!-- 모임 카드 반복 -->
+                <a th:if="${clubs != null}" 
+                   th:each="club : ${clubs}" 
+                   th:href="@{/club/detail/{no}(no=${club.no})}" 
+                   class="club-card-item">
+                    <!-- 썸네일 이미지 -->
+                    <div class="club-thumbnail">
+                        <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=256&h=160&fit=crop'}" 
+                             th:alt="${club.title}">
+                        <button class="like-btn">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 14L7.05 13.15C3.52 9.96 1.2 7.92 1.2 5.4C1.2 3.36 2.8 1.8 4.8 1.8C5.888 1.8 6.936 2.272 7.6 3.032C8.264 2.272 9.312 1.8 10.4 1.8C12.4 1.8 14 3.36 14 5.4C14 7.92 11.68 9.96 8.15 13.15L8 14Z" fill="currentColor"/>
+                            </svg>
+                        </button>
                     </div>
 
-                    <div th:each="club : ${clubs}" class="col-md-6 col-lg-4">
-                        <div class="card club-card h-100 shadow-sm">
-                            <div class="club-card-image">
-                                <img th:src="${club.thumbnail != null} ? ${club.thumbnail} : @{/img/hero-image.png}" 
-                                     class="card-img-top" alt="모임 이미지">
-                                <span class="club-status badge" 
-                                      th:classappend="${club.status == 'RECRUITING'} ? 'bg-success' : 'bg-secondary'"
-                                      th:text="${club.status == 'RECRUITING'} ? '모집중' : '모집마감'">모집중</span>
-                            </div>
-                            
-                            <div class="card-body">
-                                <h5 class="card-title">
-                                    <a th:href="@{/club/{no}(no=${club.no})}" class="text-decoration-none text-dark"
-                                       th:text="${club.name}">모임 이름</a>
-                                </h5>
-                                <p class="card-text text-muted small" 
-                                   th:text="${#strings.abbreviate(club.description, 60)}">모임 소개글...</p>
-                                
-                                <div class="club-meta d-flex justify-content-between align-items-center mt-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img th:src="@{/img/board/member-icon.png}" alt="멤버" class="icon-small">
-                                        <small th:text="${club.currentMembers} + '/' + ${club.maxMembers}">0/10</small>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img th:src="@{/img/board/location-icon.png}" alt="지역" class="icon-small">
-                                        <small th:text="${club.region}">서울</small>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요" class="icon-small">
-                                        <small th:text="${club.likeCount}">0</small>
-                                    </div>
+                    <!-- 모임 정보 -->
+                    <div class="club-info">
+                        <div class="club-info-main">
+                            <h3 class="club-name" th:text="${club.title}">독서 모임 - 매주 한 권 완독하기</h3>
+                            <div class="club-meta">
+                                <div class="club-location">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 2C5.79 2 4 3.79 4 6C4 9 8 14 8 14C8 14 12 9 12 6C12 3.79 10.21 2 8 2ZM8 7.5C7.17 7.5 6.5 6.83 6.5 6C6.5 5.17 7.17 4.5 8 4.5C8.83 4.5 9.5 5.17 9.5 6C9.5 6.83 8.83 7.5 8 7.5Z" fill="currentColor"/>
+                                    </svg>
+                                    <span th:text="${club.location}">강남구</span>
+                                </div>
+                                <div class="club-schedule">
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M8 2C4.69 2 2 4.69 2 8C2 11.31 4.69 14 8 14C11.31 14 14 11.31 14 8C14 4.69 11.31 2 8 2ZM10.5 10.5L7.5 8.5V4.5H8.5V8L11 9.62L10.5 10.5Z" fill="currentColor"/>
+                                    </svg>
+                                    <span th:text="${#dates.format(club.clubDate, 'yyyy-MM-dd HH:mm')}">매주 일요일 14:00</span>
                                 </div>
                             </div>
                         </div>
+                        <div class="club-members-count">
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M8 8C9.66 8 11 6.66 11 5C11 3.34 9.66 2 8 2C6.34 2 5 3.34 5 5C5 6.66 6.34 8 8 8ZM8 9.5C5.83 9.5 1.5 10.59 1.5 12.75V14H14.5V12.75C14.5 10.59 10.17 9.5 8 9.5Z" fill="currentColor"/>
+                            </svg>
+                            <span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명'">12/15명</span>
+                        </div>
                     </div>
-                </div>
+                </a>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <!-- Footer -->
-    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
-
-    <!-- Scripts -->
-    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
-
-    <style>
-        .category-icon-large {
-            width: 100px;
-            height: 100px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-        }
-        .category-icon-img {
-            width: 60px;
-            height: 60px;
-        }
-        .club-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: none;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .club-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
-        }
-        .club-card-image {
-            position: relative;
-            height: 180px;
-            overflow: hidden;
-        }
-        .club-card-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .club-status {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-        }
-        .icon-small {
-            width: 16px;
-            height: 16px;
-        }
-    </style>
 </body>
 </html>
+

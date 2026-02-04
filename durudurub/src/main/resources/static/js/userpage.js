@@ -1,4 +1,5 @@
 // 테스트 전, 페이지마다 콘솔 넣고 오류 찾기
+// ⭐⭐⭐⭐ URL 변경 필수!!!
 // mypage - index
 
 // 회원 정보 조회
@@ -9,22 +10,29 @@ function userSelect() {
 // -----------------------------------------------------------------
 // 회원 정보 수정 (수정버튼)
 function updateBtn() {
-    $("#view-mode").hide() // 조회 화면 -> span
-    $("#edit-mode").show() // 수정 화면 -> text
+    $("#view-mode, #view-content").hide() // 조회 화면 -> span
+    $("#edit-mode, #edit-content").show() // 수정 화면 -> text
 
-    $("#username-input").val($("#username-span").text())
-    $("#userage-input").val($("#userage-span").text())
-    $("#usergender-input").val($("#usergender-span").text())
-    $("#useraddress-input").val($("#useraddress-span").text())
+    // .trim() : 공백 입력 방지!
+    //          option '여자' -> span ' 여자 ' : 적용X
+    $("#username-input").val($("#username-span").text().trim())
+    $("#useraddress-input").val($("#useraddress-span").text().trim())
+    // 나이 : "세" 추가하기
+    // "" : "세" -> "" (숫자만 뽑기)
+    const ageText = $("#userage-span").text().replace("세", "").trim()
+    $("#userage-input").val(ageText);
+    // 성별 : 선택 안함 추가하기
+    const genderText = $("#usergender-span").text().trim()
+    $("#usergender-select").val(genderText === "선택 안함" ? "" : genderText)
 
     // 사진 미리보기 기존 값 설정
-    $("#userprofile-img").attr("src", $("#userprofile-img").attr("src"));
+    $("#profileImageEdit").attr("src", $("#profileImageView").attr("src"));
 }
 
 // 회원 정보 수정 (취소버튼)
 function cancelBtn() {
-    $("#edit-mode").hide() // 수정 화면 -> text
-    $("#view-mode").show() // 조회 화면 -> span
+    $("#edit-mode, #edit-content").hide() // 수정 화면 -> text
+    $("#view-mode, #view-content").show() // 조회 화면 -> span
 }
 
 // 회원 정보 수정 (저장버튼)
@@ -34,8 +42,11 @@ function saveBtn() {
     const formData = new FormData();
 
     formData.append("username", $("#username-input").val());
-    formData.append("age", parseInt($("#userage-input").val()));
-    formData.append("gender", $("#usergender-input").val());
+    // "세" 추가하기
+    const ageVal = $("#userage-input").val()
+    formData.append("age", ageVal ? parseInt(ageVal, 10) : 0);
+    
+    formData.append("gender", $("#usergender-select").val());
     formData.append("address", $("#useraddress-input").val());
 
     // 사진이 선택된 경우에만 추가
@@ -45,7 +56,7 @@ function saveBtn() {
     }
 
     $.ajax({
-        url: `http://127.0.0.1:8080/api/user/mypage`,
+        url: `/users/mypage`,
         method: 'PUT',
         // processData: false → 데이터를 문자열로 변환하지 않고 원본 그대로 보냄
         processData: false,
@@ -57,10 +68,14 @@ function saveBtn() {
             alert("회원 정보가 수정되었습니다")
 
             // 화면 업데이트
-            $("#userprofile-img").attr("src", $("#userprofile-img").attr("src"));
+            // $("#userprofile-img").attr("src", $("#userprofile-img").attr("src"));
             $("#username-span").text($("#username-input").val());
-            $("#userage-span").text($("#userage-input").val());
-            $("#usergender-span").text($("#usergender-input").val());
+            // 나이 : "세" 붙이기
+            const newAge = $("#userage-input").val();
+            $("#userage-span").text(newAge ? `${newAge}세` : "예: 25세");
+            // 성별 : 선택 안할 시 "선택 안함" 기본!
+            const newGender = $("#usergender-select").val();
+            $("#usergender-span").text(newGender ? newGender : "선택 안함");
             $("#useraddress-span").text($("#useraddress-input").val());
 
             cancelBtn()
@@ -78,22 +93,22 @@ function saveBtn() {
 }
 // ------------------------------------------------------------------
 // 회원 탈퇴 - 모달 열기 (회원탈퇴 버튼)
-function openModel() {
-    $("#delete-model").show()
-    // $("#delete-modal").css("display", "flex")
+function openModal() {
+    // $("#delete-modal").show()
+    $("#delete-modal").css("display", "flex")
 }
 // 회원 탈퇴 - 모달 닫기 
-function closeModel() {
-    $("#delete-model").hide()
+function closeModal() {
+    $("#delete-modal").hide()
 }
 // 회원 탈퇴 (탈퇴하기 버튼)
 function userDelete() {
     $.ajax({
-        url: `http://127.0.0.1:8080/api/user/mypage/modal`,
+        url: `/users/mypage/modal`,
         method: 'DELETE',
         success: function (result, status, xhr) {
             alert("탈퇴가 완료되었습니다")
-            window.location.href = "/"; // 로그아웃 후 메인 이동
+            window.location.href = "/"; // 탈퇴 후 메인 이동
         }, 
         error: function (xhr, status, error) {
             // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
@@ -105,7 +120,6 @@ function userDelete() {
             }
         }
     })
-    closeModal(); // 모달 닫기
 }
 // -----------------------------------------------------------------
 // 내모임 관리
@@ -113,7 +127,7 @@ function userDelete() {
 // 상위 카테고리 (참여중 / 리더 / 신청 중) - type 이용해봄
 function myclubList(type) {
     $.ajax({
-        url: `http://127.0.0.1:8080/user/mypage/club/list`,
+        url: `/users/mypage/club/list`,
         method: 'GET',
         data: { type: type}, // 버튼 : myclubList('APPROVED') / myclubList('HOST') / myclubList('PENDING')
         dataType: 'html', // HTML(fragment) 문자열
