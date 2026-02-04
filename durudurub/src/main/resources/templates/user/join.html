@@ -170,6 +170,14 @@
     let userIdOk = false;
     let usernameOk = false;
 
+    // ✅ "중복확인 완료한 값" 저장 (입력값이 바뀌면 무효화하기 위해)
+    let checkedUserId = "";
+    let checkedUsername = "";
+
+    // ✅ 입력 변경 시 토스트 연속 출력 방지
+    let userIdDirtyToastShown = false;
+    let usernameDirtyToastShown = false;
+
     function toast(msg) {
         const el = document.getElementById("toast");
         el.textContent = msg;
@@ -182,6 +190,41 @@
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 
+    const userIdInput = document.getElementById("userId");
+    const usernameInput = document.getElementById("username");
+
+    // ✅ 입력값이 바뀌면, 기존 중복확인 결과를 즉시 무효화
+    userIdInput.addEventListener("input", function () {
+        const now = this.value.trim();
+
+        // 중복확인 통과했던 값과 다르면 무효
+        if (userIdOk && now !== checkedUserId) {
+            userIdOk = false;
+            checkedUserId = "";
+
+            if (!userIdDirtyToastShown) {
+                toast("이메일이 변경되었습니다. 다시 중복확인을 해주세요.");
+                userIdDirtyToastShown = true;
+                setTimeout(() => (userIdDirtyToastShown = false), 800);
+            }
+        }
+    });
+
+    usernameInput.addEventListener("input", function () {
+        const now = this.value.trim();
+
+        if (usernameOk && now !== checkedUsername) {
+            usernameOk = false;
+            checkedUsername = "";
+
+            if (!usernameDirtyToastShown) {
+                toast("닉네임이 변경되었습니다. 다시 중복확인을 해주세요.");
+                usernameDirtyToastShown = true;
+                setTimeout(() => (usernameDirtyToastShown = false), 800);
+            }
+        }
+    });
+
     // 프로필 이미지 미리보기
     document.getElementById("profileImgFile").addEventListener("change", function () {
         const file = this.files && this.files[0];
@@ -191,7 +234,7 @@
             '<img src="' + url + '" alt="profile" style="width:100%;height:100%;object-fit:cover;">';
     });
 
-    // 비밀번호 보기 토글 (너 코드 클래스명에 맞춤)
+    // 비밀번호 보기 토글
     document.querySelectorAll(".btn-password-toggle").forEach(btn => {
         btn.addEventListener("click", function() {
             const target = this.getAttribute("data-target");
@@ -203,7 +246,7 @@
 
     // 이메일 중복 확인
     document.getElementById("checkUserIdBtn").addEventListener("click", function(){
-        const userId = document.getElementById("userId").value.trim();
+        const userId = userIdInput.value.trim();
 
         if(!userId) return toast("이메일을 입력하세요");
         if(!isValidEmail(userId)) return toast("이메일 형식이 올바르지 않습니다");
@@ -211,19 +254,27 @@
         fetch("/api/user/check-id?userId=" + encodeURIComponent(userId))
             .then(res => res.json())
             .then(exists => {
-                // 백엔드는 exists(boolean)만 내려줌 (네 UserController 기준)
+                // 백엔드는 exists(boolean)만 내려줌
                 userIdOk = !exists;
-                toast(userIdOk ? "사용 가능한 이메일입니다." : "이미 사용 중인 이메일입니다.");
+
+                if (userIdOk) {
+                    checkedUserId = userId; // ✅ 확인된 이메일 저장
+                    toast("사용 가능한 이메일입니다.");
+                } else {
+                    checkedUserId = "";
+                    toast("이미 사용 중인 이메일입니다.");
+                }
             })
             .catch(() => {
                 userIdOk = false;
+                checkedUserId = "";
                 toast("서버 오류로 이메일 확인 실패");
             });
     });
 
     // 닉네임 중복 확인
     document.getElementById("checkUsernameBtn").addEventListener("click", function(){
-        const username = document.getElementById("username").value.trim();
+        const username = usernameInput.value.trim();
 
         if(!username) return toast("닉네임을 입력하세요");
 
@@ -231,20 +282,28 @@
             .then(res => res.json())
             .then(exists => {
                 usernameOk = !exists;
-                toast(usernameOk ? "사용 가능한 닉네임입니다." : "이미 사용 중인 닉네임입니다.");
+
+                if (usernameOk) {
+                    checkedUsername = username; // ✅ 확인된 닉네임 저장
+                    toast("사용 가능한 닉네임입니다.");
+                } else {
+                    checkedUsername = "";
+                    toast("이미 사용 중인 닉네임입니다.");
+                }
             })
             .catch(() => {
                 usernameOk = false;
+                checkedUsername = "";
                 toast("서버 오류로 닉네임 확인 실패");
             });
     });
 
     // 회원가입
     document.getElementById("joinBtn").addEventListener("click", function(){
-        const userId = document.getElementById("userId").value.trim();
+        const userId = userIdInput.value.trim();
         const password = document.getElementById("password").value.trim();
         const passwordConfirm = document.getElementById("passwordConfirm").value.trim();
-        const username = document.getElementById("username").value.trim();
+        const username = usernameInput.value.trim();
         const ageStr = document.getElementById("age").value.trim();
         const genderInput = document.querySelector("input[name='gender']:checked");
         const gender = genderInput ? genderInput.value : "";
@@ -259,7 +318,13 @@
         const terms2 = document.getElementById("terms2").checked;
         if(!terms1 || !terms2) return toast("필수 약관에 동의해주세요.");
 
-        if(!userIdOk || !usernameOk) return toast("이메일/닉네임 중복 확인을 완료해주세요.");
+        // ✅ 중복확인 "완료 여부 + 현재 입력값이 확인된 값과 동일한지"까지 체크
+        if (!userIdOk || checkedUserId !== userId) {
+            return toast("이메일 중복확인을 다시 해주세요.");
+        }
+        if (!usernameOk || checkedUsername !== username) {
+            return toast("닉네임 중복확인을 다시 해주세요.");
+        }
 
         const formData = new FormData();
         formData.append("userId", userId);
@@ -283,5 +348,6 @@
             .catch(err => toast(err.message || "회원가입에 실패했습니다."));
     });
 </script>
+
 </body>
 </html>
