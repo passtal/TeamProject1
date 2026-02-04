@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +22,8 @@ import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.ClubService;
 import com.aloha.durudurub.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -76,19 +80,23 @@ public class MypageController {
 
         return ResponseEntity.ok().build();
     }
-
     
     // 회원 탈퇴 모달
     @DeleteMapping("/modal")
     @ResponseBody
     public ResponseEntity<Void> deleteUser(
         Principal principal,
-        HttpS
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Authentication authentication
+
     ) throws Exception {
         if (principal != null) {
             int userNo = userService.selectByUserId(principal.getName()).getNo();
             userService.delete(userNo);
         }
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+
         return ResponseEntity.noContent().build();
     }
 
