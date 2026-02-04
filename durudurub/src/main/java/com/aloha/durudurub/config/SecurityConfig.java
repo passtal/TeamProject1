@@ -1,7 +1,12 @@
 package com.aloha.durudurub.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Spring Security 설정
@@ -9,5 +14,50 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    // TODO: 구현
+
+    // 스프링 시큐리티 설정 메서드
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        // ✅ 인가 설정
+        http.authorizeHttpRequests(auth -> auth
+                                    .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
+                                    .requestMatchers("/club/create", "/club/*/edit", "/club/*/delete").authenticated()
+                                    .requestMatchers("/club/*/board/**").authenticated()
+                                    .requestMatchers("/**").permitAll());
+
+        // 🔐 폼 로그인 설정
+        http.formLogin(login -> login
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .usernameParameter("userId")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+        );
+
+        // 🚪 로그아웃 설정
+        http.logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+        );
+
+        // CSRF 설정 (API 요청을 위해 일부 경로 제외)
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+        );
+
+        return http.build();
+    }
+    
+    /**
+     * 암호화 방식 빈 등록
+     */
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

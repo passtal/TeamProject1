@@ -1,5 +1,53 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
 <!-- 에러 페이지 (500) -->
 <!-- TODO: 구현 -->
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+    <title>404에러</title>
+</head>
+<body layout:fragment="content">
+     <div class="wrapper" style="background: linear-gradient(to bottom right, #FEF2F2, #FDF2F8);">
+      <div class="content-box">
+        <div class="icon-area">
+            <svg width="200" height="200" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- 두릅 몸통 - 메인 -->
+            <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
+            <!-- 두릅 잎 - 왼쪽 (약간 숙인) -->
+            <ellipse cx="35" cy="37" rx="8" ry="18" fill="#00C962" transform="rotate(-30 35 37)" />
+            <!-- 두릅 잎 - 가운데 (약간 숙인) -->
+            <ellipse cx="50" cy="30" rx="9" ry="22" fill="#00C962" />
+            <!-- 두릅 잎 - 오른쪽 (약간 숙인) -->
+            <ellipse cx="65" cy="37" rx="8" ry="18" fill="#00C962" transform="rotate(30 65 37)" />
+            <!-- 얼굴 - 눈 왼쪽 (미안한 눈) -->
+            <path d="M 40 57 Q 43 55 46 57" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" />
+            <!-- 얼굴 - 눈 오른쪽 (미안한 눈) -->
+            <path d="M 54 57 Q 57 55 60 57" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" />
+            <!-- 얼굴 - 입 (미안한 입) -->
+            <path d="M 43 68 Q 46 67 50 67 Q 54 67 57 68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" fill="none" />
+            <!-- 땀방울 왼쪽 -->
+            <ellipse cx="36" cy="54" rx="2" ry="3" fill="#8DD5F7" opacity="0.7" />
+            <!-- 땀방울 오른쪽 -->
+            <ellipse cx="64" cy="54" rx="2" ry="3" fill="#8DD5F7" opacity="0.7" />
+            <!-- 볼 - 왼쪽 (부끄러움) -->
+            <circle cx="38" cy="64" r="4" fill="#FFFFFF" opacity="0.5" />
+            <!-- 볼 - 오른쪽 (부끄러움) -->
+            <circle cx="62" cy="64" r="4" fill="#FFFFFF" opacity="0.5" />
+            </svg>
+        </div>
+        <h1 class="title">500 에러 페이지</h1>
+        <div class="desc">
+            <p class="main-desc">서버 오류가 발생했습니다.</p>
+            <h5 class="sub-desc">죄송해요, 잠시 후 다시 시도해주세요</h5>
+        </div>
+        <div class="btn-box">
+            <a href="/" class="main-btn">메인 화면</a>
+        </div>
+      </div>
+    </div>
+</body>
 </html>

@@ -1,0 +1,613 @@
+/* mypage : user, admin */
+
+/* 마이페이지 스타일 */
+* {
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #FAF9F6;
+}
+
+/* 메인 컨테이너 */
+.mypage-container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+
+    max-width: 1216px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 546.66px 261.34px;
+    gap: 30px;
+    justify-content: center;
+}
+
+/* ============================================
+   왼쪽 컬럼 (멤버십, 기본정보, 활동통계)
+   ============================================ */
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ============================================
+   멤버십 카드
+   ============================================ */
+.membership-card {
+    position: relative;
+    background: linear-gradient(180deg, #00A651 0%, #00C766 100%);
+    border-radius: 16px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 284px;
+}
+
+.membership-decorations {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.decoration-circle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.circle-1 {
+    width: 128px;
+    height: 128px;
+    top: -64px;
+    right: -16px;
+}
+
+.circle-2 {
+    width: 96px;
+    height: 96px;
+    bottom: -12px;
+    left: -48px;
+}
+
+.membership-content {
+    position: relative;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.membership-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.section-title {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.membership-card .section-title {
+    color: #FFFFFF;
+}
+
+.membership-icon {
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.membership-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.membership-badge {
+    display: flex;
+    align-items: center;
+}
+
+.badge-free {
+    display: inline-flex;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 33554400px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #FFFFFF;
+}
+
+.membership-description {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+.membership-features {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
+}
+
+.feature-text {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-premium {
+    width: 100%;
+    height: 48px;
+    background: #FFFFFF;
+    border: none;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    color: #00A651;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-premium:hover {
+    background: #F9FAFB;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 8px -4px rgba(0, 0, 0, 0.15), 0px 12px 17px -3px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   기본 정보 카드
+   ============================================ */
+.info-card {
+    background: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.btn-edit-icon {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #00A651;
+    padding: 0;
+    transition: opacity 0.2s;
+}
+
+.btn-edit-icon:hover {
+    opacity: 0.8;
+}
+
+.btn-edit-icon .material-symbols-outlined {
+    font-size: 16px;
+}
+
+.info-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.profile-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid #E5E7EB;
+}
+
+.profile-image {
+    width: 500px;
+    height: 300px;
+    object-fit: cover;
+    margin-top: 20px;
+}
+
+.avatar-letter {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #FFFFFF;
+}
+
+.info-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.info-field-half {
+    flex: 1;
+}
+
+.field-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #364153;
+}
+
+.field-label .material-symbols-outlined {
+    font-size: 16px;
+    color: #364153;
+}
+
+.field-value {
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 9px 17px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #101828;
+    min-height: 42px;
+    display: flex;
+    align-items: center;
+}
+
+.field-value-placeholder {
+    color: #99A1AF;
+}
+
+/* ============================================
+   활동 통계 카드
+   ============================================ */
+.stats-card {
+    background: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.stat-item {
+    background: #FAF9F6;
+    border-radius: 14px;
+    padding: 16px 16px 0;
+    height: 88px;
+}
+
+.stat-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-label {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #4A5565;
+    margin: 0;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+    color: #00A651;
+    margin: 0;
+}
+
+.stat-icon {
+    font-size: 32px;
+    color: #00A651;
+    opacity: 0.2;
+}
+
+/* ============================================
+   오른쪽 컬럼 (빠른메뉴, 계정관리)
+   ============================================ */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ============================================
+   빠른 메뉴 카드
+   ============================================ */
+.quick-menu-card {
+    background: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.menu-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: #364153;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.menu-item:hover {
+    background: #F9FAFB;
+}
+
+/* ============================================
+   계정 관리 카드
+   ============================================ */
+.account-card {
+    background: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.menu-item-danger {
+    color: #E7000B;
+}
+
+.menu-item-danger:hover {
+    background: #FEF2F2;
+}
+
+/* ============================================
+   반응형
+   ============================================ */
+@media (max-width: 1440px) {
+    .mypage-container {
+        gap: 40px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .mypage-container {
+        padding: 60px 40px;
+        grid-template-columns: 1fr;
+        gap: 24px;
+    }
+
+    .left-column,
+    .right-column {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .mypage-container {
+        padding: 40px 20px;
+    }
+
+    .membership-card {
+        height: auto;
+        min-height: 284px;
+    }
+
+    .info-field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+}
+
+/* 회원 탈퇴 모달 */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 32px;
+    width: 314px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background-color: #FFE2E2;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-icon {
+    color: #E7000B;
+    font-size: 32px;
+}
+
+.modal-title {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    text-align: center;
+    color: #101828;
+    margin: 16px 0;
+}
+
+.modal-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #364153;
+    margin: 8px 0;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.modal-btn {
+    flex: 1;
+    height: 52px;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-btn-cancel {
+    background-color: transparent;
+    border: 2px solid #D1D5DC;
+    color: #364153;
+}
+
+.modal-btn-cancel:hover {
+    background-color: #F9FAFB;
+}
+
+.modal-btn-delete {
+    background-color: #E7000B;
+    border: none;
+    color: #FFFFFF;
+}
+
+.modal-btn-delete:hover {
+    background-color: #C40009;
+}
+
+#deleteAccountBtn {
+    border: none;
+    background: transparent;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+}
+
+#deleteAccountBtn:hover {
+    background-color: #fef2f2;
+}

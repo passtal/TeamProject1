@@ -7,5 +7,10 @@ import lombok.Data;
  */
 @Data
 public class BoardImage {
-    // TODO: 구현
+
+    private int no;
+    private int boardNo;
+    private String imageUrl;
+    private int seq;
+    
 }

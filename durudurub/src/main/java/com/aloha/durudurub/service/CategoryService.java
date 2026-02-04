@@ -1,8 +1,32 @@
 package com.aloha.durudurub.service;
 
+import java.util.List;
+
+import com.aloha.durudurub.dto.Category;
+import com.aloha.durudurub.dto.SubCategory;
+
 /**
- * 카테고리 서비스
+ * 카테고리 서비스 인터페이스
  */
 public interface CategoryService {
-    // TODO: 구현
+    
+    List<Category> list();
+    
+    Category selectByNo(int no);
+    
+    int insert(Category category);
+    
+    int update(Category category);
+    
+    int delete(int no);
+    
+    List<SubCategory> listBySubCategory(int categoryNo);
+    
+    SubCategory selectSubByNo(int no);
+    
+    int insertSub(SubCategory subCategory);
+    
+    int updateSub(SubCategory subCategory);
+    
+    int deleteSub(int no);
 }

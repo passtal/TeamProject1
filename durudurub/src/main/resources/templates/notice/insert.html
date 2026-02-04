@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <title>공지사항 작성 - 두루두룹</title>
+    <link rel="stylesheet" th:href="@{/css/notice/notice-insert.css}">
+</head>
+<body layout:fragment="content">
+
+<!-- 상단 헤더 -->
+<div class="notice-header">
+    <div class="header-container">
+        <a href="javascript:history.back();" class="btn-back">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1 class="page-title">공지사항 작성</h1>
+    </div>
+</div>
+
+<div class="notice-insert-page">
+
+    <!-- 폼 컨테이너 -->
+    <form class="notice-form" th:action="@{/notice/insert}" method="post">
+        <div class="form-content">
+            <!-- 제목 -->
+            <div class="form-group">
+                <label class="form-label">제목 *</label>
+                <input type="text" name="title" class="form-input" placeholder="공지사항 제목을 입력하세요" required>
+            </div>
+
+            <!-- 카테고리 -->
+            <div class="form-group">
+                <label class="form-label">카테고리 *</label>
+                <div class="category-buttons">
+                    <button type="button" class="category-btn active" data-value="공지">공지</button>
+                    <button type="button" class="category-btn" data-value="이벤트">이벤트</button>
+                    <button type="button" class="category-btn" data-value="업데이트">업데이트</button>
+                    <button type="button" class="category-btn" data-value="점검">점검</button>
+                </div>
+                <input type="hidden" name="tags" id="selectedTag" value="공지">
+            </div>
+
+            <!-- 중요 공지 체크박스 -->
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="important" name="important" class="form-checkbox">
+                <label for="important" class="checkbox-label">중요 공지로 표시 (상단 고정)</label>
+            </div>
+
+            <!-- 내용 -->
+            <div class="form-group">
+                <label class="form-label">내용 *</label>
+                <textarea name="content" class="form-textarea" rows="10" placeholder="공지사항 내용을 입력하세요" required></textarea>
+                <p class="form-hint">* 줄바꿈은 자동으로 적용됩니다</p>
+            </div>
+
+            <!-- 버튼 영역 -->
+            <div class="form-actions">
+                <button type="button" class="btn-cancel" onclick="history.back();">취소</button>
+                <button type="submit" class="btn-submit">작성</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // 카테고리 선택 처리
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const selectedTagInput = document.getElementById('selectedTag');
+
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // 모든 버튼에서 active 클래스 제거
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                
+                // 클릭한 버튼에 active 클래스 추가
+                this.classList.add('active');
+                
+                // hidden input에 값 설정
+                selectedTagInput.value = this.dataset.value;
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -2,6 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 배너 매퍼 XML -->
-<mapper namespace="com.aloha.duruduru.mapper.BannerMapper">
+<mapper namespace="com.aloha.durudurub.dao.BannerMapper">
     <!-- TODO: 구현 -->
+    <!-- 배너 목록 -->
+    <select id="bannerList" resultType="com.aloha.durudurub.dto.Banner">
+        SELECT *
+        FROM banners
+        ORDER BY created_at DESC
+    </select>
+    <!-- 배너 조회 -->
+    <select id="bannerSelect" resultType="com.aloha.durudurub.dto.Banner">
+        SELECT *
+        FROM banners
+        WHERE no = #{no}
+    </select>
+    <!-- 배너 등록 -->
+    <insert id="bannerInsert" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO banners ( title, image_url, link_url, description, start_date, end_date, seq, is_active, position )
+        VALUES ( #{title}, #{imageUrl}, #{linkUrl}, #{description}, #{startDate}, #{endDate}, #{seq}, #{isActive}, #{position})
+    </insert>
+    <!-- 배너 수정 -->
+    <update id="bannerUpdate">
+        UPDATE banners
+            SET title = #{title}
+                ,image_url = #{imageUrl}
+                ,link_url = #{linkUrl}
+                ,description = #{description}
+                ,start_date = #{startDate}
+                ,end_date = #{endDate}
+                ,seq = #{seq}
+                ,is_active = #{isActive}
+                ,position = #{position}
+        WHERE no = #{no}
+    </update>
+    <!-- 배너 삭제 -->
+    <delete id="bannerDelete">
+        DELETE FROM banners
+        WHERE no = #{no}
+    </delete>
 </mapper>

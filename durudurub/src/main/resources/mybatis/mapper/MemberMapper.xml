@@ -2,6 +2,121 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 모임 참가자 매퍼 XML -->
-<mapper namespace="com.aloha.duruduru.mapper.MemberMapper">
-    <!-- TODO: 구현 -->
+<mapper namespace="com.aloha.durudurub.dao.MemberMapper">
+    
+    <!-- resultmap -->
+    <resultMap id="memberResultMap" type="com.aloha.durudurub.dto.ClubMember">
+        <id property="no" column="no"/>
+        <result property="clubNo" column="club_no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="status" column="status"/>
+        <result property="joinedAt" column="joined_at"/>
+        <association property="user" javaType="com.aloha.durudurub.dto.User">
+            <id property="no" column="user_member_no"/>
+            <result property="username" column="user_username"/>
+            <result property="profileImg" column="user_profile_img"/>
+        </association>
+    </resultMap>
+
+    <!-- 모임 멤버 목록 조회 -->
+    <select id="listByClub" resultMap="memberResultMap">
+        SELECT m.*,
+            u.no AS user_member_no, u.username AS user_username, u.profile_img AS user_profile_img
+        FROM club_members m
+        JOIN users u ON m.user_no = u.no
+        WHERE m.club_no = #{clubNo}
+        ORDER BY m.joined_at
+    </select>
+
+    <!-- 회원별 가입 모임 목록 -->
+    <select id="listByUser" resultMap="memberResultMap">
+        SELECT m.*,
+            u.no AS user_member_no, u.username AS user_username, u.profile_img AS user_profile_img
+        FROM club_members m
+        JOIN users u ON m.user_no = u.no
+        WHERE m.user_no = #{userNo}
+        ORDER BY m.joined_at DESC
+    </select>
+
+    <!-- 승인된 멤버 목록 -->
+    <select id="listApproved" resultMap="memberResultMap">
+        SELECT m.*, 
+               u.no AS user_member_no, u.username AS user_username, u.profile_img AS user_profile_img
+        FROM club_members m
+        JOIN users u ON m.user_no = u.no
+        WHERE m.club_no = #{clubNo} AND m.status = 'APPROVED'
+        ORDER BY m.joined_at
+    </select>
+
+    <!-- 승인 대기 목록 -->
+    <select id="listPending" resultMap="memberResultMap">
+        SELECT m.*, 
+               u.no AS user_member_no, u.username AS user_username, u.profile_img AS user_profile_img
+        FROM club_members m
+        JOIN users u ON m.user_no = u.no
+        WHERE m.club_no = #{clubNo} AND m.status = 'PENDING'
+        ORDER BY m.joined_at
+    </select>
+
+    <!-- 멤버 개별 조회 -->
+    <select id="selectByNo" resultMap="memberResultMap">
+        SELECT m.*, 
+               u.no AS user_member_no, u.username AS user_username, u.profile_img AS user_profile_img
+        FROM club_members m
+        JOIN users u ON m.user_no = u.no
+        WHERE m.no = #{no}
+    </select>
+
+    <!-- 멤버 조회 (모임+회원) -->
+    <select id="selectByClubAndUser" resultMap="memberResultMap">
+        SELECT m.*, 
+               u.no AS user_member_no, u.username AS user_username, u.profile_img AS user_profile_img
+        FROM club_members m
+        JOIN users u ON m.user_no = u.no
+        WHERE m.club_no = #{clubNo} AND m.user_no = #{userNo}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="com.aloha.durudurub.dto.ClubMember" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO club_members (club_no, user_no, status)
+        VALUES (#{clubNo}, #{userNo}, COALESCE(#{status}, 'PENDING'))
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateStatus">
+        UPDATE club_members SET status = #{status} WHERE no = #{no}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete">
+        DELETE FROM club_members WHERE no = #{no}
+    </delete>
+
+    <!-- 삭제 (모임+회원) -->
+    <delete id="deleteByClubAndUser">
+        DELETE FROM club_members WHERE club_no = #{clubNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- 존재 여부 확인 -->
+    <select id="countByClubAndUser" resultType="int">
+        SELECT COUNT(*) FROM club_members WHERE club_no = #{clubNo} AND user_no = #{userNo}
+    </select>
+
+    <!-- 마이페이지 : 내모임 관리 -->
+    <!-- 참여 중인 모임 -->
+    <select id="joinedClubList" resultType="com.aloha.durudurub.dto.Club">
+        SELECT c.*
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        WHERE m.user_no = #{userNo} AND m.status = 'APPROVED'
+            ORDER BY m.joined_at DESC
+    </select>
+    <!-- 신청 중인 모임 -->
+    <select id="pendingClubList" resultType="com.aloha.durudurub.dto.Club">
+        SELECT c.*
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        WHERE m.user_no = #{userNo} AND m.status = 'PENDING'
+            ORDER BY m.joined_at DESC
+    </select>
 </mapper>

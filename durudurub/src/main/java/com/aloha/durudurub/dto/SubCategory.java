@@ -1,5 +1,7 @@
 package com.aloha.durudurub.dto;
 
+import java.util.Date;
+
 import lombok.Data;
 
 /**
@@ -7,5 +9,13 @@ import lombok.Data;
  */
 @Data
 public class SubCategory {
-    // TODO: 구현
+    
+    private int no;
+    private int categoryNo;
+    private String name;
+    private int seq;
+    private Date createdAt;
+    private Date updatedAt;
+
+    private Category category;      // 대분류 카테고리 표시
 }

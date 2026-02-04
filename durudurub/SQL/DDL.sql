@@ -138,6 +138,8 @@ CREATE TABLE `clubs` (
     `current_members` INT DEFAULT 1 COMMENT '현재 참가자 수',
     `deadline` DATE NULL COMMENT '마감일',
     `location` VARCHAR(255) NULL COMMENT '모임 장소',
+    `lat` DECIMAL(10, 8) NULL COMMENT '위도',
+    `lng` DECIMAL(11, 8) NULL COMMENT '경도',
     `club_date` DATETIME NULL COMMENT '모임 일시',
     `status` ENUM('RECRUITING', 'CLOSED', 'COMPLETED') DEFAULT 'RECRUITING' COMMENT '모임상태',     -- 이거 serviceImpl이랑 jsp를 어떻게 구현하느냐에 따라서 지워질수도
     `view_count` INT DEFAULT 0 COMMENT '조회수',
@@ -265,26 +267,19 @@ CREATE TABLE `club_likes` (
 
 -- 14. random_games (랜덤 게임)
 -- 게임 종류: 돌림판, 사다리, 랜덤뽑기
-
+-- 1회성 게임용 (결과 저장 X)
 
 CREATE TABLE `random_games` (
     `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
-    `club_no` INT NOT NULL COMMENT 'FK',
     `game_type` ENUM('ROULETTE', 'LADDER', 'RANDOM_PICK') NOT NULL COMMENT '게임 종류: 돌림판/사다리/랜덤뽑기',
     `title` VARCHAR(100) NOT NULL COMMENT '게임 제목',
     `options` JSON NULL COMMENT '게임 옵션들',
-    `result` VARCHAR(200) NULL COMMENT '결과',
-    `created_by` INT NOT NULL COMMENT 'FK',
-    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`no`),
-    FOREIGN KEY (`club_no`) REFERENCES `clubs`(`no`) ON DELETE CASCADE,
-    FOREIGN KEY (`created_by`) REFERENCES `users`(`no`) ON DELETE CASCADE
+    PRIMARY KEY (`no`)
 );
 
 
 
 -- 15. banners (광고용 배너)
-
 
 CREATE TABLE `banners` (
     `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
@@ -292,6 +287,7 @@ CREATE TABLE `banners` (
     `image_url` VARCHAR(255) NOT NULL COMMENT '배너 이미지',
     `link_url` VARCHAR(500) NULL COMMENT '클릭 시 이동 URL',
     `position` VARCHAR(50) DEFAULT 'MAIN' COMMENT '배너 위치: MAIN, SIDE, POPUP',
+    `description` VARCHAR(200) NULL COMMENT '배너 텍스트',
     `is_active` CHAR(1) DEFAULT 'Y' COMMENT '활성화 여부(Y/N)',
     `start_date` DATE NULL COMMENT '노출 시작일',
     `end_date` DATE NULL COMMENT '노출 종료일',
@@ -328,6 +324,7 @@ CREATE TABLE `club_member_reports` (
     `reporter_no` INT NOT NULL COMMENT 'FK',    -- 신고한 회원의 no
     `target_no` INT NOT NULL COMMENT 'FK',      -- 신고당한 회원의 no
     `reason` VARCHAR(100) NULL COMMENT '신고 사유 (욕설, 비매너 등)',
+    `processed_at` TIMESTAMP NULL COMMENT '처리 일시',
     `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (`no`),
     FOREIGN KEY (`club_no`) REFERENCES `clubs`(`no`) ON DELETE CASCADE,
@@ -336,88 +333,30 @@ CREATE TABLE `club_member_reports` (
     UNIQUE KEY uk_report_history (`club_no`, `reporter_no`, `target_no`)    -- 이거 없으면 중복신고로 망합니다 지우지마세요
 );
 
--- 기초 데이터 DML
+-- 18. report_categories (신고 카테고리)
 
--- 대분류 카테고리
-INSERT INTO `categories` (`name`, `description`, `seq`) VALUES
-('자기계발', '나를 성장시키는 모임', 1),
-('스포츠', '함께 땀 흘리는 모임', 2),
-('푸드', '맛있는 음식을 나누는 모임', 3),
-('게임', '게임을 즐기는 모임', 4),
-('동네친구', '동네에서 친구 만들기', 5),
-('여행', '함께 떠나는 여행', 6),
-('예술', '예술을 사랑하는 모임', 7),
-('반려동물', '반려동물과 함께하는 모임', 8);
+CREATE TABLE `report_categories` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `name` VARCHAR(50) NOT NULL COMMENT '신고 카테고리',
+    `description` VARCHAR(200) NULL COMMENT '카테고리 설명',
+    `seq` INT DEFAULT 0 COMMENT '정렬순서',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`no`)
+);
 
--- 소분류 카테고리
--- 자기계발 (category_no = 1)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(1, '독서', 1),
-(1, '스피치', 2),
-(1, '면접', 3),
-(1, '회화', 4);
+-- 19. notices (공지사항)
 
--- 스포츠 (category_no = 2)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(2, '러닝', 1),
-(2, '테니스', 2),
-(2, '풋살', 3),
-(2, '등산', 4);
-
--- 푸드 (category_no = 3)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(3, '맛집', 1),
-(3, '한식', 2),
-(3, '베이킹', 3),
-(3, '쿠킹교실', 4);
-
--- 게임 (category_no = 4)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(4, '보드게임', 1),
-(4, '홀덤', 2),
-(4, '포켓볼', 3),
-(4, 'e-sport', 4);
-
--- 동네친구 (category_no = 5)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(5, '경도', 1),
-(5, '술래잡기', 2),
-(5, '술자리', 3),
-(5, '카풀', 4);
-
--- 여행 (category_no = 6)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(6, '국내', 1),
-(6, '해외', 2),
-(6, '당일치기', 3),
-(6, '패키지', 4);
-
--- 예술 (category_no = 7)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(7, '미술', 1),
-(7, '음악', 2),
-(7, '연극', 3),
-(7, '뮤지컬', 4);
-
--- 반려동물 (category_no = 8)
-INSERT INTO `sub_categories` (`category_no`, `name`, `seq`) VALUES
-(8, '간식나눔', 1),
-(8, '산책', 2),
-(8, '애견카페', 3),
-(8, '우리 애기 자랑~', 4);
-
--- 관리자 계정 (테스트용)
-INSERT INTO `users` (`id`, `user_id`, `password`, `username`) VALUES
-(UUID(), 'admin@durudurub.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '관리자'); -- 비번 123456 입니다
-
-SELECT * FROM `users`;
-
-INSERT INTO `user_auth` (`user_no`, `auth`) VALUES
-(1, 'ROLE_ADMIN');
-
-SELECT * FROM `user_auth`;
-
--- 샘플 배너
-INSERT INTO `banners` (`title`, `image_url`, `link_url`, `position`, `seq`) VALUES
-('두루두루 오픈 기념 이벤트', '/static/img/banner/event1.jpg', '/event/1', 'MAIN', 1),
-('새로운 모임을 찾아보세요', '/static/img/banner/event2.jpg', '/clubs', 'MAIN', 2);
+CREATE TABLE `notices` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `writer_no` INT NOT NULL COMMENT 'FK',      -- ADMIN
+    `category` VARCHAR(50) NULL COMMENT '공지 카테고리',
+    `title` VARCHAR(200) NOT NULL COMMENT '제목',
+    `content` TEXT NOT NULL COMMENT '내용',
+    `is_important` CHAR(1) DEFAULT 'N' COMMENT '중요 공지 여부',
+    `view_counts` INT DEFAULT 0 COMMENT '조회수',
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`no`),
+    FOREIGN KEY (`writer_no`) REFERENCES `users`(`no`) ON DELETE CASCADE
+);

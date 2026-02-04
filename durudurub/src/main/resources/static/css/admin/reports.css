@@ -1,0 +1,476 @@
+/* 신고 관리 페이지 스타일 */
+
+.reports-section {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+/* Search Bar */
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    margin-bottom: 24px;
+    background-color: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    height: 46px;
+}
+
+.search-bar .material-symbols-outlined {
+    color: #99A1AF;
+    font-size: 20px;
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: #374151;
+    outline: none;
+}
+
+.search-bar input::placeholder {
+    color: #9CA3AF;
+}
+
+/* Table Container */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.reports-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.reports-table thead {
+    background-color: #F9FAFB;
+    border-bottom: 2px solid #E5E7EB;
+}
+
+.reports-table th {
+    padding: 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.reports-table th:first-child {
+    width: 23.8%;
+}
+
+.reports-table th:nth-child(2) {
+    width: 17.1%;
+}
+
+.reports-table th:nth-child(3) {
+    width: 17.2%;
+}
+
+.reports-table th:nth-child(4) {
+    width: 14.9%;
+}
+
+.reports-table th:nth-child(5) {
+    width: 17.8%;
+    text-align: center;
+}
+
+.reports-table th:nth-child(6) {
+    width: 9.1%;
+    text-align: center;
+}
+
+.reports-table tbody tr {
+    border-bottom: 1px solid #F3F4F6;
+    transition: background-color 0.2s;
+}
+
+.reports-table tbody tr:hover {
+    background-color: #F9FAFB;
+}
+
+.reports-table td {
+    padding: 21px 16px;
+    font-size: 14px;
+    color: #111827;
+}
+
+.reports-table td:nth-child(5),
+.reports-table td:nth-child(6) {
+    text-align: center;
+}
+
+/* Report Count Badge */
+.badge-report {
+    display: inline-block;
+    padding: 3px 12px;
+    background-color: #FEF3C7;
+    color: #92400E;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+/* More Button */
+.btn-more {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.btn-more:hover {
+    background-color: #F3F4F6;
+}
+
+.btn-more .material-symbols-outlined {
+    font-size: 16px;
+    color: #6B7280;
+}
+
+/* Options Menu */
+.options-menu {
+    position: fixed;
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0px 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1px;
+    min-width: 150px;
+    z-index: 1000;
+}
+
+.option-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    text-align: left;
+    font-size: 14px;
+    color: #374151;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    height: 45px;
+}
+
+.option-item .material-symbols-outlined {
+    font-size: 16px;
+    color: #374151;
+}
+
+.option-item:hover {
+    background-color: #F9FAFB;
+}
+
+.option-item.delete {
+    color: #EF4444;
+}
+
+.option-item.delete .material-symbols-outlined {
+    color: #EF4444;
+}
+
+.option-item.delete:hover {
+    background-color: #FEE2E2;
+}
+
+/* Block User Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-container-block {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.btn-close-modal {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-close-modal:hover {
+    background-color: #F3F4F6;
+}
+
+.btn-close-modal .material-symbols-outlined {
+    font-size: 20px;
+    color: #6B7280;
+}
+
+.modal-body-block {
+    padding: 24px;
+}
+
+.block-message {
+    font-size: 16px;
+    color: #374151;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.block-message strong {
+    font-weight: 700;
+    color: #374151;
+}
+
+.block-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background-color: #F9FAFB;
+    padding: 16px;
+    border-radius: 8px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    color: #374151;
+}
+
+.radio-label input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #00A651;
+}
+
+/* 차단 기간 입력 섹션 */
+.block-duration-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 16px;
+    background-color: #FEF3C7;
+    border: 1px solid #F59E0B;
+    border-radius: 8px;
+}
+
+.duration-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #92400E;
+}
+
+.duration-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.duration-input {
+    width: 80px;
+    height: 40px;
+    padding: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+    color: #374151;
+    background-color: #FFFFFF;
+    border: 1px solid #D97706;
+    border-radius: 6px;
+    outline: none;
+}
+
+.duration-input:focus {
+    border-color: #F59E0B;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+}
+
+.duration-unit {
+    font-size: 16px;
+    font-weight: 700;
+    color: #92400E;
+}
+
+.end-date-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px;
+    background-color: #FFFFFF;
+    border: 1px solid #D97706;
+    border-radius: 4px;
+}
+
+.end-date-label {
+    font-size: 14px;
+    font-weight: 400;
+    color: #92400E;
+}
+
+.end-date-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: #92400E;
+}
+
+.modal-footer-block {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.btn-cancel,
+.btn-block {
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: 400;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background-color: #F3F4F6;
+    color: #374151;
+}
+
+.btn-cancel:hover {
+    background-color: #E5E7EB;
+}
+
+.btn-block {
+    background-color: #EF4444;
+    color: #FFFFFF;
+}
+
+.btn-block:hover {
+    background-color: #DC2626;
+}
+
+/* 사용자 삭제 모달 */
+.modal-container-delete {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    width: 500px;
+    max-width: 90%;
+    box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-body-delete {
+    padding: 24px;
+}
+
+.delete-message {
+    font-size: 16px;
+    color: #374151;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.delete-message strong {
+    font-weight: 700;
+    color: #374151;
+}
+
+.modal-footer-delete {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #E5E7EB;
+}
+
+.btn-delete {
+    padding: 10px 24px;
+    font-size: 16px;
+    font-weight: 400;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #EF4444;
+    color: #FFFFFF;
+}
+
+.btn-delete:hover {
+    background-color: #DC2626;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .reports-section {
+        padding: 16px;
+    }
+    
+    .table-container {
+        overflow-x: scroll;
+    }
+    
+    .reports-table {
+        min-width: 1000px;
+    }
+}
+
+@media (max-width: 768px) {
+    .search-bar {
+        margin-bottom: 16px;
+    }
+    
+    .reports-table th,
+    .reports-table td {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+}

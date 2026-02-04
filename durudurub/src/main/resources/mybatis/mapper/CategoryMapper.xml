@@ -2,6 +2,99 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 카테고리 매퍼 XML -->
-<mapper namespace="com.aloha.duruduru.mapper.CategoryMapper">
-    <!-- TODO: 구현 -->
+<mapper namespace="com.aloha.durudurub.dao.CategoryMapper">
+    
+    <!-- resultmap -->
+     <resultMap id="categoryResultMap" type="com.aloha.durudurub.dto.Category">
+        <id property="no" column="no"/>
+        <result property="name" column="name"/>
+        <result property="description" column="description"/>
+        <result property="icon" column="icon"/>
+        <result property="seq" column="seq"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <collection property="subCategoryList" ofType="com.aloha.durudurub.dto.SubCategory">
+            <id property="no" column="sub_no"/>
+            <result property="categoryNo" column="sub_category_no"/>
+            <result property="name" column="sub_name"/>
+            <result property="seq" column="sub_seq"/>
+        </collection>
+     </resultMap>
+
+    <!-- 메인 카테고리 -->
+
+    <!-- 메인 카테고리 목록 조회 -->
+    <select id="list" resultMap="categoryResultMap">
+        SELECT c.*,
+            s.no AS sub_no, s.category_no AS sub_category_no, s.name AS sub_name, s.seq AS sub_seq
+        FROM categories c
+        LEFT JOIN sub_categories s ON c.no = s.category_no
+        ORDER BY c.seq, s.seq
+    </select>
+
+    <!-- 개별 카테고리 조회 -->
+    <select id="selectByNo" resultMap="categoryResultMap">
+        SELECT c.*,
+            s.no AS sub_no, s.category_no AS sub_category_no, s.name AS sub_name, s.seq AS sub_seq
+        FROM categories c
+        LEFT JOIN sub_categories s ON c.no = s.category_no
+        WHERE c.no = #{no}
+        ORDER BY s.seq
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insert" parameterType="com.aloha.durudurub.dto.Category" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO categories (name, description, icon, seq)
+        VALUES (#{name}, #{description}, #{icon}, #{seq})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="update" parameterType="com.aloha.durudurub.dto.Category">
+        UPDATE categories
+        SET name = #{name}, description = #{description}, icon = #{icon}, seq = #{seq}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="delete">
+        DELETE FROM categories WHERE no = #{no}
+    </delete>
+
+    <!-- 서브 카테고리 -->
+
+    <!-- 서브 카테고리 목록 조회 -->
+    <select id="listBySubCategory" resultType="com.aloha.durudurub.dto.SubCategory">
+        SELECT no, category_no AS categoryNo, name, seq, 
+               created_at AS createdAt, updated_at AS updatedAt
+        FROM sub_categories
+        WHERE category_no = #{categoryNo}
+        ORDER BY seq
+    </select>
+    
+    <!-- 개별 카테고리 조회 -->
+    <select id="selectSubByNo" resultType="com.aloha.durudurub.dto.SubCategory">
+        SELECT no, category_no AS categoryNo, name, seq,
+            created_at AS createdAt, updated_at AS updatedAt
+        FROM sub_categories
+        WHERE category_no = #{categoryNo}
+    </select>
+
+    <!-- 등록 -->
+    <insert id="insertSub" parameterType="com.aloha.durudurub.dto.SubCategory" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO sub_categories (category_no, name, seq)
+        VALUES (#{categoryNo}, #{name}, #{seq})
+    </insert>
+
+    <!-- 수정 -->
+    <update id="updateSub" parameterType="com.aloha.durudurub.dto.SubCategory">
+        UPDATE sub_categories
+        SET name = #{name}, seq = #{seq}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteSub">
+        DELETE FROM sub_categories WHERE no = #{no}
+    </delete>
+
 </mapper>

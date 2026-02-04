@@ -1,3 +1,9 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "files.exclude": {
+        "**/bin/": true,
+        "**/build/": true
+    },
+    "liveServer.settings.port": 5501,
+    "java.debug.settings.onBuildFailureProceed": true
 }

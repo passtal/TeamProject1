@@ -1,0 +1,440 @@
+/* 게임 목록 페이지 스타일 */
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+.game-page {
+    font-family: Arial, sans-serif;
+}
+
+/* 게임 페이지 메인 */
+main.game-page {
+    background: linear-gradient(135deg, rgba(0, 166, 81, 0.1) 0%, rgba(0, 166, 81, 0.05) 100%);
+    min-height: 100vh;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+/* 페이지 헤더 */
+main.game-page .game-content {
+    max-width: 1216px;
+    margin: 0 auto;
+    padding: 0;
+    background: transparent;
+}
+
+main.game-page .game-content > div:first-child {
+    padding: 60px 0 50px;
+    border-bottom: 1px solid #F3F4F6;
+    background: transparent;
+}
+
+main.game-page .game-content > div:first-child h2 {
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #101828;
+    margin: 0;
+    text-align: center;
+}
+
+/* 게임 소개 섹션 */
+.game-intro {
+    padding: 48px 32px;
+    margin-bottom: 32px;
+    text-align: center;
+}
+
+.game-intro h2 {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.11;
+    color: #101828;
+    margin: 0 0 16px;
+}
+
+.game-intro p {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.56;
+    color: #4A5565;
+    margin: 0;
+}
+
+/* 게임 카드 그리드 */
+.game-cards {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 0 64px 48px;
+    max-width: 1216px;
+    margin: 0 auto;
+}
+
+.game-card {
+    flex: 0 1 calc(33.333% - 27px);
+    max-width: 368px;
+    background: #FFFFFF;
+    border-radius: 16px;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    height: 208px;
+}
+
+.game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 12px -4px rgba(0, 0, 0, 0.15), 0px 16px 24px -6px rgba(0, 0, 0, 0.15);
+}
+
+.game-card:not(:last-child) {
+    margin-right: 0;
+}
+
+/* 게임 아이콘 */
+.game-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+}
+
+.game-icon.purple {
+    background: linear-gradient(135deg, #AD46FF 0%, #9810FA 100%);
+}
+
+.game-icon.orange {
+    background: linear-gradient(135deg, #FF6900 0%, #F54900 100%);
+}
+
+.game-icon.green {
+    background: linear-gradient(135deg, #00C950 0%, #00A63E 100%);
+}
+
+.game-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+/* 게임 카드 텍스트 */
+.game-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.33;
+    color: #101828;
+    margin: 0 0 8px;
+}
+
+.game-card p {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #4A5565;
+    margin: 0;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 1280px) {
+    .game-cards {
+        padding: 0 32px 48px;
+    }
+}
+
+@media (max-width: 992px) {
+    .game-cards {
+        flex-direction: column;
+        gap: 24px;
+        padding: 0 32px 48px;
+    }
+
+    .game-card:not(:last-child) {
+        margin-right: 0;
+    }
+
+    .game-card {
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .game-intro h2 {
+        font-size: 28px;
+    }
+
+    .game-intro p {
+        font-size: 16px;
+    }
+
+    .game-card h3 {
+        font-size: 20px;
+    }
+
+    .game-card p {
+        font-size: 14px;
+    }
+}
+
+/* Hero Section */
+.hero-section {
+    background-color: #f0f9f4;
+    padding: 148px 0 100px 0;
+}
+
+.hero-container {
+    max-width: 1216px;
+    margin: 0 auto;
+    padding: 0 223px;
+}
+
+.hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hero-text {
+    max-width: 584px;
+}
+
+.hero-title {
+    font-size: 60px;
+    font-weight: bold;
+    line-height: 75px;
+    color: #101828;
+    margin-bottom: 24px;
+}
+
+.hero-subtitle {
+    font-size: 20px;
+    line-height: 32.5px;
+    color: #4a5565;
+    margin-bottom: 32px;
+}
+
+.hero-btn {
+    background-color: #00a651;
+    color: white;
+    padding: 16px 30px;
+    border-radius: 999px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    box-shadow: 0px 10px 15px 0px rgba(0,0,0,0.1), 0px 4px 6px 0px rgba(0,0,0,0.1);
+}
+
+.hero-btn:hover {
+    background-color: #008a43;
+    color: white;
+}
+
+.hero-image-wrapper {
+    position: relative;
+    width: 584px;
+    height: 500px;
+    margin-left: 48px;
+}
+
+.hero-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.hero-image-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 166, 81, 0.2), transparent);
+    border-radius: 24px;
+    pointer-events: none;
+}
+
+/* Ad Banner */
+.ad-section {
+    padding: 24px 0 48px 0;
+    max-width: 1216px;
+    margin: 0 auto;
+    padding-left: 223px;
+    padding-right: 223px;
+}
+
+.ad-sponsored {
+    font-size: 12px;
+    color: #6a7282;
+    margin-bottom: 8px;
+}
+
+.ad-banner-wrapper {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -4px rgba(0,0,0,0.1);
+}
+
+.ad-banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ad-banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+}
+
+.ad-banner-content {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    color: white;
+    z-index: 10;
+}
+
+.ad-banner-brand {
+    font-size: 14px;
+    font-weight: bold;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 8px;
+}
+
+.ad-banner-title {
+    font-size: 36px;
+    font-weight: bold;
+    line-height: 45px;
+    margin-bottom: 8px;
+}
+
+.ad-banner-subtitle {
+    font-size: 18px;
+    line-height: 28px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 16px;
+}
+
+.ad-banner-btn {
+    background-color: rgba(255,255,255,0.2);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 999px;
+    border: none;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ad-banner-dots {
+    position: absolute;
+    bottom: 16px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+}
+
+.ad-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: rgba(255,255,255,0.5);
+}
+
+.ad-dot.active {
+    width: 24px;
+    border-radius: 999px;
+    background-color: white;
+}
+
+/* Category Section */
+.category-section {
+    padding: 128px 0 80px 0;
+    max-width: 1216px;
+    margin: 0 auto;
+    padding-left: 223px;
+    padding-right: 223px;
+}
+
+.category-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.category-title {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 36px;
+    color: #101828;
+    margin-bottom: 12px;
+}
+
+.category-subtitle {
+    font-size: 16px;
+    line-height: 24px;
+    color: #4a5565;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    max-width: 896px;
+    margin: 0 auto;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s;
+}
+
+.category-item:hover {
+    transform: translateY(-5px);
+}
+
+.category-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.category-icon img {
+    width: 36px;
+    height: 36px;
+}
+
+.category-name {
+    font-size: 14px;
+    line-height: 20px;
+    color: #364153;
+}

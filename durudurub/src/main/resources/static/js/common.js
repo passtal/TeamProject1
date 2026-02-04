@@ -1,2 +1,29 @@
 /* 두루두루 공통 스크립트 (jQuery Ajax) */
 /* TODO: 구현 */
+
+// header
+// user or admin 에 따라 드롭다운 달라짐
+$(document).ready(function() {
+    // 로그인 후 사람 아이콘
+    $('icon-container').on('click', function() {
+        const userDropdown = $('#user-dropdown')
+        const adminDropdown = $('#admin-dropdown')
+        
+        // .length : 선택된 요소의 개수
+        if (userDropdown.length) {
+            // .toggle() : 보임/숨김 상태를 반전시키는 함수
+            // 보이지 않는 상태 -> display: block (보이게)
+            // 보이는 상태 -> display : none (숨기게)
+            $('#user-dropdown').toggle();
+            $('#admin-dropdown').hide();
+        } else if (adminDropdown.length) {
+            $('#admin-dropdown').toggle();
+            $('#user-dropdown').hide();
+        }
+    })
+
+    $(document).on('click', function() {
+        $('#user-dropdown').hide();
+        $('#admin-dropdown').hide();
+    })
+})

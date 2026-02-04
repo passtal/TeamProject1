@@ -1,5 +1,112 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<!-- 게시글 목록 페이지 -->
-<!-- TODO: 구현 -->
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록</title>
+    <th:block th:replace="~{fragments/head :: head}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board.css}">
+</head>
+<body class="board-list-page">
+    <th:block th:replace="~{fragments/header :: header}"></th:block>
+
+    <main class="container py-5">
+        <!-- 모임 정보 헤더 -->
+        <div class="club-info-header mb-4">
+            <div class="d-flex align-items-center gap-3">
+                <a th:href="@{/club/{no}(no=${club.no})}" class="btn btn-outline-secondary btn-sm">
+                    ← 모임으로 돌아가기
+                </a>
+                <h2 class="mb-0" th:text="${club.name}">모임 이름</h2>
+            </div>
+        </div>
+
+        <!-- 게시글 목록 헤더 -->
+        <div class="board-list-header d-flex justify-content-between align-items-center mb-4">
+            <h3 class="section-title mb-0">게시글</h3>
+            <a th:href="@{/club/{clubNo}/board/write(clubNo=${club.no})}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                게시글 작성
+            </a>
+        </div>
+
+        <!-- 공지사항 -->
+        <div class="notice-section mb-4" th:if="${notices != null and !notices.empty}">
+            <h5 class="text-muted mb-3">공지사항</h5>
+            <div class="list-group">
+                <a th:each="notice : ${notices}" 
+                   th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${notice.no})}"
+                   class="list-group-item list-group-item-action d-flex justify-content-between align-items-center notice-item">
+                    <div>
+                        <span class="badge bg-danger me-2">공지</span>
+                        <span th:text="${notice.title}">공지 제목</span>
+                    </div>
+                    <small class="text-muted" th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}">2024.01.01</small>
+                </a>
+            </div>
+        </div>
+
+        <!-- 게시글 목록 -->
+        <div class="board-list">
+            <div th:if="${boards == null or boards.empty}" class="text-center py-5">
+                <p class="text-muted">아직 게시글이 없습니다.</p>
+                <a th:href="@{/club/{clubNo}/board/write(clubNo=${club.no})}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                    첫 게시글 작성하기
+                </a>
+            </div>
+
+            <div class="list-group" th:if="${boards != null and !boards.empty}">
+                <div th:each="board : ${boards}" class="list-group-item board-item">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="board-item-content">
+                            <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="board-item-title">
+                                <h5 class="mb-1" th:text="${board.title}">게시글 제목</h5>
+                            </a>
+                            <p class="mb-2 text-muted board-item-preview" th:text="${#strings.abbreviate(board.content, 100)}">
+                                게시글 내용 미리보기...
+                            </p>
+                            <div class="d-flex align-items-center gap-3 text-muted small">
+                                <span class="author-info">
+                                    <span class="author-avatar-small" th:text="${#strings.substring(board.writer.username, 0, 1)}">작</span>
+                                    <span th:text="${board.writer.username}">작성자</span>
+                                </span>
+                                <span th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">2024.01.01</span>
+                                <span>
+                                    <img th:src="@{/img/board/like-icon.png}" alt="좋아요" class="icon-small">
+                                    <span th:text="${board.likeCount}">0</span>
+                                </span>
+                                <span>
+                                    <img th:src="@{/img/board/comment-icon.png}" alt="댓글" class="icon-small">
+                                    <span th:text="${board.commentCount}">0</span>
+                                </span>
+                            </div>
+                        </div>
+                        <span class="badge bg-secondary" th:text="'조회 ' + ${board.viewCount}">조회 0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 페이징 -->
+        <nav class="mt-4" th:if="${boards != null and !boards.empty}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">이전</a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                    <a class="page-link" href="#">다음</a>
+                </li>
+            </ul>
+        </nav>
+    </main>
+
+    <!-- Footer -->
+    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
+
+    <!-- Scripts -->
+    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+</body>
 </html>

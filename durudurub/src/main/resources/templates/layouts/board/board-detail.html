@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${club.title} + ' - 두루두룹'">모임 상세보기</title>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/board/board-detail.css}">
+    <!-- Leaflet CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+
+<body layout:fragment="content" class="board-detail-page">
+
+    <div class="hero-section">
+        <div class="hero-image-wrapper">
+            <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : '/img/board/hero-image.png'}" alt="모임 대표 이미지">
+        </div>
+    </div>
+
+    <div class="container board-container">
+        <div class="board-card">
+            <div class="board-header">
+                <div class="header-top">
+                    <h1 class="board-title" th:text="${club.title}">독서 모임 - 매주 한 권 완독하기</h1>
+                    <button class="btn-heart" id="btnClubLike" th:data-no="${club.no}" th:classappend="${club.liked ? 'liked' : ''}">
+                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요">
+                        <span class="heart-badge" th:text="${club.likeCount}">42</span>
+                    </button>
+                </div>
+
+                <div class="board-meta">
+                    <div class="category-badge" th:text="${club.category.name}">책</div>
+                    <div class="leader-info">
+                        <span class="meta-label">리더</span>
+                        <span class="meta-value" th:text="${club.host.username}">책벌레</span>
+                    </div>
+                </div>
+
+                <!-- Member & Join Button -->
+                <div class="board-actions">
+                    <div class="member-status">
+                        <img th:src="@{/img/board/member-icon.png}" alt="멤버">
+                        <span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명 참여 중'">12/15명 참여 중</span>
+                    </div>
+                    <!-- 호스트인 경우 정보 수정 버튼 -->
+                    <button th:if="${isHost}" class="btn btn-edit" onclick="editClubInfo()">
+                        <img th:src="@{/img/board/edit-icon.png}" alt="편집">
+                        정보 수정
+                    </button>
+                    <!-- 호스트가 아니고, 아직 가입하지 않은 경우 가입하기 버튼 -->
+                    <a th:if="${myMembership == null and !isHost}" th:href="@{/club/{no}/join(no=${club.no})}" class="btn btn-join">모임 가입하기</a>
+                    <!-- 이미 가입한 경우 -->
+                    <span th:if="${myMembership != null and !isHost}" class="badge bg-success">참여 중</span>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div class="board-content">
+                <!-- Introduction -->
+                <div class="content-section">
+                    <h2 class="section-title">모임 소개</h2>
+                    <div class="section-text" th:utext="${club.description}">모임 설명이 여기에 표시됩니다.</div>
+                </div>
+
+                <!-- Schedule & Location -->
+                <div class="content-section schedule-location">
+                    <!-- Schedule -->
+                    <div class="schedule-section">
+                        <div class="schedule-header">
+                            <h2 class="section-title">모임 일시</h2>
+                        </div>
+                        <div class="schedule-list">
+                            <div class="schedule-item active" th:if="${club.clubDate != null}">
+                                <div class="schedule-content">
+                                    <img th:src="@{/img/board/calendar-icon.png}" alt="달력">
+                                    <span th:text="${#temporals.format(club.clubDate, 'yyyy년 M월 d일 (E) a h:mm')}"></span>
+                                </div>
+                            </div>
+                            <div class="schedule-item" th:if="${club.deadLine != null}">
+                                <div class="schedule-content">
+                                    <img th:src="@{/img/board/calendar-icon.png}" alt="마감일">
+                                    <span>모집 마감: <span th:text="${#temporals.format(club.deadLine, 'yyyy년 M월 d일')}"></span></span>
+                                </div>
+                            </div>
+                            <p th:if="${club.clubDate == null}" class="text-muted">일정이 아직 정해지지 않았습니다.</p>
+                        </div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="location-section">
+                        <div class="location-header">
+                            <img th:src="@{/img/board/location-icon.png}" alt="장소">
+                            <div class="location-info">
+                                <span class="location-label">장소</span>
+                                <span class="location-value" th:text="${club.location ?: '미정'}"></span>
+                            </div>
+                        </div>
+                        <!-- Map Container -->
+                        <div id="map" class="map-container" th:if="${club.lat != null and club.lng != null}"></div>
+                        <p th:if="${club.lat == null or club.lng == null}" class="text-muted mt-2">지도 위치가 설정되지 않았습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Members Section -->
+        <div class="members-section mt-4">
+            <h2 class="section-title">멤버 목록 (<span th:text="${club.currentMembers}">0</span>명)</h2>
+            <div class="member-list d-flex flex-wrap gap-3 mt-3">
+                <div th:each="member : ${members}" class="member-item d-flex align-items-center gap-2 p-2 bg-light rounded">
+                    <div class="member-avatar" th:text="${#strings.substring(member.user.username, 0, 1)}">김</div>
+                    <div class="member-info">
+                        <span class="member-name" th:text="${member.user.username}">멤버이름</span>
+                        <span th:if="${member.role == 'HOST'}" class="badge bg-primary ms-1">호스트</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 게시판 링크 -->
+        <div class="board-link-section mt-4">
+            <a th:href="@{/club/{no}/board(no=${club.no})}" class="btn btn-outline-primary btn-lg w-100">
+                → 게시판 바로가기
+            </a>
+        </div>
+    </div>
+    
+
+    <!-- 호스트 전용 정보 수정 모달 -->
+    <div th:if="${isHost}" class="modal fade" id="editClubModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content edit-modal">
+                <!-- Modal Header -->
+                <div class="modal-header edit-modal-header">
+                    <h2 class="modal-title">모임 정보 수정</h2>
+                    <button type="button" class="btn-close-modal" data-bs-dismiss="modal" aria-label="Close">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body edit-modal-body">
+                    <form id="editClubForm">
+                        <!-- 모임 제목 -->
+                        <div class="form-group mb-3">
+                            <label for="clubTitle" class="form-label">모임 제목</label>
+                            <input type="text" class="form-control" id="clubTitle" th:value="${club.title}" placeholder="모임 제목을 입력하세요">
+                        </div>
+
+                        <!-- 모임 설명 -->
+                        <div class="form-group mb-3">
+                            <label for="clubDescription" class="form-label">모임 설명</label>
+                            <textarea class="form-control" id="clubDescription" rows="4" th:text="${club.description}" placeholder="모임에 대한 설명을 입력하세요"></textarea>
+                        </div>
+
+                        <!-- 최대 인원 -->
+                        <div class="form-group mb-3">
+                            <label for="maxMembers" class="form-label">최대 인원</label>
+                            <input type="number" class="form-control" id="maxMembers" th:value="${club.maxMembers}" min="1" placeholder="20">
+                        </div>
+
+                        <!-- 모임 장소 -->
+                        <div class="form-group mb-3">
+                            <label for="clubLocation" class="form-label">모임 장소</label>
+                            <input type="text" class="form-control" id="clubLocation" th:value="${club.location}" placeholder="서울 강남구 테헤란로 152">
+                        </div>
+
+                        <!-- 위도/경도 -->
+                        <div class="form-group mb-3">
+                            <label class="form-label">좌표 (선택)</label>
+                            <div class="d-flex gap-2">
+                                <input type="number" step="0.00000001" class="form-control" id="clubLat" th:value="${club.lat}" placeholder="위도 (예: 37.5172)">
+                                <input type="number" step="0.00000001" class="form-control" id="clubLng" th:value="${club.lng}" placeholder="경도 (예: 127.0473)">
+                            </div>
+                        </div>
+
+                        <!-- 모임 일시 -->
+                        <div class="form-group mb-3">
+                            <label for="clubDate" class="form-label">모임 일시</label>
+                            <input type="datetime-local" class="form-control" id="clubDate" 
+                                   th:value="${club.clubDate != null ? #temporals.format(club.clubDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                        </div>
+
+                        <!-- 모집 마감일 -->
+                        <div class="form-group mb-3">
+                            <label for="clubDeadline" class="form-label">모집 마감일</label>
+                            <input type="date" class="form-control" id="clubDeadline" 
+                                   th:value="${club.deadLine != null ? #temporals.format(club.deadLine, 'yyyy-MM-dd') : ''}">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer edit-modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    <button type="button" class="btn btn-primary" onclick="saveClubInfo()">저장하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@ -->
+    <!-- @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@ -->
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script th:inline="javascript">
+        const clubNo = [[${club.no}]];
+        const clubLat = [[${club.lat}]];
+        const clubLng = [[${club.lng}]];
+        const clubLocation = [[${club.location}]];
+        
+        // Initialize Map
+        document.addEventListener('DOMContentLoaded', function() {
+            // 좌표가 있는 경우에만 지도 초기화
+            if (clubLat && clubLng) {
+                const map = L.map('map').setView([clubLat, clubLng], 15);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                // 마커 추가
+                L.marker([clubLat, clubLng]).addTo(map)
+                    .bindPopup(clubLocation || '모임 장소')
+                    .openPopup();
+            }
+        });
+
+        // @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@
+        // @@@@@@@@@@@@@@@@ figma에서 준 지도 앱 코드 건들지말것!!!!!! @@@@@@@@@@@@@@@@
+
+
+        // 모임 좋아요 토글 (비동기)
+        $('#btnClubLike').click(function() {
+            const btn = $(this);
+            $.ajax({
+                url: '/api/likes/club/' + clubNo,
+                type: 'POST',
+                success: function(result) {
+                    btn.find('.heart-badge').text(result.count);
+                    btn.toggleClass('liked', result.liked);
+                },
+                error: function() {
+                    alert('로그인이 필요합니다.');
+                }
+            });
+        });
+
+        // 호스트 기능: 모임 정보 수정 모달 열기
+        function editClubInfo() {
+            const modal = new bootstrap.Modal(document.getElementById('editClubModal'));
+            modal.show();
+        }
+
+        // 호스트 기능: 모임 정보 저장 (비동기)
+        function saveClubInfo() {
+            const data = {
+                no: clubNo,
+                title: document.getElementById('clubTitle').value,
+                description: document.getElementById('clubDescription').value,
+                maxMembers: document.getElementById('maxMembers').value,
+                location: document.getElementById('clubLocation').value,
+                lat: document.getElementById('clubLat').value || null,
+                lng: document.getElementById('clubLng').value || null,
+                clubDate: document.getElementById('clubDate').value || null,
+                deadLine: document.getElementById('clubDeadline').value || null
+            };
+            
+            $.ajax({
+                url: '/api/clubs/' + clubNo,
+                type: 'PUT',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(result) {
+                    alert('모임 정보가 저장되었습니다.');
+                    location.reload();
+                },
+                error: function() {
+                    alert('모임 정보 저장에 실패했습니다.');
+                }
+            });
+        }
+    </script>
+</body>
+</html>

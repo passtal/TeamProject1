@@ -2,6 +2,209 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 모임 매퍼 XML -->
-<mapper namespace="com.aloha.duruduru.mapper.ClubMapper">
-    <!-- TODO: 구현 -->
+<mapper namespace="com.aloha.durudurub.dao.ClubMapper">
+    <resultMap id="clubResultMap" type="com.aloha.durudurub.dto.Club">
+        <id property="no" column="no"/>
+        <result property="hostNo" column="host_no"/>
+        <result property="categoryNo" column="category_no"/>
+        <result property="subCategoryNo" column="sub_category_no"/>
+        <result property="title" column="title"/>
+        <result property="description" column="description"/>
+        <result property="thumbnailImg" column="thumbnail_img"/>
+        <result property="maxMembers" column="max_members"/>
+        <result property="currentMembers" column="current_members"/>
+        <result property="deadline" column="deadline"/>
+        <result property="location" column="location"/>
+        <result property="clubDate" column="club_date"/>
+        <result property="status" column="status"/>
+        <result property="viewCount" column="view_count"/>
+        <result property="likeCount" column="like_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <association property="host" javaType="com.aloha.durudurub.dto.User">
+            <id property="no" column="host_user_no"/>
+            <result property="username" column="host_username"/>
+            <result property="profileImg" column="host_profile_img"/>
+        </association>
+        <association property="category" javaType="com.aloha.durudurub.dto.Category">
+            <id property="no" column="cat_no"/>
+            <result property="name" column="cat_name"/>
+            <result property="icon" column="cat_icon"/>
+        </association>
+        <association property="subCategory" javaType="com.aloha.durudurub.dto.SubCategory">
+            <id property="no" column="sub_cat_no"/>
+            <result property="name" column="sub_cat_name"/>
+        </association>
+    </resultMap>
+
+    <!-- 모임 목록 조회 -->
+    <select id="list" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 카테고리별 모임 목록 -->
+    <select id="listByCategory" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE c.category_no = #{categoryNo}
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 소분류별 모임 목록 -->
+    <select id="listBySubCategory" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE c.sub_category_no = #{subCategoryNo}
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 모임장별 모임 목록 -->
+    <select id="listByHost" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE c.host_no = #{hostNo}
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 인기 모임 목록 -->
+    <select id="listPopular" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.usern        ame AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE c.status = 'RECRUITING'
+        ORDER BY c.like_count DESC, c.view_count DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 최신 모임 목록 -->
+    <select id="listRecent" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        ORDER BY c.created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 모임 검색 -->
+    <select id="search" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE c.title LIKE CONCAT('%', #{keyword}, '%')
+           OR c.description LIKE CONCAT('%', #{keyword}, '%')
+           OR c.location LIKE CONCAT('%', #{keyword}, '%')
+        ORDER BY c.created_at DESC
+    </select>
+
+    <!-- 모임 단건 조회 -->
+    <select id="selectByNo" resultMap="clubResultMap">
+        SELECT c.*,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
+               cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+               sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM clubs c
+        JOIN users u ON c.host_no = u.no
+        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE c.no = #{no}
+    </select>
+
+    <!-- 모임 등록 -->
+    <insert id="insert" parameterType="com.aloha.durudurub.dto.Club" useGeneratedKeys="true" keyProperty="no">
+        INSERT INTO clubs (host_no, category_no, sub_category_no, title, description, 
+                          thumbnail_img, max_members, deadline, location, club_date, status)
+        VALUES (#{hostNo}, #{categoryNo}, #{subCategoryNo}, #{title}, #{description},
+                #{thumbnailImg}, #{maxMembers}, #{deadline}, #{location}, #{clubDate}, 'RECRUITING')
+    </insert>
+
+    <!-- 모임 수정 -->
+    <update id="update" parameterType="com.aloha.durudurub.dto.Club">
+        UPDATE clubs
+        SET category_no = #{categoryNo}, sub_category_no = #{subCategoryNo},
+            title = #{title}, description = #{description}, thumbnail_img = #{thumbnailImg},
+            max_members = #{maxMembers}, deadline = #{deadline}, location = #{location},
+            club_date = #{clubDate}
+        WHERE no = #{no}
+    </update>
+
+    <!-- 모임 삭제 -->
+    <delete id="delete">
+        DELETE FROM clubs WHERE no = #{no}
+    </delete>
+
+    <!-- 조회수 ↑ -->
+    <update id="incrementViewCount">
+        UPDATE clubs SET view_count = view_count + 1 WHERE = #{no}
+    </update>
+
+    <!-- 좋아요 수 ↑ -->
+    <update id="incrementLikeCount">
+        UPDATE clubs SET like_count = like_count + 1 WHERE no = #{no}
+    </update>
+
+    <!-- 좋아요 수 ↓ -->
+    <update id="decrementLikeCount">
+        UPDATE clubs SET like_count = GREATEST(like_count - 1, 0) WHERE no = #{no}
+    </update>
+
+    <!-- 멤버 수 ↑ -->
+    <update id="incrementCurrentMembers">
+        UPDATE clubs SET current_members = current_members + 1 WHERE no = #{no}
+    </update>
+
+    <!-- 멤버 수 ↓ -->
+    <update id="decrementCurrentMembers">
+        UPDATE clubs SET current_members = GREATEST(current_members - 1, 0) WHERE no = #{no}
+    </update>
+
+    <!-- 모임 상태 변경 -->
+    <update id="updateStatus">
+        UPDATE clubs SET status = #{status} WHERE no = #{no}
+    </update>
+
+    <!-- 모임 수 조회 -->
+    <select id="count" resultType="int">
+        SELECT COUNT (*) FROM clubs
+    </select>
 </mapper>

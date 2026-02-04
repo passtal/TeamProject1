@@ -1,5 +1,57 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
 <!-- 에러 페이지 (404) -->
 <!-- TODO: 구현 -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/css/error.css}">
+    <title>404에러</title>
+</head>
+<body layout:fragment="content">
+    <!-- 임시 방편 : 레이아웃 확인용 -->
+    <main class="wrapper" style="background: linear-gradient(to bottom right, #ebf4ff, #e0e7ff);">
+        <div class="content-box">
+            <div class="icon-area">
+            <!-- <DurupCharacter size={150} variant="surprised" /> -->
+            <svg width="200" height="200" viewBox="0 0 105 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- 두릅 몸통 - 메인 -->
+                <ellipse cx="50" cy="60" rx="25" ry="32" fill="#00A651" />
+                <!-- 두릅 잎 - 왼쪽 (더 올라간) -->
+                <ellipse cx="32" cy="28" rx="8" ry="20" fill="#00C962" transform="rotate(-40 32 28)" />
+                <!-- 두릅 잎 - 가운데 (더 올라간) -->
+                <ellipse cx="50" cy="22" rx="9" ry="24" fill="#00C962" />
+                <!-- 두릅 잎 - 오른쪽 (더 올라간) -->
+                <ellipse cx="68" cy="28" rx="8" ry="20" fill="#00C962" transform="rotate(40 68 28)" />
+                <!-- 얼굴 - 눈 왼쪽 (크게 뜬 눈) -->
+                <circle cx="43" cy="57" r="4.5" fill="#FFFFFF" />
+                <circle cx="43.5" cy="57" r="2.5" fill="#333333" />
+                <circle cx="44.5" cy="56" r="1" fill="#FFFFFF" />
+                <!-- 얼굴 - 눈 오른쪽 (크게 뜬 눈) -->
+                <circle cx="57" cy="57" r="4.5" fill="#FFFFFF" />
+                <circle cx="57.5" cy="57" r="2.5" fill="#333333" />
+                <circle cx="58.5" cy="56" r="1" fill="#FFFFFF" />
+                <!-- 얼굴 - 입 (놀란 입) -->
+                <ellipse cx="50" cy="68" rx="4" ry="5" fill="#FFFFFF" />
+                <ellipse cx="50" cy="69" rx="3" ry="3.5" fill="#333333" opacity="0.3" />
+                <!-- 놀람 표시 (왼쪽) -->
+                <path d="M 28 52 L 30 48 L 26 47" stroke="#FFD700" stroke-width="2" stroke-linecap="round" fill="none" />
+                <!-- 놀람 표시 (오른쪽) -->
+                <path d="M 72 52 L 70 48 L 74 47" stroke="#FFD700" stroke-width="2" stroke-linecap="round" fill="none" />
+            </svg>
+                <!-- <DurupCharacter size={150} variant="sad"/> -->
+            </div>
+            <h1 class="title">404 에러 페이지</h1>
+            <div class="desc">
+                <p class="main-desc">페이지를 찾을 수 없습니다.</p>
+                <h5 class="sub-desc">요청하신 페이지가 존재하지 않아요</h5>
+            </div>
+            <div class="btn-box">
+                <a href="/" class="main-btn">메인 화면</a>
+            </div>
+        </div>
+    </main>
+</body>
 </html>
