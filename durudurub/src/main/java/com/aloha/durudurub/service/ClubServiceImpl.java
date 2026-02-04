@@ -199,5 +199,4 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.listByHost(hostNo);
     }
 
-    
 }

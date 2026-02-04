@@ -46,7 +46,7 @@ public class HomeController {
     /**
      * 회원가입 페이지
      */
-    @GetMapping("/signup")
+    @GetMapping("/join")
     public String signup() {
         return "user/join";
     }

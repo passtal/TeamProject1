@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/main_layout}">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- meta -->
+    <th:block th:replace="~{fragments/meta :: meta}"></th:block>
+    <!-- link -->
+    <th:block th:replace="~{fragments/link::link}"></th:block>
     <title>로그인 - 두루두룹</title>
     
     <!-- Custom CSS -->
@@ -12,7 +14,7 @@
     
 </head>
 
-<body layout:fragment="content" class="login-page">
+<body class="login-page">
     <div class="login-container">
         <div class="login-card">
             <button type="button" class="btn-close-login" onclick="window.location.href='/'">
@@ -83,7 +85,7 @@
                     <span class="signup-prompt-text">아직 회원이 아니신가요?</span>
                     <button type="button" 
                             class="btn-signup" 
-                            onclick="window.location.href='/signup'">
+                            onclick="window.location.href='/join'">
                         회원가입하기
                     </button>
                 </div>
@@ -157,6 +159,7 @@
     });
 </script>
 
-
+<!-- script -->
+<th:block th:replace="~{fragments/scripts::scripts}"></th:block>
 </body>
 </html>
