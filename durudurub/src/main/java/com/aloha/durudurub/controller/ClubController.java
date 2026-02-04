@@ -125,6 +125,35 @@ public class ClubController {
     public List<SubCategory> getSubCategories(@PathVariable("categoryNo") int categoryNo) {
         return categoryService.listBySubCategory(categoryNo);
     }
+
+    /**
+     * 카테고리별 모임 목록 페이지
+     * @param categoryNo 카테고리 번호
+     * @param model
+     * @return
+     */
+    @GetMapping("/category")
+    public String category(@RequestParam("category") int categoryNo, Model model) {
+        // 카테고리 번호로 카테고리 조회
+        Category category = categoryService.selectByNo(categoryNo);
+        
+        if (category == null) {
+            return "redirect:/club/list";
+        }
+        
+        // 카테고리에 속한 모임 조회
+        List<Club> clubs = clubService.listByCategory(category.getNo());
+        
+        // 소분류 카테고리 조회
+        List<SubCategory> subCategories = categoryService.listBySubCategory(category.getNo());
+        
+        model.addAttribute("categoryName", category.getName());
+        model.addAttribute("category", category);
+        model.addAttribute("clubs", clubs);
+        model.addAttribute("subCategories", subCategories);
+        
+        return "club/category";
+    }
     
     
     /**

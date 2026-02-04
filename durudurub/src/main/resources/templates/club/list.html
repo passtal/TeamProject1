@@ -22,7 +22,7 @@
                 <div class="category-filter">
                     <!-- 전체 버튼 -->
                     <button class="filter-btn active" data-category="all" data-type="all">
-                        <span class="emoji">🔍</span>
+                        <i class="bi bi-search"></i>
                         <span>전체</span>
                     </button>
                     
@@ -31,7 +31,10 @@
                             th:data-category="${category.name}"
                             th:data-category-no="${category.no}"
                             data-type="main">
-                        <span class="emoji" th:text="${category.icon != null ? category.icon : '📁'}">📚</span>
+                        <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
+                           th:class="'bi ' + ${category.icon}"></i>
+                        <span th:if="${category.icon == null or !category.icon.startsWith('bi-')}" 
+                              th:text="${category.icon != null ? category.icon : '📁'}">📁</span>
                         <span th:text="${category.name}">카테고리</span>
                     </button>
                 </div>
@@ -107,20 +110,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <h3 class="club-title" th:text="${club.title}">모임 제목</h3>
-                            <p class="club-description" th:text="${club.description}">모임 설명</p>
-                            <div class="club-location">
-                                <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M8 2C5.79 2 4 3.79 4 6C4 9 8 14 8 14C8 14 12 9 12 6C12 3.79 10.21 2 8 2ZM8 7.5C7.17 7.5 6.5 6.83 6.5 6C6.5 5.17 7.17 4.5 8 4.5C8.83 4.5 9.5 5.17 9.5 6C9.5 6.83 8.83 7.5 8 7.5Z"/>
-                                </svg>
-                                <span th:text="${club.location}">위치</span>
-                            </div>
-                            <div class="club-creator">
-                                <div class="creator-avatar" th:text="${#strings.substring(club.hostName, 0, 1)}">호</div>
-                                <span class="creator-name" th:text="${club.hostName}">호스트</span>
-                            </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
 
                 <!-- 필터링 결과 없을 때 -->
