@@ -2,9 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
-
-      <!-- 임시 css -->
-       <!-- <link rel="stylesheet" href="../../static/css/list.css"> -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,12 +44,8 @@
                 <!-- 헤더 -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="section-title mb-0">
-                        <span th:if="${categoryNo == null}">모든 모임</span>
                         <span th:if="${categoryNo != null}" th:text="${currentCategory.name + ' 모임'}">카테고리 모임</span>
                     </h3>
-                    <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
-                        + 새 모임 만들기
-                    </a>
                 </div>
                 
                 <!-- 결과 카운트 -->
