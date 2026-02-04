@@ -34,8 +34,8 @@
                         <form th:action="@{/club/create}" method="post" enctype="multipart/form-data">
                             <!-- 모임 이름 -->
                             <div class="mb-4">
-                                <label for="name" class="form-label fw-bold">모임 이름 <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg" id="name" name="name" 
+                                <label for="title" class="form-label fw-bold">모임 이름 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" id="title" name="title" 
                                        placeholder="모임 이름을 입력해주세요" required maxlength="50">
                                 <small class="text-muted">최대 50자</small>
                             </div>
@@ -68,8 +68,8 @@
 
                             <!-- 활동 지역 -->
                             <div class="mb-4">
-                                <label for="region" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="region" name="region" 
+                                <label for="location" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="location" name="location" 
                                        placeholder="예: 서울 강남구" required>
                             </div>
 
@@ -108,7 +108,7 @@
     <th:block th:replace="~{fragments/footer :: footer}"></th:block>
 
     <!-- Scripts -->
-    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
     
     <script>
         // 카테고리 선택 시 세부 카테고리 로드
