@@ -73,14 +73,19 @@
         <div class="category-grid">
             <!-- 카테고리 반복 -->
             <a th:each="category : ${categories}" 
-               th:href="@{/club/category/{no}(no=${category.no})}" 
+               th:href="@{/club/list(category=${category.no})}" 
                class="category-item">
-                <div class="category-icon" style="background-color: #f0f0f0;">
-                    <!-- icon이 http로 시작하면 img, 아니면 텍스트(이모지) -->
+                <div class="category-icon">
+                    <!-- Bootstrap Icons (bi-*) 클래스인 경우 -->
+                    <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
+                       th:class="'bi ' + ${category.icon}" 
+                       style="font-size: 36px; color: #6366F1;"></i>
+                    <!-- URL인 경우 이미지 -->
                     <img th:if="${category.icon != null and category.icon.startsWith('http')}" 
                          th:src="${category.icon}" 
                          th:alt="${category.name}">
-                    <span th:if="${category.icon != null and !category.icon.startsWith('http')}" 
+                    <!-- 그 외 (이모지 등) -->
+                    <span th:if="${category.icon != null and !category.icon.startsWith('bi-') and !category.icon.startsWith('http')}" 
                           th:text="${category.icon}" 
                           style="font-size: 36px;">📁</span>
                 </div>

@@ -64,6 +64,15 @@ public class ClubController {
         } else {
             clubs = clubService.list();
         }
+        
+        // 디버깅 로그
+        System.out.println("=== Club List Debug ===");
+        System.out.println("clubs size: " + (clubs != null ? clubs.size() : "null"));
+        if (clubs != null && !clubs.isEmpty()) {
+            for (Club c : clubs) {
+                System.out.println("Club: " + c.getNo() + " - " + c.getTitle());
+            }
+        }
 
         List<Category> categories = categoryService.list();
 

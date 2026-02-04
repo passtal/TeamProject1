@@ -58,7 +58,7 @@
                         <div class="card club-card h-100 shadow-sm">
                             <!-- 모임 이미지 -->
                             <div class="club-card-image">
-                                <img th:src="${club.thumbnail != null} ? ${club.thumbnail} : @{/img/hero-image.png}" 
+                                <img th:src="${club.thumbnailImg != null} ? ${club.thumbnailImg} : @{/img/hero-image.png}" 
                                      class="card-img-top" alt="모임 이미지">
                                 <span class="club-status badge" 
                                       th:classappend="${club.status == 'RECRUITING'} ? 'bg-success' : 'bg-secondary'"
@@ -72,7 +72,7 @@
                                 <!-- 모임 제목 -->
                                 <h5 class="card-title">
                                     <a th:href="@{/club/{no}(no=${club.no})}" class="text-decoration-none text-dark"
-                                       th:text="${club.name}">모임 이름</a>
+                                       th:text="${club.title}">모임 이름</a>
                                 </h5>
                                 
                                 <!-- 모임 설명 -->
@@ -82,15 +82,15 @@
                                 <!-- 모임 정보 -->
                                 <div class="club-meta d-flex justify-content-between align-items-center mt-3">
                                     <div class="d-flex align-items-center gap-2">
-                                        <img th:src="@{/img/board/member-icon.png}" alt="멤버" class="icon-small">
+                                        <i class="bi bi-people"></i>
                                         <small th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명'">0/10명</small>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
-                                        <img th:src="@{/img/board/location-icon.png}" alt="지역" class="icon-small">
-                                        <small th:text="${club.region}">서울</small>
+                                        <i class="bi bi-geo-alt"></i>
+                                        <small th:text="${club.location}">서울</small>
                                     </div>
                                     <div class="d-flex align-items-center gap-2">
-                                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요" class="icon-small">
+                                        <i class="bi bi-heart"></i>
                                         <small th:text="${club.likeCount}">0</small>
                                     </div>
                                 </div>
