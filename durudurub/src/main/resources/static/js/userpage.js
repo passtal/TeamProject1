@@ -28,7 +28,7 @@ function updateBtn() {
     $("#usergender-select").val(genderText === "선택 안함" ? "" : genderText)
 
     // 사진 미리보기 기존 값 설정
-    $("#profileImageEdit").attr("src", $("#profileImageView").attr("src"));
+    // $("#profileImageEdit").attr("src", $("#profileImageView").attr("src"));
 }
 
 // 회원 정보 수정 (취소버튼)
@@ -51,21 +51,25 @@ function saveBtn() {
     formData.append("gender", $("#usergender-select").val());
     formData.append("address", $("#useraddress-input").val());
 
+    // CSRF 토큰 문제 (403)
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+
     // 사진이 선택된 경우에만 추가
-    const imgFile = $("#profile-file")[0].files[0];
-    if (imgFile) {
-        formData.append("profileImg", imgFile);
-    }
+    // const imgFile = $("#profile-file")[0].files[0];
+    // if (imgFile) {
+    //     formData.append("profileImg", imgFile);
+    // }
 
     $.ajax({
         url: `/users/mypage`,
         method: 'PUT',
-        // processData: false → 데이터를 문자열로 변환하지 않고 원본 그대로 보냄
-        processData: false,
-        // contentType: false → 헤더를 자동으로 설정하지 말고, 브라우저가 알아서 content-type 붙게 비워두기
-        contentType: false,
-        // data: formData → 여기에 실제로 보낼 데이터 (formData 객체) 들어있음
-        data: formData,
+        processData: false,  // processData: false → 데이터를 문자열로 변환하지 않고 원본 그대로 보냄
+        contentType: false,  // contentType: false → 헤더를 자동으로 설정하지 말고, 브라우저가 알아서 content-type 붙게 비워두기
+        data: formData,      // data: formData → 여기에 실제로 보낼 데이터 (formData 객체) 들어있음
+        beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
+            xhr.setRequestHeader(header, token)
+        },
         success: function () {
             alert("회원 정보가 수정되었습니다")
 
@@ -105,12 +109,20 @@ function closeModal() {
 }
 // 회원 탈퇴 (탈퇴하기 버튼)
 function userDelete() {
+
+    // CSRF 토큰 문제 (403)
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+
     $.ajax({
         url: `/users/mypage/modal`,
         method: 'DELETE',
+        beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
+            xhr.setRequestHeader(header, token)
+        },
         success: function (result, status, xhr) {
             alert("탈퇴가 완료되었습니다")
-            window.location.href = "/"; // 탈퇴 후 메인 이동
+            window.location.href = "/";     // 탈퇴 후 메인 이동
         }, 
         error: function (xhr, status, error) {
             // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체

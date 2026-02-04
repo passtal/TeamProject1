@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,11 +16,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.aloha.durudurub.dto.Club;
+import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.ClubService;
 import com.aloha.durudurub.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @Slf4j
 @Controller
@@ -31,23 +35,60 @@ public class MypageController {
     private final ClubService clubService;
     
     // 마이페이지 메인
-    @GetMapping()
-    public String mypagePage(Model model, Principal principal) throws Exception {
+    // user_id 조회
+    @GetMapping("")
+    public String mypagePage(
+        Model model, 
+        Principal principal
+    ) throws Exception {
         if (principal != null) {
-            model.addAttribute("user", userService.selectByUserId(principal.getName()));
+
+            String userId = principal.getName();    // 로그인한 사용자ID
+            User user = userService.selectByUserId(userId);
+
+            model.addAttribute("user", user);
         }
         return "mypage/mypage";
     }
+    // 회원 정보 수정 (비동기)
+    // ⭐ 사진 업로드 완성 시 수정 필요!
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public ResponseEntity<Void> mypageUpdate(
+        @RequestParam("username") String username,
+        @RequestParam(value = "age", required = false, defaultValue = "0") int age,
+        @RequestParam(value = "gender", required = false) String gender,
+        @RequestParam(value = "address", required = false) String address,
+        Principal principal
+    ) throws Exception {
+        String userId = principal.getName();
+        User loginUser = userService.selectByUserId(userId);
+        
+        User user = new User();
+        // 조건문 : no 조회
+        user.setNo(loginUser.getNo());
+        user.setUsername(username);
+        user.setAge(age);
+        user.setGender(gender);
+        user.setAddress(address);
+
+        userService.update(user);
+
+        return ResponseEntity.ok().build();
+    }
+
     
     // 회원 탈퇴 모달
     @DeleteMapping("/modal")
     @ResponseBody
-    public ResponseEntity<Void> deleteUser(Principal principal) throws Exception {
-        // if (principal == null) return ResponseEntity.status(401).build();
-
-        int userNo = userService.selectByUserId(principal.getName()).getNo();
-        userService.delete(userNo);
-        
+    public ResponseEntity<Void> deleteUser(
+        Principal principal,
+        HttpS
+    ) throws Exception {
+        if (principal != null) {
+            int userNo = userService.selectByUserId(principal.getName()).getNo();
+            userService.delete(userNo);
+        }
         return ResponseEntity.noContent().build();
     }
 
