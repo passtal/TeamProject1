@@ -19,14 +19,19 @@ import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
 import com.aloha.durudurub.dto.SubCategory;
 import com.aloha.durudurub.dto.User;
+import com.aloha.durudurub.dto.Board;
+import com.aloha.durudurub.service.BoardService;
 import com.aloha.durudurub.service.CategoryService;
 import com.aloha.durudurub.service.ClubService;
 import com.aloha.durudurub.service.UserService;
+
+import lombok.extern.slf4j.Slf4j;
 
 
 /**
  * 모임 컨트롤러
  */
+@Slf4j
 @Controller
 @RequestMapping("/club")
 public class ClubController {
@@ -39,6 +44,9 @@ public class ClubController {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private BoardService boardService;
     
 
     /**
@@ -95,24 +103,39 @@ public class ClubController {
     public String detail(@PathVariable("no") int no,
                         Principal principal,
                         Model model) {
-        // 조회수 증가
-        clubService.incrementViewCount(no);
+        try {
+            // 조회수 증가
+            clubService.incrementViewCount(no);
 
-        Club club = clubService.selectByNo(no);
-        List<ClubMember> members = clubService.listMembers(no);
+            Club club = clubService.selectByNo(no);
+            
+            if (club == null) {
+                log.error("Club not found with no: {}", no);
+                return "error/404";
+            }
+            
+            List<ClubMember> members = clubService.listMembers(no);
+            
+            // 게시글 목록 조회 (최근 5개)
+            List<Board> boards = boardService.listByClub(no);
 
-        model.addAttribute("club", club);
-        model.addAttribute("members", members);
+            model.addAttribute("club", club);
+            model.addAttribute("members", members);
+            model.addAttribute("boards", boards);
 
-        if (principal != null) {
-            User user = userService.selectByUserId(principal.getName());
-            ClubMember myMembership = clubService.selectMember(no, user.getNo());
-            model.addAttribute("myMembership", myMembership);
-            model.addAttribute("isHost", club.getHostNo() == user.getNo());
-        } else {
-            model.addAttribute("isHost", false);
+            if (principal != null) {
+                User user = userService.selectByUserId(principal.getName());
+                ClubMember myMembership = clubService.selectMember(no, user.getNo());
+                model.addAttribute("myMembership", myMembership);
+                model.addAttribute("isHost", club.getHostNo() == user.getNo());
+            } else {
+                model.addAttribute("isHost", false);
+            }
+            return "club/detail";
+        } catch (Exception e) {
+            log.error("Error loading club detail for no {}: {}", no, e.getMessage(), e);
+            throw e;
         }
-        return "club/detail";
     }
 
     /**
