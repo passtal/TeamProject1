@@ -18,15 +18,13 @@ public class SecurityConfig {
     // 스프링 시큐리티 설정 메서드
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // 임시코드
-        http.csrf(csrf -> csrf.disable());
-
 
         // ✅ 인가 설정
         http.authorizeHttpRequests(auth -> auth
                                     .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                                     .requestMatchers("/club/create", "/club/*/edit", "/club/*/delete").authenticated()
                                     .requestMatchers("/club/*/board/**").authenticated()
+                                    .requestMatchers("/users/mypage/**").authenticated()
                                     .requestMatchers("/**").permitAll());
 
         // 🔐 폼 로그인 설정

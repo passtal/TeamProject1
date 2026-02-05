@@ -186,17 +186,23 @@ public class ClubServiceImpl implements ClubService {
     // 참여중인 모임
     @Override
     public List<Club> joinedClubList(int userNo) throws Exception {
-        return memberMapper.joinedClubList(userNo);
+        return clubMapper.joinedClubList(userNo);
+    }
+    // 탈퇴하기
+    @Override
+    public int deleteByClubAndUser(int clubNo, int userNo) {
+        return memberMapper.deleteByClubAndUser(clubNo, userNo);
     }
     // 승인 대기 중인 모임
     @Override
     public List<Club> pendingClubList(int userNo) throws Exception {
-        return memberMapper.pendingClubList(userNo);
+        return clubMapper.pendingClubList(userNo);
     }
     // 모임장별 모임 목록
     @Override
     public List<Club> listByHost(int hostNo) {
         return clubMapper.listByHost(hostNo);
     }
+
 
 }

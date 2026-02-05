@@ -81,7 +81,7 @@ body {
 
 /* 탭 컨텐츠 */
 .tab-content {
-    display: none;
+    /* display: none; */
     flex-direction: column;
     gap: 16px;
 }

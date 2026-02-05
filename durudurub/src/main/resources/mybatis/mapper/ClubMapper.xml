@@ -209,4 +209,31 @@
     <select id="count" resultType="int">
         SELECT COUNT (*) FROM clubs
     </select>
+
+
+    <!-- 마이페이지 : 내모임 관리 -->
+    <!-- 참여 중인 모임 -->
+    <select id="joinedClubList" resultMap="clubResultMap">
+        SELECT c.*,
+                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+                sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        LEFT JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE m.user_no = #{userNo} AND m.status = 'APPROVED'
+            ORDER BY m.joined_at DESC
+    </select>
+    <!-- 신청 중인 모임 -->
+    <select id="pendingClubList" resultMap="clubResultMap">
+        SELECT c.*,
+                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
+                sub.no AS sub_cat_no, sub.name AS sub_cat_name
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        LEFT JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
+        WHERE m.user_no = #{userNo} AND m.status = 'PENDING'
+            ORDER BY m.joined_at DESC
+    </select>
 </mapper>

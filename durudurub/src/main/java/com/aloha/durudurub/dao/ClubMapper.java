@@ -19,7 +19,7 @@ public interface ClubMapper {
 
     List<Club> listBySubCategory(@Param("subCategoryNo") int subCategoryNo);
 
-    List<Club> listByHost(@Param("HostNo") int hostNo);
+    List<Club> listByHost(@Param("hostNo") int hostNo);
 
     List<Club> listRecent(@Param("limit") int limit);
 
@@ -49,4 +49,10 @@ public interface ClubMapper {
 
     int decrementCommentCount(int clubNo);
 
+
+    // 마이페이지: 내모임 관리
+    // 참여 중인 모임 리스트
+    List<Club> joinedClubList(@Param("userNo") int userNo) throws Exception;
+    // 승인 대기 중인 모임 리스트
+    List<Club> pendingClubList(@Param("userNo") int userNo) throws Exception;
 }
