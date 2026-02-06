@@ -1,15 +1,16 @@
 -- 기초 데이터 DML
 
 -- 대분류 카테고리
+-- 대분류 카테고리
 INSERT INTO `categories` (`name`, `description`, `icon`, `seq`) VALUES
-('자기계발', '나를 성장시키는 모임', 'bi-book', 1),
-('스포츠', '함께 땀 흘리는 모임', 'bi-trophy', 2),
-('푸드', '맛있는 음식을 나누는 모임', 'bi-cup-hot', 3),
-('게임', '게임을 즐기는 모임', 'bi-controller', 4),
-('동네친구', '동네에서 친구 만들기', 'bi-people', 5),
-('여행', '함께 떠나는 여행', 'bi-airplane', 6),
-('예술', '예술을 사랑하는 모임', 'bi-palette', 7),
-('기타', '그 외 다양한 취미활동!', 'bi-heart', 8);
+('자기계발', '나를 성장시키는 모임', '/img/icons/category-self-development.png', 1),
+('스포츠', '함께 땀 흘리는 모임', '/img/icons/category-sports.png', 2),
+('푸드', '맛있는 음식을 나누는 모임', '/img/icons/category-food.png', 3),
+('게임', '게임을 즐기는 모임', '/img/icons/category-game.png', 4),
+('동네친구', '동네에서 친구 만들기', '/img/icons/category-neighborhood.png', 5),
+('여행', '함께 떠나는 여행', '/img/icons/category-travel.png', 6),
+('예술', '예술을 사랑하는 모임', '/img/icons/category-art.png', 7),
+('기타', '그 외 다양한 취미활동!', '/img/icons/category-etc.png', 8);
 
 -- 소분류 카테고리
 -- 자기계발 (category_no = 1)

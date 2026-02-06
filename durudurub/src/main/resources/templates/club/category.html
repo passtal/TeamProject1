@@ -15,8 +15,8 @@
     <section class="category-header-section">
         <div class="category-header-container">
             <div class="category-header-content">
-                <h1 class="category-title" th:text="${category.name}">자기계발</h1>
-                <p class="category-subtitle" th:text="${category.name} + '와 관련된 다양한 모임을 만나보세요'">자기계발와 관련된 다양한 모임을 만나보세요</p>
+                <h1 class="category-title" th:text="${category.name}"></h1>
+                <p class="category-subtitle" th:text="${category.name} + '와 관련된 다양한 모임을 만나보세요'"></p>
             </div>
             <a th:href="@{/club/create}" class="create-club-btn">
                 <i class="bi bi-plus-lg"></i>
@@ -48,7 +48,8 @@
                 <a th:if="${clubs != null}" 
                    th:each="club : ${clubs}" 
                    th:href="@{/club/detail/{no}(no=${club.no})}" 
-                   class="club-card-item">
+                   class="club-card-item"
+                   th:data-subcategory="${club.subCategory != null ? club.subCategory.name : ''}">
                     <!-- 썸네일 이미지 -->
                     <div class="club-thumbnail">
                         <img th:src="@{${club.thumbnailImg != null and club.thumbnailImg != '' ? club.thumbnailImg : '/img/defaultThumbnail.jpg'}}" 
@@ -86,6 +87,33 @@
         </div>
     </section>
 
+    <script>
+        // 소분류 카테고리 필터링 기능
+        document.addEventListener('DOMContentLoaded', function() {
+            const subcategoryButtons = document.querySelectorAll('.subcategory-btn');
+            const clubCards = document.querySelectorAll('.club-card-item');
+
+            subcategoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    subcategoryButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    const selectedSubcategory = this.getAttribute('data-subcategory');
+
+                    // 모임 카드 필터링
+                    clubCards.forEach(card => {
+                        const cardSubcategory = card.getAttribute('data-subcategory');
+                        
+                        if (selectedSubcategory === 'all') {
+                            card.style.display = 'flex';
+                        } else if (cardSubcategory === selectedSubcategory) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
-

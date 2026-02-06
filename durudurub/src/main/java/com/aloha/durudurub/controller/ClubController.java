@@ -99,7 +99,7 @@ public class ClubController {
      * @param model
      * @return
      */
-    @GetMapping("/{no}")
+    @GetMapping({"/{no}", "/detail/{no}"})
     public String detail(@PathVariable("no") int no,
                         Principal principal,
                         Model model) {

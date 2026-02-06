@@ -101,11 +101,9 @@ body {
 
 /* Ad Banner */
 .ad-section {
-    padding: 24px 0 48px 0;
+    padding: 60px 0 48px 0;
     max-width: 1216px;
     margin: 0 auto;
-    padding-left: 223px;
-    padding-right: 223px;
 }
 
 .ad-sponsored {
@@ -260,10 +258,10 @@ body {
     margin-bottom: 12px;
 }
 
-.category-icon img {
+/* .category-icon img {
     width: 36px;
     height: 36px;
-}
+} */
 
 .category-name {
     font-size: 14px;
