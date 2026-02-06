@@ -6,7 +6,7 @@
 /* 전체 컨테이너 */
 .explore-page {
     width: 100%;
-    padding: 32px 0;
+    padding: 50px 20px 0 0;
     background-color: #ffffff;
 }
 
@@ -113,6 +113,10 @@
     margin-bottom: 48px;
 }
 
+#club-grid {
+    margin-bottom: 120px;
+}
+
 @media (max-width: 1024px) {
     .club-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -123,6 +127,10 @@
     .club-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.clubs-section {
+
 }
 
 /* 모임 카드 */

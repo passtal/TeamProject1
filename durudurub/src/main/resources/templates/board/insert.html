@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 작성</title>
-    <th:block th:replace="~{fragments/head :: head}"></th:block>
     <link rel="stylesheet" th:href="@{/css/board.css}">
 </head>
-<body class="board-insert-page">
-    <!-- Header -->
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
+<body class="board-insert-page" layout:fragment="content">
 
     <!-- Main Content -->
     <main class="container py-5">
@@ -80,12 +77,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
-
-    <!-- Scripts -->
-    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
-    
     <script>
         // 이미지 미리보기
         document.getElementById('images').addEventListener('change', function(e) {
