@@ -10,19 +10,24 @@
   <header class="header">
     <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom" th:href="@{/}">
       <div class="container-fluid">
+          <!-- 모바일 햄버거 버튼 -->
+          <button class="navbar-toggler d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileMenu" aria-controls="mobileMenu">
+              <span class="navbar-toggler-icon"></span>
+          </button>
+          
           <!-- 두루두룹로고 -->
           <a class="navbar-brand d-flex align-items-center gap-1" href="/">
               <img th:src="@{/img/icons/logo-durup.png}" alt="두루두룹 로고" class="logo-img" width="40" height="40">
-              <span class="fw-bold fs-5">두루두룹</span>
+              <span class="fw-bold fs-5 d-none d-sm-inline">두루두룹</span>
           </a>
-          <!-- 검색창 영역 (중앙) -->
-          <div class="search-container w-50">
+          <!-- 검색창 영역 (중앙) - 데스크탑만 -->
+          <div class="search-container w-50 d-none d-lg-block">
               <form class="d-flex justify-content-center" role="search" th:action="@{/club/list}" method="get">
                   <div class="input-group">
                       <button class="btn btn-outline-secondary left-btn" type="submit">     
                         <img th:src="@{/img/icons/navbar-search-icon.png}" alt="검색" class="navbar-icon">
                       </button>
-                      <input class="form-control rounded-pill shadow-none" type="search" placeholder="모임 검색..." aria-label="Search" style="padding-left: 50px;">
+                      <input class="form-control rounded-pill shadow-none" type="search" name="keyword" placeholder="모임 검색..." aria-label="Search" style="padding-left: 50px;">
                       <button class="btn btn-outline-secondary right-btn" type="submit">
                         <img th:src="@{/img/icons/navbar-filter-button.png}" alt="ai검색" class="navbar-icon">
                       </button>
@@ -30,15 +35,15 @@
               </form>
           </div>
           
-          <!-- 오른쪽 영역 -->
-          <div class="navbar-right">
+          <!-- 오른쪽 영역 - 데스크탑 -->
+          <div class="navbar-right d-none d-lg-flex">
               <a th:href="@{/game/list}" class="minigameIcon btn btn-outline-success rounded-pill">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gamepad2 lucide-gamepad-2 w-5 h-5" data-fg-cqpb112="211.221:228.1061:/src/app/components/Navbar.tsx:331:15:12093:32:e:Gamepad2::::::DKOk"><line x1="6" x2="10" y1="11" y2="11"></line><line x1="8" x2="8" y1="9" y2="13"></line><line x1="15" x2="15.01" y1="12" y2="12"></line><line x1="18" x2="18.01" y1="10" y2="10"></line>
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-gamepad2 lucide-gamepad-2 w-5 h-5"><line x1="6" x2="10" y1="11" y2="11"></line><line x1="8" x2="8" y1="9" y2="13"></line><line x1="15" x2="15.01" y1="12" y2="12"></line><line x1="18" x2="18.01" y1="10" y2="10"></line>
                     <path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"></path>
                 </svg>
                 미니게임
               </a>
-              <!-- 로그인 전후 : 추후 AI 까지 적용하기! -->
+              <!-- 로그인 전후 -->
               <!-- 비로그인 -->
               <th:block sec:authorize="isAnonymous()">
                 <a th:href="@{/join}" class="minigameIcon btn btn-outline-success rounded-pill">회원가입</a>
@@ -50,7 +55,6 @@
                       <button class="btn btn-link p-0" type="button">
                           <img th:src="@{/img/icons/navbar-notification.png}" alt="알림" class="user-icon">
                       </button>
-                      <!-- user -->
                       <div id="user-dropdown" class="hidden" style="display: none;">
                           <ul>
                               <li><a th:href="@{/users/mypage}" class="mypage">마이페이지</a></li>
@@ -71,8 +75,7 @@
                       <button class="btn btn-link p-0" type="button">
                           <img th:src="@{/img/icons/navbar-notification.png}" alt="알림" class="user-icon">
                       </button>
-                      <!-- user -->
-                      <div id="admin-dropdown" class="hidden" style="display: none;">
+                      <div id="admin-dropdown" class="hidden">
                           <ul>
                             <li class="notice">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell w-5 h-5" data-fg-cqpb125="597.340:597.21274:/src/app/components/Navbar.tsx:354:27:13175:28:e:Bell::::::CiHR">
@@ -93,7 +96,122 @@
                   </div>
               </th:block>
           </div>
+          
+          <!-- 모바일 알림/프로필 아이콘 -->
+          <div class="d-lg-none d-flex align-items-center gap-2">
+              <th:block sec:authorize="isAuthenticated()">
+                  <button class="btn btn-link p-0" type="button">
+                      <img th:src="@{/img/icons/navbar-notification.png}" alt="알림" class="user-icon" width="24" height="24">
+                  </button>
+              </th:block>
+          </div>
       </div>
     </nav>
   </header>
+  
+  <!-- 모바일 오프캔버스 메뉴 -->
+  <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileMenu" aria-labelledby="mobileMenuLabel">
+      <div class="offcanvas-header border-bottom">
+          <a class="navbar-brand d-flex align-items-center gap-2" href="/" data-bs-dismiss="offcanvas">
+              <img th:src="@{/img/icons/logo-durup.png}" alt="두루두룹 로고" width="40" height="40">
+              <span class="fw-bold fs-5">두루두룹</span>
+          </a>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+      </div>
+      <div class="offcanvas-body">
+          <!-- 모바일 검색 -->
+          <form class="mb-4" role="search" th:action="@{/club/list}" method="get">
+              <div class="input-group">
+                  <input class="form-control rounded-pill" type="search" name="keyword" placeholder="모임 검색..." aria-label="Search">
+                  <button class="btn btn-success rounded-pill ms-2" type="submit">
+                      <i class="bi bi-search"></i>
+                  </button>
+              </div>
+          </form>
+          
+          <!-- 메뉴 리스트 -->
+          <ul class="nav flex-column">
+              <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/club/list}" data-bs-dismiss="offcanvas">
+                      <i class="bi bi-people fs-5"></i>
+                      <span>모임 둘러보기</span>
+                  </a>
+              </li>
+              <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/game/list}" data-bs-dismiss="offcanvas">
+                      <i class="bi bi-controller fs-5"></i>
+                      <span>미니게임</span>
+                  </a>
+              </li>
+              
+              <hr class="my-2">
+              
+              <!-- 비로그인 -->
+              <th:block sec:authorize="isAnonymous()">
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/login}" data-bs-dismiss="offcanvas">
+                          <i class="bi bi-box-arrow-in-right fs-5"></i>
+                          <span>로그인</span>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/join}" data-bs-dismiss="offcanvas">
+                          <i class="bi bi-person-plus fs-5"></i>
+                          <span>회원가입</span>
+                      </a>
+                  </li>
+              </th:block>
+              
+              <!-- 로그인 후 : user -->
+              <th:block sec:authorize="hasRole('USER')">
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/users/mypage}" data-bs-dismiss="offcanvas">
+                          <i class="bi bi-person fs-5"></i>
+                          <span>마이페이지</span>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/users/mypage/club}" data-bs-dismiss="offcanvas">
+                          <i class="bi bi-heart fs-5"></i>
+                          <span>내 모임</span>
+                      </a>
+                  </li>
+                  <hr class="my-2">
+                  <li class="nav-item">
+                      <form th:action="@{/logout}" method="post">
+                          <button type="submit" class="nav-link d-flex align-items-center gap-2 py-3 text-danger w-100 border-0 bg-transparent">
+                              <i class="bi bi-box-arrow-right fs-5"></i>
+                              <span>로그아웃</span>
+                          </button>
+                      </form>
+                  </li>
+              </th:block>
+              
+              <!-- 로그인 후 : admin -->
+              <th:block sec:authorize="hasRole('ADMIN')">
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/admin/notice}" data-bs-dismiss="offcanvas">
+                          <i class="bi bi-megaphone fs-5"></i>
+                          <span>공지사항</span>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/admin}" data-bs-dismiss="offcanvas">
+                          <i class="bi bi-gear fs-5"></i>
+                          <span>관리자 페이지</span>
+                      </a>
+                  </li>
+                  <hr class="my-2">
+                  <li class="nav-item">
+                      <form th:action="@{/logout}" method="post">
+                          <button type="submit" class="nav-link d-flex align-items-center gap-2 py-3 text-danger w-100 border-0 bg-transparent">
+                              <i class="bi bi-box-arrow-right fs-5"></i>
+                              <span>로그아웃</span>
+                          </button>
+                      </form>
+                  </li>
+              </th:block>
+          </ul>
+      </div>
+  </div>
 </th:block>

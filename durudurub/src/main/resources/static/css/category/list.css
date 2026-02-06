@@ -6,9 +6,8 @@
 /* 전체 컨테이너 */
 .explore-page {
     width: 100%;
-    padding: 32px 0;
-    background-color: #F9FAFB;
-    min-height: calc(100vh - 101px);
+    padding: 50px 20px 0 0;
+    background-color: #ffffff;
 }
 
 .explore-container {
@@ -114,6 +113,10 @@
     margin-bottom: 48px;
 }
 
+#club-grid {
+    margin-bottom: 120px;
+}
+
 @media (max-width: 1024px) {
     .club-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -124,6 +127,10 @@
     .club-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.clubs-section {
+
 }
 
 /* 모임 카드 */
@@ -326,7 +333,6 @@
     line-height: 20px;
 }
 
-/* 빈 상태 */
 .empty-state {
     text-align: center;
     padding: 80px 20px;
@@ -352,7 +358,7 @@
     margin: 0;
 }
 
-/* 페이지네이션 */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -389,7 +395,6 @@
     cursor: not-allowed;
 }
 
-/* 로딩 스피너 */
 .loading-spinner {
     display: flex;
     justify-content: center;
@@ -411,4 +416,9 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.clubs-section {
+    min-height: calc(100vh - 200px);
+    background-color: #F9FAFB;
 }

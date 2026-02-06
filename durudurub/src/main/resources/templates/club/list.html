@@ -2,14 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
-
-      <!-- 임시 css -->
-       <!-- <link rel="stylesheet" href="../../static/css/list.css"> -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>모임 둘러보기 - 두루두룹</title>
     <th:block layout:fragment="css">
+    <th:blcok layout:fragment="script"></th:blcok>
         <link rel="stylesheet" th:href="@{/css/category/list.css}">
     </th:block>
 </head>
@@ -26,15 +24,12 @@
                         <span>전체</span>
                     </button>
                     
-                    <button th:each="category : ${categories}" 
-                            class="filter-btn" 
-                            th:data-category="${category.name}"
-                            th:data-category-no="${category.no}"
-                            data-type="main">
+                    <button th:each="category : ${categories}" class="filter-btn" 
+                            th:data-category="${category.name}" th:data-category-no="${category.no}" data-type="main">
+                        <img th:if="${category.icon != null and !category.icon.startsWith('bi-')}" 
+                             th:src="${category.icon}"  th:alt="${category.name}" style="width: 24px; height: 24px; object-fit: cover;">
                         <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
                            th:class="'bi ' + ${category.icon}"></i>
-                        <span th:if="${category.icon == null or !category.icon.startsWith('bi-')}" 
-                              th:text="${category.icon != null ? category.icon : '📁'}">📁</span>
                         <span th:text="${category.name}">카테고리</span>
                     </button>
                 </div>
@@ -42,26 +37,23 @@
         </section>
 
         <!-- 모임 목록 섹션 -->
-        <section class="clubs-section py-5">
+        <section class="clubs-section">
             <div class="container">
                 <!-- 헤더 -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="section-title mb-0">
-                        <span th:if="${categoryNo == null}">모든 모임</span>
                         <span th:if="${categoryNo != null}" th:text="${currentCategory.name + ' 모임'}">카테고리 모임</span>
                     </h3>
-                    <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
-                        + 새 모임 만들기
-                    </a>
                 </div>
                 
-                <!-- 결과 카운트 -->
+                <!-- 모임 결과 카운트 -->
                 <p class="result-count">
                     <span id="club-count" th:text="${#lists.size(clubs)}">0</span>개의 모임 (최신순)
                 </p>
                 
                 <!-- 모임 카드 그리드 -->
-                <div class="row g-4">
+                <div class="row g-4" id="club-grid">
+                <div class="row g-4" id="club-grid">
                     <div th:if="${clubs == null or clubs.empty}" class="col-12 text-center py-5">
                         <p class="text-muted">아직 모임이 없습니다.</p>
                         <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
@@ -69,52 +61,54 @@
                         </a>
                     </div>
 
-                    <div th:each="club : ${clubs}" class="col-md-6 col-lg-4">
-                        <div class="card club-card h-100 shadow-sm">
-                            <!-- 모임 이미지 -->
-                            <div class="club-card-image">
-                                <img th:src="${club.thumbnailImg != null} ? ${club.thumbnailImg} : @{/img/hero-image.png}" 
-                                     class="card-img-top" alt="모임 이미지">
-                                <span class="club-status badge" 
-                                      th:classappend="${club.status == 'RECRUITING'} ? 'bg-success' : 'bg-secondary'"
-                                      th:text="${club.status == 'RECRUITING'} ? '모집중' : '모집마감'">모집중</span>
-                            </div>
-                            
-                            <div class="card-body">
-                                <!-- 카테고리 -->
-                                <span class="badge bg-light text-dark mb-2" th:text="${club.category.name}">카테고리</span>
+                    <div th:each="club : ${clubs}" class="col-md-6 col-lg-4" 
+                         th:data-category-no="${club.categoryNo}">
+                        <a th:href="@{/club/detail/{no}(no=${club.no})}" class="text-decoration-none">
+                            <div class="card club-card h-100 shadow-sm" style="cursor: pointer;">
+                                <!-- 모임 이미지 -->
+                                <div class="club-card-image">
+                                    <img th:src="${club.thumbnailImg != null} ? ${club.thumbnailImg} : @{/img/hero-image.png}" 
+                                    class="card-img-top" alt="모임 이미지">
+                                    <button i class="bi bi-heart"></button>
+                                    <small th:text="${club.likeCount}"></small>
+                                         
+                                    <span class="club-status badge" 
+                                          th:classappend="${club.status == 'RECRUITING'} ? 'bg-success' : 'bg-secondary'"
+                                          th:text="${club.status == 'RECRUITING'} ? '모집중' : '모집마감'">모집중</span>
+                                </div>
                                 
-                                <!-- 모임 제목 -->
-                                <h5 class="card-title">
-                                    <a th:href="@{/club/{no}(no=${club.no})}" class="text-decoration-none text-dark"
-                                       th:text="${club.title}">모임 이름</a>
-                                </h5>
-                                
-                                <!-- 모임 설명 -->
-                                <p class="card-text text-muted small" 
-                                   th:text="${#strings.abbreviate(club.description, 60)}">모임 소개글...</p>
-                                
-                                <!-- 모임 정보 -->
-                                <div class="club-meta d-flex justify-content-between align-items-center mt-3">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-people"></i>
-                                        <small th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명'">0/10명</small>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-geo-alt"></i>
-                                        <small th:text="${club.location}">서울</small>
-                                    </div>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <i class="bi bi-heart"></i>
-                                        <small th:text="${club.likeCount}">0</small>
+                                <div class="card-body">
+                                    <!-- 카테고리 -->
+                                    <span class="badge bg-light text-dark mb-2" th:text="${club.category.name}">카테고리</span>
+                                    
+                                    <!-- 모임 제목 -->
+                                    <h5 class="card-title text-dark" th:text="${club.title}">모임 이름</h5>
+                                    
+                                    <!-- 모임 설명 -->
+                                    <p class="card-text text-muted small" 
+                                       th:text="${#strings.abbreviate(club.description, 60)}">모임 소개글...</p>
+                                    
+                                    <!-- 모임 정보 -->
+                                    <div class="club-meta d-flex justify-content-between align-items-center mt-3">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-people"></i>
+                                            <small th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명'">0/10명</small>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-geo-alt"></i>
+                                            <small th:text="${club.location}">지역</small>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-star"></i>
+                                            <small th:text="${club.likeCount}">0</small>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
 
-                <!-- 필터링 결과 없을 때 -->
                 <div class="empty-state" id="empty-state" style="display: none;">
                     <div class="empty-state-icon">🔍</div>
                     <h3>해당 카테고리의 모임이 없습니다</h3>
@@ -125,17 +119,23 @@
     </main>
     
     <th:block layout:fragment="script">
-        <script th:inline="javascript">
-            let allClubs = []; // 전체 모임 데이터 저장
+        <script>
+            console.log('=== Script loaded ===');
+            
+            let allClubs = [];
             
             document.addEventListener('DOMContentLoaded', function() {
+                console.log('=== DOMContentLoaded fired ===');
                 console.log('Club list page loaded');
                 
                 // 초기 모임 데이터 저장
-                allClubs = Array.from(document.querySelectorAll('.club-card')).map(card => ({
-                    element: card,
-                    category: card.getAttribute('data-category')
+                allClubs = Array.from(document.querySelectorAll('.col-md-6')).map(col => ({
+                    element: col,
+                    categoryNo: col.getAttribute('data-category-no')
                 }));
+                
+                console.log('Total clubs loaded:', allClubs.length);
+                console.log('Sample club categoryNo:', allClubs[0]?.categoryNo);
                 
                 // 대분류 카테고리 필터 기능
                 const filterButtons = document.querySelectorAll('.category-filter .filter-btn');
@@ -147,21 +147,15 @@
                         const categoryNo = this.getAttribute('data-category-no');
                         const category = this.getAttribute('data-category');
                         
-                        // 버튼 활성화 상태 변경
+                        console.log('Button clicked - type:', type, 'categoryNo:', categoryNo);
+                        
                         filterButtons.forEach(btn => btn.classList.remove('active'));
                         this.classList.add('active');
                         
                         if (type === 'all') {
-                            // 전체 보기
-                            hideSubCategories();
                             showAllClubs();
                         } else if (type === 'main' && categoryNo) {
-                            // 대분류 선택 - 소분류 로드
-                            loadSubCategories(categoryNo, category);
-                        } else {
-                            // 기존 클라이언트 사이드 필터
-                            hideSubCategories();
-                            filterClubs(category);
+                            filterClubsByCategory(categoryNo);
                         }
                     });
                 });
@@ -175,7 +169,6 @@
                         const subCategoryFilter = document.getElementById('subcategory-filter');
                         
                         if (subCategories && subCategories.length > 0) {
-                            // 소분류 버튼 생성
                             let html = '<button class="filter-btn sub-btn active" data-category-no="' + categoryNo + '" data-type="main-all">'
                                      + '<span class="emoji">📂</span>'
                                      + '<span>' + categoryName + ' 전체</span>'
@@ -198,8 +191,7 @@
                                     const type = this.getAttribute('data-type');
                                     const subNo = this.getAttribute('data-sub-no');
                                     const catNo = this.getAttribute('data-category-no');
-                                    
-                                    // 소분류 버튼 활성화
+                                
                                     subButtons.forEach(b => b.classList.remove('active'));
                                     this.classList.add('active');
                                     
@@ -214,7 +206,6 @@
                             // 대분류 전체 모임 로드
                             loadClubsByCategory(categoryNo);
                         } else {
-                            // 소분류가 없으면 대분류로 필터링
                             hideSubCategories();
                             loadClubsByCategory(categoryNo);
                         }
@@ -226,116 +217,52 @@
                     });
             }
             
-            // 대분류별 모임 로드
-            function loadClubsByCategory(categoryNo) {
-                fetch(`/club/api/clubs/category/${categoryNo}`)
-                    .then(response => response.json())
-                    .then(clubs => {
-                        renderClubs(clubs);
-                    })
-                    .catch(error => {
-                        console.error('모임 로드 실패:', error);
-                        updateEmptyState(0);
-                    });
-            }
-            
-            // 소분류별 모임 로드
-            function loadClubsBySubCategory(subCategoryNo) {
-                fetch(`/club/api/clubs/sub/${subCategoryNo}`)
-                    .then(response => response.json())
-                    .then(clubs => {
-                        renderClubs(clubs);
-                    })
-                    .catch(error => {
-                        console.error('모임 로드 실패:', error);
-                        updateEmptyState(0);
-                    });
-            }
-            
-            // 모임 렌더링
-            function renderClubs(clubs) {
-                const clubGrid = document.getElementById('club-grid');
-                
-                if (!clubs || clubs.length === 0) {
-                    clubGrid.innerHTML = '';
-                    updateEmptyState(0);
-                    return;
-                }
-                
-                let html = '';
-                clubs.forEach(club => {
-                    const thumbnailImg = club.thumbnailImg || 'https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=192&fit=crop';
-                    const hostInitial = club.hostName ? club.hostName.charAt(0) : '호';
-                    
-                    html += `
-                        <a href="/club/detail/${club.no}" class="club-card" data-category="${club.categoryName}">
-                            <div class="club-card-image">
-                                <img src="${thumbnailImg}" alt="${club.title}" 
-                                     onerror="this.src='https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=400&h=192&fit=crop'">
-                                <button class="like-btn" onclick="toggleLike(event, this)">
-                                    <svg viewBox="0 0 20 20" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M10 17.5L8.825 16.45C4.4 12.525 1.5 10.025 1.5 7C1.5 4.5 3.5 2.5 6 2.5C7.36 2.5 8.67 3.09 9.5 4.04C10.33 3.09 11.64 2.5 13 2.5C15.5 2.5 17.5 4.5 17.5 7C17.5 10.025 14.6 12.525 10.175 16.45L10 17.5Z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <div class="club-card-content">
-                                <div class="club-card-header">
-                                    <span class="club-category">${club.categoryName}</span>
-                                    <div class="club-members">
-                                        <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8 8C9.66 8 11 6.66 11 5C11 3.34 9.66 2 8 2C6.34 2 5 3.34 5 5C5 6.66 6.34 8 8 8ZM8 9.5C5.83 9.5 1.5 10.59 1.5 12.75V14H14.5V12.75C14.5 10.59 10.17 9.5 8 9.5Z"/>
-                                        </svg>
-                                        <span>${club.currentMembers}/${club.maxMembers}</span>
-                                    </div>
-                                </div>
-                                <h3 class="club-title">${club.title}</h3>
-                                <p class="club-description">${club.description || ''}</p>
-                                <div class="club-location">
-                                    <svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8 2C5.79 2 4 3.79 4 6C4 9 8 14 8 14C8 14 12 9 12 6C12 3.79 10.21 2 8 2ZM8 7.5C7.17 7.5 6.5 6.83 6.5 6C6.5 5.17 7.17 4.5 8 4.5C8.83 4.5 9.5 5.17 9.5 6C9.5 6.83 8.83 7.5 8 7.5Z"/>
-                                    </svg>
-                                    <span>${club.location}</span>
-                                </div>
-                                <div class="club-creator">
-                                    <div class="creator-avatar">${hostInitial}</div>
-                                    <span class="creator-name">${club.hostName}</span>
-                                </div>
-                            </div>
-                        </a>
-                    `;
-                });
-                
-                clubGrid.innerHTML = html;
-                updateEmptyState(clubs.length);
-            }
-            
-            // 소분류 숨기기
-            function hideSubCategories() {
-                const subCategoryFilter = document.getElementById('subcategory-filter');
-                subCategoryFilter.style.display = 'none';
-                subCategoryFilter.innerHTML = '';
-            }
-            
             // 전체 모임 표시
             function showAllClubs() {
-                const cards = document.querySelectorAll('.club-card');
-                cards.forEach(card => card.style.display = '');
-                updateEmptyState(cards.length);
+                allClubs.forEach(club => {
+                    club.element.style.display = '';
+                });
+                updateEmptyState(allClubs.length);
             }
             
-            // 빈 상태 업데이트
+            // 카테고리별 필터링
+            function filterClubsByCategory(categoryNo) {
+                let visibleCount = 0;
+                
+                console.log('Filtering by categoryNo:', categoryNo);
+                
+                allClubs.forEach(club => {
+                    console.log('Club categoryNo:', club.categoryNo, 'Match:', club.categoryNo === categoryNo);
+                    
+                    if (club.categoryNo === categoryNo) {
+                        club.element.style.display = '';
+                        visibleCount++;
+                    } else {
+                        club.element.style.display = 'none';
+                    }
+                });
+                
+                console.log('Visible clubs:', visibleCount);
+                updateEmptyState(visibleCount);
+            }
+            
+            // 모임 카운트 업데이트
             function updateEmptyState(count) {
-                document.getElementById('club-count').textContent = count;
-                
+                const clubCountEl = document.getElementById('club-count');
                 const emptyState = document.getElementById('empty-state');
-                const clubGrid = document.getElementById('club-grid');
                 
-                if (count === 0) {
-                    emptyState.style.display = 'block';
-                    clubGrid.style.display = 'none';
-                } else {
-                    emptyState.style.display = 'none';
-                    clubGrid.style.display = '';
+                if (clubCountEl) {
+                    clubCountEl.textContent = count;
+                }
+                
+                if (emptyState && clubGrid) {
+                    if (count === 0) {
+                        emptyState.style.display = 'block';
+                        clubGrid.style.display = 'none';
+                    } else {
+                        emptyState.style.display = 'none';
+                        clubGrid.style.display = '';
+                    }
                 }
             }
             
@@ -377,8 +304,9 @@
                 // 좋아요 상태 전송
                 const clubId = button.closest('.club-card').getAttribute('href').split('/').pop();
                 console.log('좋아요 토글:', clubId);
+
             }
-        </script>
+            </script>
     </th:block>
 </body>
 </html>

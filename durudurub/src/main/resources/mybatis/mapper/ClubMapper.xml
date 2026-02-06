@@ -42,6 +42,7 @@
     <!-- 모임 목록 조회 -->
     <select id="list" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -55,6 +56,7 @@
     <!-- 카테고리별 모임 목록 -->
     <select id="listByCategory" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -69,6 +71,7 @@
     <!-- 소분류별 모임 목록 -->
     <select id="listBySubCategory" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -83,6 +86,7 @@
     <!-- 모임장별 모임 목록 -->
     <select id="listByHost" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -97,6 +101,7 @@
     <!-- 인기 모임 목록 -->
     <select id="listPopular" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -112,6 +117,7 @@
     <!-- 최신 모임 목록 -->
     <select id="listRecent" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -126,6 +132,7 @@
     <!-- 모임 검색 -->
     <select id="search" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -142,6 +149,7 @@
     <!-- 모임 단건 조회 -->
     <select id="selectByNo" resultMap="clubResultMap">
         SELECT c.*,
+               (SELECT COUNT(*) FROM club_members cm WHERE cm.club_no = c.no AND cm.status = 'APPROVED') AS current_members,
                u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
@@ -155,9 +163,9 @@
     <!-- 모임 등록 -->
     <insert id="insert" parameterType="com.aloha.durudurub.dto.Club" useGeneratedKeys="true" keyProperty="no">
         INSERT INTO clubs (host_no, category_no, sub_category_no, title, description, 
-                          thumbnail_img, max_members, deadline, location, club_date, status)
+                          thumbnail_img, max_members, deadline, location, lat, lng, club_date, status)
         VALUES (#{hostNo}, #{categoryNo}, #{subCategoryNo}, #{title}, #{description},
-                #{thumbnailImg}, #{maxMembers}, #{deadline}, #{location}, #{clubDate}, 'RECRUITING')
+                #{thumbnailImg}, #{maxMembers}, #{deadLine}, #{location}, #{lat}, #{lng}, #{clubDate}, 'RECRUITING')
     </insert>
 
     <!-- 모임 수정 -->
@@ -165,8 +173,8 @@
         UPDATE clubs
         SET category_no = #{categoryNo}, sub_category_no = #{subCategoryNo},
             title = #{title}, description = #{description}, thumbnail_img = #{thumbnailImg},
-            max_members = #{maxMembers}, deadline = #{deadline}, location = #{location},
-            club_date = #{clubDate}
+            max_members = #{maxMembers}, deadline = #{deadLine}, location = #{location},
+            lat = #{lat}, lng = #{lng}, club_date = #{clubDate}
         WHERE no = #{no}
     </update>
 

@@ -6,7 +6,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${club != null ? club.title + ' - 두루두룹' : '모임 상세보기 - 두루두룹'}">모임 상세보기</title>
-    <link rel="stylesheet" th:href="@{/css/board/board.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/board/board.css}">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    </th:block>
 </head>
 
 <body layout:fragment="content" class="board-detail-page">
@@ -24,7 +27,7 @@
                 <div class="header-top">
                     <h1 class="board-title" th:text="${club.title}">독서 모임</h1>
                     <button class="btn-heart" id="btnClubLike" th:data-no="${club.no}" th:classappend="${club.liked ? 'liked' : ''}">
-                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요">
+                        <i class="bi fs-4" th:classappend="${club.liked == true ? 'bi-heart-fill text-danger' : 'bi-heart'}"></i>
                         <span class="heart-badge" th:text="${club.likeCount}">42</span>
                     </button>
                 </div>
@@ -38,15 +41,17 @@
                 </div>
 
                 <div class="board-actions">
-                    <div class="member-status">
+                    <div class="member-status" data-bs-toggle="modal" data-bs-target="#memberListModal" style="cursor: pointer;">
                         <img th:src="@{/img/board/member-icon.png}" alt="멤버">
-                        <span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명 참여 중'">참여 중</span>
+                        <span th:text="${members != null ? members.size() : 0} + '/' + ${club.maxMembers} + '명 참여 중'">참여 중</span>
                     </div>
                     <button th:if="${isHost}" class="btn btn-edit" onclick="editClubInfo()">
                         <img th:src="@{/img/board/edit-icon.png}" alt="편집">
                         정보 수정
                     </button>
-                    <a th:if="${myMembership == null and !isHost}" th:href="@{/club/{no}/join(no=${club.no})}" class="btn btn-join">모임 가입하기</a>
+                    <form th:if="${myMembership == null and !isHost}" th:action="@{/club/{no}/join(no=${club.no})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-join">모임 가입하기</button>
+                    </form>
                     <span th:if="${myMembership != null and !isHost}" class="badge bg-success">참여 중</span>
                 </div>
             </div>
@@ -66,13 +71,13 @@
                             <div class="schedule-item active" th:if="${club.clubDate != null}">
                                 <div class="schedule-content">
                                     <img th:src="@{/img/board/calendar-icon.png}" alt="달력">
-                                    <span th:text="${club.clubDate}">날짜</span>
+                                    <span th:text="${#dates.format(club.clubDate, 'yyyy년 MM월 dd일, HH시 mm분')}">날짜</span>
                                 </div>
                             </div>
                             <div class="schedule-item" th:if="${club.deadLine != null}">
                                 <div class="schedule-content">
                                     <img th:src="@{/img/board/calendar-icon.png}" alt="마감일">
-                                    <span>모집 마감: <span th:text="${club.deadLine}"></span></span>
+                                    <span>모집 마감: <span th:text="${#dates.format(club.deadLine, 'yyyy년 MM월 dd일, HH시 mm분')}"></span></span>
                                 </div>
                             </div>
                             <p th:if="${club.clubDate == null}" class="text-muted">일정이 아직 정해지지 않았습니다.</p>
@@ -94,65 +99,97 @@
             </div>
         </div>
 
-        <div class="members-section mt-4">
-            <h2 class="section-title">멤버 목록 (<span th:text="${club.currentMembers}">0</span>명)</h2>
-            <div class="member-list d-flex flex-wrap gap-3 mt-3">
-                <th:block th:each="member : ${members}">
-                    <div th:if="${member.user != null}" class="member-item d-flex align-items-center gap-2 p-2 bg-light rounded">
-                        <div class="member-avatar" th:text="${member.user.username != null ? #strings.substring(member.user.username, 0, 1) : '?'}">김</div>
-                        <div class="member-info">
-                            <span class="member-name" th:text="${member.user.username != null ? member.user.username : '알 수 없음'}">멤버</span>
-                            <span th:if="${member.userNo == club.hostNo}" class="badge bg-primary ms-1">호스트</span>
-                        </div>
-                    </div>
-                </th:block>
-            </div>
-        </div>
-
         <div class="posts-section mt-5">
             <div class="posts-header d-flex justify-content-between align-items-center mb-4">
                 <h2 class="section-title mb-0">게시글</h2>
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-muted"><i class="bi bi-chat-square-text"></i> 멤버만 작성 가능</span>
-                    <a th:if="${myMembership != null or isHost}" th:href="@{/club/{no}/board/create(no=${club.no})}" class="btn btn-primary btn-sm">
+                    <a th:if="${myMembership != null or isHost}" th:href="@{/club/{no}/board/write(no=${club.no})}" class="btn btn-primary btn-sm">
                         <i class="bi bi-pencil"></i> 글쓰기
                     </a>
                 </div>
             </div>
 
-            <div class="posts-list">
+            <div class="posts-list accordion" id="postsAccordion">
                 <th:block th:if="${boards != null and !boards.empty}">
-                    <th:block th:each="board : ${boards}">
-                        <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="post-card mb-4 p-4 bg-white rounded-3 shadow-sm d-block text-decoration-none text-dark">
-                            <div class="post-header d-flex align-items-center gap-3 mb-3">
-                                <div class="post-avatar" th:text="${board.writer != null and board.writer.username != null ? #strings.substring(board.writer.username, 0, 1) : '?'}">김</div>
-                                <div class="post-meta">
-                                    <span class="post-author fw-bold" th:text="${board.writer != null ? board.writer.username : '알 수 없음'}">작성자</span>
-                                    <span class="post-date text-muted ms-2" th:if="${board.createdAt != null}" th:text="${board.createdAt}">날짜</span>
+                    <th:block th:each="board, iterStat : ${boards}">
+                        <div class="accordion-item post-card mb-3 border-0 shadow-sm rounded-3 overflow-hidden">
+                            <h2 class="accordion-header" th:id="'heading' + ${board.no}">
+                                <button class="accordion-button collapsed bg-white p-0 shadow-none" type="button" 
+                                        data-bs-toggle="collapse" 
+                                        th:attr="data-bs-target='#collapse' + ${board.no}, aria-controls='collapse' + ${board.no}"
+                                        aria-expanded="false"
+                                        style="display: block;">
+                                    <div class="p-4 w-100">
+                                        <div class="post-header d-flex align-items-center gap-3 mb-3">
+                                            <div class="post-avatar-wrapper" style="position: relative;">
+                                                <img th:if="${board.writer != null and board.writer.profileImg != null and !board.writer.profileImg.isEmpty()}" 
+                                                     th:src="${board.writer.profileImg.startsWith('/static/') ? board.writer.profileImg.substring(7) : (board.writer.profileImg.startsWith('/') ? board.writer.profileImg : '/upload/profile/' + board.writer.profileImg)}" alt="프로필" 
+                                                     class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover;">
+                                                <div th:unless="${board.writer != null and board.writer.profileImg != null and !board.writer.profileImg.isEmpty()}" 
+                                                     class="post-avatar d-flex align-items-center justify-content-center rounded-circle bg-primary text-white" 
+                                                     style="width: 45px; height: 45px; font-weight: bold;"
+                                                     th:text="${board.writer != null and board.writer.username != null ? #strings.substring(board.writer.username, 0, 1) : '?'}">김</div>
+                                            </div>
+                                            <div class="post-meta">
+                                                <span class="post-author fw-bold" th:text="${board.writer != null ? board.writer.username : '알 수 없음'}">작성자</span>
+                                                <span class="post-date text-muted ms-2 small" th:if="${board.createdAt != null}" th:text="${board.createdAt}">날짜</span>
+                                            </div>
+                                        </div>
+                                        <h5 class="post-title mb-2 text-dark">
+                                            <span th:if="${board.isNotice == 'Y'}" class="badge bg-danger me-2">공지</span>
+                                            <span th:text="${board.title}">게시글 제목</span>
+                                        </h5>
+                                        <div class="post-content mb-3" th:if="${board.content != null}">
+                                            <p class="mb-2 text-muted" th:text="${#strings.abbreviate(board.content, 100)}">내용</p>
+                                        </div>
+                                        <div class="post-actions d-flex gap-4">
+                                            <span class="text-muted d-flex align-items-center gap-1 post-like-btn" 
+                                                  th:data-board-no="${board.no}" 
+                                                  th:data-liked="${board.liked}"
+                                                  onclick="event.stopPropagation(); toggleBoardLike(this);">
+                                                <i class="bi" th:classappend="${board.liked == true ? 'bi-heart-fill text-danger' : 'bi-heart'}"></i>
+                                                <span class="like-count" th:text="${board.likeCount != null ? board.likeCount : 0}">0</span>
+                                            </span>
+                                            <span class="text-muted d-flex align-items-center gap-1">
+                                                <i class="bi bi-chat"></i>
+                                                <span class="comment-count" th:id="'commentCount' + ${board.no}" 
+                                                      th:text="${board.commentCount != null ? board.commentCount : 0}">0</span> 댓글
+                                            </span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </h2>
+                            <div th:id="'collapse' + ${board.no}" class="accordion-collapse collapse" 
+                                 th:attr="aria-labelledby='heading' + ${board.no}" data-bs-parent="#postsAccordion">
+                                <div class="accordion-body bg-light border-top">
+                                    <!-- 댓글 목록 -->
+                                    <div class="comments-area" th:id="'comments' + ${board.no}">
+                                        <div class="text-center py-3">
+                                            <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 댓글 작성 폼 (멤버만) -->
+                                    <div th:if="${myMembership != null or isHost}" class="comment-write-form mt-3 pt-3 border-top">
+                                        <div class="d-flex gap-2 align-items-start">
+                                            <textarea class="form-control comment-input" rows="2" 
+                                                      placeholder="댓글을 작성해주세요..." th:data-board-no="${board.no}"></textarea>
+                                            <button class="btn btn-primary btn-sm" th:data-board-no="${board.no}" onclick="submitComment(this)">작성</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <h5 class="post-title mb-2" th:text="${board.title}">게시글 제목</h5>
-                            <div class="post-content mb-3" th:if="${board.content != null}">
-                                <p class="mb-2 text-muted" th:text="${#strings.abbreviate(board.content, 100)}">내용</p>
-                            </div>
-                            <div class="post-actions d-flex gap-4">
-                                <span class="text-muted d-flex align-items-center gap-1">
-                                    <i class="bi bi-hand-thumbs-up"></i>
-                                    <span th:text="${board.likeCount != null ? board.likeCount : 0}">0</span>
-                                </span>
-                                <span class="text-muted d-flex align-items-center gap-1">
-                                    <i class="bi bi-chat"></i>
-                                    <span th:text="${board.commentCount != null ? board.commentCount : 0}">0</span> 댓글
-                                </span>
-                            </div>
-                        </a>
+                        </div>
                     </th:block>
                 </th:block>
                 
                 <div th:if="${boards == null or boards.empty}" class="text-center py-5 text-muted">
                     <i class="bi bi-chat-square-text fs-1"></i>
                     <p class="mt-3">아직 게시글이 없습니다.</p>
-                    <a th:if="${myMembership != null or isHost}" th:href="@{/club/{no}/board/create(no=${club.no})}" class="btn btn-outline-primary">첫 게시글 작성하기</a>
+                    <a th:if="${myMembership != null or isHost}" th:href="@{/club/{no}/board/write(no=${club.no})}" class="btn btn-outline-primary">첫 게시글 작성하기</a>
                 </div>
             </div>
             
@@ -163,8 +200,51 @@
             </div>
         </div>
     </div>
-    
-    <!-- 모달은 나중에 추가 -->
+
+    <!-- 멤버 목록 모달 -->
+    <div class="modal fade" id="memberListModal" tabindex="-1" aria-labelledby="memberListModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header border-bottom">
+                    <h5 class="modal-title d-flex align-items-center gap-2" id="memberListModalLabel">
+                        <i class="bi bi-people-fill text-success"></i>
+                        <span>멤버 리스트</span>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted mb-3">총 <strong th:text="${members != null ? members.size() : 0}">10</strong>명의 멤버가 있습니다</p>
+                    <div class="list-group">
+                        <th:block th:each="member, iterStat : ${members}">
+                            <div th:if="${member.user != null}" class="list-group-item d-flex align-items-center gap-3 py-3">
+                                <img th:if="${member.user.profileImg != null and !member.user.profileImg.isEmpty()}" th:src="${member.user.profileImg.startsWith('/static/') ? member.user.profileImg.substring(7) : (member.user.profileImg.startsWith('/') ? member.user.profileImg : '/upload/profile/' + member.user.profileImg)}" alt="프로필" 
+                                     class="rounded-circle" style="width: 48px; height: 48px; object-fit: cover;">
+                                <div th:unless="${member.user.profileImg != null and !member.user.profileImg.isEmpty()}" 
+                                     class="member-avatar-lg bg-success text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                     style="width: 48px; height: 48px; font-size: 1.25rem; font-weight: bold;">
+                                    <span th:text="${member.user.username != null ? #strings.substring(member.user.username, 0, 1) : '?'}">김</span>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="fw-bold" th:text="${member.user.username != null ? member.user.username : '알 수 없음'}">멤버</span>
+                                        <span th:if="${member.userNo == club.hostNo}" class="badge bg-primary">리더</span>
+                                    </div>
+                                    <small class="text-muted" th:if="${member.joinedAt != null}" 
+                                           th:text="'가입일: ' + ${#dates.format(member.joinedAt, 'yyyy년 MM월 dd일')}">
+                                        가입일: 2025년 12월 1일
+                                    </small>
+                                </div>
+                            </div>
+                        </th:block>
+                        <div th:if="${members == null or members.isEmpty()}" class="text-center py-4 text-muted">
+                            <i class="bi bi-person-x fs-1"></i>
+                            <p class="mt-2">아직 멤버가 없습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     </th:block>
 
     <th:block th:if="${club == null}">
@@ -182,7 +262,9 @@
             var clubLng = /*[[${club.lng}]]*/ 127.0;
             var clubLocation = /*[[${club.location}]]*/ '모임 장소';
             
-            if (clubLat && clubLng && document.getElementById('map')) {
+            var mapEl = document.getElementById('map');
+            if (mapEl) {
+                mapEl.style.height = '400px';
                 var map = L.map('map').setView([clubLat, clubLng], 15);
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap'
@@ -194,22 +276,191 @@
     </script>
     
     <script th:if="${club != null}" th:inline="javascript">
-        var clubNo = /*[[${club.no}]]*/ 0;
-        
-        $('#btnClubLike').click(function() {
-            var btn = $(this);
-            $.ajax({
-                url: '/api/likes/club/' + clubNo,
-                type: 'POST',
-                success: function(result) {
-                    btn.find('.heart-badge').text(result.count);
-                    btn.toggleClass('liked', result.liked);
-                },
-                error: function() {
-                    alert('로그인이 필요합니다.');
-                }
+        /*
+         * jQuery가 레이아웃의 scripts fragment에서 로드되므로,
+         * content fragment 안의 스크립트는 jQuery 로드 전에 파싱됩니다.
+         * window.addEventListener('load', ...) 로 모든 리소스 로드 후 실행합니다.
+         */
+        window.addEventListener('load', function() {
+            var clubNo = /*[[${club.no}]]*/ 0;
+            
+            // 모임 좋아요 (하트 아이콘)
+            $('#btnClubLike').on('click', function() {
+                var btn = $(this);
+                $.ajax({
+                    url: '/api/likes/club/' + clubNo,
+                    type: 'POST',
+                    success: function(result) {
+                        btn.find('.heart-badge').text(result.count);
+                        btn.toggleClass('liked', result.liked);
+                        var icon = btn.find('i');
+                        if (result.liked) {
+                            icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+                        } else {
+                            icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+                        }
+                    },
+                    error: function(xhr) {
+                        if (xhr.status === 401 || xhr.status === 403) {
+                            alert('로그인이 필요합니다.');
+                        } else {
+                            alert('좋아요 처리 중 오류가 발생했습니다.');
+                        }
+                    }
+                });
+            });
+            
+            // 아코디언 열릴 때 댓글 비동기 로딩
+            $(document).on('show.bs.collapse', '.accordion-collapse', function() {
+                var boardNo = $(this).attr('id').replace('collapse', '');
+                loadBoardComments(boardNo);
             });
         });
+        
+        // 게시글 좋아요 토글
+        function toggleBoardLike(element) {
+            if (typeof $ === 'undefined') return;
+            var boardNo = $(element).data('board-no');
+            $.ajax({
+                url: '/api/likes/board/' + boardNo,
+                type: 'POST',
+                success: function(result) {
+                    var icon = $(element).find('i');
+                    $(element).find('.like-count').text(result.count);
+                    if (result.liked) {
+                        icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+                    } else {
+                        icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+                    }
+                },
+                error: function(xhr) {
+                    if (xhr.status === 401 || xhr.status === 403) {
+                        alert('로그인이 필요합니다.');
+                    } else {
+                        alert('좋아요 처리 중 오류가 발생했습니다.');
+                    }
+                }
+            });
+        }
+        
+        // 게시글 댓글 로딩
+        function loadBoardComments(boardNo) {
+            if (typeof $ === 'undefined') return;
+            var commentsEl = document.getElementById('comments' + boardNo);
+            if (!commentsEl) return;
+            
+            // 로딩 스피너 표시
+            commentsEl.innerHTML = '<div class="text-center py-3"><div class="spinner-border spinner-border-sm text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+            
+            $.ajax({
+                url: '/api/comments/board/' + boardNo,
+                type: 'GET',
+                timeout: 10000,
+                success: function(comments) {
+                    renderBoardComments(boardNo, comments);
+                },
+                error: function() {
+                    commentsEl.innerHTML = '<p class="text-danger text-center">댓글을 불러오는데 실패했습니다.</p>';
+                }
+            });
+        }
+        
+        // 댓글 렌더링
+        function renderBoardComments(boardNo, comments) {
+            var container = document.getElementById('comments' + boardNo);
+            if (!container) return;
+            
+            var html = '';
+            if (!comments || comments.length === 0) {
+                html = '<p class="text-muted text-center py-3">아직 댓글이 없습니다.</p>';
+            } else {
+                comments.forEach(function(comment) {
+                    var avatarHtml = '';
+                    var profileImg = comment.writer ? comment.writer.profileImg : null;
+                    
+                    if (profileImg && profileImg.trim() !== '') {
+                        // 프로필 이미지 경로 보정
+                        var imgSrc = profileImg;
+                        if (imgSrc.indexOf('/static/') === 0) {
+                            imgSrc = imgSrc.substring(7);
+                        } else if (imgSrc.indexOf('http') !== 0 && imgSrc.indexOf('/') !== 0) {
+                            imgSrc = '/upload/profile/' + imgSrc;
+                        }
+                        avatarHtml = '<img src="' + escapeHtml(imgSrc) + '" alt="프로필" class="rounded-circle" style="width: 36px; height: 36px; object-fit: cover;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">';
+                        // fallback: 이미지 로드 실패 시 이니셜 표시
+                        var initial = comment.writer && comment.writer.username ? comment.writer.username.substring(0, 1) : '?';
+                        avatarHtml += '<div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-weight: bold; font-size: 14px; display: none;">' + escapeHtml(initial) + '</div>';
+                    } else {
+                        var initial = comment.writer && comment.writer.username ? comment.writer.username.substring(0, 1) : '?';
+                        avatarHtml = '<div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 36px; height: 36px; font-weight: bold; font-size: 14px;">' + escapeHtml(initial) + '</div>';
+                    }
+                    
+                    html += '<div class="comment-item mb-2 p-2 bg-white rounded d-flex gap-2">';
+                    html += avatarHtml;
+                    html += '<div class="flex-grow-1">';
+                    html += '<div class="d-flex justify-content-between align-items-center">';
+                    html += '<strong class="small">' + escapeHtml(comment.writer ? comment.writer.username : '알 수 없음') + '</strong>';
+                    html += '<small class="text-muted">' + formatDate(comment.createdAt) + '</small>';
+                    html += '</div>';
+                    html += '<p class="mb-0 small">' + escapeHtml(comment.content) + '</p>';
+                    html += '</div>';
+                    html += '</div>';
+                });
+            }
+            container.innerHTML = html;
+        }
+        
+        // 댓글 작성
+        function submitComment(btn) {
+            if (typeof $ === 'undefined') return;
+            var boardNo = $(btn).data('board-no');
+            var textarea = $('textarea[data-board-no="' + boardNo + '"]');
+            var content = textarea.val().trim();
+            
+            if (!content) {
+                alert('댓글 내용을 입력해주세요.');
+                return;
+            }
+            
+            $.ajax({
+                url: '/api/comments',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    boardNo: boardNo,
+                    content: content
+                }),
+                success: function() {
+                    textarea.val('');
+                    loadBoardComments(boardNo);
+                    var countEl = $('#commentCount' + boardNo);
+                    countEl.text(parseInt(countEl.text()) + 1);
+                },
+                error: function() {
+                    alert('댓글 작성에 실패했습니다. 로그인이 필요합니다.');
+                }
+            });
+        }
+        
+        // HTML 이스케이프
+        function escapeHtml(text) {
+            if (!text) return '';
+            var div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // 날짜 포맷팅
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            var date = new Date(dateString);
+            return date.toLocaleDateString('ko-KR');
+        }
+        
+        // 모임 정보 수정 페이지로 이동
+        function editClubInfo() {
+            window.location.href = '/club/' + [[${club.no}]] + '/edit';
+        }
     </script>
 </body>
 </html>

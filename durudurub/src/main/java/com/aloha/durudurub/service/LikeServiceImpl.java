@@ -8,7 +8,9 @@ import com.aloha.durudurub.dao.BoardMapper;
 import com.aloha.durudurub.dao.ClubMapper;
 import com.aloha.durudurub.dao.CommentMapper;
 import com.aloha.durudurub.dao.LikeMapper;
+import com.aloha.durudurub.dto.BoardLike;
 import com.aloha.durudurub.dto.ClubLike;
+import com.aloha.durudurub.dto.CommentLike;
 
 /**
  * 좋아요 서비스 구현체
@@ -36,7 +38,7 @@ public class LikeServiceImpl implements LikeService {
         if (isLiked) {
             // 좋아요 취소하는 경우 ↓
             likeMapper.deleteClubLike(clubNo, userNo);
-            clubMapper.decrementLikeCount(userNo);
+            clubMapper.decrementLikeCount(clubNo);
             return false;
         } else {
             // false인 상태에서 좋아요를 누르는 경우 ↓
@@ -55,14 +57,16 @@ public class LikeServiceImpl implements LikeService {
         boolean isLiked = likeMapper.countBoardLike(boardNo, userNo) > 0;
 
         if (isLiked) {
-            likeMapper.deleteClubLike(boardNo, userNo);
-            boardMapper.decrementLikeCount(userNo);
+            // 좋아요 취소
+            likeMapper.deleteBoardLike(boardNo, userNo);
+            boardMapper.decrementLikeCount(boardNo);
             return false;
         } else {
-            ClubLike like = new ClubLike();
-            like.setClubNo(boardNo);
+            // 좋아요 추가
+            BoardLike like = new BoardLike();
+            like.setBoardNo(boardNo);
             like.setUserNo(userNo);
-            likeMapper.insertClubLike(like);
+            likeMapper.insertBoardLike(like);
             boardMapper.incrementLikeCount(boardNo);
             return true;
         }
@@ -71,17 +75,19 @@ public class LikeServiceImpl implements LikeService {
     @Override
     @Transactional
     public boolean commentLike(int commentNo, int userNo) {
-        boolean isLiked = likeMapper.countBoardLike(commentNo, userNo) > 0;
+        boolean isLiked = likeMapper.countCommentLike(commentNo, userNo) > 0;
 
         if (isLiked) {
-            likeMapper.deleteClubLike(commentNo, userNo);
-            commentMapper.decrementLikeCount(userNo);
+            // 좋아요 취소
+            likeMapper.deleteCommentLike(commentNo, userNo);
+            commentMapper.decrementLikeCount(commentNo);
             return false;
         } else {
-            ClubLike like = new ClubLike();
-            like.setClubNo(commentNo);
+            // 좋아요 추가
+            CommentLike like = new CommentLike();
+            like.setCommentNo(commentNo);
             like.setUserNo(userNo);
-            likeMapper.insertClubLike(like);
+            likeMapper.insertCommentLike(like);
             commentMapper.incrementLikeCount(commentNo);
             return true;
         }

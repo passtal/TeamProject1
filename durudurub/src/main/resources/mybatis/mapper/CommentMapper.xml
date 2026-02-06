@@ -95,5 +95,24 @@
 
     <!-- countByBoard 추후에 필요해지면 마킹함 -->
 
+    <!-- 댓글 좋아요 추가 -->
+    <insert id="insertCommentLike">
+        INSERT INTO club_comment_likes (comment_no, user_no)
+        VALUES (#{commentNo}, #{userNo})
+    </insert>
+
+    <!-- 댓글 좋아요 삭제 -->
+    <delete id="deleteCommentLike">
+        DELETE FROM club_comment_likes
+        WHERE comment_no = #{commentNo} AND user_no = #{userNo}
+    </delete>
+
+    <!-- 댓글 좋아요 여부 확인 -->
+    <select id="countCommentLike" resultType="int">
+        SELECT COUNT(*)
+        FROM club_comment_likes
+        WHERE comment_no = #{commentNo} AND user_no = #{userNo}
+    </select>
+
     
 </mapper>

@@ -1,19 +1,43 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}"
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>새 모임 만들기</title>
-    <th:block th:replace="~{fragments/head :: head}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/board.css}">
+        <style>
+            #locationMap {
+                height: 300px;
+                width: 100%;
+                border-radius: 8px;
+                margin-top: 10px;
+                cursor: crosshair;
+            }
+            .location-search-wrapper {
+                display: flex;
+                gap: 8px;
+            }
+            .location-search-wrapper input {
+                flex: 1;
+            }
+            .selected-location {
+                margin-top: 10px;
+                padding: 10px;
+                background-color: #e8f5e9;
+                border-radius: 8px;
+                display: none;
+            }
+            .selected-location.show {
+                display: block;
+            }
+        </style>
+    </th:block>
 </head>
-<body class="club-insert-page">
-    <!-- Header -->
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
-
+<body>
     <!-- Main Content -->
-    <main class="container py-5">
+    <main layout:fragment="content" class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <!-- 뒤로가기 -->
@@ -69,8 +93,28 @@
                             <!-- 활동 지역 -->
                             <div class="mb-4">
                                 <label for="location" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="location" name="location" 
-                                       placeholder="예: 서울 강남구" required>
+                                <div class="location-search-wrapper">
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                           placeholder="예: 서울 강남구" required>
+                                    <button type="button" class="btn btn-outline-primary" id="btnSearchLocation">
+                                        <i class="bi bi-search"></i> 검색
+                                    </button>
+                                </div>
+                                <small class="text-muted">주소를 검색하거나 지도를 클릭하여 위치를 선택하세요</small>
+                                
+                                <!-- 지도 -->   
+                                <div id="locationMap"></div>
+                                
+                                <!-- 선택된 위치 표시 -->
+                                <div class="selected-location" id="selectedLocation">
+                                    <i class="bi bi-geo-alt-fill text-success"></i>
+                                    <span id="selectedAddress">선택된 위치</span>
+                                    <br><small class="text-muted">좌표: <span id="selectedCoords"></span></small>
+                                </div>
+                                
+                                <!-- 좌표 hidden 필드 -->
+                                <input type="hidden" id="lat" name="lat">
+                                <input type="hidden" id="lng" name="lng">
                             </div>
 
                             <!-- 최대 인원 -->
@@ -104,13 +148,114 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
-
-    <!-- Scripts -->
-    <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
-    
+    <th:block layout:fragment="script">
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        // 지도 초기화
+        var map = L.map('locationMap').setView([37.5665, 126.9780], 12); // 서울 중심
+        var marker = null;
+        
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+        
+        // 지도 클릭 시 마커 설정
+        map.on('click', function(e) {
+            setMarker(e.latlng.lat, e.latlng.lng);
+            reverseGeocode(e.latlng.lat, e.latlng.lng);
+        });
+        
+        // 마커 설정 함수
+        function setMarker(lat, lng) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([lat, lng]).addTo(map);
+            
+            // 좌표 저장
+            $('#lat').val(lat);
+            $('#lng').val(lng);
+            $('#selectedCoords').text(lat.toFixed(6) + ', ' + lng.toFixed(6));
+            $('#selectedLocation').addClass('show');
+        }
+        
+        // 역지오코딩 (좌표 → 주소)
+        function reverseGeocode(lat, lng) {
+            $.ajax({
+                url: 'https://nominatim.openstreetmap.org/reverse',
+                data: {
+                    format: 'json',
+                    lat: lat,
+                    lon: lng,
+                    'accept-language': 'ko'
+                },
+                success: function(result) {
+                    if (result && result.display_name) {
+                        var address = result.display_name;
+                        $('#selectedAddress').text(address);
+                        // location 필드에도 자동 입력 (사용자가 원하면 수정 가능)
+                        if (!$('#location').val()) {
+                            $('#location').val(address.split(',')[0]);
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 주소 검색 (지오코딩)
+        function searchLocation(query) {
+            $.ajax({
+                url: 'https://nominatim.openstreetmap.org/search',
+                data: {
+                    format: 'json',
+                    q: query,
+                    countrycodes: 'kr',
+                    limit: 1,
+                    'accept-language': 'ko'
+                },
+                success: function(results) {
+                    if (results && results.length > 0) {
+                        var result = results[0];
+                        var lat = parseFloat(result.lat);
+                        var lng = parseFloat(result.lon);
+                        
+                        map.setView([lat, lng], 15);
+                        setMarker(lat, lng);
+                        $('#selectedAddress').text(result.display_name);
+                    } else {
+                        alert('검색 결과가 없습니다. 다른 주소로 검색해보세요.');
+                    }
+                },
+                error: function() {
+                    alert('주소 검색 중 오류가 발생했습니다.');
+                }
+            });
+        }
+        
+        // 검색 버튼 클릭
+        $('#btnSearchLocation').click(function() {
+            var query = $('#location').val();
+            if (query) {
+                searchLocation(query);
+            } else {
+                alert('검색할 주소를 입력해주세요.');
+            }
+        });
+        
+        // Enter 키로도 검색
+        $('#location').keypress(function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#btnSearchLocation').click();
+            }
+        });
+        
+        // 지도 크기 조정 (레이아웃 로딩 후)
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 300);
+
         // 카테고리 선택 시 세부 카테고리 로드
         $('#categoryNo').change(function() {
             const categoryNo = $(this).val();
@@ -148,5 +293,6 @@
             }
         });
     </script>
+    </th:block>
 </body>
 </html>

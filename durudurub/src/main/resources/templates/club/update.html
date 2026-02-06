@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>모임 수정</title>
-    <th:block th:replace="~{fragments/head :: head}"></th:block>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <th:block th:replace="~{fragments/meta :: meta}"></th:block>
+    <th:block th:replace="~{fragments/link :: link}"></th:block>
+    <link rel="stylesheet" th:href="@{/css/board/board.css}">
 </head>
-<body class="club-update-page">
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
+<body class="club-update-page" layout:fragment="content">
 
     <main class="container py-5">
         <div class="row justify-content-center">
@@ -33,9 +33,9 @@
 
                             <!-- 모임 이름 -->
                             <div class="mb-4">
-                                <label for="name" class="form-label fw-bold">모임 이름 <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control form-control-lg" id="name" name="name" 
-                                       th:value="${club.name}" placeholder="모임 이름을 입력해주세요" required maxlength="50">
+                                <label for="title" class="form-label fw-bold">모임 이름 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control form-control-lg" id="title" name="title" 
+                                       th:value="${club.title}" placeholder="모임 이름을 입력해주세요" required maxlength="50">
                             </div>
 
                             <!-- 카테고리 -->
@@ -71,9 +71,9 @@
 
                             <!-- 활동 지역 -->
                             <div class="mb-4">
-                                <label for="region" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="region" name="region" 
-                                       th:value="${club.region}" required>
+                                <label for="location" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="location" name="location" 
+                                       th:value="${club.location}" required>
                             </div>
 
                             <!-- 최대 인원 -->
@@ -93,10 +93,10 @@
                             </div>
 
                             <!-- 현재 대표 이미지 -->
-                            <div class="mb-4" th:if="${club.thumbnail != null}">
+                            <div class="mb-4" th:if="${club.thumbnailImg != null}">
                                 <label class="form-label fw-bold">현재 대표 이미지</label>
                                 <div class="text-center">
-                                    <img th:src="${club.thumbnail}" class="img-fluid rounded" style="max-height: 200px;">
+                                    <img th:src="${club.thumbnailImg}" class="img-fluid rounded" style="max-height: 200px;">
                                 </div>
                             </div>
 
@@ -104,7 +104,7 @@
                             <div class="mb-4">
                                 <label class="form-label fw-bold">새 대표 이미지</label>
                                 <div class="image-upload-area p-4 border rounded text-center">
-                                    <input type="file" class="form-control" id="thumbnail" name="thumbnail" 
+                                    <input type="file" class="form-control" id="thumbnailImg" name="thumbnailImg" 
                                            accept="image/*">
                                     <small class="text-muted d-block mt-2">새 이미지를 선택하면 기존 이미지가 교체됩니다.</small>
                                 </div>
@@ -126,12 +126,6 @@
         </div>
     </main>
 
-    <!-- Footer -->
-    <th:block th:replace="~{fragments/footer :: footer}"></th:block>
-
-    <!-- Scripts -->
-    <th:block th:replace="~{fragments/scripts :: script}"></th:block>
-    
     <script th:inline="javascript">
         const clubNo = [[${club.no}]];
 
@@ -161,7 +155,7 @@
         });
 
         // 이미지 미리보기
-        $('#thumbnail').change(function(e) {
+        $('#thumbnailImg').change(function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
@@ -175,7 +169,19 @@
         // 모임 삭제
         function deleteClub() {
             if (confirm('정말 이 모임을 삭제하시겠습니까? 모든 게시글과 멤버 정보가 삭제됩니다.')) {
-                location.href = '/club/' + clubNo + '/delete';
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/club/' + clubNo + '/delete';
+                
+                const csrfToken = document.querySelector('input[name="_csrf"]').value;
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_csrf';
+                csrfInput.value = csrfToken;
+                form.appendChild(csrfInput);
+                
+                document.body.appendChild(form);
+                form.submit();
             }
         }
     </script>
