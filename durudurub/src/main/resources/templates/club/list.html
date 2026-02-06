@@ -69,7 +69,7 @@
                                 <div class="club-card-image">
                                     <img th:src="${club.thumbnailImg != null} ? ${club.thumbnailImg} : @{/img/hero-image.png}" 
                                     class="card-img-top" alt="모임 이미지">
-                                    <button i class="bi bi-star"></button>
+                                    <button i class="bi bi-heart"></button>
                                     <small th:text="${club.likeCount}"></small>
                                          
                                     <span class="club-status badge" 
@@ -306,25 +306,6 @@
                 console.log('좋아요 토글:', clubId);
 
             }
-            </script>
-            
-            <script>
-               var clubNo = 1;
-               
-               $('#btnClubLike').click(function() {
-                   var btn = $(this);
-                   $.ajax({
-                       url: '/api/likes/club/' + clubNo,
-                       type: 'POST',
-                       success: function(result) {
-                           btn.find('.heart-badge').text(result.count);
-                           btn.toggleClass('liked', result.liked);
-                       },
-                       error: function() {
-                           alert('로그인이 필요합니다.');
-                       }
-                   });
-               });
             </script>
     </th:block>
 </body>
