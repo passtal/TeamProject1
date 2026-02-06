@@ -35,5 +35,5 @@ public class Club {
     private Category category;
     private SubCategory subCategory;
     private List<ClubMember> memberList;
-    private boolean isLiked;
+    private boolean liked;  // 좋아요 눌렀는지 여부
 }

@@ -5,17 +5,17 @@
       layout:decorate="~{/layouts/main_layout}">
 <head>
     <title>게시글 수정 - 두루두룹</title>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/board/board.css}">
+    </th:block>
 </head>
-<body class="board-update-page" layout:fragment="content">
-
-    <!-- Main Content -->
-    <main class="container py-5">
+<body>
+    <main layout:fragment="content" class="board-update-page container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <!-- 뒤로가기 -->
                 <div class="mb-4">
-                    <a th:href="@{/board/{no}(no=${board.no})}" class="btn btn-outline-secondary btn-sm">
+                    <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="btn btn-outline-secondary btn-sm">
                         ← 게시글로 돌아가기
                     </a>
                 </div>
@@ -27,9 +27,7 @@
                     </div>
                     
                     <div class="board-content">
-                        <form th:action="@{/board/update}" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="no" th:value="${board.no}">
-                            <input type="hidden" name="clubNo" th:value="${board.clubNo}">
+                        <form th:action="@{/club/{clubNo}/board/{no}/edit(clubNo=${club.no}, no=${board.no})}" method="post" enctype="multipart/form-data">
 
                             <!-- 공지사항 여부 (호스트만) -->
                             <div class="mb-4" th:if="${isHost}">
@@ -57,14 +55,12 @@
                             </div>
 
                             <!-- 기존 이미지 -->
-                            <div class="mb-4" th:if="${board.images != null and !board.images.empty}">
+                            <div class="mb-4" th:if="${board.imageList != null and !board.imageList.empty}">
                                 <label class="form-label fw-bold">기존 이미지</label>
                                 <div class="d-flex gap-2 flex-wrap">
-                                    <div th:each="image : ${board.images}" class="position-relative">
+                                    <div th:each="image : ${board.imageList}" class="position-relative">
                                         <img th:src="${image.imageUrl}" class="img-thumbnail" 
                                              style="max-width: 150px; max-height: 150px;">
-                                        <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0"
-                                                th:onclick="'deleteImage(' + ${image.no} + ')'">×</button>
                                     </div>
                                 </div>
                             </div>
@@ -82,7 +78,7 @@
 
                             <!-- 버튼 -->
                             <div class="d-flex justify-content-end gap-2">
-                                <a th:href="@{/board/{no}(no=${board.no})}" class="btn btn-outline-secondary">취소</a>
+                                <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="btn btn-outline-secondary">취소</a>
                                 <button type="submit" class="btn btn-join">수정하기</button>
                             </div>
                         </form>
@@ -92,8 +88,8 @@
         </div>
     </main>
 
+    <th:block layout:fragment="script">
     <script>
-        // 이미지 미리보기
         document.getElementById('images').addEventListener('change', function(e) {
             const preview = document.getElementById('imagePreview');
             preview.innerHTML = '';
@@ -118,22 +114,7 @@
                 reader.readAsDataURL(file);
             });
         });
-
-        // 이미지 삭제
-        function deleteImage(imageNo) {
-            if (confirm('이 이미지를 삭제하시겠습니까?')) {
-                $.ajax({
-                    url: '/api/board/image/' + imageNo,
-                    type: 'DELETE',
-                    success: function() {
-                        location.reload();
-                    },
-                    error: function() {
-                        alert('이미지 삭제에 실패했습니다.');
-                    }
-                });
-            }
-        }
     </script>
+    </th:block>
 </body>
 </html>

@@ -333,7 +333,6 @@
     line-height: 20px;
 }
 
-/* 빈 상태 */
 .empty-state {
     text-align: center;
     padding: 80px 20px;
@@ -359,7 +358,7 @@
     margin: 0;
 }
 
-/* 페이지네이션 */
+
 .pagination {
     display: flex;
     justify-content: center;
@@ -396,7 +395,6 @@
     cursor: not-allowed;
 }
 
-/* 로딩 스피너 */
 .loading-spinner {
     display: flex;
     justify-content: center;
@@ -418,4 +416,9 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.clubs-section {
+    min-height: calc(100vh - 200px);
+    background-color: #F9FAFB;
 }

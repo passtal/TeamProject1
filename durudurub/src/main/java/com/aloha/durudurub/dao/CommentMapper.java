@@ -35,4 +35,11 @@ public interface CommentMapper {
 
     int countByBoard(@Param("boardNo") int boardNo);    // 게시글에 달린 댓글 갯수 취합하는 역할의 매핑 (필요없어질 수도 있음)
 
+    // 댓글 좋아요 관련
+    int insertCommentLike(@Param("commentNo") int commentNo, @Param("userNo") int userNo);
+
+    int deleteCommentLike(@Param("commentNo") int commentNo, @Param("userNo") int userNo);
+
+    int countCommentLike(@Param("commentNo") int commentNo, @Param("userNo") int userNo);
+
 }

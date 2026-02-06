@@ -21,4 +21,15 @@ public interface CommentService {
 
     int delete(int no);
 
+    // 댓글 좋아요 관련
+    int insertCommentLike(int commentNo, int userNo);
+
+    int deleteCommentLike(int commentNo, int userNo);
+
+    int countCommentLike(int commentNo, int userNo);
+
+    int incrementLikeCount(int no);
+
+    int decrementLikeCount(int no);
+
 }

@@ -4,18 +4,21 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <title>게시글 작성</title>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/board/board.css}">
+    </th:block>
 </head>
-<body class="board-insert-page" layout:fragment="content">
 
-    <!-- Main Content -->
-    <main class="container py-5">
+<body>
+    <main layout:fragment="content" class="board-insert-page container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <!-- 뒤로가기 -->
                 <div class="mb-4">
-                    <a th:href="@{/board/list(clubNo=${clubNo})}" class="btn btn-outline-secondary btn-sm">
+                    <a th:href="@{/club/{clubNo}/board(clubNo=${club.no})}" class="btn btn-outline-secondary btn-sm">
                         ← 목록으로
                     </a>
                 </div>
@@ -27,8 +30,7 @@
                     </div>
 
                     <div class="board-content">
-                        <form th:action="@{/board/insert}" method="post" enctype="multipart/form-data">
-                            <input type="hidden" name="clubNo" th:value="${clubNo}">
+                        <form th:action="@{/club/{clubNo}/board/write(clubNo=${club.no})}" method="post" enctype="multipart/form-data">
 
                             <!-- 공지사항 여부 (호스트만) -->
                             <div class="mb-4" th:if="${isHost}">
@@ -67,7 +69,7 @@
 
                             <!-- 버튼 -->
                             <div class="d-flex justify-content-end gap-2">
-                                <a th:href="@{/board/list(clubNo=${clubNo})}" class="btn btn-outline-secondary">취소</a>
+                                <a th:href="@{/club/{clubNo}/board(clubNo=${club.no})}" class="btn btn-outline-secondary">취소</a>
                                 <button type="submit" class="btn btn-join">작성하기</button>
                             </div>
                         </form>
@@ -77,8 +79,8 @@
         </div>
     </main>
 
+    <th:block layout:fragment="script">
     <script>
-        // 이미지 미리보기
         document.getElementById('images').addEventListener('change', function(e) {
             const preview = document.getElementById('imagePreview');
             preview.innerHTML = '';
@@ -104,5 +106,6 @@
             });
         });
     </script>
+    </th:block>
 </body>
 </html>

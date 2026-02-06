@@ -61,4 +61,29 @@ public class CommentServiceImpl implements CommentService {
         }
         return result;
     }
+
+    @Override
+    public int insertCommentLike(int commentNo, int userNo) {
+        return commentMapper.insertCommentLike(commentNo, userNo);
+    }
+
+    @Override
+    public int deleteCommentLike(int commentNo, int userNo) {
+        return commentMapper.deleteCommentLike(commentNo, userNo);
+    }
+
+    @Override
+    public int countCommentLike(int commentNo, int userNo) {
+        return commentMapper.countCommentLike(commentNo, userNo);
+    }
+
+    @Override
+    public int incrementLikeCount(int no) {
+        return commentMapper.incrementLikeCount(no);
+    }
+
+    @Override
+    public int decrementLikeCount(int no) {
+        return commentMapper.decrementLikeCount(no);
+    }
 }

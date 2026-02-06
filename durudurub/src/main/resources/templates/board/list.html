@@ -4,19 +4,22 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layouts/main_layout}">
 <head>
-    <title>게시글 목록</title>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/board/board.css}">
+    </th:block>
 </head>
-<body class="board-list-page" layout:fragment="content">
-
-    <main class="container py-5">
+<body>
+    <main layout:fragment="content" class="board-list-page container py-5">
         <!-- 모임 정보 헤더 -->
         <div class="club-info-header mb-4">
             <div class="d-flex align-items-center gap-3">
                 <a th:href="@{/club/{no}(no=${club.no})}" class="btn btn-outline-secondary btn-sm">
                     ← 모임으로 돌아가기
                 </a>
-                <h2 class="mb-0" th:text="${club.name}">모임 이름</h2>
+                <h2 class="mb-0" th:text="${club.title}">모임 이름</h2>
             </div>
         </div>
 
@@ -39,7 +42,7 @@
                         <span class="badge bg-danger me-2">공지</span>
                         <span th:text="${notice.title}">공지 제목</span>
                     </div>
-                    <small class="text-muted" th:text="${#temporals.format(notice.createdAt, 'yyyy.MM.dd')}">2024.01.01</small>
+                    <small class="text-muted" th:text="${#dates.format(notice.createdAt, 'yyyy.MM.dd')}">2024.01.01</small>
                 </a>
             </div>
         </div>
@@ -57,24 +60,29 @@
                 <div th:each="board : ${boards}" class="list-group-item board-item">
                     <div class="d-flex justify-content-between align-items-start">
                         <div class="board-item-content">
-                            <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="board-item-title">
+                            <a th:href="@{/club/{clubNo}/board/{no}(clubNo=${club.no}, no=${board.no})}" class="board-item-title text-decoration-none">
                                 <h5 class="mb-1" th:text="${board.title}">게시글 제목</h5>
                             </a>
                             <p class="mb-2 text-muted board-item-preview" th:text="${#strings.abbreviate(board.content, 100)}">
                                 게시글 내용 미리보기...
                             </p>
                             <div class="d-flex align-items-center gap-3 text-muted small">
-                                <span class="author-info">
-                                    <span class="author-avatar-small" th:text="${#strings.substring(board.writer.username, 0, 1)}">작</span>
+                                <span class="author-info d-flex align-items-center gap-1">
+                                    <img th:if="${board.writer != null and board.writer.profileImg != null and !board.writer.profileImg.isEmpty()}" 
+                                         th:src="${board.writer.profileImg.startsWith('/static/') ? board.writer.profileImg.substring(7) : (board.writer.profileImg.startsWith('/') ? board.writer.profileImg : '/upload/profile/' + board.writer.profileImg)}" 
+                                         alt="프로필" class="rounded-circle" style="width: 24px; height: 24px; object-fit: cover;"
+                                         onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex';">
+                                    <span th:unless="${board.writer != null and board.writer.profileImg != null and !board.writer.profileImg.isEmpty()}" 
+                                          class="author-avatar-small" th:text="${board.writer != null ? #strings.substring(board.writer.username, 0, 1) : '?'}">작</span>
                                     <span th:text="${board.writer.username}">작성자</span>
                                 </span>
-                                <span th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">2024.01.01</span>
+                                <span th:text="${#dates.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">2024.01.01</span>
                                 <span>
-                                    <img th:src="@{/img/board/like-icon.png}" alt="좋아요" class="icon-small">
+                                    <i class="bi bi-hand-thumbs-up"></i>
                                     <span th:text="${board.likeCount}">0</span>
                                 </span>
                                 <span>
-                                    <img th:src="@{/img/board/comment-icon.png}" alt="댓글" class="icon-small">
+                                    <i class="bi bi-chat"></i>
                                     <span th:text="${board.commentCount}">0</span>
                                 </span>
                             </div>
@@ -92,14 +100,11 @@
                     <a class="page-link" href="#">이전</a>
                 </li>
                 <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
                 <li class="page-item">
                     <a class="page-link" href="#">다음</a>
                 </li>
             </ul>
         </nav>
     </main>
-
 </body>
 </html>

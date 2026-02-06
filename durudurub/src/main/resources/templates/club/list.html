@@ -53,6 +53,7 @@
                 
                 <!-- 모임 카드 그리드 -->
                 <div class="row g-4" id="club-grid">
+                <div class="row g-4" id="club-grid">
                     <div th:if="${clubs == null or clubs.empty}" class="col-12 text-center py-5">
                         <p class="text-muted">아직 모임이 없습니다.</p>
                         <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
@@ -249,7 +250,6 @@
             function updateEmptyState(count) {
                 const clubCountEl = document.getElementById('club-count');
                 const emptyState = document.getElementById('empty-state');
-                const clubGrid = document.getElementById('club-grid');
                 
                 if (clubCountEl) {
                     clubCountEl.textContent = count;

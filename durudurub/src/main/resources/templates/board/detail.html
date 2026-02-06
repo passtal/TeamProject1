@@ -5,12 +5,13 @@
       layout:decorate="~{/layouts/main_layout}">
 <head>
     <title th:text="${board.title} + ' - 두루두룹'">게시글 상세</title>
-    <link rel="stylesheet" th:href="@{/css/board.css}">
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/board/board.css}">
+    </th:block>
 </head>
-<body class="board-detail-page" layout:fragment="content">
 
-    <!-- Main Content -->
-    <main class="container py-5">
+<body>
+    <main layout:fragment="content" class="board-detail-page container py-5">
         <!-- 뒤로가기 -->
         <div class="mb-4">
             <a th:href="@{/club/{clubNo}/board(clubNo=${club.no})}" class="btn btn-outline-secondary btn-sm">
@@ -24,21 +25,25 @@
             <div class="board-header">
                 <div class="header-top">
                     <h1 class="board-title" th:text="${board.title}">게시글 제목</h1>
-                    <button class="btn-heart" id="btnLike" th:data-no="${board.no}">
-                        <img th:src="@{/img/board/heart-icon.png}" alt="좋아요">
+                    <button class="btn-heart" id="btnLike" th:data-no="${board.no}" th:classappend="${board.liked ? 'liked' : ''}">
+                        <i class="bi fs-4" th:classappend="${board.liked == true ? 'bi-heart-fill text-danger' : 'bi-heart'}"></i>
                         <span class="heart-badge" th:text="${board.likeCount}">0</span>
                     </button>
                 </div>
 
                 <!-- 작성자 정보 -->
                 <div class="board-meta">
-                    <div class="author-avatar" th:text="${#strings.substring(board.writer.username, 0, 1)}">작</div>
+                    <img th:if="${board.writer != null and board.writer.profileImg != null and !board.writer.profileImg.isEmpty()}" 
+                         th:src="${board.writer.profileImg.startsWith('/static/') ? board.writer.profileImg.substring(7) : (board.writer.profileImg.startsWith('/') ? board.writer.profileImg : '/upload/profile/' + board.writer.profileImg)}" alt="프로필" 
+                         class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                    <div th:unless="${board.writer != null and board.writer.profileImg != null and !board.writer.profileImg.isEmpty()}" 
+                         class="author-avatar" th:text="${board.writer != null and board.writer.username != null ? #strings.substring(board.writer.username, 0, 1) : '?'}">작</div>
                     <div class="leader-info">
                         <span class="meta-label">작성자</span>
-                        <span class="meta-value" th:text="${board.writer.username}">작성자 이름</span>
+                        <span class="meta-value" th:text="${board.writer != null ? board.writer.username : '알 수 없음'}">작성자 이름</span>
                     </div>
                     <div class="ms-auto text-muted small">
-                        <span th:text="${#temporals.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">2024.01.01 12:00</span>
+                        <span th:text="${#dates.format(board.createdAt, 'yyyy.MM.dd HH:mm')}">2024.01.01 12:00</span>
                         <span class="ms-2">조회 <span th:text="${board.viewCount}">0</span></span>
                     </div>
                 </div>
@@ -47,11 +52,13 @@
                 <div class="board-actions" th:if="${isWriter or isHost}">
                     <div></div>
                     <div class="d-flex gap-2">
-                        <a th:href="@{/club/{clubNo}/board/{no}/update(clubNo=${club.no}, no=${board.no})}" class="btn btn-edit">
+                        <a th:href="@{/club/{clubNo}/board/{no}/edit(clubNo=${club.no}, no=${board.no})}" class="btn btn-edit">
                             <img th:src="@{/img/board/edit-icon.png}" alt="수정">
                             수정
                         </a>
-                        <button class="btn btn-outline-danger btn-sm" onclick="deleteBoard()">삭제</button>
+                        <form th:action="@{/club/{clubNo}/board/{no}/delete(clubNo=${club.no}, no=${board.no})}" method="post" style="display: inline;" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+                            <button type="submit" class="btn btn-outline-danger btn-sm">삭제</button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -84,8 +91,6 @@
             <!-- 댓글 작성 폼 -->
             <div class="comment-write-form mb-4" sec:authorize="isAuthenticated()">
                 <div class="d-flex gap-3">
-                    <div class="author-avatar" sec:authentication="principal.username" 
-                         th:text="${#strings.substring(#authentication.principal.username, 0, 1)}">나</div>
                     <div class="flex-grow-1">
                         <textarea id="commentContent" class="form-control" rows="3" 
                                   placeholder="댓글을 작성해주세요..."></textarea>
@@ -98,11 +103,11 @@
 
             <!-- 댓글 목록 -->
             <div id="commentList" class="comment-list">
-                <!-- JQuery Ajax로 비동기 요청 해야함!!!!! -->
             </div>
         </div>
     </main>
 
+    <th:block layout:fragment="script">
     <script th:inline="javascript">
         const boardNo = [[${board.no}]];
         const clubNo = [[${club.no}]];
@@ -120,48 +125,48 @@
                 success: function(comments) {
                     renderComments(comments);
                 },
-                error: function() {
-                    console.error('댓글 로딩 실패');
+                error: function(xhr) {
+                    console.error('댓글 로딩 실패', xhr.responseText);
                 }
             });
         }
 
         // 댓글 렌더링
+        // 노션 공유에 해당 코드 해석 정리
         function renderComments(comments) {
             let html = '';
-            const currentUserNo = [[${#authentication.principal?.user?.no ?: 0}]];
             
             comments.forEach(function(comment) {
-                let actionButtons = '';
-                
-                // 댓글 작성자만 수정/삭제 가능
-                if (comment.writerNo === currentUserNo) {
-                    actionButtons = `
-                        <button class="btn btn-sm btn-outline-secondary me-1" onclick="editComment(${comment.no})">수정</button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteComment(${comment.no})">삭제</button>
-                    `;
+                let avatarHtml = '';
+                var profileImg = comment.writer ? comment.writer.profileImg : null;
+                if (profileImg && profileImg.trim() !== '') {
+                    var imgSrc = profileImg;
+                    if (imgSrc.indexOf('/static/') === 0) {
+                        imgSrc = imgSrc.substring(7);
+                    } else if (imgSrc.indexOf('http') !== 0 && imgSrc.indexOf('/') !== 0) {
+                        imgSrc = '/upload/profile/' + imgSrc;
+                    }
+                    avatarHtml = '<img src="' + escapeHtml(imgSrc) + '" alt="프로필" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">';
+                    var initial = comment.writer && comment.writer.username ? comment.writer.username.substring(0, 1) : '?';
+                    avatarHtml += '<div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center" style="width: 40px; height: 40px; font-weight: bold; font-size: 14px; display: none;">' + escapeHtml(initial) + '</div>';
+                } else {
+                    avatarHtml = '<div class="author-avatar">' + escapeHtml(comment.writer ? comment.writer.username.substring(0, 1) : '?') + '</div>';
                 }
                 
-                html += `
-                    <div class="comment-item mb-3 p-3 bg-light rounded" data-comment-no="${comment.no}">
-                        <div class="d-flex gap-3">
-                            <div class="author-avatar">${comment.writer.username.substring(0, 1)}</div>
-                            <div class="flex-grow-1">
-                                <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <strong>${comment.writer.username}</strong>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <small class="text-muted">${formatDate(comment.createdAt)}</small>
-                                        ${actionButtons}
-                                    </div>
-                                </div>
-                                <p class="mb-2 comment-content-text">${escapeHtml(comment.content)}</p>
-                                <button class="btn btn-sm btn-outline-danger btn-comment-like" onclick="toggleCommentLike(${comment.no}, this)">
-                                    ♥ <span class="comment-like-count">${comment.likeCount || 0}</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                html += '<div class="comment-item mb-3 p-3 bg-light rounded" data-comment-no="' + comment.no + '">';
+                html += '  <div class="d-flex gap-3">';
+                html += '    ' + avatarHtml;
+                html += '    <div class="flex-grow-1">';
+                html += '      <div class="d-flex justify-content-between align-items-center mb-2">';
+                html += '        <strong>' + escapeHtml(comment.writer ? comment.writer.username : '알 수 없음') + '</strong>';
+                html += '        <div class="d-flex align-items-center gap-2">';
+                html += '          <small class="text-muted">' + formatDate(comment.createdAt) + '</small>';
+                html += '        </div>';
+                html += '      </div>';
+                html += '      <p class="mb-0 comment-content-text">' + escapeHtml(comment.content) + '</p>';
+                html += '    </div>';
+                html += '  </div>';
+                html += '</div>';
             });
             $('#commentList').html(html || '<p class="text-muted text-center py-3">아직 댓글이 없습니다.</p>');
         }
@@ -187,12 +192,12 @@
                     loadComments();
                 },
                 error: function() {
-                    alert('댓글 작성에 실패했습니다.');
+                    alert('댓글 작성에 실패했습니다. 로그인이 필요합니다.');
                 }
             });
         }
 
-        // 좋아요
+        // 게시글 좋아요
         $('#btnLike').click(function() {
             const btn = $(this);
             $.ajax({
@@ -201,29 +206,18 @@
                 success: function(result) {
                     btn.find('.heart-badge').text(result.count);
                     btn.toggleClass('liked', result.liked);
+                    var icon = btn.find('i');
+                    if (result.liked) {
+                        icon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+                    } else {
+                        icon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+                    }
                 },
                 error: function() {
                     alert('로그인이 필요합니다.');
                 }
             });
         });
-
-        // 게시글 삭제
-        function deleteBoard() {
-            if (confirm('정말 삭제하시겠습니까?')) {
-                $.ajax({
-                    url: '/api/boards/' + boardNo,
-                    type: 'DELETE',
-                    success: function() {
-                        alert('게시글이 삭제되었습니다.');
-                        location.href = '/club/' + clubNo + '/board';
-                    },
-                    error: function() {
-                        alert('게시글 삭제에 실패했습니다.');
-                    }
-                });
-            }
-        }
         
         // 댓글 삭제
         function deleteComment(commentNo) {
@@ -243,17 +237,17 @@
         
         // 댓글 수정
         function editComment(commentNo) {
-            const commentItem = $(`[data-comment-no="${commentNo}"]`);
+            const commentItem = $('[data-comment-no="' + commentNo + '"]');
             const contentEl = commentItem.find('.comment-content-text');
             const currentContent = contentEl.text();
             
             const newContent = prompt('댓글 수정:', currentContent);
             if (newContent && newContent.trim() !== '' && newContent !== currentContent) {
                 $.ajax({
-                    url: '/api/comments/' + commentNo,
+                    url: '/api/comments',
                     type: 'PUT',
                     contentType: 'application/json',
-                    data: JSON.stringify({ content: newContent.trim() }),
+                    data: JSON.stringify({ no: commentNo, content: newContent.trim() }),
                     success: function() {
                         loadComments();
                     },
@@ -264,23 +258,9 @@
             }
         }
         
-        // 댓글 좋아요
-        function toggleCommentLike(commentNo, btn) {
-            $.ajax({
-                url: '/api/likes/comment/' + commentNo,
-                type: 'POST',
-                success: function(result) {
-                    $(btn).find('.comment-like-count').text(result.count);
-                    $(btn).toggleClass('liked', result.liked);
-                },
-                error: function() {
-                    alert('로그인이 필요합니다.');
-                }
-            });
-        }
-        
         // HTML 이스케이프
         function escapeHtml(text) {
+            if (!text) return '';
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
@@ -288,9 +268,11 @@
 
         // 날짜 포맷팅
         function formatDate(dateString) {
+            if (!dateString) return '';
             const date = new Date(dateString);
             return date.toLocaleDateString('ko-KR') + ' ' + date.toLocaleTimeString('ko-KR', {hour: '2-digit', minute: '2-digit'});
         }
     </script>
+    </th:block>
 </body>
 </html>
