@@ -72,22 +72,21 @@
 
         <div class="category-grid">
             <!-- 카테고리 반복 -->
-            <a th:each="category : ${categories}" 
+            <a th:each="category, iterStat : ${categories}" 
                th:href="@{/club/list(category=${category.no})}" 
                class="category-item">
-                <div class="category-icon">
+                <div class="category-icon" 
+                     th:classappend="'category-bg-' + ${(iterStat.index % 8) + 1}">
                     <!-- Bootstrap Icons (bi-*) 클래스인 경우 -->
                     <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
-                       th:class="'bi ' + ${category.icon}" 
-                       style="font-size: 36px; color: #6366F1;"></i>
+                       th:class="'bi ' + ${category.icon}"></i>
                     <!-- URL인 경우 이미지 -->
                     <img th:if="${category.icon != null and category.icon.startsWith('http')}" 
                          th:src="${category.icon}" 
                          th:alt="${category.name}">
                     <!-- 그 외 (이모지 등) -->
                     <span th:if="${category.icon != null and !category.icon.startsWith('bi-') and !category.icon.startsWith('http')}" 
-                          th:text="${category.icon}" 
-                          style="font-size: 36px;">📁</span>
+                          th:text="${category.icon}">📁</span>
                 </div>
                 <span class="category-name" th:text="${category.name}">카테고리명</span>
             </a>

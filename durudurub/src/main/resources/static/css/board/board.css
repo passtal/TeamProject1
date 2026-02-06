@@ -232,7 +232,7 @@
 
 /* Board Content */
 .board-content {
-    padding: 32px 32px 0;
+    padding: 32px 32px 32px;
 }
 
 .content-section {
@@ -838,7 +838,7 @@
     }
 
     .board-content {
-        padding: 24px 24px 0;
+        padding: 24px 24px 24px;
     }
 
     .section-title {

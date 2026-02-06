@@ -266,6 +266,29 @@ body {
     height: 36px;
 }
 
+.category-icon i,
+.category-icon span {
+    font-size: 32px;
+}
+
+/* 카테고리 배경색 */
+.category-icon.category-bg-1 { background-color: #E0E7FF; }  /* 연보라 - 자기계발 */
+.category-icon.category-bg-1 i { color: #6366F1; }
+.category-icon.category-bg-2 { background-color: #F3E8FF; }  /* 연분홍보라 - 스포츠 */
+.category-icon.category-bg-2 i { color: #A855F7; }
+.category-icon.category-bg-3 { background-color: #FEF3C7; }  /* 연노랑 - 푸드 */
+.category-icon.category-bg-3 i { color: #F59E0B; }
+.category-icon.category-bg-4 { background-color: #FFEDD5; }  /* 연주황 - 게임 */
+.category-icon.category-bg-4 i { color: #F97316; }
+.category-icon.category-bg-5 { background-color: #DBEAFE; }  /* 연파랑 - 동네친구 */
+.category-icon.category-bg-5 i { color: #3B82F6; }
+.category-icon.category-bg-6 { background-color: #CCFBF1; }  /* 연민트 - 여행 */
+.category-icon.category-bg-6 i { color: #14B8A6; }
+.category-icon.category-bg-7 { background-color: #FEE2E2; }  /* 연빨강 - 예술 */
+.category-icon.category-bg-7 i { color: #EF4444; }
+.category-icon.category-bg-8 { background-color: #FFE4E6; }  /* 연분홍 - 반려동물 */
+.category-icon.category-bg-8 i { color: #F472B6; }
+
 .category-name {
     font-size: 14px;
     line-height: 20px;

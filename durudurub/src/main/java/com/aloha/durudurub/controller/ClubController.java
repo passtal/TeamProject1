@@ -1,9 +1,13 @@
 package com.aloha.durudurub.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aloha.durudurub.dto.Category;
@@ -23,6 +28,7 @@ import com.aloha.durudurub.dto.Board;
 import com.aloha.durudurub.service.BoardService;
 import com.aloha.durudurub.service.CategoryService;
 import com.aloha.durudurub.service.ClubService;
+import com.aloha.durudurub.service.LikeService;
 import com.aloha.durudurub.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +53,9 @@ public class ClubController {
     
     @Autowired
     private BoardService boardService;
+    
+    @Autowired
+    private LikeService likeService;
     
 
     /**
@@ -116,21 +125,32 @@ public class ClubController {
             
             List<ClubMember> members = clubService.listMembers(no);
             
-            // 게시글 목록 조회 (최근 5개)
+            // 게시글 목록 조회 (공지사항 포함, 공지사항이 맨 위로)
             List<Board> boards = boardService.listByClub(no);
 
             model.addAttribute("club", club);
             model.addAttribute("members", members);
-            model.addAttribute("boards", boards);
 
             if (principal != null) {
                 User user = userService.selectByUserId(principal.getName());
                 ClubMember myMembership = clubService.selectMember(no, user.getNo());
                 model.addAttribute("myMembership", myMembership);
                 model.addAttribute("isHost", club.getHostNo() == user.getNo());
+                
+                // 모임 좋아요 상태 설정
+                club.setLiked(likeService.isClubLiked(no, user.getNo()));
+                
+                // 각 게시글의 좋아요 상태 설정
+                if (boards != null) {
+                    for (Board board : boards) {
+                        board.setLiked(likeService.isBoardLiked(board.getNo(), user.getNo()));
+                    }
+                }
             } else {
                 model.addAttribute("isHost", false);
             }
+            
+            model.addAttribute("boards", boards);
             return "club/detail";
         } catch (Exception e) {
             log.error("Error loading club detail for no {}: {}", no, e.getMessage(), e);
@@ -147,6 +167,28 @@ public class ClubController {
     @ResponseBody
     public List<SubCategory> getSubCategories(@PathVariable("categoryNo") int categoryNo) {
         return categoryService.listBySubCategory(categoryNo);
+    }
+    
+    /**
+     * 카테고리별 모임 조회 (API)
+     * @param categoryNo
+     * @return
+     */
+    @GetMapping("/api/clubs/category/{categoryNo}")
+    @ResponseBody
+    public List<Club> getClubsByCategory(@PathVariable("categoryNo") int categoryNo) {
+        return clubService.listByCategory(categoryNo);
+    }
+    
+    /**
+     * 소분류별 모임 조회 (API)
+     * @param subCategoryNo
+     * @return
+     */
+    @GetMapping("/api/clubs/sub/{subCategoryNo}")
+    @ResponseBody
+    public List<Club> getClubsBySubCategory(@PathVariable("subCategoryNo") int subCategoryNo) {
+        return clubService.listBySubCategory(subCategoryNo);
     }
     
     
@@ -166,27 +208,53 @@ public class ClubController {
     /**
      * 모임 생성 처리
      * @param club
+     * @param thumbnail
      * @param principal
      * @param rttr
      * @return
      */
     @PostMapping("/create")
-    public String createPro(Club club, Principal principal, RedirectAttributes rttr) {
+    public String createPro(Club club, 
+                           @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
+                           Principal principal, 
+                           RedirectAttributes rttr) {
         User user = userService.selectByUserId(principal.getName());
         club.setHostNo(user.getNo());
         club.setStatus("RECRUITING");
         club.setCurrentMembers(1);
         
+        // 파일 업로드 처리
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            try {
+                String uploadDir = System.getProperty("user.dir") + "/uploads/clubs/";
+                File dir = new File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                
+                // 고유 파일명 생성
+                String originalFilename = thumbnail.getOriginalFilename();
+                String extension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+                String savedFilename = UUID.randomUUID().toString() + extension;
+                
+                // 파일 저장
+                File savedFile = new File(uploadDir + savedFilename);
+                thumbnail.transferTo(savedFile);
+                
+                // 웹 접근 경로 설정
+                club.setThumbnailImg("/uploads/clubs/" + savedFilename);
+            } catch (IOException e) {
+                log.error("파일 업로드 실패", e);
+            }
+        }
+        
         int result = clubService.insert(club);
         
         if (result > 0) {
-            // 호스트를 멤버로 추가 (생성 시에 모임 구성원 수가 0이면 안되기에)
-            ClubMember member = new ClubMember();
-            member.setClubNo(club.getNo());
-            member.setUserNo(user.getNo());
-            member.setStatus("APPROVED");
-            clubService.insertMember(member);
-            
+            // 호스트 멤버 추가는 ClubServiceImpl.insert() 내부에서 처리됨
             rttr.addFlashAttribute("message", "모임이 생성되었습니다.");
             return "redirect:/club/" + club.getNo();
         }
@@ -205,6 +273,11 @@ public class ClubController {
     @GetMapping("/{no}/edit")
     public String edit(@PathVariable("no") int no, Principal principal, Model model) {
         Club club = clubService.selectByNo(no);
+        
+        if (club == null) {
+            return "redirect:/club";
+        }
+        
         User user = userService.selectByUserId(principal.getName());
         
         // 호스트만 수정 가능
@@ -213,7 +286,10 @@ public class ClubController {
         }
         
         List<Category> categories = categoryService.list();
-        List<SubCategory> subCategories = categoryService.listBySubCategory(club.getCategoryNo());
+        List<SubCategory> subCategories = null;
+        if (club.getCategoryNo() > 0) {
+            subCategories = categoryService.listBySubCategory(club.getCategoryNo());
+        }
         
         model.addAttribute("club", club);
         model.addAttribute("categories", categories);
@@ -226,18 +302,47 @@ public class ClubController {
      * 모임 수정 처리
      * @param no
      * @param club
+     * @param thumbnailImg
      * @param principal
      * @param rttr
      * @return
      */
     @PostMapping("/{no}/edit")
     public String editPro(@PathVariable("no") int no, Club club, 
+                         @RequestParam(value = "thumbnailImg", required = false) MultipartFile thumbnailImg,
                          Principal principal, RedirectAttributes rttr) {
         Club existingClub = clubService.selectByNo(no);
         User user = userService.selectByUserId(principal.getName());
         
         if (existingClub.getHostNo() != user.getNo()) {
             return "redirect:/club/" + no;
+        }
+        
+        // 새 이미지가 업로드된 경우
+        if (thumbnailImg != null && !thumbnailImg.isEmpty()) {
+            try {
+                String uploadDir = System.getProperty("user.dir") + "/uploads/clubs/";
+                File dir = new File(uploadDir);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                
+                String originalFilename = thumbnailImg.getOriginalFilename();
+                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                String filename = UUID.randomUUID().toString() + extension;
+                
+                File file = new File(uploadDir + filename);
+                thumbnailImg.transferTo(file);
+                
+                club.setThumbnailImg("/uploads/clubs/" + filename);
+            } catch (IOException e) {
+                log.error("이미지 업로드 실패", e);
+                rttr.addFlashAttribute("error", "이미지 업로드에 실패했습니다.");
+                return "redirect:/club/" + no + "/edit";
+            }
+        } else {
+            // 기존 이미지 유지
+            club.setThumbnailImg(existingClub.getThumbnailImg());
         }
         
         club.setNo(no);
@@ -293,10 +398,11 @@ public class ClubController {
         ClubMember member = new ClubMember();
         member.setClubNo(no);
         member.setUserNo(user.getNo());
-        member.setStatus("PENDING");
+        member.setStatus("APPROVED");
         
         clubService.insertMember(member);
-        rttr.addFlashAttribute("message", "가입 신청이 완료되었습니다.");
+        clubService.incrementMemberCount(no);
+        rttr.addFlashAttribute("message", "모임에 가입되었습니다.");
         
         return "redirect:/club/" + no;
     }

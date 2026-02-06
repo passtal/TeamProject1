@@ -18,8 +18,10 @@ public class SecurityConfig {
     // 스프링 시큐리티 설정 메서드
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // 임시코드
-        http.csrf(csrf -> csrf.disable());
+        // CSRF 설정 (API 요청을 위해 일부 경로 제외)
+        http.csrf(csrf -> csrf
+                .ignoringRequestMatchers("/api/**")
+        );
 
 
         // ✅ 인가 설정
@@ -47,11 +49,6 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
                 .permitAll()
-        );
-
-        // CSRF 설정 (API 요청을 위해 일부 경로 제외)
-        http.csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**")
         );
 
         return http.build();

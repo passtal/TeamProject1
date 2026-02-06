@@ -26,7 +26,9 @@ DROP TABLE IF EXISTS
     random_games,
     banners,
     club_member_reports,
-    club_location
+    club_location,
+    report_categories,
+    notices,
     ;
 
 SET FOREIGN_KEY_CHECKS = 1;

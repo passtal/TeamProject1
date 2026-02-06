@@ -46,6 +46,9 @@ public class LikeController {
     @PostMapping("/club/{clubNo}")
     public ResponseEntity<?> clubLike(@PathVariable("clubNo") int clubNo, Principal principal) {
         try {
+            if (principal == null) {
+                return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+            }
             User user = userService.selectByUserId(principal.getName());
             boolean liked = likeService.clubLike(clubNo, user.getNo());
             int count = likeService.countClubLikes(clubNo);
@@ -88,6 +91,9 @@ public class LikeController {
     @PostMapping("/board/{boardNo}")
     public ResponseEntity<?> boardLike(@PathVariable("boardNo") int boardNo, Principal principal) {
         try {
+            if (principal == null) {
+                return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+            }
             User user = userService.selectByUserId(principal.getName());
             boolean liked = likeService.boardLike(boardNo, user.getNo());
             int count = likeService.countBoardLikes(boardNo);
@@ -130,6 +136,9 @@ public class LikeController {
     @PostMapping("/comment/{commentNo}")
     public ResponseEntity<?> commentLike(@PathVariable("commentNo") int commentNo, Principal principal) {
         try {
+            if (principal == null) {
+                return new ResponseEntity<>("로그인이 필요합니다.", HttpStatus.UNAUTHORIZED);
+            }
             User user = userService.selectByUserId(principal.getName());
             boolean liked = likeService.commentLike(commentNo, user.getNo());
             int count = likeService.countCommentLikes(commentNo);

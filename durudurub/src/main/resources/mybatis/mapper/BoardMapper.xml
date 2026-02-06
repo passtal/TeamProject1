@@ -43,6 +43,16 @@
         ORDER BY b.created_at DESC
     </select>
 
+    <!-- 일반 게시글 목록 (모임별, 공지사항 제외) -->
+    <select id="listRegularByClub" resultMap="boardResultMap">
+        SELECT b.*, 
+               u.no AS writer_user_no, u.username AS writer_username, u.profile_img AS writer_profile_img
+        FROM club_boards b
+        JOIN users u ON b.writer_no = u.no
+        WHERE b.club_no = #{clubNo} AND (b.is_notice IS NULL OR b.is_notice != 'Y')
+        ORDER BY b.created_at DESC
+    </select>
+
     <!-- 작성자별 게시글 목록 -->
     <select id="listByWriter" resultMap="boardResultMap">
         SELECT b.*, 

@@ -179,7 +179,7 @@ public class ClubServiceImpl implements ClubService {
 
     @Override
     public int decrementMemberCount(int clubNo) {
-        return clubMapper.decrementCommentCount(clubNo);
+        return clubMapper.decrementCurrentMembers(clubNo);
     }
 
     // 마이페이지: 내모임 관리
