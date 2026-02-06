@@ -39,7 +39,6 @@
             </div>
             <!-- 모임 카드 리스트 -->
             <div class="club-cards-list">
-                <!-- 모임이 없을 때 -->
                 <div th:if="${clubs == null or clubs.isEmpty()}" style="text-align: center; padding: 60px 20px; color: #6a7282;">
                     <p style="font-size: 18px; margin: 0;">등록된 모임이 없습니다.</p>
                 </div>
@@ -50,7 +49,6 @@
                    th:href="@{/club/detail/{no}(no=${club.no})}" 
                    class="club-card-item"
                    th:data-subcategory="${club.subCategory != null ? club.subCategory.name : ''}">
-                    <!-- 썸네일 이미지 -->
                     <div class="club-thumbnail">
                         <img th:src="@{${club.thumbnailImg != null and club.thumbnailImg != '' ? club.thumbnailImg : '/img/defaultThumbnail.jpg'}}" 
                              th:alt="${club.title}" 
@@ -99,7 +97,6 @@
                     this.classList.add('active');
                     const selectedSubcategory = this.getAttribute('data-subcategory');
 
-                    // 모임 카드 필터링
                     clubCards.forEach(card => {
                         const cardSubcategory = card.getAttribute('data-subcategory');
                         
