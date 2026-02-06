@@ -149,7 +149,7 @@
         <div class="cancel-request-modal-content">
             <div class="cancel-request-modal-header">
                 <h3 class="cancel-request-modal-title">가입 신청 취소</h3>
-                <button id="cancelRequestModalCloseBtn" class="cancel-request-modal-close">
+                <button id="cancelRequestModalCloseBtn" class="cancel-request-modal-close" onclick="pendingCloseModal()">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
@@ -158,7 +158,7 @@
                 <p class="cancel-request-modal-warning-subtext">취소하면 해당 모임의 가입 신청이 삭제됩니다.</p>
             </div>
             <div class="cancel-request-modal-actions">
-                <button id="cancelRequestModalCancelBtn" class="cancel-request-modal-btn cancel-request-modal-btn-cancel">취소</button>
+                <button id="cancelRequestModalCancelBtn" class="cancel-request-modal-btn cancel-request-modal-btn-cancel" onclick="pendingCloseModal()">취소</button>
                 <button id="cancelRequestModalConfirmBtn" class="cancel-request-modal-btn cancel-request-modal-btn-confirm">취소하기</button>
             </div>
         </div>
@@ -242,7 +242,7 @@ $(document).on("click", "#modalConfirmBtn", function () {
             // 탈퇴한 모임리스트 카드 삭제
             $(`.club-card[data-club-no="${clubNo}"]`).remove();
             // 모달 닫기
-            clubCloseModel()
+            clubCloseModal()
         }, 
         error: function (xhr, status, error) {
             // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
@@ -260,109 +260,171 @@ function clubOpenModal(btnEl) {
     const clubNo = $(btnEl).data("clubno")
     $("#modalConfirmBtn").data("clubno", clubNo)
     $("#leaveClubModal").show()
-    // $("#leave-model").css("display", "flex")
 }
 // 모임 탈퇴 - 모달 닫기 
 function clubCloseModal() {
     $("#leaveClubModal").hide()
 }
 
+
 // ⭐ 리더인 모임
 // 멤버 관리 토글
-$(document).on("click", ".btn-leader-manage", function(e){
-  e.stopPropagation();
+// function memberList() {
+    
+// }
+// $(document).on("click", ".btn-leader-manage", function(e){
+//   e.stopPropagation();
 
-  const clubNo = $(this).data("club-no");
-  const $area = $("#memberManagement-" + clubNo);
-  const $icon = $(this).find(".material-symbols-outlined:last");
+//   const clubNo = $(this).data("club-no");
+//   const $area = $("#memberManagement-" + clubNo);
+//   const $icon = $(this).find(".material-symbols-outlined:last");
 
-  if ($area.length === 0) return;
+//   if ($area.length === 0) return;
+//   const isOpen = $area.is(":visible");
 
-  const isOpen = $area.is(":visible");
+//   // ⭐ 애니메이션 없이 즉시 토글
+//   $area.toggle();
+//   $icon.text(isOpen ? "expand_more" : "expand_less");
 
-  // ⭐ 애니메이션 없이 즉시 토글
-  $area.toggle();
+//   if(!isOpen){
+//     loadMembers(clubNo, $area);
+//   }
+// });
 
-  $icon.text(isOpen ? "expand_more" : "expand_less");
+// function loadMembers(clubNo, $area){
 
-  if(!isOpen){
-    loadMembers(clubNo, $area);
-  }
-});
+//     $.ajax({
+//         url: `/users/mypage/club/${clubNo}/members`,
+//         method: 'GET',
+//         dataType: 'json',
+//             success: function(res) {
+//             const pendingList = res.pendingList || [];
+//             const approvedList = res.approvedList || [];
 
-function loadMembers(clubNo, $area){
+//             // ✅ 이 영역 안에서만 찾기
+//             const $pendingCount = $area.find(".countPending");
+//             const $approvedCount = $area.find(".countApproved");
+//             const $pendingBox = $area.find(".pendingList");
+//             const $approvedBox = $area.find(".approvedList");
 
-  $.getJSON(`/users/mypage/club/${clubNo}/members`, function(res){
+//             $pendingCount.text(pendingList.length);
+//             $approvedCount.text(approvedList.length);
 
-    const pendingList = res.pendingList || [];
-    const approvedList = res.approvedList || [];
+//             // pending
+//             let pendingHtml = "";
+//             pendingList.forEach(m => {
+//             pendingHtml += 
+//             `
+//                 <div class="member-item pending">
+//                 <div class="member-info">
+//                     <p class="member-name">${m.user.username}</p>
+//                     <p class="member-date">신청일: ${formatDate(m.joinedAt)}</p>
+//                 </div>
+//                 <div class="member-actions">
+//                     <button class="btn-approve" data-member-no="${m.no}" data-club-no="${clubNo}">
+//                     <span class="material-symbols-outlined">check</span><span>승인</span>
+//                     </button>
+//                     <button class="btn-reject" data-member-no="${m.no}" data-club-no="${clubNo}">
+//                     <span class="material-symbols-outlined">close</span><span>거부</span>
+//                     </button>
+//                 </div>
+//                 </div>
+//             `
+//             })
 
-    // ✅ 이 영역 안에서만 찾기
-    const $pendingCount = $area.find(".countPending");
-    const $approvedCount = $area.find(".countApproved");
-    const $pendingBox = $area.find(".pendingList");
-    const $approvedBox = $area.find(".approvedList");
+//             if(!pendingHtml) pendingHtml = `<p>가입 요청 없음</p>`
+//             $pendingBox.html(pendingHtml)
 
-    $pendingCount.text(pendingList.length);
-    $approvedCount.text(approvedList.length);
-
-    // pending
-    let pendingHtml = "";
-    pendingList.forEach(m => {
-      pendingHtml += `
-        <div class="member-item pending">
-          <div class="member-info">
-            <p class="member-name">${m.user.username}</p>
-            <p class="member-date">신청일: ${formatDate(m.joinedAt)}</p>
-          </div>
-          <div class="member-actions">
-            <button class="btn-approve" data-member-no="${m.no}" data-club-no="${clubNo}">
-              <span class="material-symbols-outlined">check</span><span>승인</span>
-            </button>
-            <button class="btn-reject" data-member-no="${m.no}" data-club-no="${clubNo}">
-              <span class="material-symbols-outlined">close</span><span>거부</span>
-            </button>
-          </div>
-        </div>
-      `;
-    });
-    if(!pendingHtml) pendingHtml = `<p>가입 요청 없음</p>`;
-    $pendingBox.html(pendingHtml);
-
-    // approved
-    let approvedHtml = "";
-    approvedList.forEach(m => {
-      approvedHtml += `
-        <div class="member-item approved">
-          <div class="member-info">
-            <p class="member-name">${m.user.username}</p>
-            <p class="member-date">가입일: ${formatDate(m.joinedAt)}</p>
-          </div>
-          <button class="btn-remove-member" data-member-no="${m.no}" data-club-no="${clubNo}">
-            추방하기
-          </button>
-        </div>
-      `;
-    });
-    if(!approvedHtml) approvedHtml = `<p>멤버 없음</p>`;
-    $approvedBox.html(approvedHtml);
-
-  });
-}
+//             // approved
+//             let approvedHtml = ""
+//             approvedList.forEach(m => {
+//             approvedHtml += 
+//             `
+//                 <div class="member-item approved">
+//                 <div class="member-info">
+//                     <p class="member-name">${m.user.username}</p>
+//                     <p class="member-date">가입일: ${formatDate(m.joinedAt)}</p>
+//                 </div>
+//                 <button class="btn-remove-member" data-member-no="${m.no}" data-club-no="${clubNo}">
+//                     추방하기
+//                 </button>
+//                 </div>
+//             `
+//             })
+//             if(!approvedHtml) approvedHtml = `<p>멤버 없음</p>`
+//             $approvedBox.html(approvedHtml);
+//         }
+//   })
+// }
 
 // 날짜 포맷
-function formatDate(dateStr){
-  if(!dateStr) return ''
 
-  const d = new Date(dateStr)
-  const yyyy = d.getFullYear()
-  const mm = String(d.getMonth()+1).padStart(2,'0')
-  const dd = String(d.getDate()).padStart(2,'0')
+// fetch(`/users/mypage/club/${clubNo}/members`)
+//     .then(res => res.json())
+//     .then(data => {
+//         console.log(data.pendingList)
+//     })
 
-  return `${yyyy}-${mm}-${dd}`
-}
+// function formatDate(dateStr){
+//   if(!dateStr) return ''
 
+//   const d = new Date(dateStr)
+//   const yyyy = d.getFullYear()
+//   const mm = String(d.getMonth()+1).padStart(2,'0')
+//   const dd = String(d.getDate()).padStart(2,'0')
+
+//   return `${yyyy}-${mm}-${dd}`
+// }
 // 모임 삭제
+
+
+// ⭐ 신청 중인 모임
+// 취소하기 버튼
+$(document).on("click", "#cancelRequestModalConfirmBtn", function () {
+    // this 필요!
+    const btn = $(this);
+    const clubNo = btn.data("clubno");
+
+    // CSRF 토큰 문제 (403)
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+
+    $.ajax({
+        url: `/users/mypage/club/pending/${clubNo}`,
+        method: 'DELETE',
+        beforeSend: function (xhr) {     
+            xhr.setRequestHeader(header, token);
+        },
+        success: function (result, status, xhr) {
+            alert("신청이 취소되었습니다.")
+            // 신청한 모임리스트 수 감소
+            countList("PENDING", -1)
+            // 취소한 모임리스트 카드 삭제
+            $(`.club-card[data-club-no="${clubNo}"]`).remove();
+            // 모달 닫기
+            pendingCloseModal()
+        }, 
+        error: function (xhr, status, error) {
+            // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+            // status : AJAX 요청 상태를 문자열로 나타낸 것
+            if (xhr.status === 404) {
+                alert("잘못된 요청입니다");
+            } else {
+                alert("서버 내부 오류입니다.")
+            }
+        }
+    })
+})
+// 신청 취소 - 모달 열기 (취소하기 버튼)
+function pendingOpenModal(btnEl) {
+    const clubNo = $(btnEl).data("clubno")
+    $("#cancelRequestModalConfirmBtn").data("clubno", clubNo)
+    $("#cancelRequestModal").show()
+}
+// 신청 취소 - 모달 닫기
+function pendingCloseModal() {
+    $("#cancelRequestModal").hide()
+}
 </script>
 </body>
 </html>

@@ -109,4 +109,12 @@
         WHERE username = #{username}
     </select>
     
+
+
+    <!-- 관리자페이지 -->
+    <!-- 전체 사용자 수 -->
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+    </select>
 </mapper>

@@ -8,7 +8,7 @@
     </span>
 </div>
 <!-- 모임리스트 비어있지 않을 때 -->
-<div th:unless="${#lists.isEmpty(myclubList)}">
+<div th:unless="${ #lists.isEmpty(myclubList)}">
     <div th:if="${type == 'APPROVED'}">
         <div class="tab-content active" id="participating">
             <div th:each="club : ${myclubList}" class="club-card" th:attr="data-club-no=${club.no}" style="cursor: pointer;">
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="club-actions">
-                    <button class="btn-leave" th:attr="data-clubno=${club.no}" onclick="clubOpenModel(this);">
+                    <button class="btn-leave" th:attr="data-clubno=${club.no}" onclick="clubOpenModal(this);">
                         <span class="material-symbols-outlined">logout</span>
                         <span>탈퇴</span>
                     </button>
@@ -53,7 +53,7 @@
                         </div>
                     </div>
                     <div class="club-actions leader-actions">
-                        <button class="btn-leader-manage" th:attr="data-club-no=${club.no}">
+                        <button class="btn-leader-manage" th:attr="data-club-no=${club.no}" onclick="memberList()">
                             <span>멤버 관리</span>
                             <span class="material-symbols-outlined">expand_more</span>
                         </button>
@@ -65,28 +65,29 @@
                 </div>
                 
                 <!-- 멤버 관리 영역 (토글) -->
-                <!-- id="memberManagement" -->
-                <div class="member-management-area" th:id="|memberManagement-${club.no}|" style="display: none;">
+                <!-- id="memberManagement"
+                     -->
+                <div class="member-management-area"  id="|memberManagement-${club.no}|" style="display: none;">
                     <!-- 가입 요청 섹션 -->
                     <div class="member-section">
                         <div class="member-section-header">
-                            <span class="material-symbols-outlined section-icon pending-icon">notifications_active</span>
-                            <h4 class="section-title">가입 요청 (<span th:text="${#lists.size(pendingList)}">0</span>)</h4>
+                            <span class="material-symbols-outlined section-icon pending-icon">schedule</span>
+                            <h4 class="section-title">가입 요청 (<span text="${pendingList.size()}">0</span>)</h4>
                         </div>
-                        <div class="member-list">
-                            <div th:if="${#lists.isEmpty(pendingList)}">가입 요청 없음</div>
-                            <div th:each="m : ${pendingList}" class="member-item pending">
+                        <div class="member-list" each="pending : ${pendingList}">
+                            <div if="${#lists.isEmpty(pending)}">가입 요청 없음</div>
+                            <div class="member-item pending">
                                 <div class="member-info">
-                                    <p class="member-name" th:text="${m.user.username}">이름</p>
+                                    <p class="member-name" text="${m.user.username}">이름</p>
                                     <!-- 신청일 어ㅓ쩜...? -->
-                                    <p class="member-date" th:text="|신청일: ${#temporals.format(m.joinedAt, 'yyyy-MM-dd')}|">신청일: yyyy-mm-dd</p>
+                                    <p class="member-date" text="|신청일: ${#temporals.format(m.joinedAt, 'yyyy-MM-dd')}|">신청일: yyyy-mm-dd</p>
                                 </div>
                                 <div class="member-actions">
-                                    <button class="btn-approve" th:attr="data-member-no=${m.no},data-club-no=${clubNo}">
+                                    <button class="btn-approve" attr="data-member-no=${m.no},data-club-no=${clubNo}">
                                         <span class="material-symbols-outlined">check</span>
                                         <span>승인</span>
                                     </button>
-                                    <button class="btn-reject" th:attr="data-member-no=${m.no},data-club-no=${clubNo}">
+                                    <button class="btn-reject" attr="data-member-no=${m.no},data-club-no=${clubNo}">
                                         <span class="material-symbols-outlined">close</span>
                                         <span>거부</span>
                                     </button>
@@ -114,16 +115,16 @@
                     <!-- 승인된 멤버 섹션 -->
                     <div class="member-section">
                         <div class="member-section-header">
-                            <h4 class="section-title">승인된 멤버 (<span th:text="${#lists.size(approvedList)}">0</span>)</h4>
+                            <!-- <h4 class="section-title">승인된 멤버 (<span text="${#lists.size(approvedList)}">0</span>)</h4> -->
                         </div>
                         <div class="member-list">
-                            <div th:if="${#lists.isEmpty(approvedList)}">멤버 없음</div>
-                            <div th:each="m : ${approvedList}" class="member-item approved">
+                            <div if="${#lists.isEmpty(approvedList)}">멤버 없음</div>
+                            <div each="m : ${approvedList}" class="member-item approved">
                                 <div class="member-info">
-                                    <p class="member-name" th:text="${m.user.username}">이름</p>
-                                    <p class="member-date" th:text="|가입일: ${#temporals.format(m.joinedAt, 'yyyy-MM-dd')}|">가입일: yyyy-mm-dd</p>
+                                    <p class="member-name" text="${m.user.username}">이름</p>
+                                    <p class="member-date" text="|가입일: ${#temporals.format(m.joinedAt, 'yyyy-MM-dd')}|">가입일: yyyy-mm-dd</p>
                                 </div>
-                                <button class="btn-remove-member" th:attr="data-member-no=${m.no},data-club-no=${clubNo}">추방하기</button>
+                                <button class="btn-remove-member" attr="data-member-no=${m.no},data-club-no=${clubNo}">추방하기</button>
                             </div>
                             <!-- <div class="member-item approved">
                                 <div class="member-info">
@@ -157,7 +158,7 @@
                     </div>
                 </div>
                 <div class="club-actions">
-                    <button class="btn-cancel-request" onclick="event.stopPropagation();">
+                    <button class="btn-cancel-request" th:attr="data-clubno=${club.no}" onclick="pendingOpenModal(this);">
                         <span class="material-symbols-outlined">close</span>
                         신청 취소
                     </button>

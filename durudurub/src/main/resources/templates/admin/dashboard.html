@@ -12,7 +12,7 @@
 </head>
 <body>
     <main layout:fragment="content" class="main-content">
-        <!-- Header -->
+        <!-- 헤더 -->
         <header class="page-header">
             <div class="header-left">
                 <h1>관리자 대시보드</h1>
@@ -23,7 +23,7 @@
             </button>
         </header>
 
-        <!-- Navigation Tabs -->
+        <!-- 관리자 네비 -->
         <nav class="admin-nav">
             <button class="nav-tab active">
                 <span class="material-symbols-outlined">dashboard</span>
@@ -50,7 +50,7 @@
                 <span>카테고리 관리</span>
             </button>
         </nav>
-
+        
         <!-- Statistics Cards -->
         <div class="stats-container">
             <div class="stat-card stat-users">
@@ -59,7 +59,7 @@
                 </div>
                 <div class="stat-content">
                     <p class="stat-label">전체 사용자</p>
-                    <p class="stat-value" th:text="${totalUsers ?: '1,247'}">1,247</p>
+                    <p class="stat-value" th:text="${totalUsers}"></p>
                 </div>
             </div>
 
@@ -69,7 +69,7 @@
                 </div>
                 <div class="stat-content">
                     <p class="stat-label">전체 모임</p>
-                    <p class="stat-value" th:text="${totalClubs ?: '89'}">89</p>
+                    <p class="stat-value" th:text="${totalClubs}"></p>
                 </div>
             </div>
 
@@ -84,7 +84,7 @@
             </div>
         </div>
 
-        <!-- Recent Activity -->
+        <!-- 최근 활동 리스트 -->
         <section class="activity-section">
             <h2>최근 활동</h2>
             <div class="activity-list">

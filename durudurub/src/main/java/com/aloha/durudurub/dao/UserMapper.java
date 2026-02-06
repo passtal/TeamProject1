@@ -34,5 +34,7 @@ public interface UserMapper {
     int countByUserId(@Param("userId") String userId);
     
     int countByUsername(@Param("username") String username);
+
+    int countAll();
     
 }

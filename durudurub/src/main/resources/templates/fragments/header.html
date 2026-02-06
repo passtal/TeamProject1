@@ -74,9 +74,15 @@
                       <!-- user -->
                       <div id="admin-dropdown" class="hidden" style="display: none;">
                           <ul>
-                              <li><a th:href="@{/admin/notice}" class="notice">공지사항</a></li>
-                              <li><a th:href="@{/admin}" class="adminpage">관리자 페이지</a></li>
-                              <hr>
+                            <li class="notice">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell w-5 h-5" data-fg-cqpb125="597.340:597.21274:/src/app/components/Navbar.tsx:354:27:13175:28:e:Bell::::::CiHR">
+                                    <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+                                    <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
+                                </svg>
+                                <a th:href="@{/admin/notice}" class="notice">공지사항</a>
+                            </li>
+                              <li><a th:href="@{/admin/}" class="adminpage" style="color: blueviolet;">관리자 페이지</a></li>
+                              <!-- <br style="color: #374151;"> -->
                               <li>
                                   <form th:action="@{/logout}" method="post" style="display:inline;">
                                       <button type="submit" class="logout btn btn-link p-0">로그아웃</button>

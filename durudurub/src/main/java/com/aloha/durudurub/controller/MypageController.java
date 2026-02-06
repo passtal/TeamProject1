@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -95,7 +96,6 @@ public class MypageController {
         HttpServletRequest request,
         HttpServletResponse response,
         Authentication authentication
-
     ) throws Exception {
         if (principal != null) {
             int userNo = userService.selectByUserId(principal.getName()).getNo();
@@ -105,7 +105,7 @@ public class MypageController {
 
         return ResponseEntity.noContent().build();
     }
-
+// 완료 ------------------------------------------------------------------------
 
     
     // 내모임 관리
@@ -168,7 +168,7 @@ public class MypageController {
         // 삭제
         try {
             int result = clubService.deleteByClubAndUser(clubNo, userNo);
-            if ( result <= 0) {
+            if ( result == 0) {
                 // build : 응답 바디 필요 없을 때 사용하는 메서드
                 return ResponseEntity.badRequest().build();
             }
@@ -181,20 +181,46 @@ public class MypageController {
 
     // 리더인 모임
     @GetMapping("/club/{clubNo}/members")
-    public String membersFragment(
-        @PathVariable int clubNo,
+    @ResponseBody
+    public Map<String, Object> members(
+        @PathVariable("clubNo") int clubNo,
+        Principal principal,
         Model model
     ) throws Exception {
 
+        
         List<ClubMember> pendingList = clubService.listPendingMembers(clubNo);
         List<ClubMember> approvedList = clubService.listApproveMembers(clubNo);
+        Map<String, Object> map = new HashMap<>();
 
-        model.addAttribute("clubNo", clubNo);
-        model.addAttribute("pendingList", pendingList);
-        model.addAttribute("approvedList", approvedList);
+        log.info("★★ pendingList : " + pendingList);
+        log.info("★★ approvedList : " + approvedList);
 
-        return "mypage/mypage-club-members-fragment";
+        map.put("pendingList", pendingList);
+        map.put("approvedList", approvedList);
+
+        return map;
     }
 
-    
+    // 신청 중인 모임
+    // 신청 취소
+    @DeleteMapping("/club/pending/{clubNo}")
+    @ResponseBody
+    public ResponseEntity<Void> cancelPending(
+        @PathVariable("clubNo") int clubNo,
+        Principal principal
+    ) {
+        int userNo = userService.selectByUserId(principal.getName()).getNo();
+
+        try {
+            int result = clubService.cancelPending(clubNo, userNo);
+            if (result == 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

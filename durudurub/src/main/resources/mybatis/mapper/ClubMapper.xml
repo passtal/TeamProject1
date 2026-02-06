@@ -207,7 +207,7 @@
 
     <!-- 모임 수 조회 -->
     <select id="count" resultType="int">
-        SELECT COUNT (*) FROM clubs
+        SELECT COUNT(*) FROM clubs
     </select>
 
 

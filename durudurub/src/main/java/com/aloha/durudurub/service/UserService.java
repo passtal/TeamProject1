@@ -42,4 +42,8 @@ public interface UserService {
 
     int insert (User user, MultipartFile profileImgFile);
     
+
+    // 관리자 페이지
+    // 전체 사용자 수
+    int countAll();
 }

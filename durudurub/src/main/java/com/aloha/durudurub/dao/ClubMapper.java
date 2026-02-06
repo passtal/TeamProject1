@@ -42,7 +42,7 @@ public interface ClubMapper {
     int decrementCurrentMembers(@Param("no") int no);
 
     int updateStatus(@Param("no") int no, @Param("status") String status);
-
+    
     int count();
 
     List<Club> listUpcoming(@Param("limit") int limit);

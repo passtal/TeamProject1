@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.security.access.method.P;
 
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
@@ -35,4 +36,8 @@ public interface MemberMapper {
     int deleteByClubAndUser(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
     
     boolean countByClubAndUser(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
+
+    // 내모임관리
+    // 가입 신청 취소
+    int cancelPending(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
 }

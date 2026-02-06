@@ -167,4 +167,12 @@ public class UserServiceImpl implements UserService {
         // ✅ 기존 회원가입 로직 재사용
         return insert(user);
     }
+
+
+    // 관리자페이지
+    // 전체 사용자 수
+    @Override
+    public int countAll() {
+        return userMapper.countAll();
+    }
 }

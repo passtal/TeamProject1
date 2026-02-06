@@ -101,4 +101,15 @@
     <select id="countByClubAndUser" resultType="int">
         SELECT COUNT(*) FROM club_members WHERE club_no = #{clubNo} AND user_no = #{userNo}
     </select>
+
+
+
+    <!-- 내모임관리 -->
+    <!-- 가입 신청 취소 -->
+    <delete id="cancelPending">
+        DELETE FROM club_members
+        WHERE club_no = #{clubNo}
+            AND user_no = #{userNo}
+            AND status = 'PENDING'
+    </delete>
 </mapper>

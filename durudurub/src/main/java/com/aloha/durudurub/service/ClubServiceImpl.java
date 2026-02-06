@@ -141,7 +141,7 @@ public class ClubServiceImpl implements ClubService {
     public ClubMember getMemberStatus(int clubNo, int userNo) {
         return memberMapper.selectByClubAndUser(clubNo, userNo);
     }
-
+    
     @Override
     public int count() {
         return clubMapper.count();
@@ -202,6 +202,11 @@ public class ClubServiceImpl implements ClubService {
     @Override
     public List<Club> listByHost(int hostNo) {
         return clubMapper.listByHost(hostNo);
+    }
+    // 가입 신청 취소
+    @Override
+    public int cancelPending(int clubNo, int userNo) {
+        return memberMapper.cancelPending(clubNo, userNo);
     }
 
 
