@@ -13,8 +13,10 @@
         <result property="thumbnailImg" column="thumbnail_img"/>
         <result property="maxMembers" column="max_members"/>
         <result property="currentMembers" column="current_members"/>
-        <result property="deadline" column="deadline"/>
+        <result property="deadLine" column="deadline"/>
         <result property="location" column="location"/>
+        <result property="lat" column="lat"/>
+        <result property="lng" column="lng"/>
         <result property="clubDate" column="club_date"/>
         <result property="status" column="status"/>
         <result property="viewCount" column="view_count"/>
@@ -95,7 +97,7 @@
     <!-- 인기 모임 목록 -->
     <select id="listPopular" resultMap="clubResultMap">
         SELECT c.*,
-               u.no AS host_user_no, u.usern        ame AS host_username, u.profile_img AS host_profile_img,
+               u.no AS host_user_no, u.username AS host_username, u.profile_img AS host_profile_img,
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
         FROM clubs c
@@ -144,8 +146,8 @@
                cat.no AS cat_no, cat.name AS cat_name, cat.icon AS cat_icon,
                sub.no AS sub_cat_no, sub.name AS sub_cat_name
         FROM clubs c
-        JOIN users u ON c.host_no = u.no
-        JOIN categories cat ON c.category_no = cat.no
+        LEFT JOIN users u ON c.host_no = u.no
+        LEFT JOIN categories cat ON c.category_no = cat.no
         LEFT JOIN sub_categories sub ON c.sub_category_no = sub.no
         WHERE c.no = #{no}
     </select>
@@ -175,7 +177,7 @@
 
     <!-- 조회수 ↑ -->
     <update id="incrementViewCount">
-        UPDATE clubs SET view_count = view_count + 1 WHERE = #{no}
+        UPDATE clubs SET view_count = view_count + 1 WHERE no = #{no}
     </update>
 
     <!-- 좋아요 수 ↑ -->

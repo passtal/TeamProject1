@@ -20,7 +20,7 @@ public class Board {
     private int likeCount;
     private int commentCount;
     private String isNotice;
-    private Date cretaedAt;
+    private Date createdAt;
     private Date updatedAt;
 
     private User writer;    // 작성자 누군지 보이기

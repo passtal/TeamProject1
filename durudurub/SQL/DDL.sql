@@ -25,7 +25,8 @@ DROP TABLE IF EXISTS
     club_likes,
     random_games,
     banners,
-    club_member_reports
+    club_member_reports,
+    club_location
     ;
 
 SET FOREIGN_KEY_CHECKS = 1;
@@ -359,4 +360,15 @@ CREATE TABLE `notices` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`no`),
     FOREIGN KEY (`writer_no`) REFERENCES `users`(`no`) ON DELETE CASCADE
+);
+
+-- 20. club_locations (모임 장소 좌표 - 지도 참조용)
+
+CREATE TABLE `club_location` (
+    `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
+    `location` VARCHAR(255) COMMENT '장소',
+    `lat` DECIMAL(10, 8) NULL COMMENT '위도',
+    `lng` DECIMAL(11, 8) NULL COMMENT '경도',
+    PRIMARY KEY (`no`)
+    -- FOREIGN KEY (`location`) REFERENCES `clubs`(`location`) ON DELETE CASCADE
 );

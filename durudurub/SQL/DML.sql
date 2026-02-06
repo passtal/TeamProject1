@@ -101,11 +101,11 @@ INSERT INTO `user_auth` (`user_no`, `auth`) VALUES
 SELECT * FROM `user_auth`;
 
 -- 샘플 모임 데이터
-INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `max_members`, `location`, `club_date`, `status`) VALUES
-(2, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', 10, '서울시 강남구 스터디카페', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
-(2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
-(3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
-(4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '37.53450000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 
 -- 모임 멤버 추가
 INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
