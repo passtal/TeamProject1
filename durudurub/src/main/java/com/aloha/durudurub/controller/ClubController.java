@@ -69,12 +69,15 @@ public class ClubController {
     @GetMapping("/list")
     public String list(@RequestParam(value = "category", required = false) Integer categoryNo,
                        @RequestParam(value = "sub", required = false) Integer subCategoryNo,
+                       @RequestParam(value = "keyword", required = false) String keyword,
                        @RequestParam(value = "page", defaultValue = "1") int page,
                        Model model) {
         
         List<Club> clubs;
 
-        if (subCategoryNo != null) {
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            clubs = clubService.search(keyword);
+        } else if (subCategoryNo != null) {
             clubs = clubService.listBySubCategory(subCategoryNo);
         } else if (categoryNo != null) {
             clubs = clubService.listByCategory(categoryNo);
@@ -97,6 +100,7 @@ public class ClubController {
         model.addAttribute("categories", categories);
         model.addAttribute("categoryNo", categoryNo);
         model.addAttribute("subCategoryNo", subCategoryNo);
+        model.addAttribute("keyword", keyword);
         
         return "club/list";
     }

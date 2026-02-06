@@ -21,7 +21,7 @@
               <span class="fw-bold fs-5 d-none d-sm-inline">두루두룹</span>
           </a>
           <!-- 검색창 영역 (중앙) - 데스크탑만 -->
-          <div class="search-container w-50 d-none d-lg-block">
+          <div class="search-container w-50 d-none d-lg-block mx-auto">
               <form class="d-flex justify-content-center" role="search" th:action="@{/club/list}" method="get">
                   <div class="input-group">
                       <button class="btn btn-outline-secondary left-btn" type="submit">     
@@ -209,3 +209,46 @@
       </div>
   </div>
 </th:block>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 검색창 엔터키 기능
+    const searchInput = document.querySelector('input[name="keyword"]');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const form = this.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            }
+        });
+    }
+
+    // 사용자 드롭다운 토글
+    const userIcons = document.querySelectorAll('.icon-container > button');
+    userIcons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const dropdown = this.nextElementSibling;
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+    });
+
+    // 페이지 다른 곳 클릭시 드롭다운 닫기
+    document.addEventListener('click', function(e) {
+        const iconContainers = document.querySelectorAll('.icon-container');
+        iconContainers.forEach(container => {
+            if (!container.contains(e.target)) {
+                const dropdown = container.querySelector('[style*="display"]');
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
+    });
+});
+</script>

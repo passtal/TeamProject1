@@ -134,7 +134,7 @@
             const categoryNo = $(this).val();
             if (categoryNo) {
                 $.ajax({
-                    url: '/api/categories/' + categoryNo + '/sub',
+                    url: '/club/api/subcategories/' + categoryNo,
                     type: 'GET',
                     success: function(subCategories) {
                         if (subCategories && subCategories.length > 0) {

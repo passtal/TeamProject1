@@ -23,6 +23,8 @@ public interface ClubMapper {
 
     List<Club> listRecent(@Param("limit") int limit);
 
+    List<Club> search(@Param("keyword") String keyword);
+
     Club selectByNo(@Param("no") int no);
 
     int insert(Club club);
