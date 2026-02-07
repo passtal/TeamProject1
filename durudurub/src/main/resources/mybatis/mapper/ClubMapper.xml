@@ -244,4 +244,12 @@
         WHERE m.user_no = #{userNo} AND m.status = 'PENDING'
             ORDER BY m.joined_at DESC
     </select>
+
+    <!-- 관리자페이지: 최신모임 1건 -->
+    <select id="findLatestClub" resultType="Club">
+        SELECT *
+        FROM clubs
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
 </mapper>

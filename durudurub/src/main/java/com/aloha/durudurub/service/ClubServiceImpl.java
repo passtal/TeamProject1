@@ -208,6 +208,12 @@ public class ClubServiceImpl implements ClubService {
     public int cancelPending(int clubNo, int userNo) {
         return memberMapper.cancelPending(clubNo, userNo);
     }
+    // 관리자페이지
+    // 1. 대시보드
+    @Override
+    public Club findLatestClub() {
+        return clubMapper.findLatestClub();
+    }
 
 
     

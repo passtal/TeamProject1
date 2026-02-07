@@ -55,4 +55,7 @@ public interface ClubMapper {
     List<Club> joinedClubList(@Param("userNo") int userNo) throws Exception;
     // 승인 대기 중인 모임 리스트
     List<Club> pendingClubList(@Param("userNo") int userNo) throws Exception;
+    // 관리자페이지
+    // 1. 대시보드
+    Club findLatestClub();
 }

@@ -35,6 +35,10 @@ public interface UserMapper {
     
     int countByUsername(@Param("username") String username);
 
+    // 관리자페이지
+    // 전체 이용자 수
     int countAll();
+    // 최신 가입자 수
+    int countNew();
     
 }

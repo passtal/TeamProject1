@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}"
+      th:with="isAdminPage=true">
+<head>
+    <title>관리자 대시보드 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
+        <link rel="stylesheet" th:href="@{/css/admin/users.css}">
+    </th:block>
+</head>
+<body>
+    <main layout:fragment="content" class="main-content">
+        <!-- 헤더 (고정) -->
+        <header class="page-header">
+            <div class="header-left">
+                <h1>관리자 페이지</h1>
+                <p>두루두룹 서비스 관리</p>
+            </div>
+            <button class="btn-main" onclick="location.href='/'">
+                메인으로
+            </button>
+        </header>
+
+        <!-- 네비 탭 (고정) -->
+        <nav class="admin-nav" id="adminNav">
+            <button class="nav-tab active" data-url="/admin/fragment/dashboard">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>대시보드</span>
+            </button>
+            <button class="nav-tab" data-url="/admin/fragment/users">
+                <span class="material-symbols-outlined">group</span>
+                <span>사용자 관리</span>
+            </button>
+            <button class="nav-tab" data-url="/admin/fragment/clubs">
+                <span class="material-symbols-outlined">groups</span>
+                <span>모임 관리</span>
+            </button>
+            <button class="nav-tab" data-url="/admin/fragment/reports">
+                <span class="material-symbols-outlined">report</span>
+                <span>신고 관리</span>
+            </button>
+            <button class="nav-tab" data-url="/admin/fragment/banners">
+                <span class="material-symbols-outlined">image</span>
+                <span>광고 배너 관리</span>
+            </button>
+            <button class="nav-tab" data-url="/admin/fragment/categories">
+                <span class="material-symbols-outlined">category</span>
+                <span>카테고리 관리</span>
+            </button>
+        </nav>
+
+        <!-- HTML 조각 (fragment) -->
+        <section id="adminContent"></section>
+    </main>
+    
+    <th:block layout:fragment="script">
+        <script>
+            // 조각 교체
+            function loadAdminFragment(url) {
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    success: function (html) {
+                        $('#adminContent').html(html)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('*****Error: ', error)
+                        $('#adminContent').html("<p>불러오기 실패</p>")
+                    }
+                })
+            }
+            
+            // 최초 진입 시 대시보드 로드
+            $(function () {
+                loadAdminFragment('/admin/fragment/dashboard');
+            });
+
+            // 네비 클릭
+            $('#adminNav').on('click', '.nav-tab', function () {
+                
+                $(".nav-tab").removeClass("active")
+                $(this).addClass("active")
+
+                loadAdminFragment($(this).data('url'))
+            })
+        </script>
+    </th:block>
+</body>
+</html>

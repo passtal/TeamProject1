@@ -175,4 +175,9 @@ public class UserServiceImpl implements UserService {
     public int countAll() {
         return userMapper.countAll();
     }
+    // 최신 가입자 수
+    @Override
+    public int countNew() {
+        return userMapper.countNew();
+    }
 }

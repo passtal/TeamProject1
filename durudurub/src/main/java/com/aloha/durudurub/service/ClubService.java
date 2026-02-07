@@ -77,12 +77,13 @@ public interface ClubService {
     // 탈퇴하기
     @Transactional  // 멤버 삭제 및 인원 수 감소
     int deleteByClubAndUser(int clubNo, int userNo);
-
     // 승인 대기 중인 모임
     List<Club> pendingClubList(int userNo) throws Exception;
     // 모임장별 모임 목록
     List<Club> listByHost(int hostNo) throws Exception;
-
     // 가입 신청 취소
     int cancelPending(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
+
+    // 관리자페이지 : 대시보드
+    Club findLatestClub();
 }

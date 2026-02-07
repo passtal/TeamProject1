@@ -46,4 +46,6 @@ public interface UserService {
     // 관리자 페이지
     // 전체 사용자 수
     int countAll();
+    // 최신 가입자 수
+    int countNew();
 }

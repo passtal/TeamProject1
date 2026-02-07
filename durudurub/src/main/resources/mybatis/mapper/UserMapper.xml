@@ -117,4 +117,11 @@
         SELECT COUNT(*)
         FROM users
     </select>
+    <!-- 최신 가입자 수 -->
+    <select id="countNew" resultType="int">
+        SELECT COUNT(*)
+        FROM users
+        WHERE created_at <![CDATA[ >= ]]> CURDATE() - INTERVAL 2 DAY
+            AND created_at <![CDATA[ < ]]> CURDATE() + INTERVAL 1 DAY
+    </select>
 </mapper>
