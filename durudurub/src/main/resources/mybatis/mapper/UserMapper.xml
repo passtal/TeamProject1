@@ -120,8 +120,30 @@
     <!-- 최신 가입자 수 -->
     <select id="countNew" resultType="int">
         SELECT COUNT(*)
+        FROM users u
+        JOIN (
+            SELECT DATE(created_at) AS latest_date FROM users ORDER BY created_at DESC LIMIT 1
+        ) t
+        ON u.created_at <![CDATA[ >= ]]> t.latest_date
+        AND u.created_at <![CDATA[ < ]]> t.latest_date + INTERVAL 1 DAY
+    </select>
+    <!-- 최신 가입자 -->
+    <select id="findLastestUser" resultType="User">
+        SELECT *
         FROM users
-        WHERE created_at <![CDATA[ >= ]]> CURDATE() - INTERVAL 2 DAY
-            AND created_at <![CDATA[ < ]]> CURDATE() + INTERVAL 1 DAY
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
+    <!-- 구독 상태 (뱃지) -->
+    <select id="userList" resultType="com.aloha.durudurub.dto.AdminSubscription">
+        SELECT
+            u.no AS userNo,
+            u.user_id AS userId,
+            u.username AS username,
+            u.created_at AS createdAt,
+            COALESCE(s.status, 'INACTIVE') AS subStatus
+        FROM users u
+        LEFT JOIN subscriptions s ON s.user_no = u.no
+        ORDER BY u.created_at DESC
     </select>
 </mapper>

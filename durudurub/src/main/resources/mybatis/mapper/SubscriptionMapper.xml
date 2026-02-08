@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- AI 구독 XML -->
+<mapper namespace="com.aloha.durudurub.dao.SubscriptionMapper">
+    <!-- 매핑 (구독 상태)-->
+    <resultMap id="subscriptionMap" type="com.aloha.durudurub.dto.Subscriptions">
+        <id property="no" column="no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="status" column="status"/>
+        <result property="planName" column="plan_name"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="autoRenew" column="auto_renew"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 구독 조회 (회원 번호) -->
+    <select id="selectByUserNo" resultMap="subscriptionMap">
+        SELECT *
+        FROM subscriptions
+        WHERE user_no = #{userNo}
+    </select>
+    <!-- 구독 전 (디폴트) -->
+    <insert id="insertDefault">
+        INSERT INTO subscriptions (user_no, status, plan_name, auto_renew, start_date, end_date)
+        VALUES (#{userNo}, 'INACTIVE', 'AI_SEARCH', 'Y', NULL, NULL)
+        ON DUPLICATE KEY UPDATE user_no = user_no
+    </insert>
+     <!-- 구독 후  -->
+    <update id="updateSubscription">
+        UPDATE subscriptions
+        SET status = #{status},
+            plan_name = #{planName},
+            start_date = #{startDate},
+            end_date = #{endDate},
+            auto_renew = #{autoRenew}
+        WHERE user_no = #{userNo}
+    </update>
+</mapper>

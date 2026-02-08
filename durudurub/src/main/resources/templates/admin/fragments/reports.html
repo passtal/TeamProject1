@@ -1,0 +1,236 @@
+<!-- 신고 관리 fragment -->
+<div th:fragment="content">
+    <!-- 신고 section -->
+    <section class="reports-section">
+        <!-- 검색창 -->
+        <div class="search-bar">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="reportSearch" placeholder="신고된 사용자 또는 신고 사유 검색...">
+        </div>
+
+        <!-- 신고 테이블-->
+        <div class="table-container">
+            <table class="reports-table">
+                <thead>
+                    <tr>
+                        <th>신고된 사용자 닉네임</th>
+                        <th>이메일</th>
+                        <th>신고 사유</th>
+                        <th>신고 날짜</th>
+                        <th>신고 만료 날짜</th>
+                        <th>신고 당한 횟수</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="reports-body">
+                    <tr id="reports-data">
+                        <td colspan="7" align="center">조회된 사용자가 없습니다</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 사용자 삭제 확인 모달 -->
+    <div class="modal-overlay" id="deleteUserModal">
+        <div class="modal-container-delete">
+            <div class="modal-header">
+                <h2>신고된 사용자 삭제 확인</h2>
+                <button class="btn-close-modal" onclick="closeDeleteConfirm()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body-delete">
+                <p class="delete-message" id="deleteUser"></p>
+            </div>
+            <div class="modal-footer-delete">
+                <button class="btn-cancel" onclick="closeDeleteConfirm()">취소</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">삭제</button>
+            </div>
+        </div>
+    </div>
+    
+    <th:block layout:fragment="script">
+    <script>
+    // 검색 기능
+    // 검색 debounce - 깜빡임 처리
+    function debounce(fn, delay) {
+        let timer
+        return function (...args) {
+            clearTimeout(timer)
+            timer = setTimeout(() => fn.apply(this, args), delay)
+        }
+    }
+    // 검색 - 함수
+    function filterUsers(searchTerm) {
+        const rows = document.querySelectorAll('#reports-body tr')
+
+        rows.forEach(row => {
+            const username = row.cells[0].textContent.toLowerCase();
+            const userId = row.cells[1].textContent.toLowerCase();
+            const reason = row.cells[2].textContent.toLowerCase();
+            
+            if (username.includes(searchTerm) || userId.includes(searchTerm) || reason.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    // 검색 - 이벤트
+    $(document).on('input', '#reportSearch', debounce(function(e){
+        filterUsers(e.target.value.toLowerCase())
+    }, 200))
+
+
+    // 사용자 리스트
+    function getList() {
+        $.ajax({
+            url: `/admin/api/reports`,
+            method: 'GET',
+            dataType: 'json',
+            success: function (reportsList) {
+                if (reportsList.length == 0) {
+                    $('#reports-body').html(
+                        `<tr>
+                            <td colspan="7" align="center">조회된 사용자가 없습니다.</td>
+                        </tr>`
+                    )
+                    return
+                } else {
+                    // 기존 목록 제거
+                    $('#reports-body').empty()
+                    // 새로운 서버데이터 요청 후 받은 데이터 기반으로 재생성
+                    let tr = ''
+                    for(const userBan of reportsList) {
+                        const user = userBan.user
+                        const reportCount = userBan.reportCountAtBan
+                        const expireDate = expiredDays(userBan.createdAt, 7)
+
+                        tr += `<tr data-user-no="${userBan.userNo}"
+                                    data-username="${escapeJs(user.username)}">
+                                <td>${user.username}</td> 
+                                <td>${user.userId}</td>
+                                <td>${userBan.reason}</td>
+                                <td>${formatDate(userBan.createdAt)}</td>
+                                <td>${formatDate(expireDate)}</td>
+                                <td>${badge(reportCount)}</td>
+                                <td>
+                                    <button class="btn-delete" onclick="deleteUser(this, event)">
+                                        <span class="material-symbols-outlined">delete</span>
+                                    </button>
+                                </td>
+                            </tr>`
+                    }
+                    $('#reports-body').html(tr)
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('*****status:', status);
+                console.error('*****http status code:', xhr.status);
+                console.error('*****error:', error);
+                console.error('*****responseText:', xhr.responseText);
+                alert('리스트 조회 실패!')
+            }
+        })
+    }
+    // 따옴표 깨짐 onclick('문자열', '문자열',,,,)
+    // '${escapeJs(value)}' : 문자열 파라미터
+    function escapeJs(str) {
+        if (str == null) return ''
+        return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+    }
+    // 신고횟수 뱃지
+    function badge(reportCount) {
+        if(reportCount == 1) {
+            return `<span class="badge-report">1회</span>`
+        }
+        if(reportCount == 2) {
+            return `<span class="badge-report">2회</span>`
+        }
+        if(reportCount == 3) {
+            return `<span class="badge-report">3회</span>`
+        }
+        return `<span class="badge-report-warning">${reportCount}회</span>`
+    }
+    // 날짜 형식
+    function formatDate(userBanDate) {
+        const date = new Date(userBanDate)
+
+        return date.getFullYear() + '. '
+            + (date.getMonth() + 1) + '. '
+            + date.getDate() + '.'
+    }
+    // 만료일 7일
+    function expiredDays(dateValue, days) {
+        const d = new Date(dateValue)
+
+        d.setDate(d.getDate() + days)
+        return d
+    }
+    getList()
+        
+        
+    // 사용자 삭제 기능 : 스크립트 한번만 선언!
+    // let rowToDelete = null;
+    window.rowToDelete = window.rowToDelete ?? null;
+    
+    function deleteUser(btn, event) {
+        event.stopPropagation(); // 행 클릭 이벤트 방지
+        rowToDelete = btn.closest('tr');    // 클릭한 삭제버튼 속한 tr
+        const userNo = rowToDelete.getAttribute('data-user-no') || '1';
+        const username = rowToDelete.getAttribute('data-username') || '';
+        
+        // 모달에 메시지 설정
+        document.getElementById('deleteUser').innerHTML = 
+            `신고된 사용자 NO #${userNo} (${username})을 삭제하시겠습니까?
+            <br>해당 신고 기록도 함께 삭제됩니다.`;
+        // 모달 표시
+        document.getElementById('deleteUserModal').style.display = 'flex';
+    }
+    
+    function confirmDelete() {
+        if (rowToDelete) {
+            const userNo = rowToDelete.getAttribute('data-user-no') // 클릭한 user 번호
+
+            // CSRF 토큰 문제 (403)
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+            
+            $.ajax({
+                url: `/admin/api/reports/${userNo}`,
+                method: 'DELETE',
+                beforeSend: function (xhr) {     
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (res) {
+                    // 서버 삭제 성공 후, 리스트제거
+                    rowToDelete.remove();
+                    rowToDelete = null;
+                    closeDeleteConfirm();
+                    // 목록 다시 받기 (동기화)
+                    getList()
+                },
+                error: function (xhr, status, error) {
+                    console.error('*****삭제 실패!')
+                    alert('삭제 실패!')
+                }
+            })
+            
+        }
+    }
+
+    // 모달창 닫기
+    function closeDeleteConfirm() {
+        document.getElementById('deleteUserModal').style.display = 'none';
+        rowToDelete = null;
+    }
+    // 모달 외부 클릭 시 닫기
+    document.getElementById('deleteUserModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteConfirm();
+        }
+    });
+    </script>
+    </th:block>
+</div>

@@ -23,11 +23,11 @@
           <!-- 검색창 영역 (중앙) - 데스크탑만 -->
           <div class="search-container w-50 d-none d-lg-block">
               <form class="d-flex justify-content-center" role="search" th:action="@{/club/list}" method="get">
-                  <div class="input-group">
+                  <div class="input-group club-search-group">
                       <button class="btn btn-outline-secondary left-btn" type="submit">     
                         <img th:src="@{/img/icons/navbar-search-icon.png}" alt="검색" class="navbar-icon">
                       </button>
-                      <input class="form-control rounded-pill shadow-none" type="search" name="keyword" placeholder="모임 검색..." aria-label="Search" style="padding-left: 50px;">
+                      <input id="clubSearch" class="form-control club-search-input rounded-pill shadow-none" type="search" name="keyword" placeholder="모임 검색..." aria-label="Search" style="padding-left: 50px;">
                       <button class="btn btn-outline-secondary right-btn" type="submit">
                         <img th:src="@{/img/icons/navbar-filter-button.png}" alt="ai검색" class="navbar-icon">
                       </button>

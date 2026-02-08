@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.durudurub.dao.AuthMapper;
 import com.aloha.durudurub.dao.UserMapper;
+import com.aloha.durudurub.dto.AdminSubscription;
 import com.aloha.durudurub.dto.Auth;
 import com.aloha.durudurub.dto.User;
 
@@ -179,5 +180,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public int countNew() {
         return userMapper.countNew();
+    }
+    // 최신 가입일
+    @Override
+    public User findLastestUser() {
+       return userMapper.findLastestUser();
+    }
+    // 사용자 리스트 (구독 여부)
+    @Override
+    public List<AdminSubscription> userList() {
+        return userMapper.userList();
     }
 }

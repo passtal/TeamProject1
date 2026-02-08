@@ -1,0 +1,724 @@
+<!-- 광고 관리 fragment -->
+<div th:fragment="content">
+    <!-- 배너 관리 섹션 -->
+    <div class="banners-section">
+        <div class="section-header">
+            <h2>광고 배너 관리</h2>
+            <button class="btn-add-banner" onclick="openAddBannerModal()">
+                <span class="material-symbols-outlined">add</span>
+                배너 추가
+            </button>
+        </div>
+
+        <div class="table-container">
+            <table class="banners-table">
+                <thead>
+                    <tr>
+                        <th>순서</th>
+                        <th>미리보기</th>
+                        <th>제목</th>
+                        <th>링크 URL</th>
+                        <th>배너 위치</th>
+                        <th>상태</th>
+                        <th>작업</th>
+                    </tr>
+                </thead>
+                <tbody id="banner-body">
+                    <tr id="banner-data">
+                        <td colspan="7" align="center">조회된 배너가 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 배너 추가 모달 -->
+    <div id="bannerCreateModal" class="modal-overlay">
+        <div class="modal-create-container">
+            <div class="modal-create-header">
+                <h2>배너 등록</h2>
+                <button class="btn-close-modal" onclick="closeCreatedModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <form id="bannerInsertForm" method="post" th:action="@{/admin/api/banners/insert}" enctype="multipart/form-data">
+            <div class="modal-create-content">
+                <div class="form-group">
+                    <label class="form-label">배너 제목</label>
+                    <input type="text" id="createTitle" name="title" class="form-input" placeholder="제목을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">이미지</label>
+                    <div class="image-input-group">
+                        <input type="text" id="createImageUrl" name="imageUrl" class="form-input-image" placeholder="이미지 URL">
+                        <label class="btn-file-select">
+                            파일 선택
+                            <input type="file" name="imageFile" accept="image/*" style="display: none;" onchange="previewImage(event)">
+                        </label>
+                    </div>
+                    <p class="form-helper">URL 입력 또는 파일 선택 (권장 사이즈: 800x200px)</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">미리보기</label>
+                    <div class="preview-image-container">
+                        <img id="createPreviewImage" src="" alt="배너 미리보기">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">링크 URL</label>
+                    <input type="text" id="createUrl" name="linkUrl" class="form-input" placeholder="/path">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">설명</label>
+                    <textarea id="createDescription" name="description"  class="form-textarea" placeholder="배너에 대한 간단한 설명을 입력하세요 (선택 사항)"></textarea>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">노출 시작일</label>
+                        <input type="date" id="createStartDate"  name="startDate" class="form-input-date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">노출 종료일</label>
+                        <input type="date" id="createEndDate" name="endDate" class="form-input-date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">표시 순서</label>
+                    <input type="number" id="createOrder" name="seq" class="form-input-number" min="1">
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="hidden" name="isActive" value="N">
+                    <input type="checkbox" id="active" name="isActive" value="Y" checked>
+                    <label for="active" class="form-checkbox-label">배너 활성화</label>
+                </div>
+            </div>
+            <div class="modal-create-footer">
+                <button type="button" class="btn-cancel" onclick="closeCreatedModal()">취소</button>
+                <button type="submit" class="btn-save">등록</button>
+            </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 배너 수정 모달 -->
+    <div id="bannerEditModal" class="modal-overlay">
+        <div class="modal-edit-container">
+            <div class="modal-edit-header">
+                <h2>배너 수정</h2>
+                <button class="btn-close-modal" onclick="closeEditModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-edit-content">
+                <div class="form-group">
+                    <label class="form-label">배너 제목</label>
+                    <input type="text" id="editTitle" class="form-input" placeholder="제목을 입력하세요" value="">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">이미지</label>
+                    <div class="image-input-group">
+                        <input type="text" id="editImageUrl" class="form-input-image" placeholder="이미지 URL" value="">
+                        <label class="btn-file-select">
+                            파일 선택
+                            <input type="file" id="editImageFile" accept="image/*" style="display: none;">
+                        </label>
+                    </div>
+                    <p class="form-helper">URL 입력 또는 파일 선택 (권장 사이즈: 800x200px)</p>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">미리보기</label>
+                    <div class="preview-image-container">
+                        <img id="editPreviewImage" src="" alt="배너 미리보기">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">링크 URL</label>
+                    <input type="text" id="editUrl" class="form-input" placeholder="/path" value="t">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">설명</label>
+                    <textarea id="editDescription" class="form-textarea" placeholder="배너에 대한 간단한 설명을 입력하세요 (선택 사항)"></textarea>
+                </div>
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label class="form-label">노출 시작일</label>
+                        <input type="date" id="editStartDate" class="form-input-date" value="">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">노출 종료일</label>
+                        <input type="date" id="editEndDate" class="form-input-date" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">표시 순서</label>
+                    <input type="number" id="editOrder" class="form-input-number" min="1" value="1">
+                </div>
+                <div class="form-group-checkbox">
+                    <input type="checkbox" id="editActive" class="form-checkbox" checked>
+                    <label for="editActive" class="form-checkbox-label">배너 활성화</label>
+                </div>
+            </div>
+            <div class="modal-edit-footer">
+                <button class="btn-cancel" onclick="closeEditModal()">취소</button>
+                <button class="btn-save" onclick="saveBannerEdit()">수정</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 배너 상세 정보 모달 -->
+    <div id="bannerDetailModal" class="modal-overlay">
+        <div class="modal-detail-container">
+            <div class="modal-detail-header">
+                <h2>배너 상세 정보</h2>
+                <button class="btn-close-modal" onclick="closeBannerDetailModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-detail-content">
+                <div class="detail-row">
+                    <div class="detail-label">제목</div>
+                    <div class="detail-value" id="detailTitle"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">이미지</div>
+                    <div class="detail-image-container">
+                        <img id="detailImage" src="" alt="배너 이미지">
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">링크 URL</div>
+                    <div class="detail-value" id="detailUrl"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">설명</div>
+                    <div class="detail-value" id="detailDescription"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">활성화 여부</div>
+                    <span id="detailStatus" class="status-badge"></span>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">배너 위치</div>
+                    <span class="position-badge" id="detailPosition"></span>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">노출 시작일</div>
+                    <div class="detail-value" id="detailStartDate"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">노출 종료일</div>
+                    <div class="detail-value" id="detailEndDate"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">정렬 순서</div>
+                    <div class="detail-value" id="detailOrder"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">클릭 수</div>
+                    <div class="detail-clicks" id="detailClicks"></div>
+                </div>
+            </div>
+            <div class="modal-detail-footer">
+                <button class="btn-close" onclick="closeBannerDetailModal()">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 삭제 확인 모달 -->
+    <div id="deleteModal" class="delete-modal-overlay" onclick="if(event.target === this) closeDeleteModal()">
+        <div class="delete-modal-container">
+            <div class="delete-modal-header">
+                <h2>배너 삭제 확인</h2>
+                <button class="btn-close-modal" onclick="closeDeleteModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="delete-modal-content">
+                <p>정말로 이 배너를 삭제하시겠습니까?</p>
+                <p class="delete-banner-title" id="deleteBannerTitle"></p>
+            </div>
+            <div class="delete-modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()">취소</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="script">
+    <script>
+        // ---- 배너 등록하기
+        // 배너 추가 (모달)
+        function openAddBannerModal() {
+            document.getElementById('bannerCreateModal').style.display = "flex"           
+        }
+        // 폼 제출 처리
+        $('#bannerInsertForm').on('submit', function (e) {
+            e.preventDefault();
+
+            const form = this;
+            // form 안
+            // input, checkout, file 포함!
+            const fd = new FormData(form);
+
+            const token = document.querySelector("meta[name='_csrf']")?.content;
+            const header = document.querySelector("meta[name='_csrf_header']")?.content;
+
+            // 데이터 등록
+            const title = (fd.get('title') || '').toString().trim()
+            const imageUrl = (fd.get('imageUrl') || '').toString().trim()
+            const linkUrl = (fd.get('linkUrl') || '').toString().trim()
+            const startDate = (fd.get('startDate') || '').toString()
+            const endDate = (fd.get('endDate') || '').toString()
+            const seq = (fd.get('seq') || '').toString().trim()
+
+            const isActive = document.getElementById('active').checked ? 'Y' : 'N';
+            fd.set('isActive', isActive);   // ← 핵심: 기존 N,Y를 Y/N 하나로 덮어씀
+
+
+            // 이미지
+            const fileInput = form.querySelector('input[name="imageFile"]')
+            const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+            if (!title) {
+                alert('배너 제목을 입력해주세요.')
+                return
+            }
+            if (!imageUrl && !file) {
+                alert('이미지 URL 입력하거나 파일 선택해주세요')
+                return
+            }
+            if (!linkUrl) {
+                alert('배너 사이트를 입력해주세요')
+                return
+            }
+            if (!startDate || !endDate) {
+                alert('노출 시작일 및 종료일을 입력해주세요')
+                return
+            }
+            if (!seq) {
+                alert('표시 순서를 선택해주세요')
+                return
+            }
+
+            $.ajax({
+                url: $(form).attr('action'),    // th:action 렌더링된 주소 사용
+                type: 'POST',
+                data: fd,
+                enctype: 'multipart/form-data',
+                processData: false, // formdata 가공 막기 (필수)
+                contentType: false, // 브라우저가 boundary 포함해서 자동 설정
+                beforeSend: function (xhr) {
+                    if (token && header) xhr.setRequestHeader(header, token);
+                },
+                success: function (result) {
+                    if (result == 1) {
+                        alert('등록 완료!')
+                        closeCreatedModal()
+
+                        // 리스트 새로고침
+                        getList()
+                    }
+                },
+                error: function (xhr) {
+                    alert('등록 실패')
+                    console.error('status:', xhr.status);
+                    console.error('responseText:', xhr.responseText);
+                }
+            })
+        })
+        // 이미지 URL 입력 시 미리보기 업데이트
+        document.getElementById('createImageUrl').addEventListener('input', function(e) {
+            const url = e.target.value;
+            if (url) {
+                document.getElementById('createPreviewImage').src = url;
+            }
+        });
+
+        // 파일 선택 시 미리보기 업데이트
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('createPreviewImage').src = e.target.result;
+                    document.getElementById('createImageUrl').value = ''; // URL 초기화
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        // 등록 모달 닫기
+        function closeCreatedModal() {
+            document.getElementById('bannerCreateModal').style.display = 'none';
+        }
+
+                
+        // ------- 배너 수정하기
+        let bannerNo = null
+        // 수정버튼
+        function editBanner(no) {
+            const banner = bannerMap[no];
+            if (!banner) return;
+
+            bannerNo = banner.no
+
+            // 폼에 데이터 채우기
+            document.getElementById('editTitle').value = banner.title;
+            document.getElementById('editImageUrl').value = banner.imageUrl;
+            document.getElementById('editPreviewImage').src = banner.imageUrl;
+            document.getElementById('editUrl').value = banner.linkUrl;
+            document.getElementById('editDescription').value = banner.description;
+            document.getElementById('editStartDate').value = formatDate(banner.startDate);
+            document.getElementById('editEndDate').value = formatDate(banner.endDate);
+            document.getElementById('editOrder').value = banner.seq;
+            document.getElementById('editActive').checked = banner.isActive == 'Y';
+
+            // 모달 표시
+            document.getElementById('bannerEditModal').style.display = 'flex';
+        }
+        // 수정 후 저장
+        function saveBannerEdit() {
+            if (!bannerNo) return
+
+            const fd = new FormData()
+
+            // CSRF 토큰 문제 (403)
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+
+            fd.append("title", document.getElementById('editTitle').value);
+            fd.append("imageUrl", document.getElementById('editImageUrl').value);
+            fd.append("linkUrl", document.getElementById('editUrl').value);
+            fd.append("description", document.getElementById('editDescription').value);
+            fd.append("startDate", document.getElementById('editStartDate').value);
+            fd.append("endDate", document.getElementById('editEndDate').value);
+            fd.append("seq", document.getElementById('editOrder').value);
+            fd.append("isActive", document.getElementById('editActive').checked ? 'Y' : 'N');
+
+            // 파일(선택)
+            const fileInput = document.getElementById('editImageFile');
+            if (fileInput && fileInput.files && fileInput.files.length > 0) {
+                fd.append("imageFile", fileInput.files[0]);
+            }
+
+            $.ajax ({
+                url: `/admin/api/banners/update/${bannerNo}`,
+                method: 'PUT',
+                data: fd,
+                processData: false,
+                contentType: false,
+                beforeSend: function (xhr) {     
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function () {
+                    alert('수정 완료!')
+                    closeEditModal()
+
+                    getList()
+                },
+                error: function (xhr) {
+                    alert('수정 실패!')
+                    console.error('*****수정 오류!' + xhr)
+                }
+            })
+        }
+        // 날짜 형식
+        function formatDate(userBanDate) {
+            const date = new Date(userBanDate)
+
+            const yyyy = date.getFullYear()
+            const mm = String(date.getMonth() + 1).padStart(2, '0')
+            const dd = String(date.getDate()).padStart(2, '0')
+            return `${yyyy}-${mm}-${dd}`
+        }
+        // 이미지 URL 변경 시 미리보기 업데이트
+        document.getElementById('editImageUrl')?.addEventListener('input', function(e) {
+            document.getElementById('editPreviewImage').src = e.target.value;
+        });
+        // 수정 모달 외부 클릭 시 닫기
+        document.getElementById('bannerEditModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeEditModal();
+            }
+        });
+        // 수정 모달 닫기
+        function closeEditModal() {
+            document.getElementById('bannerEditModal').style.display = 'none';
+        }
+        
+        let bannerMap = {} // no -> banner
+        // --------리스트 조회하기
+        // 사용자 리스트
+        function getList() {
+            $.ajax({
+                url: `/admin/api/banners`,
+                method: 'GET',
+                dataType: 'json',
+                success: function (bannerList) {
+                    bannerMap = {}
+                    if (bannerList.length == 0) {
+                        $('#banner-body').html(
+                            `<tr>
+                                <td colspan="7" align="center">조회된 배너가 없습니다.</td>
+                            </tr>`
+                        )
+                        return
+                    } else {
+                        // 기존 목록 제거
+                        $('#banner-body').empty()
+                        // 새로운 서버데이터 요청 후 받은 데이터 기반으로 재생성
+                        let tr = ''
+                        for(const banner of bannerList) {
+                            bannerMap[banner.no] = banner
+                            tr += `<tr data-banner-no='${banner.no}'
+                                    onclick="showBannerDetail(${banner.no})" style="cursor:pointer;">
+                                    <td class="text-center">${banner.seq}</td> 
+                                    <td>
+                                        <div class="banner-preview">
+                                            <img src="${escapeHtml(banner.imageUrl)}" alt="배너 미리보기">
+                                        </div>
+                                    </td>
+                                    <td>${escapeHtml(banner.title)}</td>
+                                    <td class="text-muted">
+                                        <span class="link-ellipsis" title="${escapeHtml(banner.linkUrl)}">
+                                            ${escapeHtml(banner.linkUrl)}
+                                        </span>    
+                                    </td>
+                                    <td class="text-center">${badgePosition(banner.position, banner.no)}</td>
+                                    <td class="text-center">${badgeIsActive(banner.isActive, banner.no)}</td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="btn-edit" onclick="event.stopPropagation(); editBanner(${banner.no})" title="편집">
+                                                <span class="material-symbols-outlined">edit</span>
+                                            </button>
+                                            <button class="btn-delete" style="padding: 0" onclick="event.stopPropagation(); deleteBanner(${banner.no}, '${escapeJs(banner.title)}')" title="삭제">
+                                                <span class="material-symbols-outlined">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>`
+                            }
+                        $('#banner-body').html(tr)
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('*****status:', status);
+                    console.error('*****http status code:', xhr.status);
+                    console.error('*****error:', error);
+                    console.error('*****responseText:', xhr.responseText);
+                    alert('리스트 조회 실패!')
+                }
+            })
+        }
+        // 따옴표 깨짐 onclick('문자열', '문자열',,,,)
+        // '${escapeJs(value)}' : onclick 문자열용
+        function escapeJs(str) {
+            if (str == null) return ''
+            return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+        }
+        // XSS 방지용(텍스트 출력용) : 제목/URL
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+            }
+        // 배너 위치 뱃지
+        function badgePosition(position, no) {
+            const isMain = position == 'MAIN'
+            const text = isMain ? 'Main' : 'Popup'
+            const cls = isMain ? 'position-main' : 'position-popup'
+
+            return `<span class="position-badge ${cls}" 
+                    onclick="event.stopPropagation(); togglePosition(this, ${no})" 
+                    style="cursor: pointer;" 
+                    title="클릭하여 변경">${text}</span>`
+        }
+        // 배너 활성화 뱃지
+        function badgeIsActive(isActive, no) {
+            const active = isActive == 'Y'
+            const text = active ? '활성화' : '비활성화'
+            const cls = active ? 'active' : 'inactive'
+
+            return `<span class="status-badge ${cls}" 
+                    onclick="event.stopPropagation(); toggleStatus(this, ${no})" 
+                    style="cursor: pointer;" 
+                    title="클릭하여 변경">${text}</span>`
+        }
+        getList()
+        // position 뱃지
+        function togglePosition(element, bannerNo) {
+            const banner = bannerMap[bannerNo];
+
+            const currentPosition = element.textContent.trim();
+            const newPosition = (currentPosition === 'Main') ? 'POPUP' : 'MAIN';
+
+            // CSRF 토큰 문제 (403)
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+
+            element.textContent = (newPosition === 'MAIN') ? 'Main' : 'Popup';
+            element.classList.toggle('position-main', newPosition === 'MAIN');
+            element.classList.toggle('position-popup', newPosition === 'POPUP');
+
+            banner.position = newPosition;
+            
+            // ajax
+            $.ajax({
+                url: `/admin/api/banners/${bannerNo}/position`,
+                type: 'PATCH',
+                contentType: 'application/json',
+                data: JSON.stringify({ position: newPosition }),
+                beforeSend: function (xhr) {     
+                    xhr.setRequestHeader(header, token);
+                },
+                error: function (xhr) {
+                    alert('위치 변경 실패!')
+                    console.error(xhr.status, xhr.responseText)
+                    // 실패 시 롤백
+                    banner.position = currentPosition;
+                    element.textContent = currentPosition
+                    element.classList.toggle('position-main', currentPosition == 'Main')
+                    element.classList.toggle('position-popup', currentPosition == 'Popup')
+                }
+            })
+        }
+        // isActive 뱃지  
+        function toggleStatus(element, bannerNo) {
+            const banner = bannerMap[bannerNo];
+
+            const currentIsActive = element.textContent.trim();
+            const newIsActive = currentIsActive === '활성화' ? 'N' : 'Y';
+
+            // CSRF 토큰 문제 (403)
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+            
+            // 텍스트 변경
+            element.textContent = (newIsActive === 'Y') ? '활성화' : '비활성화';
+            element.classList.toggle('active', newIsActive === 'Y');
+            element.classList.toggle('inactive', newIsActive === 'N');
+
+            banner.isActive = newIsActive;
+            
+            // 행(row) 찾아서 희미하게 만들기
+            const row = element.closest('tr');
+            if (newIsActive === 'N') {
+                row.classList.add('inactive-row');
+            } else {
+                row.classList.remove('inactive-row');
+            }
+
+            // ajax
+            $.ajax({
+                url: `/admin/api/banners/${bannerNo}/active`,
+                type: 'PATCH',
+                contentType: 'application/json',
+                data: JSON.stringify({ isActive: newIsActive }),
+                beforeSend: function (xhr) {     
+                    xhr.setRequestHeader(header, token);
+                },
+                error: function (xhr) {
+                    alert('상태 변경 실패!')
+                    console.error(xhr.status, xhr.responseText)
+                    // 실패 시 롤백
+                    banner.isActive = currentIsActive;
+                    element.textContent = currentIsActive
+                    element.classList.toggle('active', currentIsActive == '활성화')
+                    element.classList.toggle('inactive', currentIsActive == '비활성화')
+                }
+            })
+        }
+
+
+        // --------상세 조회하기
+        function showBannerDetail(no) {
+            const banner = bannerMap[no];
+            if (!banner) return;
+
+            // 모달에 데이터 채우기
+            document.getElementById('detailTitle').textContent = banner.title;
+            document.getElementById('detailImage').src = banner.imageUrl;
+            document.getElementById('detailUrl').textContent = banner.linkUrl;
+            document.getElementById('detailDescription').textContent = banner.description;
+            
+            // 상태(Y/N -> 한글)
+            const statusBadge = document.getElementById('detailStatus');
+            const active = banner.isActive === 'Y';
+            statusBadge.textContent = active ? '활성화' : '비활성화'
+            statusBadge.className = active ? 'status-badge active' : 'status-badge inactive';
+            
+            // 위치(MAIN/POPUP -> 표시 + 클래스)
+            const positionBadge = document.getElementById('detailPosition');
+            const isMain = banner.position === 'MAIN';
+
+            positionBadge.textContent = isMain ? 'Main' : 'Popup';
+            positionBadge.className = 'position-badge ' + (isMain ? 'position-main' : 'position-popup');
+
+            // 날짜
+            document.getElementById('detailStartDate').textContent = formatDate(banner.startDate)
+            document.getElementById('detailEndDate').textContent = formatDate(banner.endDate)
+            document.getElementById('detailOrder').textContent = banner.seq;
+            document.getElementById('detailClicks').textContent = banner.clicks ?? 0
+
+            // 모달 표시
+            document.getElementById('bannerDetailModal').style.display = 'flex';
+        }
+
+        function closeBannerDetailModal() {
+            document.getElementById('bannerDetailModal').style.display = 'none';
+        }
+
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('bannerDetailModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBannerDetailModal();
+            }
+        });
+
+
+        // ----- 배너 삭제
+        // 삭제할 배너 ID를 저장할 변수
+        // let bannerNo = null;
+        
+        function deleteBanner(no, title) {
+            bannerNo = no;
+            document.getElementById('deleteBannerTitle').textContent = title ? `"${title}"` : '';
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+        
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            bannerNo = null;
+        }
+        
+        function confirmDelete() {
+            if (bannerNo) {
+
+                // CSRF 토큰 문제 (403)
+                const token = $("meta[name='_csrf']").attr("content");
+                const header = $("meta[name='_csrf_header']").attr("content");
+
+                $.ajax({
+                    url: `/admin/api/banners/${bannerNo}`,
+                    method: 'DELETE',
+                    beforeSend: function (xhr) {     
+                        xhr.setRequestHeader(header, token);
+                    },
+                    success: function (res) {
+                        closeDeleteModal();
+                        // 목록 다시 받기 (동기화)
+                        getList()
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('*****삭제 실패!')
+                        alert('삭제 실패!')
+                    }
+                })
+            }
+        }
+    </script>
+    </th:block>
+</div>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.aloha.durudurub.dto.AdminSubscription;
 import com.aloha.durudurub.dto.Auth;
 import com.aloha.durudurub.dto.User;
 
@@ -48,4 +49,8 @@ public interface UserService {
     int countAll();
     // 최신 가입자 수
     int countNew();
+    // 최신 가입일 계산
+    User findLastestUser();
+    // 사용자 리스트(구독 여부)
+    List<AdminSubscription> userList();
 }

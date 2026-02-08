@@ -16,6 +16,7 @@ public class Report {
     private int reporterNo;
     private int targetNo;
     private String reason;
+    private Date processedAt;
     private Date createdAt;
 
     private User reporter;

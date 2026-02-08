@@ -28,7 +28,7 @@
             </div>
             <div class="stat-content">
                 <p class="stat-label">신고 접수 내역</p>
-                <p class="stat-value" th:text="${totalReports ?: '23'}">23</p>
+                <p class="stat-value" th:text="${totalReports}"></p>
             </div>
         </div>
     </div>
@@ -44,9 +44,9 @@
             </div>
             <div class="activity-content">
                 <p class="activity-text">
-                새로운 모임 "<span th:text="${latestClubTitle}">독서 토론방</span>"이 생성되었습니다.
+                새로운 모임 "<span th:text="${lastestClubTitle}"></span>"이 생성되었습니다.
                 </p>
-                <p class="activity-time" th:text="${latestClubTime}">10분 전</p>
+                <p class="activity-time" th:text="${lastestClubTime}"></p>
             </div>
             </div>
 
@@ -57,20 +57,20 @@
             </div>
             <div class="activity-content">
                 <p class="activity-text">
-                새로운 사용자 <span th:text="${totalNew}">5</span>명이 가입했습니다.
+                새로운 사용자 <span th:text="${totalNew}"></span>명이 가입했습니다.
                 </p>
-                <p class="activity-time" th:text="${newUserTime}">1시간 전</p>
+                <p class="activity-time" th:text="${lastestUserTime}"></p>
             </div>
             </div>
 
-            <!-- 3) 공지 업데이트 -->
+            <!-- 3) 신고 접수 -->
             <div class="activity-item">
             <div class="activity-icon activity-notice">
                 <span class="material-symbols-outlined">article</span>
             </div>
             <div class="activity-content">
-                <p class="activity-text">공지사항이 업데이트되었습니다.</p>
-                <p class="activity-time" th:text="${noticeTime}">3시간 전</p>
+                <p class="activity-text">새로운 신고 <span th:text="${totalNewReports}"></span>건이 접수되었습니다.</p>
+                <p class="activity-time" th:text="${lastestReportsTime}"></p>
             </div>
             </div>
         </div>

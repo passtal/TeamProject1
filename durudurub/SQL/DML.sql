@@ -135,3 +135,12 @@ INSERT INTO `club_boards` (`club_no`, `writer_no`, `title`, `content`, `is_notic
 (1, 2, '이번 주 읽을 책 추천합니다', '이번 주는 "데미안"을 함께 읽어보면 어떨까요?', 'N'),
 (1, 3, '지난 모임 후기', '정말 좋은 시간이었습니다! 다음에도 참여할게요.', 'N'),
 (2, 2, '러닝 코스 변경 안내', '이번 주는 올림픽공원 대신 한강공원에서 진행합니다.', 'Y');
+
+-- 샘플 차단 데이터
+INSERT INTO `user_bans`
+(`user_no`, `reason`, `report_count_at_ban`, `ban_type`, `ban_end_date`, `is_active`)
+VALUES
+(1, '욕설 및 비방 신고 누적', 4, 'TEMPORARY', DATE_ADD(NOW(), INTERVAL 7 DAY), 'Y'),
+(2, '광고 및 스팸 행위 반복', 5, 'TEMPORARY', DATE_ADD(NOW(), INTERVAL 7 DAY), 'Y'),
+(3, '불법 콘텐츠 게시', 7, 'PERMANENT', NULL, 'Y');
+
