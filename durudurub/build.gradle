@@ -42,6 +42,8 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// 타임리프 다이얼렉트 레이아웃 (추가)
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	// // 오픈 api implementation
+	// implementation("com.openai:openai-java:4.18.0")
 }
 
 tasks.named('test') {
