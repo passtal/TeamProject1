@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.aloha.durudurub.dto.Report;
 import com.aloha.durudurub.dto.UserBan;
 
 /**
@@ -21,4 +22,6 @@ public interface ReportMapper {
    int countNewReports();
    // 대시보드: 최신신고(신고일)
    UserBan findLastestUserBan();
+   // 신고하기
+   int insertUserReport(Report report);
 }

@@ -105,51 +105,8 @@
             <div id="commentList" class="comment-list">
             </div>
         </div>
-
-
-        <!-- ⭐ 신고하기 추가! (모달)
-            신고하기 들어갈 위치 필요! -->
-        <!-- 사용자 신고 모달 -->
-        <div id="report-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="icon-wrapper">
-                    <span class="material-symbols-outlined error-icon">warning</span>
-                </div>
-            </div>
-            <h2 class="modal-title">사용자 신고하기</h2>
-            <p class="modal-text">
-                <span id="reportTargetName" class="report-target">김민수</span> 님을 신고합니다
-            </p>
-            <!-- 신고 사유 -->
-            <div class="modal-form">
-                <label for="reportReason" class="modal-label">신고 사유</label>
-                <select id="reportReason" class="modal-input">
-                    <option value="">선택해주세요</option>
-                    <option value="ABUSE">욕설 및 비방</option>
-                    <option value="SPAM">스팸/홍보</option>
-                    <option value="SEXUAL">음란물/선정성</option>
-                    <option value="SCAM">사기 의심</option>
-                    <option value="PRIVACY">개인정보 침해</option>
-                    <option value="ETC">기타</option>
-                </select>
-            </div>
-
-            <!-- 상세 내용 -->
-            <div class="modal-form">
-                <label for="reportContent" class="modal-label">상세 내용 (선택)</label>
-                <textarea
-                    id="reportContent"
-                    class="modal-textarea"
-                    placeholder="신고 사유를 자세히 설명해주세요..."
-                ></textarea>
-            </div>
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-cancel" onclick="closeReportModal()">취소</button>
-                <button class="modal-btn modal-btn-delete" onclick="submitReport()">신고하기</button>
-            </div>
-        </div>
-        </div>
+        <!-- 신고 모달 : club 이동! -->
+        
     </main>
 
     <th:block layout:fragment="script">

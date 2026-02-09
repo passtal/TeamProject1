@@ -4,6 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layouts/main_layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>즐겨찾기 목록 - 두루두룹</title>
     <link rel="stylesheet" th:href="@{/css/mypage/favorites.css}">
 </head>
@@ -89,7 +91,11 @@ document.querySelectorAll('.btn-favorite').forEach(button => {
     button.addEventListener('click', async function() {
         const clubNo = this.getAttribute('data-club-no');
         
+        const token = document.querySelector("meta[name='_csrf']")?.getAttribute("content");
+        const header = document.querySelector("meta[name='_csrf_header']")?.getAttribute("content");
+        
         try {
+
             const response = await fetch(`/like/club/${clubNo}`, {
                 method: 'POST',
                 headers: {

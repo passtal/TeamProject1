@@ -2,12 +2,14 @@
 <div th:fragment="content">
     <!-- 리더인 모임 -->
         <div class="tab-content active">
-            <div th:if="${#lists.isEmpty(hostClub)}">
-                <p style="text-align: center;">호스트 모임이 없습니다.</p>
+            <div id="hostClubEmptyMsg"
+                th:style="${#lists.isEmpty(hostClub)} ? 'display:block' : 'display:none'">
+            <p style="text-align: center;">호스트 모임이 없습니다.</p>
             </div>
-            <div th:unless="${#lists.isEmpty(hostClub)}" class="cardList">
-                <div th:each="club : ${hostClub}" class="club-card-wrapper">
-                    <div class="club-card" th:attr="data-club-no=${club.no}" style="cursor: pointer;">
+
+            <div th:unless="${#lists.isEmpty(hostClub)}" class="cardList-host">
+                <div th:each="club : ${hostClub}" class="club-card-wrapper-host">
+                    <div class="club-card-host" th:attr="data-club-no=${club.no}" style="cursor: pointer;">
                         <div class="club-info">
                             <div class="club-icon">
                                 <span class="material-symbols-outlined">group</span>
@@ -26,65 +28,38 @@
                                 <span>멤버 관리</span>
                                 <span class="material-symbols-outlined">expand_more</span>
                             </button>
-                            <button class="btn-leader-delete" onclick="event.stopPropagation();">
+                            <button class="btn-leader-delete" th:attr="data-club-no=${club.no}" onclick="openDeleteClubModal()">
                                 <span class="material-symbols-outlined">logout</span>
                                 <span>모임 삭제</span>
                             </button>
                         </div>
                     </div>
                     
-                    <div class="member-management-area"  id="|memberManagement-${club.no}|" style="display: none;">
+                    <div class="member-management-area"  th:id="|memberManagement-${club.no}|" style="display: none;">
                         <!-- 가입 요청 섹션 -->
                         <div class="member-section">
                             <div class="member-section-header">
-                                <span class="material-symbols-outlined section-icon pending-icon">notifications_active</span>
-                                <h4 class="section-title">가입 요청 (<span th:text="${pendingList.size()}">0</span>)</h4>
-                                <div class="pending-list" th:id="|pendingList-${club.no}|"></div>
+                                <span class="material-symbols-outlined section-icon pending-icon">schedule</span>
+                                <h4 class="section-title">
+                                    가입 요청 (<span class="pending-count" th:attr="data-club-no=${club.no}">0</span>)
+                                </h4>
                             </div>
-                            <div th:if="${#lists.isEmpty(pendingList)}">
+                            <div class="pending-list" th:id="|pendingList-${club.no}|"></div>
+                            <div class="pending-empty" th:id="|pendingEmpty-${club.no}|" style="display: none; text-align:center;">
                                 <div>가입 요청 없음</div>
-                            </div>
-                            <div th:unless="${#lists.isEmpty(pendingList)}">
-                                <div class="member-list" th:each="pending : ${pendingList}">
-                                    <div class="member-item">
-                                        <div class="member-info">
-                                            <p class="member-name" text="${pending.username}">이름</p>
-                                            <p class="member-date" text="|신청일: ${#temporals.format(pending.joinedAt, 'yyyy-MM-dd')}|">신청일: yyyy-mm-dd</p>
-                                        </div>
-                                        <div class="member-actions">
-                                            <button class="btn-approve" attr="data-member-no=${pending.userNo},data-club-no=${clubNo}">
-                                                <span class="material-symbols-outlined">check</span>
-                                                <span>승인</span>
-                                            </button>
-                                            <button class="btn-reject" attr="data-member-no=${pending.userNo},data-club-no=${clubNo}">
-                                                <span class="material-symbols-outlined">close</span>
-                                                <span>거부</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
                         <!-- 승인된 멤버 섹션 -->
                         <div class="member-section">
                             <div class="member-section-header">
-                                <h4 class="section-title">승인된 멤버 (<span text="${#lists.size(approvedList)}">0</span>)</h4>
-                                <div class="approved-list" th:id="|approvedList-${club.no}|"></div>
+                                <h4 class="section-title">
+                                    승인된 멤버 (<span class="approved-count" th:attr="data-club-no=${club.no}">0</span>)
+                                </h4>
                             </div>
-                            <div class="member-list">
-                                <div th:if="${#lists.isEmpty(approvedList)}">
-                                    <div>멤버 없음</div>
-                                </div>
-                                <div th:unless="${#lists.isEmpty(approvedList)}">
-                                    <div each="approved : ${approvedList}" class="member-item approved">
-                                        <div class="member-info">
-                                            <p class="member-name" text="${approved.username}">이름</p>
-                                            <p class="member-date" text="|가입일: ${#temporals.format(approved.joinedAt, 'yyyy-MM-dd')}|">가입일: yyyy-mm-dd</p>
-                                        </div>
-                                        <button class="btn-remove-member" attr="data-member-no=${approved.userNo},data-club-no=${clubNo}">추방하기</button>
-                                    </div>
-                                </div>
+                            <div class="approved-list" th:id="|approvedList-${club.no}|"></div>
+                            <div class="approved-empty" th:id="|approvedEmpty-${club.no}|" style="display: none; text-align:center;">
+                                <div>멤버 없음</div>
                             </div>
                         </div>
                     </div>
@@ -98,19 +73,19 @@
         <div class="delete-modal-content">
             <div class="delete-modal-header">
                 <h3 class="delete-modal-title">모임 삭제</h3>
-                <button id="deleteModalCloseBtn" class="delete-modal-close">
+                <button id="deleteModalCloseBtn" class="delete-modal-close" onclick="closeDeleteClubModal()">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
-            <div class="delete-modal-warning">
+            <div class="delete-modal-warning" id="deleteClubMsg">
                 <p class="delete-modal-warning-title">
-                    <span class="delete-club-name">사진 촬영 동호회</span> 모임을 삭제하시겠습니까?
+                    <span class="delete-club-name"></span> 모임을 삭제하시겠습니까?
                 </p>
                 <p class="delete-modal-warning-text">삭제하면 해당 모임은 영구적으로 삭제됩니다.</p>
             </div>
             <div class="delete-modal-actions">
-                <button id="deleteModalCancelBtn" class="delete-modal-btn delete-modal-btn-cancel">취소</button>
-                <button id="deleteModalConfirmBtn" class="delete-modal-btn delete-modal-btn-confirm">삭제하기</button>
+                <button id="deleteModalCancelBtn" class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteClubModal()">취소</button>
+                <button id="deleteModalConfirmBtn" class="delete-modal-btn delete-modal-btn-confirm" onclick="confirmDeleteClub()">삭제하기</button>
             </div>
         </div>
     </div>
@@ -120,18 +95,18 @@
         <div class="approve-modal-content">
             <div class="approve-modal-header">
                 <h3 class="approve-modal-title">멤버 승인</h3>
-                <button id="approveModalCloseBtn" class="approve-modal-close">
+                <button id="approveModalCloseBtn" class="approve-modal-close" onclick="closeApproveModal()">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
             <div class="approve-modal-info">
                 <p class="approve-modal-info-title">
-                    <span class="approve-member-name">박민수</span>님의 가입을 승인하시겠습니까?
+                    <span class="approve-member-name"></span>님의 가입을 승인하시겠습니까?
                 </p>
                 <p class="approve-modal-info-text">승인하면 멤버가 모임에 참여하여 게시글 작성 및 활동이 가능합니다.</p>
             </div>
             <div class="approve-modal-actions">
-                <button id="approveModalCancelBtn" class="approve-modal-btn approve-modal-btn-cancel">취소</button>
+                <button id="approveModalCancelBtn" class="approve-modal-btn approve-modal-btn-cancel" onclick="closeApproveModal()">취소</button>
                 <button id="approveModalConfirmBtn" class="approve-modal-btn approve-modal-btn-confirm">승인하기</button>
             </div>
         </div>
@@ -142,18 +117,18 @@
         <div class="reject-modal-content">
             <div class="reject-modal-header">
                 <h3 class="reject-modal-title">가입 거부</h3>
-                <button id="rejectModalCloseBtn" class="reject-modal-close">
+                <button id="rejectModalCloseBtn" class="reject-modal-close" onclick="closeRejectModal()">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
             <div class="reject-modal-warning">
                 <p class="reject-modal-warning-title">
-                    <span class="reject-member-name">박민수</span>님의 가입을 거부하시겠습니까?
+                    <span class="reject-member-name"></span>님의 가입을 거부하시겠습니까?
                 </p>
                 <p class="reject-modal-warning-text">거부하면 해당 사용자는 모임에 참여할 수 없습니다.</p>
             </div>
             <div class="reject-modal-actions">
-                <button id="rejectModalCancelBtn" class="reject-modal-btn reject-modal-btn-cancel">취소</button>
+                <button id="rejectModalCancelBtn" class="reject-modal-btn reject-modal-btn-cancel" onclick="closeRejectModal()">취소</button>
                 <button id="rejectModalConfirmBtn" class="reject-modal-btn reject-modal-btn-confirm">거부하기</button>
             </div>
         </div>
@@ -164,18 +139,18 @@
         <div class="remove-modal-content">
             <div class="remove-modal-header">
                 <h3 class="remove-modal-title">멤버 내보내기</h3>
-                <button id="removeModalCloseBtn" class="remove-modal-close">
+                <button id="removeModalCloseBtn" class="remove-modal-close" onclick="closeRemoveModal()">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
             <div class="remove-modal-warning">
                 <p class="remove-modal-warning-title">
-                    <span class="remove-member-name">김철수</span>님을 모임에서 내보내시겠습니까?
+                    <span class="remove-member-name"></span>님을 모임에서 내보내시겠습니까?
                 </p>
                 <p class="remove-modal-warning-text">내보내면 해당 멤버는 더 이상 모임 활동을 할 수 없습니다.</p>
             </div>
             <div class="remove-modal-actions">
-                <button id="removeModalCancelBtn" class="remove-modal-btn remove-modal-btn-cancel">취소</button>
+                <button id="removeModalCancelBtn" class="remove-modal-btn remove-modal-btn-cancel" onclick="closeRemoveModal()">취소</button>
                 <button id="removeModalConfirmBtn" class="remove-modal-btn remove-modal-btn-confirm">내보내기</button>
             </div>
         </div>
@@ -190,6 +165,11 @@
                 const clubNo = this.getAttribute('data-club-no');
                 const managementArea = document.getElementById('memberManagement-' + clubNo);
                 const icon = this.querySelector('.material-symbols-outlined:last-child');
+
+                // 모임 번호 체크!
+                console.log("*******클릭한 clubNo =", clubNo);       
+                loadPendingMembers(clubNo);
+                loadApprovedMembers(clubNo);
                 
                 if (managementArea.style.display === 'none' || managementArea.style.display === '') {
                     managementArea.style.display = 'block';
@@ -201,90 +181,414 @@
             });
         });
 
-        function loadMembers(clubNo, $area){
-
+        // 가입요청
+        function loadPendingMembers(clubNo) {
             $.ajax({
-                url: `/users/mypage/club/${clubNo}/members`,
+                url: `/users/mypage/api/club/hostClub/${clubNo}/pending`,
                 method: 'GET',
                 dataType: 'json',
-                    success: function(res) {
-                    const pendingList = res.pendingList || [];
-                    const approvedList = res.approvedList || [];
-
-                    // ✅ 이 영역 안에서만 찾기
-                    const $pendingCount = $area.find(".countPending");
-                    const $approvedCount = $area.find(".countApproved");
-                    const $pendingBox = $area.find(".pendingList");
-                    const $approvedBox = $area.find(".approvedList");
-
-                    $pendingCount.text(pendingList.length);
-                    $approvedCount.text(approvedList.length);
-
-                    // pending
-                    let pendingHtml = "";
-                    pendingList.forEach(m => {
-                    pendingHtml += 
-                    `
-                        <div class="member-item pending">
-                        <div class="member-info">
-                            <p class="member-name">${m.user.username}</p>
-                            <p class="member-date">신청일: ${formatDate(m.joinedAt)}</p>
-                        </div>
-                        <div class="member-actions">
-                            <button class="btn-approve" data-member-no="${m.no}" data-club-no="${clubNo}">
-                            <span class="material-symbols-outlined">check</span><span>승인</span>
-                            </button>
-                            <button class="btn-reject" data-member-no="${m.no}" data-club-no="${clubNo}">
-                            <span class="material-symbols-outlined">close</span><span>거부</span>
-                            </button>
-                        </div>
-                        </div>
-                    `
-                    })
-
-                    if(!pendingHtml) pendingHtml = `<p>가입 요청 없음</p>`
-                    $pendingBox.html(pendingHtml)
-
-                    // approved
-                    let approvedHtml = ""
-                    approvedList.forEach(m => {
-                    approvedHtml += 
-                    `
-                        <div class="member-item approved">
-                        <div class="member-info">
-                            <p class="member-name">${m.user.username}</p>
-                            <p class="member-date">가입일: ${formatDate(m.joinedAt)}</p>
-                        </div>
-                        <button class="btn-remove-member" data-member-no="${m.no}" data-club-no="${clubNo}">
-                            추방하기
-                        </button>
-                        </div>
-                    `
-                    })
-                    if(!approvedHtml) approvedHtml = `<p>멤버 없음</p>`
-                    $approvedBox.html(approvedHtml);
+                success: function (list) {
+                    renderPendingList(clubNo, list)
+                },
+                error: function (xhr) {
+                    console.error("****pending 조회 실패!", xhr.status, xhr.responseText)
                 }
             })
         }
 
-        // 날짜 포맷
-        fetch(`/users/mypage/club/${clubNo}/members`)
-            .then(res => res.json())
-            .then(data => {
-                console.log(data.pendingList)
-            })
+        function renderPendingList(clubNo, list) {
+            const $container = $('#pendingList-' + clubNo)
+            const $empty = $('#pendingEmpty-' + clubNo)
 
-        function formatDate(dateStr){
-        if(!dateStr) return ''
+            // ⭐ 카운트 업데이트
+            $('.pending-count[data-club-no="'+clubNo+'"]').text(list.length);
 
-        const d = new Date(dateStr)
-        const yyyy = d.getFullYear()
-        const mm = String(d.getMonth()+1).padStart(2,'0')
-        const dd = String(d.getDate()).padStart(2,'0')
+            if (!list || list.length == 0) {
+                $container.empty()  // 리스트 영역 비우기
+                $empty.show()   // '가입 요청 없음' 표시
+                return
+            }
 
-        return `${yyyy}-${mm}-${dd}`
+            $empty.hide()   // '가입요청없음' 데이터 있으면 숨김
+
+            const html = list.map(pending => {
+                const name = pending.user.username
+                const joinedAt = formatDate(pending.joinedAt)
+                
+                return `<div class="member-item">
+                            <div class="member-info">
+                                <p class="member-name">${escapeHtml(name)}</p>
+                                <p class="member-date">신청일: ${joinedAt}</p>
+                            </div>
+                            <div class="member-actions">
+                                <button class="btn-approve" data-member-no="${pending.userNo}" data-club-no="${clubNo}">
+                                    <span class="material-symbols-outlined">check</span>
+                                    <span>승인</span>
+                                </button>
+                                <button class="btn-reject" data-member-no="${pending.userNo}" data-club-no="${clubNo}">
+                                    <span class="material-symbols-outlined">close</span>
+                                    <span>거부</span>
+                                </button>
+                            </div>
+                        </div>`
+            }).join("")
+            $container.html(html)
         }
+
+        // 승인된 멤버
+        function loadApprovedMembers(clubNo) {
+            // 데이터 여부 확인!
+            console.log("*****loadApprovedMembers 실행!", clubNo);
+            
+            $.ajax({
+                url: `/users/mypage/api/club/hostClub/${clubNo}/approved`,
+                method: 'GET',
+                dataType: 'json',
+                success: function (list) {
+                    renderApprovedList(clubNo, list)
+                },
+                error: function (xhr) {
+                    console.error("****approved 조회 실패!", xhr.status, xhr.responseText)
+                }
+            })
+        }
+        function renderApprovedList(clubNo, list) {
+            // 렌더링 에러 확인!
+            console.log("*******approved list =", list);
+            console.log("*******first item =", list && list[0]);
+
+
+            const $container = $('#approvedList-' + clubNo)
+            const $empty = $('#approvedEmpty-' + clubNo)
+
+            // ⭐ 카운트 업데이트
+            $('.approved-count[data-club-no="'+clubNo+'"]').text(list.length);
+
+            if (!list || list.length == 0) {
+                $container.empty()  // 리스트 영역 비우기
+                $empty.show()   // '멤버 없음' 표시
+                return
+            }
+
+            $empty.hide()   // 데이터 있으면 '멤버 없음' 숨기기
+
+            const html = list.map(approved => {
+                const name = approved.user.username
+                const joinedAt = formatDate(approved.joinedAt)
+                
+                return `<div class="member-item" style="background-color: #f9fafb">
+                            <div class="member-info">
+                                <p class="member-name">${escapeHtml(name)}</p>
+                                <p class="member-date">가입일: ${joinedAt}</p>
+                            </div>
+                            <button class="btn-remove-member" data-member-no="${approved.userNo}" data-club-no="${clubNo}">
+                                추방하기
+                            </button>
+                        </div>`
+            }).join("")
+            $container.html(html)
+        }
+        // 날짜 포맷
+        function formatDate(dateStr){
+            if(!dateStr) return ''
+
+            const d = new Date(dateStr)
+            const yyyy = d.getFullYear()
+            const mm = String(d.getMonth()+1).padStart(2,'0')
+            const dd = String(d.getDate()).padStart(2,'0')
+
+            return `${yyyy}-${mm}-${dd}`
+        }
+        // XSS 방지(간단 버전)
+        function escapeHtml(str) {
+        return String(str)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+        }
+
+
+        // 모임 삭제 모달!
+        // 모달 열기
+        function openDeleteClubModal() {
+            document.getElementById('deleteClubModal').style.display = 'flex';
+        }
+        // 모달 닫기
+        function closeDeleteClubModal() {
+            document.getElementById('deleteClubModal').style.display = 'none';
+            clubNoToDelete = null
+            clubCardToDelete = null
+        }
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('deleteClubModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteClubModal();
+            }
+        });
+
         // 모임 삭제
+        window.clubNoToDelete = window.clubNoToDelete ?? null
+        window.clubCardToDelete = window.clubCardToDelete ?? null    // 제거할 카드(wrapper)
+        // 모임 삭제 버튼 클릭!
+        $(document).on('click', '.btn-leader-delete', function (event) {
+            event.stopPropagation()     // 클릭 이벤트 방지
+            // data-club-no 존재O
+            const clubNo = $(this).data('clubNo')
+            clubNoToDelete = clubNo
+            // 제거할 카드 저장
+            clubCardToDelete = $(this).closest('.club-card-wrapper-host')
+            // 모달 메시지에 모임명 넣기
+            const clubName = $(this).closest('.club-card-host').find('.club-title').text().trim()
+            $('#deleteClubMsg .delete-club-name').text(clubName)
+            // 모달 표시
+            document.getElementById('deleteClubModal').style.display = 'flex'
+        })
+        // 삭제하기 버튼 클릭!
+        function confirmDeleteClub() {
+
+            if (!clubNoToDelete) {
+                alert('삭제할 모임 정보가 없습니다')
+                return
+            }
+
+            // CSRF 토큰 문제 (403)
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+            
+            $.ajax({
+                url: `/users/mypage/api/club/hostClub/${clubNoToDelete}`,
+                method: 'DELETE',
+                beforeSend: function (xhr) {     
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (res) {
+                    // 카드 제거
+                    if (clubCardToDelete) clubCardToDelete.remove()
+                    closeDeleteClubModal()
+                },
+                error: function (xhr) {
+                    console.error('*****삭제 실패!', xhr.status, xhr.responseText)
+                    alert('삭제 실패!')
+                }
+            })
+        }
+
+        // 모임 승인 모달!
+        // 승인 대상 변수
+        window.approve = window.approve ?? { clubNo: null, userNo: null, username: '' };
+
+        // 모달 열기
+        $(document).on('click', '.btn-approve', function (event) {
+            event.stopPropagation()
+
+            const clubNo = $(this).data('clubNo')
+            const userNo = $(this).data('memberNo')
+            // 사용자 이름은 같은 row에서 가져오기
+            const username = $(this).closest('.member-item').find('.member-name').text().trim()
+
+            const modal = document.getElementById('approveMemberModal')
+
+            approve = { clubNo, userNo, username }
+
+            // 모달 문구
+            $('#approveMemberModal .approve-member-name').text(username)
+            // 모달 열기
+            document.getElementById('approveMemberModal').style.display = 'flex'
+        })
+        // 모달 닫기
+        function closeApproveModal() {
+        document.getElementById('approveMemberModal').style.display = 'none'
+        approve = { clubNo: null, userNo: null, username: '' }
+        }
+
+        $('#approveModalCloseBtn, #approveModalCancelBtn').on('click', closeApproveModal)
+
+        // 바깥 클릭 닫기(선택)
+        document.getElementById('approveMemberModal').addEventListener('click', function(e){
+            if (e.target === this) closeApproveModal()
+        })
+        // 모달 승인 버튼
+        $(document).off('click', '#approveModalConfirmBtn')
+                        .on('click', '#approveModalConfirmBtn' , function () {
+            const { clubNo, userNo } = approve
+
+            if (!clubNo || !userNo) {
+                alert('승인 대상이 없습니다.')
+                return
+            }
+
+            const token = $("meta[name='_csrf']").attr("content")
+            const header = $("meta[name='_csrf_header']").attr("content")
+
+            $.ajax({
+                url: `/users/mypage/api/club/hostClub/${clubNo}/members/${userNo}/approved`,
+                method: 'PUT',
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function () {
+                    closeApproveModal()
+
+                    // 리스트 갱신
+                    loadPendingMembers(clubNo)
+                    loadApprovedMembers(clubNo)
+                },
+                error: function (xhr) {
+                    console.error('승인 실패', xhr.status, xhr.responseText)
+                    alert('승인 실패!')
+                }
+            })
+        })
+
+        // 모임 거부 모달!
+        // 모달 열기
+        $(document).on('click', '.btn-reject', function(e){
+            e.stopPropagation()
+
+            const clubNo = $(this).data('clubNo')
+            const userNo = $(this).data('memberNo')
+            const username = $(this).closest('.member-item').find('.member-name').text().trim()
+
+            const modal = document.getElementById('rejectMemberModal')
+
+            modal.dataset.clubNo = clubNo
+            modal.dataset.userNo = userNo
+            modal.querySelector('.reject-member-name').textContent = username
+
+            modal.style.display = 'flex'
+        })
+        // 모달 닫기
+        function closeRejectModal(){
+            const modal = document.getElementById('rejectMemberModal')
+            modal.style.display = 'none'
+            modal.dataset.clubNo = ''
+            modal.dataset.userNo = ''
+            modal.querySelector('.reject-member-name').textContent = ''
+        }
+        $('#rejectModalCloseBtn, #rejectModalCancelBtn').on('click', closeRejectModal)
+        // 바깥 클릭 닫기(선택)
+        document.getElementById('rejectMemberModal').addEventListener('click', function(e){
+            if(e.target === this) closeRejectModal()
+        })
+        // 거부하기 버튼
+        $(document).off('click', '#rejectModalConfirmBtn')
+                        .on('click', '#rejectModalConfirmBtn', function(){
+            const modal = document.getElementById('rejectMemberModal')
+            const clubNo = modal.dataset.clubNo
+            const userNo = modal.dataset.userNo
+
+            if(!clubNo || !userNo){
+                alert('거부 대상이 없습니다.')
+                return
+            }
+
+            const token = $("meta[name='_csrf']").attr("content")
+            const header = $("meta[name='_csrf_header']").attr("content")
+
+            $.ajax({
+                url: `/users/mypage/api/club/hostClub/${clubNo}/members/${userNo}/reject`,
+                method: 'DELETE',
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(){
+                    closeRejectModal()
+                    // pending만 다시 불러오면 됨 (approved는 변화 없음)
+                    loadPendingMembers(clubNo)
+                },
+                error: function(xhr){
+                    console.error('*****거부 실패', xhr.status, xhr.responseText)
+                    alert('거부 실패!')
+                }
+            })
+        })
+
+        // 모달 추방 모달!
+        // 모달 열기
+        $(document).on('click', '.btn-remove-member', function(e){
+            e.stopPropagation()
+
+            const clubNo = $(this).data('clubNo')
+            const userNo = $(this).data('memberNo')
+            const username = $(this).closest('.member-item')
+                                    .find('.member-name')
+                                    .text().trim()
+
+            const modal = document.getElementById('removeMemberModal')
+
+            modal.dataset.clubNo = clubNo
+            modal.dataset.userNo = userNo
+            modal.querySelector('.remove-member-name').textContent = username
+
+            modal.style.display = 'flex'
+        })
+        // 모달 닫기
+        function closeRemoveModal(){
+            const modal = document.getElementById('removeMemberModal')
+
+            modal.style.display = 'none'
+            modal.dataset.clubNo = ''
+            modal.dataset.userNo = ''
+            modal.querySelector('.remove-member-name').textContent = ''
+        }
+        $('#removeModalCloseBtn, #removeModalCancelBtn').on('click', closeRemoveModal)
+        // 바깥 클릭 닫기
+        document.getElementById('removeMemberModal').addEventListener('click', function(e){
+            if(e.target === this) closeRemoveModal()
+        })
+        // 추방 버튼 클릭! (페이지 로드 문제)
+        $(document).off('click', '#removeModalConfirmBtn')
+                                .on('click', '#removeModalConfirmBtn', function(){
+
+            const modal = document.getElementById('removeMemberModal')
+
+            const clubNo = modal.dataset.clubNo
+            const userNo = modal.dataset.userNo
+
+            if(!clubNo || !userNo){
+                alert('추방 대상이 없습니다.')
+                return
+            }
+
+            const token = $("meta[name='_csrf']").attr("content")
+            const header = $("meta[name='_csrf_header']").attr("content")
+
+            $.ajax({
+                url: `/users/mypage/api/club/hostClub/${clubNo}/members/${userNo}/remove`,
+                method: 'DELETE',
+                beforeSend: function(xhr){
+                    xhr.setRequestHeader(header, token)
+                },
+                success: function(){
+                    closeRemoveModal()
+
+                    // ⭐ 리스트 갱신
+                    loadApprovedMembers(clubNo)
+                },
+                error: function(xhr){
+                    console.error('*****추방 실패', xhr.status, xhr.responseText)
+                    alert('추방 실패')
+                }
+            })
+        })
+
+        // 카드 클릭 -> 모임 상세로 이동
+        $(document).on('click', '.club-card-host', function () {
+            const clubNo = $(this).data('clubNo')
+            if (!clubNo) return
+
+            window.location.href = `/club/detail/${clubNo}`
+        })
+        // 카드 안 버튼들은 카드 클릭(이동) 막기
+        $(document).on('click', '.btn-leader-manage, .btn-leader-delete', function (e) {
+            e.stopPropagation()
+        })
+        $(document).on('click', '.btn-approve, .btn-reject, .btn-remove-member', function (e) {
+            e.stopPropagation()
+        })
+
         </script>
     </th:block>
 </div>

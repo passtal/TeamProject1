@@ -38,4 +38,14 @@ public interface MemberMapper {
     // 내모임관리
     // 가입 신청 취소
     int cancelPending(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
+    // 모임 삭제(자식)
+    int deleteMembersByClubNo(@Param("clubNo") int clubNo) throws Exception;
+    // 가입 승인
+    int approved(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+    // 가입 거부
+    int rejectMember(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+    // 추방
+    int removeMember(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+
+
 }

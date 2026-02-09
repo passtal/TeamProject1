@@ -199,21 +199,52 @@ public class ClubServiceImpl implements ClubService {
     public int countByUser(int userNo) throws Exception {
         return clubMapper.countByUser(userNo);
     }
+    // 탈퇴하기 - 참여
+    @Override
+    public int deleteByClubAndUser(int clubNo, int userNo) {
+        return memberMapper.deleteByClubAndUser(clubNo, userNo);
+    }
+
     // 모임리스트 - 리더
     @Override
     public List<Club> listByHost(int hostNo) {
         return clubMapper.listByHost(hostNo);
     }
-    // 탈퇴하기
+    // 모임 삭제 - 리더
     @Override
-    public int deleteByClubAndUser(int clubNo, int userNo) {
-        return memberMapper.deleteByClubAndUser(clubNo, userNo);
+    @Transactional
+    public int deleteClub(int clubNo) throws Exception {
+        // 1. 자식 삭제
+        memberMapper.deleteMembersByClubNo(clubNo);
+        // 2. 부모 삭제
+        return clubMapper.deleteClub(clubNo);
     }
+    // 모임 승인 - 리더
+    @Override
+    @Transactional
+    public int approved(int clubNo, int userNo) throws Exception {
+        return memberMapper.approved(clubNo, userNo);
+    }
+    // 모임 거부 - 리더
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int rejectMember(int clubNo, int userNo) throws Exception {
+        return memberMapper.rejectMember(clubNo, userNo);
+    }
+    // 모임 추방 - 리더
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int removeMember(int clubNo, int userNo) throws Exception {
+        return memberMapper.removeMember(clubNo, userNo);
+    }
+
+    // 승인 대기
     // 가입 신청 취소
     @Override
     public int cancelPending(int clubNo, int userNo) {
         return memberMapper.cancelPending(clubNo, userNo);
     }
+
     // 관리자페이지
     // 1. 대시보드
     @Override
@@ -221,10 +252,4 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.findLatestClub();
     }
 
-
-    
-
-
-
-    
 }

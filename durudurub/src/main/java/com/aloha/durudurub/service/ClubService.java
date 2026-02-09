@@ -80,6 +80,15 @@ public interface ClubService {
     int countByUser(@Param("userNo") int userNo) throws Exception;
     // 모임리스트 - 리더
     List<Club> listByHost(@Param("hostNo") int hostNo);
+    // 모임 삭제
+    int deleteClub(@Param("no") int clubNo) throws Exception;
+    // 모임 승인
+    int approved(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+    // 모임 거부
+    int rejectMember(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+    // 추방
+    int removeMember(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+
     
     // 탈퇴하기
     @Transactional  // 멤버 삭제 및 인원 수 감소

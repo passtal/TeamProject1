@@ -240,8 +240,10 @@
         FROM club_members 
         WHERE user_no = #{userNo}
     </select>
-
-    
+    <!-- 모임 삭제 - 리더 -->
+    <delete id="deleteClub">
+        DELETE FROM clubs WHERE no = #{no}
+    </delete>
     <!-- 관리자페이지: 최신모임 1건 -->
     <select id="findLatestClub" resultType="Club">
         SELECT *

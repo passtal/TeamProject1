@@ -320,133 +320,173 @@
             </div>
         </div>
     </main>
-<!-- static/js/userpage.js 정적 경로 -->
-<script>
-// 회원 정보 수정 (수정버튼)
-function updateBtn() {
-    $("#view-mode, #view-content").hide() // 조회 화면 -> span
-    $("#edit-mode, #edit-content").show() // 수정 화면 -> text
 
-    // .trim() : 공백 입력 방지!
-    //          option '여자' -> span ' 여자 ' : 적용X
-    $("#username-input").val($("#username-span").text().trim())
-    $("#useraddress-input").val($("#useraddress-span").text().trim())
-    // 나이 : "세" 추가하기
-    // "" : "세" -> "" (숫자만 뽑기)
-    const ageText = $("#userage-span").text().replace("세", "").trim()
-    $("#userage-input").val(ageText);
-    // 성별 : 선택 안함 추가하기
-    const genderText = $("#usergender-span").text().trim()
-    $("#usergender-select").val(genderText === "선택 안함" ? "" : genderText)
+    <!-- static/js/userpage.js 정적 경로 -->
+    <th:block layout:fragment="script">
+    <script>
+    // 회원 정보 수정 (수정버튼)
+    function updateBtn() {
+        $("#view-mode, #view-content").hide() // 조회 화면 -> span
+        $("#edit-mode, #edit-content").show() // 수정 화면 -> text
 
-    // 사진 미리보기 기존 값 설정
-    // $("#profileImageEdit").attr("src", $("#profileImageView").attr("src"));
-}
+        // .trim() : 공백 입력 방지!
+        //          option '여자' -> span ' 여자 ' : 적용X
+        $("#username-input").val($("#username-span").text().trim())
+        $("#useraddress-input").val($("#useraddress-span").text().trim())
+        // 나이 : "세" 추가하기
+        // "" : "세" -> "" (숫자만 뽑기)
+        const ageText = $("#userage-span").text().replace("세", "").trim()
+        $("#userage-input").val(ageText);
+        // 성별 : 선택 안함 추가하기
+        const genderText = $("#usergender-span").text().trim()
+        $("#usergender-select").val(genderText === "선택 안함" ? "" : genderText)
 
-// 회원 정보 수정 (취소버튼)
-function cancelBtn() {
-    $("#edit-mode, #edit-content").hide() // 수정 화면 -> text
-    $("#view-mode, #view-content").show() // 조회 화면 -> span
-}
+        // 사진 미리보기 기존 값 설정
+        $("#profileImageEdit").attr("src", $("#profileImageView").attr("src"));
+    }
 
-// 회원 정보 수정 (저장버튼)
-function saveBtn() {
+    // 회원 정보 수정 (취소버튼)
+    function cancelBtn() {
+        $("#edit-mode, #edit-content").hide() // 수정 화면 -> text
+        $("#view-mode, #view-content").show() // 조회 화면 -> span
+    }
 
-    // 사진 추가 시 FormData 필요!
-    const formData = new FormData();
+    // 회원 정보 수정 (저장버튼)
+    function saveBtn() {
 
-    formData.append("username", $("#username-input").val());
-    // "세" 추가하기
-    const ageVal = $("#userage-input").val()
-    formData.append("age", ageVal ? parseInt(ageVal, 10) : 0);
-    
-    formData.append("gender", $("#usergender-select").val());
-    formData.append("address", $("#useraddress-input").val());
+        // 사진 추가 시 FormData 필요!
+        const formData = new FormData();
 
-    // CSRF 토큰 문제 (403)
-    const token = $("meta[name='_csrf']").attr("content");
-    const header = $("meta[name='_csrf_header']").attr("content");
+        formData.append("username", $("#username-input").val());
+        // "세" 추가하기
+        const ageVal = $("#userage-input").val()
+        formData.append("age", ageVal ? parseInt(ageVal, 10) : 0);
+        
+        formData.append("gender", $("#usergender-select").val());
+        formData.append("address", $("#useraddress-input").val());
 
-    // 사진이 선택된 경우에만 추가
-    // const imgFile = $("#profile-file")[0].files[0];
-    // if (imgFile) {
-    //     formData.append("profileImg", imgFile);
-    // }
+        // CSRF 토큰 문제 (403)
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
 
-    $.ajax({
-        url: `/users/mypage`,
-        method: 'PUT',
-        processData: false,  // processData: false → 데이터를 문자열로 변환하지 않고 원본 그대로 보냄
-        contentType: false,  // contentType: false → 헤더를 자동으로 설정하지 말고, 브라우저가 알아서 content-type 붙게 비워두기
-        data: formData,      // data: formData → 여기에 실제로 보낼 데이터 (formData 객체) 들어있음
-        beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
-            xhr.setRequestHeader(header, token)
-        },
-        success: function () {
-            alert("회원 정보가 수정되었습니다")
-
-            // 화면 업데이트
-            // $("#userprofile-img").attr("src", $("#userprofile-img").attr("src"));
-            $("#username-span").text($("#username-input").val());
-            // 나이 : "세" 붙이기
-            const newAge = $("#userage-input").val();
-            $("#userage-span").text(newAge ? `${newAge}세` : "예: 25세");
-            // 성별 : 선택 안할 시 "선택 안함" 기본!
-            const newGender = $("#usergender-select").val();
-            $("#usergender-span").text(newGender ? newGender : "선택 안함");
-            $("#useraddress-span").text($("#useraddress-input").val());
-
-            cancelBtn()
-        }, 
-        error: function (xhr, status, error) {
-            // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
-            // status : AJAX 요청 상태를 문자열로 나타낸 것
-            if (xhr.status === 404) {
-                alert("잘못된 요청입니다");
-            } else {
-                alert("서버 내부 오류입니다.");
-            }
+        // 사진이 선택된 경우에만 추가
+        const imgFile = $("#profile-file")[0].files[0];
+        if (imgFile) {
+            formData.append("profileImg", imgFile);
         }
-    })
-}
-// ------------------------------------------------------------------
-// 회원 탈퇴 - 모달 열기 (회원탈퇴 버튼)
-function openModal() {
-    // $("#delete-modal").show()
-    $("#delete-modal").css("display", "flex")
-}
-// 회원 탈퇴 - 모달 닫기 
-function closeModal() {
-    $("#delete-modal").hide()
-}
-// 회원 탈퇴 (탈퇴하기 버튼)
-function userDelete() {
 
-    // CSRF 토큰 문제 (403)
-    const token = $("meta[name='_csrf']").attr("content");
-    const header = $("meta[name='_csrf_header']").attr("content");
+        $.ajax({
+            url: `/users/mypage`,
+            method: 'POST',
+            processData: false,  // processData: false → 데이터를 문자열로 변환하지 않고 원본 그대로 보냄
+            contentType: false,  // contentType: false → 헤더를 자동으로 설정하지 말고, 브라우저가 알아서 content-type 붙게 비워두기
+            data: formData,      // data: formData → 여기에 실제로 보낼 데이터 (formData 객체) 들어있음
+            beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
+                xhr.setRequestHeader(header, token)
+            },
+            success: function (res) {
+                alert("회원 정보가 수정되었습니다")
 
-    $.ajax({
-        url: `/users/mypage/modal`,
-        method: 'DELETE',
-        beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
-            xhr.setRequestHeader(header, token)
-        },
-        success: function (result, status, xhr) {
-            alert("탈퇴가 완료되었습니다")
-            window.location.href = "/";     // 탈퇴 후 메인 이동
-        }, 
-        error: function (xhr, status, error) {
-            // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
-            // status : AJAX 요청 상태를 문자열로 나타낸 것
-            if (xhr.status === 404) {
-                alert("잘못된 요청입니다");
-            } else {
-                alert("서버 내부 오류입니다.")
+                // 화면 업데이트
+                // $("#userprofile-img").attr("src", $("#userprofile-img").attr("src"));
+                $("#username-span").text($("#username-input").val());
+                // 나이 : "세" 붙이기
+                const newAge = $("#userage-input").val();
+                $("#userage-span").text(newAge ? `${newAge}세` : "예: 25세");
+                // 성별 : 선택 안할 시 "선택 안함" 기본!
+                const newGender = $("#usergender-select").val();
+                $("#usergender-span").text(newGender ? newGender : "선택 안함");
+                $("#useraddress-span").text($("#useraddress-input").val());
+
+                if (res && res.profileImgUrl) {
+                    const cacheBuster = "?v=" + Date.now();
+                    $("#profileImageView").attr("src", res.profileImgUrl + cacheBuster);
+                    $("#profileImageEdit").attr("src", res.profileImgUrl + cacheBuster);
+                }
+
+
+                cancelBtn()
+            }, 
+            error: function (xhr, status, error) {
+                // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+                // status : AJAX 요청 상태를 문자열로 나타낸 것
+                if (xhr.status === 404) {
+                    alert("잘못된 요청입니다");
+                } else {
+                    alert("서버 내부 오류입니다.");
+                }
             }
-        }
-    })
-}
-</script>
+        })
+    }
+    // 사진 변경 버튼 -> 파일 선택창 열기
+    document.addEventListener("DOMContentLoaded", () => {
+        const btnChangePhoto = document.getElementById("btnChangePhoto");
+        const profileFile = document.getElementById("profile-file");
+        const profileImageEdit = document.getElementById("profileImageEdit");
+
+        btnChangePhoto?.addEventListener("click", (e) => {
+            e.preventDefault();
+            profileFile?.click();
+        });
+
+        profileFile?.addEventListener("change", function () {
+            const file = this.files && this.files[0];
+            if (!file) return;
+
+            if (!file.type || !file.type.startsWith("image/")) {
+            alert("이미지 파일만 선택할 수 있습니다.");
+            this.value = "";
+            return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+            profileImageEdit.src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+
+    // ------------------------------------------------------------------
+    // 회원 탈퇴 - 모달 열기 (회원탈퇴 버튼)
+    function openModal() {
+        // $("#delete-modal").show()
+        $("#delete-modal").css("display", "flex")
+    }
+    // 회원 탈퇴 - 모달 닫기 
+    function closeModal() {
+        $("#delete-modal").hide()
+    }
+    // 회원 탈퇴 (탈퇴하기 버튼)
+    function userDelete() {
+
+        // CSRF 토큰 문제 (403)
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            url: `/users/mypage/modal`,
+            method: 'DELETE',
+            beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
+                xhr.setRequestHeader(header, token)
+            },
+            success: function (result, status, xhr) {
+                alert("탈퇴가 완료되었습니다")
+                window.location.href = "/";     // 탈퇴 후 메인 이동
+            }, 
+            error: function (xhr, status, error) {
+                // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+                // status : AJAX 요청 상태를 문자열로 나타낸 것
+                if (xhr.status === 404) {
+                    alert("잘못된 요청입니다");
+                } else {
+                    alert("서버 내부 오류입니다.")
+                }
+            }
+        })
+    }
+    </script>
+    </th:block>
 </body>
 </html>
