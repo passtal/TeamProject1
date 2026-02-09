@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.aloha.durudurub.dto.AdminSubscription;
 import com.aloha.durudurub.dto.User;
 
 /**
@@ -34,5 +35,14 @@ public interface UserMapper {
     int countByUserId(@Param("userId") String userId);
     
     int countByUsername(@Param("username") String username);
-    
+
+    // 관리자페이지
+    // 전체 이용자 수
+    int countAll();
+    // 최신 가입자 수
+    int countNew();
+    // 최신 가입일 계산
+    User findLastestUser();
+    // 사용자 리스트(구독 여부)
+    List<AdminSubscription> userList();
 }
