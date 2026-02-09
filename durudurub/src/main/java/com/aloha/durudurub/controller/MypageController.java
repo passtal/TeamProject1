@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.aloha.durudurub.dto.Club;
+import com.aloha.durudurub.dto.Subscription;
 import com.aloha.durudurub.service.ClubService;
+import com.aloha.durudurub.service.SubscriptionService;
 import com.aloha.durudurub.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,12 +31,19 @@ public class MypageController {
 
     private final UserService userService;
     private final ClubService clubService;
+    private final SubscriptionService subscriptionService;
     
     // 마이페이지 메인
     @GetMapping()
     public String mypagePage(Model model, Principal principal) throws Exception {
         if (principal != null) {
-            model.addAttribute("user", userService.selectByUserId(principal.getName()));
+            var user = userService.selectByUserId(principal.getName());
+            model.addAttribute("user", user);
+
+            if (user != null) {
+                Subscription subscription = subscriptionService.selectByUserNo(user.getNo());
+                model.addAttribute("subscription", subscription);
+            }
         }
         return "mypage/mypage";
     }
