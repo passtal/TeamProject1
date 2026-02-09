@@ -1,15 +1,16 @@
 -- 기초 데이터 DML
 
 -- 대분류 카테고리
+-- 대분류 카테고리
 INSERT INTO `categories` (`name`, `description`, `icon`, `seq`) VALUES
-('자기계발', '나를 성장시키는 모임', 'bi-book', 1),
-('스포츠', '함께 땀 흘리는 모임', 'bi-trophy', 2),
-('푸드', '맛있는 음식을 나누는 모임', 'bi-cup-hot', 3),
-('게임', '게임을 즐기는 모임', 'bi-controller', 4),
-('동네친구', '동네에서 친구 만들기', 'bi-people', 5),
-('여행', '함께 떠나는 여행', 'bi-airplane', 6),
-('예술', '예술을 사랑하는 모임', 'bi-palette', 7),
-('기타', '그 외 다양한 취미활동!', 'bi-heart', 8);
+('자기계발', '나를 성장시키는 모임', '/img/icons/category-self-development.png', 1),
+('스포츠', '함께 땀 흘리는 모임', '/img/icons/category-sports.png', 2),
+('푸드', '맛있는 음식을 나누는 모임', '/img/icons/category-food.png', 3),
+('게임', '게임을 즐기는 모임', '/img/icons/category-game.png', 4),
+('동네친구', '동네에서 친구 만들기', '/img/icons/category-neighborhood.png', 5),
+('여행', '함께 떠나는 여행', '/img/icons/category-travel.png', 6),
+('예술', '예술을 사랑하는 모임', '/img/icons/category-art.png', 7),
+('기타', '그 외 다양한 취미활동!', '/img/icons/category-etc.png', 8);
 
 -- 소분류 카테고리
 -- 자기계발 (category_no = 1)
@@ -133,3 +134,12 @@ INSERT INTO `club_boards` (`club_no`, `writer_no`, `title`, `content`, `is_notic
 (1, 2, '이번 주 읽을 책 추천합니다', '이번 주는 "데미안"을 함께 읽어보면 어떨까요?', 'N'),
 (1, 3, '지난 모임 후기', '정말 좋은 시간이었습니다! 다음에도 참여할게요.', 'N'),
 (2, 2, '러닝 코스 변경 안내', '이번 주는 올림픽공원 대신 한강공원에서 진행합니다.', 'Y');
+
+-- 샘플 차단 데이터
+INSERT INTO `user_bans`
+(`user_no`, `reason`, `report_count_at_ban`, `ban_type`, `ban_end_date`, `is_active`)
+VALUES
+(1, '욕설 및 비방 신고 누적', 4, 'TEMPORARY', DATE_ADD(NOW(), INTERVAL 7 DAY), 'Y'),
+(2, '광고 및 스팸 행위 반복', 5, 'TEMPORARY', DATE_ADD(NOW(), INTERVAL 7 DAY), 'Y'),
+(3, '불법 콘텐츠 게시', 7, 'PERMANENT', NULL, 'Y');
+

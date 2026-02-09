@@ -1,16 +1,42 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{/layouts/main_layout}">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>모임 수정</title>
     <th:block th:replace="~{fragments/meta :: meta}"></th:block>
     <th:block th:replace="~{fragments/link :: link}"></th:block>
     <link rel="stylesheet" th:href="@{/css/board/board.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        #locationMap {
+            height: 300px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            cursor: crosshair;
+        }
+        .location-search-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+        .location-search-wrapper input {
+            flex: 1;
+        }
+        .selected-location {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            display: none;
+        }
+        .selected-location.show {
+            display: block;
+        }
+    </style>
 </head>
-<body class="club-update-page">
-    <th:block th:replace="~{fragments/header :: header}"></th:block>
+<body class="club-update-page" layout:fragment="content">
 
     <main class="container py-5">
         <div class="row justify-content-center">
@@ -73,8 +99,30 @@
                             <!-- 활동 지역 -->
                             <div class="mb-4">
                                 <label for="location" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="location" name="location" 
-                                       th:value="${club.location}" required>
+                                <div class="location-search-wrapper">
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                           th:value="${club.location}" placeholder="예: 서울 강남구" required>
+                                    <button type="button" class="btn btn-outline-primary" id="btnSearchLocation">
+                                        <i class="bi bi-search"></i> 검색
+                                    </button>
+                                </div>
+                                <small class="text-muted">주소를 검색하거나 지도를 클릭하여 위치를 선택하세요</small>
+
+                                <!-- 지도 -->
+                                <div id="locationMap"></div>
+
+                                <!-- 선택된 위치 표시 -->
+                                <div class="selected-location" id="selectedLocation"
+                                     th:classappend="${club.lat != null and club.lng != null} ? ' show' : ''">
+                                    <i class="bi bi-geo-alt-fill text-success"></i>
+                                    <span id="selectedAddress" th:text="${club.location != null ? club.location : '선택된 위치'}">선택된 위치</span>
+                                    <br><small class="text-muted">좌표: <span id="selectedCoords"
+                                        th:text="${club.lat != null and club.lng != null ? club.lat + ', ' + club.lng : ''}"></span></small>
+                                </div>
+
+                                <!-- 좌표 hidden 필드 -->
+                                <input type="hidden" id="lat" name="lat" th:value="${club.lat}">
+                                <input type="hidden" id="lng" name="lng" th:value="${club.lng}">
                             </div>
 
                             <!-- 최대 인원 -->
@@ -82,6 +130,22 @@
                                 <label for="maxMembers" class="form-label fw-bold">최대 인원 <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control" id="maxMembers" name="maxMembers" 
                                        min="2" max="100" th:value="${club.maxMembers}" required>
+                            </div>
+
+                            <!-- 모임 일시 -->
+                            <div class="mb-4">
+                                <label for="clubDate" class="form-label fw-bold">모임 일시</label>
+                                <input type="datetime-local" class="form-control" id="clubDate" name="clubDate"
+                                       th:value="${club.clubDate != null ? #dates.format(club.clubDate, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                                <small class="text-muted">모임이 진행되는 날짜와 시간을 설정하세요</small>
+                            </div>
+
+                            <!-- 모집 마감일 -->
+                            <div class="mb-4">
+                                <label for="deadLine" class="form-label fw-bold">모집 마감일</label>
+                                <input type="datetime-local" class="form-control" id="deadLine" name="deadLine"
+                                       th:value="${club.deadLine != null ? #dates.format(club.deadLine, 'yyyy-MM-dd''T''HH:mm') : ''}">
+                                <small class="text-muted">모집 마감 날짜를 설정하세요</small>
                             </div>
 
                             <!-- 모집 상태 -->
@@ -132,16 +196,128 @@
 
     <!-- Scripts -->
     <th:block th:replace="~{fragments/scripts :: script}"></th:block>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <script th:inline="javascript">
         const clubNo = [[${club.no}]];
 
+        // ===== 지도 초기화 =====
+        var initLat = [[${club.lat}]] || 37.5665;
+        var initLng = [[${club.lng}]] || 126.9780;
+        var hasCoords = [[${club.lat != null and club.lng != null}]];
+        var initZoom = hasCoords ? 15 : 12;
+
+        var map = L.map('locationMap').setView([initLat, initLng], initZoom);
+        var marker = null;
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        // 기존 좌표가 있으면 마커 표시
+        if (hasCoords) {
+            marker = L.marker([initLat, initLng]).addTo(map);
+        }
+
+        // 지도 클릭 시 마커 설정
+        map.on('click', function(e) {
+            setMarker(e.latlng.lat, e.latlng.lng);
+            reverseGeocode(e.latlng.lat, e.latlng.lng);
+        });
+
+        // 마커 설정 함수
+        function setMarker(lat, lng) {
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([lat, lng]).addTo(map);
+
+            $('#lat').val(lat);
+            $('#lng').val(lng);
+            $('#selectedCoords').text(lat.toFixed(6) + ', ' + lng.toFixed(6));
+            $('#selectedLocation').addClass('show');
+        }
+
+        // 역지오코딩 (좌표 → 주소)
+        function reverseGeocode(lat, lng) {
+            $.ajax({
+                url: 'https://nominatim.openstreetmap.org/reverse',
+                data: {
+                    format: 'json',
+                    lat: lat,
+                    lon: lng,
+                    'accept-language': 'ko'
+                },
+                success: function(result) {
+                    if (result && result.display_name) {
+                        $('#selectedAddress').text(result.display_name);
+                    }
+                }
+            });
+        }
+
+        // 주소 검색 (지오코딩)
+        function searchLocation(query) {
+            $.ajax({
+                url: 'https://nominatim.openstreetmap.org/search',
+                data: {
+                    format: 'json',
+                    q: query,
+                    countrycodes: 'kr',
+                    limit: 1,
+                    'accept-language': 'ko'
+                },
+                success: function(results) {
+                    if (results && results.length > 0) {
+                        var result = results[0];
+                        var lat = parseFloat(result.lat);
+                        var lng = parseFloat(result.lon);
+
+                        map.setView([lat, lng], 15);
+                        setMarker(lat, lng);
+                        $('#selectedAddress').text(result.display_name);
+                    } else {
+                        alert('검색 결과가 없습니다. 다른 주소로 검색해보세요.');
+                    }
+                },
+                error: function() {
+                    alert('주소 검색 중 오류가 발생했습니다.');
+                }
+            });
+        }
+
+        // 검색 버튼 클릭
+        $('#btnSearchLocation').click(function() {
+            var query = $('#location').val();
+            if (query) {
+                searchLocation(query);
+            } else {
+                alert('검색할 주소를 입력해주세요.');
+            }
+        });
+
+        // Enter 키로도 검색
+        $('#location').keypress(function(e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $('#btnSearchLocation').click();
+            }
+        });
+
+        // 지도 크기 조정 (레이아웃 로딩 후)
+        setTimeout(function() {
+            map.invalidateSize();
+        }, 300);
+
+        // ===== 카테고리 =====
         // 카테고리 변경 시 세부 카테고리 로드
         $('#categoryNo').change(function() {
             const categoryNo = $(this).val();
             if (categoryNo) {
                 $.ajax({
-                    url: '/api/categories/' + categoryNo + '/sub',
+                    url: '/club/api/subcategories/' + categoryNo,
                     type: 'GET',
                     success: function(subCategories) {
                         if (subCategories && subCategories.length > 0) {
@@ -162,7 +338,7 @@
         });
 
         // 이미지 미리보기
-        $('#thumbnailImg').change(function(e) {
+        $('#thumbnail').change(function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();

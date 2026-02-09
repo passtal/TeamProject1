@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         // CSRF 설정 (API 요청을 위해 일부 경로 제외)
         http.csrf(csrf -> csrf
-                .ignoringRequestMatchers("/api/**")
+                .ignoringRequestMatchers("/api/**", "/payments/**", "/confirm/**")
         );
 
 
@@ -29,6 +29,7 @@ public class SecurityConfig {
                                     .requestMatchers("/admin", "/admin/**").hasRole("ADMIN")
                                     .requestMatchers("/club/create", "/club/*/edit", "/club/*/delete").authenticated()
                                     .requestMatchers("/club/*/board/**").authenticated()
+                                    .requestMatchers("/users/mypage/**").authenticated()
                                     .requestMatchers("/**").permitAll());
 
         // 🔐 폼 로그인 설정

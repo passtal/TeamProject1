@@ -24,9 +24,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.aloha.durudurub.dto.Club;
+import com.aloha.durudurub.dto.Subscription;
 import com.aloha.durudurub.dto.ClubMember;
 import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.ClubService;
+import com.aloha.durudurub.service.SubscriptionService;
 import com.aloha.durudurub.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,6 +45,7 @@ public class MypageController {
 
     private final UserService userService;
     private final ClubService clubService;
+    private final SubscriptionService subscriptionService;
     
     // 마이페이지 메인
     // user_id 조회
@@ -52,14 +55,17 @@ public class MypageController {
         Principal principal
     ) throws Exception {
         if (principal != null) {
-
             User user = userService.selectByUserId(principal.getName());
             int userNo = user.getNo();
-
             int totalMyClub = clubService.countByUser(userNo);
-
+            
             model.addAttribute("user", user);
             model.addAttribute("totalMyClub", totalMyClub);
+
+            if (user != null) {
+                Subscription subscription = subscriptionService.selectByUserNo(user.getNo());
+                model.addAttribute("subscription", subscription);
+            }
         }
         return "mypage/mypage";
     }

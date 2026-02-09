@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 결제 매퍼 XML -->
+<mapper namespace="com.aloha.durudurub.dao.PaymentMapper">
+
+    <resultMap id="paymentResultMap" type="com.aloha.durudurub.dto.Payment">
+        <id property="no" column="no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="subscriptionNo" column="subscription_no"/>
+        <result property="paymentKey" column="payment_key"/>
+        <result property="orderId" column="order_id"/>
+        <result property="orderName" column="order_name"/>
+        <result property="amount" column="amount"/>
+        <result property="method" column="method"/>
+        <result property="status" column="status"/>
+        <result property="approvedAt" column="approved_at"/>
+        <result property="canceledAt" column="canceled_at"/>
+        <result property="cancelReason" column="cancel_reason"/>
+        <result property="receiptUrl" column="receipt_url"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insertOrder">
+        INSERT INTO payments (
+            user_no,
+            order_id,
+            order_name,
+            amount,
+            status
+        ) VALUES (
+            #{userNo},
+            #{orderId},
+            #{orderName},
+            #{amount},
+            #{status}
+        )
+    </insert>
+
+    <select id="selectByOrderId" resultMap="paymentResultMap">
+        SELECT
+            no,
+            user_no,
+            subscription_no,
+            payment_key,
+            order_id,
+            order_name,
+            amount,
+            method,
+            status,
+            approved_at,
+            canceled_at,
+            cancel_reason,
+            receipt_url,
+            created_at,
+            updated_at
+        FROM payments
+        WHERE order_id = #{orderId}
+        LIMIT 1
+    </select>
+
+    <update id="markApproved">
+        UPDATE payments
+        SET payment_key = #{paymentKey},
+            status = 'DONE',
+            approved_at = NOW()
+        WHERE order_id = #{orderId}
+    </update>
+
+</mapper>

@@ -73,8 +73,26 @@ public class ClubController {
                        @RequestParam(value = "page", defaultValue = "1") int page,
                        Model model) {
         
-        // 모든 모임을 가져온 뒤, 프론트에서 카테고리 필터링 처리
-        List<Club> clubs = clubService.list();
+        List<Club> clubs;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            clubs = clubService.search(keyword);
+        } else if (subCategoryNo != null) {
+            clubs = clubService.listBySubCategory(subCategoryNo);
+        } else if (categoryNo != null) {
+            clubs = clubService.listByCategory(categoryNo);
+        } else {
+            clubs = clubService.list();
+        }
+        
+        // 디버깅 로그
+        System.out.println("=== Club List Debug ===");
+        System.out.println("clubs size: " + (clubs != null ? clubs.size() : "null"));
+        if (clubs != null && !clubs.isEmpty()) {
+            for (Club c : clubs) {
+                System.out.println("Club: " + c.getNo() + " - " + c.getTitle());
+            }
+        }
 
         List<Category> categories = categoryService.list();
 
@@ -94,7 +112,7 @@ public class ClubController {
      * @param model
      * @return
      */
-    @GetMapping("/{no}")
+    @GetMapping({"/{no}", "/detail/{no}"})
     public String detail(@PathVariable("no") int no,
                         Principal principal,
                         Model model) {
@@ -153,6 +171,35 @@ public class ClubController {
     @ResponseBody
     public List<SubCategory> getSubCategories(@PathVariable("categoryNo") int categoryNo) {
         return categoryService.listBySubCategory(categoryNo);
+    }
+
+    /**
+     * 카테고리별 모임 목록 페이지
+     * @param categoryNo 카테고리 번호
+     * @param model
+     * @return
+     */
+    @GetMapping("/category")
+    public String category(@RequestParam("category") int categoryNo, Model model) {
+        // 카테고리 번호로 카테고리 조회
+        Category category = categoryService.selectByNo(categoryNo);
+        
+        if (category == null) {
+            return "redirect:/club/list";
+        }
+        
+        // 카테고리에 속한 모임 조회
+        List<Club> clubs = clubService.listByCategory(category.getNo());
+        
+        // 소분류 카테고리 조회
+        List<SubCategory> subCategories = categoryService.listBySubCategory(category.getNo());
+        
+        model.addAttribute("categoryName", category.getName());
+        model.addAttribute("category", category);
+        model.addAttribute("clubs", clubs);
+        model.addAttribute("subCategories", subCategories);
+        
+        return "club/category";
     }
     
     /**

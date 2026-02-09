@@ -3,5 +3,62 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- 신고 매퍼 XML -->
 <mapper namespace="com.aloha.durudurub.dao.ReportMapper">
-    <!-- TODO: 구현 -->
+    <!-- 사용자 차단 이력 -->
+    <resultMap id="userBanMap" type="com.aloha.durudurub.dto.UserBan">
+        <id property="no" column="no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="reason" column="reason"/>
+        <result property="reportCountAtBan" column="report_count_at_ban"/>
+        <result property="banType" column="ban_type"/>
+        <result property="banEndDate" column="ban_end_date"/>
+        <result property="isActive" column="is_active"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+        <!-- 신고된 사용자 -->
+        <association property="user" javaType="com.aloha.durudurub.dto.User">
+            <id property="no" column="u_no"/>
+            <result property="username" column="u_username"/>
+            <result property="userId" column="u_user_id"/>
+        </association>
+    </resultMap>
+
+    <!-- 관리자 : 신고 내역 조회 (7일 이내)-->
+    <select id="listByTarget" resultMap="userBanMap">
+        SELECT ub.*,
+            u.no AS u_no,
+            u.username AS u_username,
+            u.user_id AS u_user_id
+        FROM user_bans ub
+        JOIN users u ON u.no = ub.user_no
+        WHERE ub.created_at <![CDATA[ >= ]]> DATE_SUB(NOW(), INTERVAL 7 DAY)
+        ORDER BY ub.report_count_at_ban DESC
+    </select>
+    <!-- 관리자 : 7일 만료 기록 삭제 -->
+    <delete id="deleteExpired">
+        DELETE FROM user_bans
+        WHERE created_at <![CDATA[ < ]]> DATE_SUB(NOW(), INTERVAL 7 DAY)
+    </delete>
+    <!-- 대시보드: 총 신고 수 -->
+    <select id="countList" resultType="int">
+        SELECT COUNT(*)
+        FROM user_bans
+    </select>
+    <!-- 대시보드: 신고접수 -->
+    <select id="countNewReports" resultType="int">
+        SELECT COUNT(*)
+        FROM user_bans ub
+        JOIN ( SELECT DATE(created_at) AS lastest_date
+                FROM user_bans
+                ORDER BY created_at DESC
+                LIMIT 1) t
+        ON ub.created_at <![CDATA[ >= ]]> t.lastest_date
+        AND ub.created_at <![CDATA[ < ]]> t.lastest_date + INTERVAL 1 DAY
+    </select>
+    <!-- 대시보드: 최신신고(신고일) -->
+    <select id="findLastestUserBan" resultType="UserBan">
+        SELECT *
+        FROM user_bans
+        ORDER BY created_at DESC
+        LIMIT 1
+    </select>
 </mapper>

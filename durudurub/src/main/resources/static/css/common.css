@@ -1,13 +1,16 @@
 /* 헤더 스타일 : 절대 건들지 말것!*/
 .header {
-    nav {
+    header{
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     }
 
     .container-fluid {
         height: 70px;
-        padding-left: 32px;
-        padding-right: 32px;
+        max-width: 80rem;          /* 1280px */
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;        /* px-4 = 16px */
+        padding-right: 1rem;
     }
 
     .navbar-brand {
@@ -125,18 +128,13 @@
     }
     
     .user-icon {
-        width: 30px;
-        height: 30px;
+        width: 40px;
+        height: 40px;
         object-fit: contain;
     }
     
     .logo-img {
         object-fit: contain;
-    }
-    
-    /* 드롭다운 */
-    .hidden {
-    /* display: none; */
     }
 
     .hidden ul {
@@ -156,6 +154,12 @@
     transition: color 0.2s, background-color 0.2s;
     }
 
+    .hidden li.notice {
+        align-items: center;
+        display: flex;
+        gap: 7px;
+    }
+
     .hidden li:hover {
     background-color: #f9fafb;
     color: #00A651;
@@ -163,6 +167,10 @@
 
     .hidden a {
     text-decoration: none;
+    }
+
+    .hidden button {
+        text-decoration: none;
     }
 
     .hidden hr {
@@ -186,11 +194,14 @@
     background-color: #f9fafb;
     }
 
+    .icon-container {
+        position: relative;
+    }
     .icon-container .hidden {
     position: absolute;
     right: 0;
     margin-top: 0.8rem;
-    margin-right: 0.8rem;
+    /* margin-right: 0.8rem; */
     width: 12rem;
     background-color: #ffffff;
     border-radius: 1rem;

@@ -16,9 +16,7 @@
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title">
-                        함께 하면<br>더 즐거운 순간
-                    </h1>
+                    <h1 class="hero-title">함께 하면<br>더 즐거운 순간</h1>
                     <p class="hero-subtitle">
                         관심사가 같은 사람들과 모여<br>새로운 경험을 만들어보세요
                     </p>
@@ -27,8 +25,7 @@
 
                 <!-- 히어로 이미지 -->
                 <div class="hero-image-wrapper">
-                    <img th:src="@{/img/index/main_img.jpg}" 
-                         alt="함께하는 즐거운 순간">
+                    <img th:src="@{/img/hero-image.png}" alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
             </div>
@@ -58,7 +55,7 @@
         </div>
     </section>
 
-    <!-- Category Section -->
+    <!-- 카테고리 -->
     <section class="category-section">
         <div class="category-header">
             <h2 class="category-title">어떤 모임을 찾으시나요?</h2>
@@ -67,21 +64,12 @@
 
         <div class="category-grid">
             <!-- 카테고리 반복 -->
-            <a th:each="category, iterStat : ${categories}" 
-               th:href="@{/club/list(category=${category.no})}" 
+            <a th:each="category, stat : ${categories}" 
+               th:href="@{/club/category(category=${category.no})}" 
                class="category-item">
-                <div class="category-icon" 
-                     th:classappend="'category-bg-' + ${(iterStat.index % 8) + 1}">
-                    <!-- Bootstrap Icons (bi-*) 클래스인 경우 -->
-                    <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
-                       th:class="'bi ' + ${category.icon}"></i>
-                    <!-- URL인 경우 이미지 -->
-                    <img th:if="${category.icon != null and category.icon.startsWith('http')}" 
-                         th:src="${category.icon}" 
-                         th:alt="${category.name}">
-                    <!-- 그 외 (이모지 등) -->
-                    <span th:if="${category.icon != null and !category.icon.startsWith('bi-') and !category.icon.startsWith('http')}" 
-                          th:text="${category.icon}">📁</span>
+                <div class="category-icon" th:classappend="'category-bg-' + ${stat.count}">
+                    <!-- 카테고리 아이콘 (Bootstrap Icons) -->
+                    <i th:classappend="${category.icon}" class="bi"></i>
                 </div>
                 <span class="category-name" th:text="${category.name}">카테고리명</span>
             </a>
@@ -106,31 +94,40 @@
                     if (bannerDots[index]) bannerDots[index].classList.add('active');
                 }
 
+                // 배너 슬라이드 표시 함수
                 function showBannerSlide(index) {
                     if (!bannertrack || totalBanners === 0) return;
+
+                    // 범위 보정
                     if (index < 0) index = totalBanners - 1;
                     if (index >= totalBanners) index = 0;
+
                     bannertrack.style.transform = `translateX(-${index * 100}%)`;
                     currentBannerIndex = index;
                     updateDots(index);
                 }
 
+                // 다음 슬라이드
                 function nextBannerSlide() {
                     showBannerSlide(currentBannerIndex + 1);
                 }
 
+                // 특정 슬라이드로 이동
                 window.goToBannerSlide = function (index) {
                     showBannerSlide(parseInt(index, 10));
+                    // 수동 클릭 시 자동 슬라이드 재시작
                     clearInterval(bannerInterval);
                     startBannerAutoSlide();
                 }
 
+                // 자동 슬라이드 시작
                 function startBannerAutoSlide() {
                     if (totalBanners > 1) {
-                        bannerInterval = setInterval(nextBannerSlide, 5000);
+                        bannerInterval = setInterval(nextBannerSlide, 5000); // 5초마다 변경
                     }
                 }
 
+                // 초기 1번 슬라이드 보이게
                 showBannerSlide(0);
                 startBannerAutoSlide();
             })

@@ -25,18 +25,23 @@ public class HomeController {
     @Autowired
     private BannerService bannerService;
     
+    @Autowired
+    private BannerService bannerService;
+    
     @GetMapping("/")
     public String index(Model model) {
         try {
+            // 카테고리 목록 조회
             List<Category> categories = categoryService.list();
             if (categories == null) {
                 categories = new ArrayList<>();
             }
             model.addAttribute("categories", categories);
-
-            // 활성화된 배너 목록 조회
+            
+            // 활성화된 배너 목록 조회 (수정)
             List<Banner> banners = bannerService.getMainBanner();
             model.addAttribute("banners", banners);
+            
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("categories", new ArrayList<>());

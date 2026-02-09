@@ -1,0 +1,453 @@
+/* 결제 페이지 스타일 */
+
+body {
+    background-color: #F9FAFB;
+}
+
+.payment-page {
+    min-height: 100vh;
+    padding: 32px 16px;
+}
+
+.payment-container {
+    max-width: 672px;
+    margin: 0 auto;
+}
+
+/* 헤더 */
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 16px;
+    margin-bottom: 32px;
+}
+
+.payment-header h1 {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    color: #101828;
+    margin: 0;
+}
+
+.btn-close {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+}
+
+/* 프리미엄 정보 카드 */
+.premium-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 33px;
+    margin-bottom: 24px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.premium-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.premium-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #AD46FF 0%, #8200DB 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.premium-info h2 {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    color: #101828;
+    margin: 0 0 4px 0;
+}
+
+.premium-info .price {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
+    color: #00A651;
+    margin: 0;
+}
+
+.premium-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.feature-item svg {
+    flex-shrink: 0;
+}
+
+.feature-item span {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #364153;
+}
+
+.cancel-info {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6A7282;
+    margin: 0;
+}
+
+/* 구독 기간 선택 카드 */
+.subscription-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 24px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.subscription-card h3 {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0 0 16px 0;
+}
+
+.subscription-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.subscription-option {
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    padding: 18px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    margin-bottom: 16px;
+}
+
+.subscription-option:last-child {
+    margin-bottom: 0;
+}
+
+.subscription-option:hover {
+    border-color: #00A651;
+}
+
+.subscription-option.selected {
+    background: #F0FDF4;
+    border-color: #00A651;
+}
+
+.option-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.option-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.option-info .period {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 24px;
+    color: #101828;
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 16px;
+    color: #FFFFFF;
+}
+
+.discount-badge {
+    background: #00A651;
+}
+
+.premium-badge {
+    background: linear-gradient(90deg, #AD46FF 0%, #8200DB 100%);
+}
+
+.option-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.price-text {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #4A5565;
+}
+
+.original-price {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #99A1AF;
+    text-decoration: line-through;
+}
+
+.discount-price {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 20px;
+    color: #00A651;
+}
+
+.monthly-price {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6A7282;
+}
+
+.selected-check {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 24px;
+    height: 24px;
+    background: #00A651;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.subscription-option:not(.selected) .selected-check {
+    display: none;
+}
+
+/* 카드 정보 입력 */
+.card-info-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 24px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.card-header h3 {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0;
+}
+
+.card-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #364153;
+}
+
+.form-input {
+    padding: 12px 16px;
+    border: 1px solid #D1D5DC;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18.4px;
+    color: rgba(10, 10, 10, 0.5);
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #00A651;
+}
+
+.form-input::placeholder {
+    color: rgba(10, 10, 10, 0.5);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* 약관 동의 */
+.terms-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 24px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+}
+
+.terms-card h3 {
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    color: #101828;
+    margin: 0 0 16px 0;
+}
+
+.terms-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.term-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+
+.term-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #D1D5DC;
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: #00A651;
+}
+
+.term-item span {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #101828;
+}
+
+/* 결제 버튼 */
+.btn-payment {
+    width: 100%;
+    height: 60px;
+    background: #00A651;
+    border: none;
+    border-radius: 14px;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    color: #FFFFFF;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+    margin-bottom: 16px;
+}
+
+.btn-payment:hover {
+    background: #008a44;
+}
+
+.btn-payment:disabled {
+    background: #D1D5DC;
+    cursor: not-allowed;
+}
+
+/* 갱신 정보 */
+.renewal-info {
+    font-family: Arial, sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 16px;
+    color: #6A7282;
+    text-align: center;
+    margin: 0;
+}
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .payment-page {
+        padding: 16px;
+    }
+
+    .premium-card,
+    .subscription-card,
+    .card-info-card,
+    .terms-card {
+        padding: 20px;
+    }
+
+    .payment-header h1 {
+        font-size: 20px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .option-price {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+    }
+}
