@@ -49,4 +49,9 @@ public class BannerServiceImpl implements BannerService {
         return result > 0;
     }
 
+    @Override
+    public List<Banner> getMainBanner() {
+        return bannerMapper.selectMainBanner();
+    }
+
 }

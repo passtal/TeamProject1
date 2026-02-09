@@ -22,5 +22,7 @@ public interface BannerMapper {
     int bannerUpdate(Banner banner) throws Exception;
     // 배너 삭제
     int bannerDelete(Integer no) throws Exception;
+    // 메인 배너 조회
+    List<Banner> selectMainBanner();
     
 }

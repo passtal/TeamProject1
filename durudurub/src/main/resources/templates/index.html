@@ -11,26 +11,23 @@
 </head>
 <body layout:fragment="content">
 
-    <!-- Hero Section -->
+    <!-- 히어로 -->
     <section class="hero-section">
         <div class="hero-container">
             <div class="hero-content">
-                <!-- Hero Text -->
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        함께 하면<br>
-                        더 즐거운 순간
+                        함께 하면<br>더 즐거운 순간
                     </h1>
                     <p class="hero-subtitle">
-                        관심사가 같은 사람들과 모여<br>
-                        새로운 경험을 만들어보세요
+                        관심사가 같은 사람들과 모여<br>새로운 경험을 만들어보세요
                     </p>
                     <a th:href="@{/club/list}" class="hero-btn">모임 둘러보기</a>
                 </div>
 
-                <!-- Hero Image -->
+                <!-- 히어로 이미지 -->
                 <div class="hero-image-wrapper">
-                    <img src="https://www.figma.com/api/mcp/asset/737aa482-a091-4a55-9834-b89c4c7521f2" 
+                    <img th:src="@{/img/index/main_img.jpg}" 
                          alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
@@ -38,27 +35,25 @@
         </div>
     </section>
 
-    <!-- Ad Banner Section -->
-    <section class="ad-section">
+    <!-- 광고 배너 섹션 -->
+    <section class="ad-section" th:if="${banners != null and !banners.empty}">
         <div class="ad-sponsored">Sponsored</div>
-        <div class="ad-banner-wrapper">
-            <img src="https://www.figma.com/api/mcp/asset/757c5665-93d8-4158-acf9-1d1b82f24883" 
-                 alt="Coffee House Ad" class="ad-banner-img">
-            <div class="ad-banner-overlay"></div>
-            <div class="ad-banner-content">
-                <div class="ad-banner-brand">Coffee House</div>
-                <h3 class="ad-banner-title">프리미엄 원두 커피</h3>
-                <p class="ad-banner-subtitle">신규 회원 20% 할인</p>
-                <a href="#" class="ad-banner-btn">
-                    자세히 보기
-                    <img src="https://www.figma.com/api/mcp/asset/4cb55c91-4535-4759-b880-7c46e0ea1e79" 
-                         alt="" style="width: 16px; height: 16px;">
-                </a>
+        <div class="ad-banner-wrapper" id="bannerSlider">
+            <!-- 배너 슬라이드 -->
+            <div class="ad-banner-track" id="ad-banner-track">
+                <div class="banner-slide" th:each="b : ${banners}">
+                    <a th:href="${b.linkUrl}">
+                        <img class="ad-banner-img" th:src="${b.imageUrl}" th:alt="${b.title}">
+                    </a>
+                </div>
             </div>
-            <div class="ad-banner-dots">
-                <div class="ad-dot active"></div>
-                <div class="ad-dot"></div>
-                <div class="ad-dot"></div>
+            <!-- 배너 개수만큼 dot 표시 -->
+            <div class="ad-banner-dots" th:if="${#lists.size(banners) > 1}">
+                <div th:each="b, stat : ${banners}" 
+                     class="ad-dot"
+                     th:classappend="${stat.first ? 'active' : ''}"
+                     th:attr="data-index=${stat.index}"
+                     onclick="goToBannerSlide(this.dataset.index)"></div>
             </div>
         </div>
     </section>
@@ -92,5 +87,54 @@
             </a>
         </div>
     </section>
+
+    <!-- 배너 슬라이드 -->
+    <th:block layout:fragment="script">
+        <script th:if="${banners != null and !banners.empty}">
+            document.addEventListener('DOMContentLoaded', () => {
+                let currentBannerIndex = 0;
+
+                const bannertrack = document.getElementById('ad-banner-track');
+                const bannerSlides = document.querySelectorAll('#ad-banner-track .banner-slide');
+                const bannerDots = document.querySelectorAll('.ad-dot');
+                const totalBanners = bannerSlides.length;
+
+                let bannerInterval;
+
+                function updateDots(index) {
+                    bannerDots.forEach(d => d.classList.remove('active'));
+                    if (bannerDots[index]) bannerDots[index].classList.add('active');
+                }
+
+                function showBannerSlide(index) {
+                    if (!bannertrack || totalBanners === 0) return;
+                    if (index < 0) index = totalBanners - 1;
+                    if (index >= totalBanners) index = 0;
+                    bannertrack.style.transform = `translateX(-${index * 100}%)`;
+                    currentBannerIndex = index;
+                    updateDots(index);
+                }
+
+                function nextBannerSlide() {
+                    showBannerSlide(currentBannerIndex + 1);
+                }
+
+                window.goToBannerSlide = function (index) {
+                    showBannerSlide(parseInt(index, 10));
+                    clearInterval(bannerInterval);
+                    startBannerAutoSlide();
+                }
+
+                function startBannerAutoSlide() {
+                    if (totalBanners > 1) {
+                        bannerInterval = setInterval(nextBannerSlide, 5000);
+                    }
+                }
+
+                showBannerSlide(0);
+                startBannerAutoSlide();
+            })
+        </script>
+    </th:block>
 </body>
 </html>

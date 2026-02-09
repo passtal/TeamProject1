@@ -19,4 +19,6 @@ public interface BannerService {
     boolean bannerUpdate(Banner banner) throws Exception;
     // 배너 삭제
     boolean bannerDelete(Integer no) throws Exception;
+    // 메인 배너
+    List<Banner> getMainBanner();
 }
