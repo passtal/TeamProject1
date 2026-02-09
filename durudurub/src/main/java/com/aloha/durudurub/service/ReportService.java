@@ -2,8 +2,6 @@ package com.aloha.durudurub.service;
 
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-
 import com.aloha.durudurub.dto.Banner;
 
 /**
