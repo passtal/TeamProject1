@@ -90,6 +90,11 @@ body {
 }
 
 /* 모임 카드 */
+.cardList {
+    display: flex;
+    flex-direction:column;
+    gap: 15px;
+}
 .club-card {
     display: flex;
     justify-content: space-between;

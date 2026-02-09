@@ -1,40 +1,44 @@
-// 삭제할 배너 ID를 저장할 변수
-        let bannerNo = null;
+ // ⭐ 리더인 모임
 
-        
-        function deleteBanner(no, title) {
-            bannerNo = no;
-            document.getElementById('deleteBannerTitle').textContent = title ? `"${title}"` : '';
-            document.getElementById('deleteModal').style.display = 'flex';
-        }
-        
-        function closeDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-            bannerNo = null;
-        }
-        
-        function confirmDelete() {
-            if (bannerNo) {
+        // 날짜 포맷
+        fetch(`/users/mypage/club/${clubNo}/members`)
+            .then(res => res.json())
+            .then(data => {
+                console.log(data.pendingList)
+            })
 
-                // CSRF 토큰 문제 (403)
-                const token = $("meta[name='_csrf']").attr("content");
-                const header = $("meta[name='_csrf_header']").attr("content");
+        function formatDate(dateStr){
+        if(!dateStr) return ''
 
-                $.ajax({
-                    url: `/admin/api/banners/${bannerNo}`,
-                    method: 'DELETE',
-                    beforeSend: function (xhr) {     
-                        xhr.setRequestHeader(header, token);
-                    },
-                    success: function (res) {
-                        closeDeleteModal();
-                        // 목록 다시 받기 (동기화)
-                        getList()
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('*****삭제 실패!')
-                        alert('삭제 실패!')
-                    }
-                })
-            }
+        const d = new Date(dateStr)
+        const yyyy = d.getFullYear()
+        const mm = String(d.getMonth()+1).padStart(2,'0')
+        const dd = String(d.getDate()).padStart(2,'0')
+
+        return `${yyyy}-${mm}-${dd}`
         }
+
+// 멤버 관리 토글
+document.querySelectorAll('.btn-leader-manage').forEach(button => {
+    button.addEventListener('click', function() {
+        const clubNo = this.getAttribute('data-club-no');
+        const managementArea = document.getElementById('memberManagement-' + clubNo);
+        const icon = this.querySelector('.material-symbols-outlined:last-child');
+        
+        if (managementArea.style.display === 'none' || managementArea.style.display === '') {
+            managementArea.style.display = 'block';
+            icon.textContent = 'expand_less';
+        } else {
+            managementArea.style.display = 'none';
+            icon.textContent = 'expand_more';
+        }
+    });
+});
+
+// 가입요청
+function loadPendingMembers(clubNo) {
+    $.ajax({
+        url: `/users/mypage/club/hostClub/${clubNo}/pending`
+    })
+}
+// 승인된 멤버

@@ -4,9 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.security.access.method.P;
 
-import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
 
 /**

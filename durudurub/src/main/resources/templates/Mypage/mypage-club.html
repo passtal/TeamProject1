@@ -9,30 +9,30 @@
     <link rel="stylesheet" th:href="@{/css/mypage/mypage-club.css}">
 </head>
 <body> 
-    <main layout:fragment="content">
+    <main layout:fragment="content" class="main-content">
         <div class="club-management-container">
             <!-- 탭 메뉴 -->
             <nav class="tab-menu" id="userNav">
-                <button class="tab-btn active" data-url="/admin/fragment/approvedClub">
+                <button class="tab-btn active" data-url="/users/mypage/club/fragment/approvedClub">
                     <span class="material-symbols-outlined">group</span>
                     <span>참여 중인 모임</span>
-                    <span class="badge" id="countApproved" th:text="${countByApproved}">0</span>
+                    <span class="badge" th:text="${countByApproved}">0</span>
                 </button>
-                <button class="tab-btn" data-url="/admin/fragment/hostClub">
+                <button class="tab-btn" data-url="/users/mypage/club/fragment/hostClub">
                     <span class="material-symbols-outlined">crown</span>
                     <span>리더인 모임</span>
-                    <span class="badge" id="countHost" th:text="${countByHost}">0</span>
+                    <span class="badge" th:text="${countByHost}">0</span>
                 </button>
-                <button class="tab-btn" data-url="/admin/fragment/pendingClub">
+                <button class="tab-btn" data-url="/users/mypage/club/fragment/pendingClub">
                     <span class="material-symbols-outlined">schedule</span>
                     <span>신청 중인 모임</span>
-                    <span class="badge" id="countPending" th:text="${countByPending}">0</span>
+                    <span class="badge" th:text="${countByPending}">0</span>
                 </button>
             </nav>
-        </div>
 
-        <!-- 3개 Fragmenet -->
-        <section id="myclubContent"></section>
+            <!-- 3개 Fragmenet -->
+             <div id="myclubContent"></div>
+        </div>
     </main>
 
     <th:block layout:fragment="script">
@@ -46,38 +46,23 @@
                         $('#myclubContent').html(html)
                     },
                     error:function (xhr, status, error) {
-                        console.error('******Error: ', error)
-                        $('#myclubList').html("<p>불러오기 실패</p>s")
+                        console.error('******Error:', { status: xhr.status, statusText: xhr.statusText, error, responseText: xhr.responseText });
+                        $('#myclubContent').html("<p>불러오기 실패</p>")
                     }
                 })
             }
-            // 상위 카테고리 (참여중 / 리더 / 신청 중)
+            // 
             $(function () {
-                loadUserFragment('/mypage/fragment/approvedClub')
+                loadUserFragment('/users/mypage/club/fragment/approvedClub')
             })
+
             // 네비 클릭
-            $('#userNav').on('click', '.tab-menu', function () {
-                $('.tab-menu').removeClass("active")
+            $('#userNav').on('click', '.tab-btn', function () {
+                $('.tab-btn').removeClass("active")
                 $(this).addClass("active")
 
                 loadUserFragment($(this).data('url'))
             })
-
-            // 상위 카테고리 (개수) - countApproved / countHost / countPending
-            function countList(type, diff) {
-                // 타입에 따라 바뀌는 객체 매핑
-                const map = {
-                    APPROVED: "#countApproved",
-                    PENDING: "#countPending",
-                    HOST: "#countHost"
-                }
-                // 선택된 타입을 제이쿼리 객체로 담기
-                let changeType = $(map[type])
-                // 숫자로 반환
-                let count = Number(changeType.text())
-                // 반환된 숫자와 받은 파라미터 계산 (0 최소)
-                changeType.text(Math.max(0, count + diff))
-            }
         </script>
     </th:block>
 </body>

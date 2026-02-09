@@ -199,6 +199,11 @@ public class ClubServiceImpl implements ClubService {
     public int countByUser(int userNo) throws Exception {
         return clubMapper.countByUser(userNo);
     }
+    // 모임리스트 - 리더
+    @Override
+    public List<Club> listByHost(int hostNo) {
+        return clubMapper.listByHost(hostNo);
+    }
     // 탈퇴하기
     @Override
     public int deleteByClubAndUser(int clubNo, int userNo) {
@@ -215,6 +220,7 @@ public class ClubServiceImpl implements ClubService {
     public Club findLatestClub() {
         return clubMapper.findLatestClub();
     }
+
 
     
 

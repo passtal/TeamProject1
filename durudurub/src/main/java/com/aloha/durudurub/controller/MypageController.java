@@ -121,9 +121,11 @@ public class MypageController {
 
         User user = userService.selectByUserId(principal.getName());
         int userNo = user.getNo();
+
+        List<Club> hostClub = clubService.listByHost(userNo);
+        int countByHost = hostClub.size();
         
         int countByApproved = clubService.countByStatus(userNo, "APPROVED");
-        int countByHost = clubService.countByStatus(userNo, "HOST");
         int countByPending = clubService.countByStatus(userNo, "PENDING");
 
         model.addAttribute("countByApproved", countByApproved);
@@ -132,6 +134,7 @@ public class MypageController {
 
         return "mypage/mypage-club";
     }
+
 
     // 가입 중인 모임 (조각)
     @GetMapping("/club/fragment/approvedClub")
@@ -145,56 +148,65 @@ public class MypageController {
 
         List<Club> approvedClub = clubService.myClubList(userNo, "APPROVED");
         
+        log.info("*********approvedClub: {}", approvedClub);
         model.addAttribute("approvedClub", approvedClub);
 
         return "mypage/fragments/approvedClub";
     }
-
     // 가입 중인 모임 - 탈퇴
-    @DeleteMapping("/club/{clubNo}")
+    @DeleteMapping("/club/api/{clubNo}")
     @ResponseBody
-    public ResponseEntity<Void> delete(
+    public int deleteApprovedClub (
         @PathVariable("clubNo") int clubNo,
         Principal principal
     ) {
-        int userNo = userService.selectByUserId(principal.getName()).getNo();
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo(); 
 
-        // 삭제
-        try {
-            int result = clubService.deleteByClubAndUser(clubNo, userNo);
-            if ( result == 0) {
-                // build : 응답 바디 필요 없을 때 사용하는 메서드
-                return ResponseEntity.badRequest().build();
-            }
-            System.out.println(SecurityContextHolder.getContext().getAuthentication());
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        return clubService.leaveClub(clubNo, userNo);
     }
 
-    // 리더인 모임
-    @GetMapping("/club/{clubNo}/members")
+
+    // 리더인 모임 (조각)
+    @GetMapping("/club/fragment/hostClub")
+    public String hostClub(
+        Model model,
+        Principal principal
+    ) throws Exception{
+
+        User host = userService.selectByUserId(principal.getName());
+        int hostNo = host.getNo();
+
+        List<Club> hostClub = clubService.listByHost(hostNo);
+
+        log.info("*******hostClub: {}", hostClub);
+        model.addAttribute("hostClub", hostClub);
+
+        return "mypage/fragments/hostClub";
+    }
+    // 승인 대기 목록 (json)
+    @GetMapping("/club/hostClub/{clubNo}/pending")
     @ResponseBody
-    public Map<String, Object> members(
-        @PathVariable("clubNo") int clubNo,
-        Principal principal,
-        Model model
+    public List<ClubMember> pendingMember(
+        @PathVariable("clubNo") int clubNo
     ) throws Exception {
-
-        
         List<ClubMember> pendingList = clubService.listPendingMembers(clubNo);
-        List<ClubMember> approvedList = clubService.listApproveMembers(clubNo);
-        Map<String, Object> map = new HashMap<>();
-
         log.info("★★ pendingList : " + pendingList);
+
+        return pendingList;
+    }
+    // 승인된 멤버 목록
+    @GetMapping("/club/hostClub/{clubNo}/approved")
+    @ResponseBody
+    public List<ClubMember> approvedMember(
+        @PathVariable("clubNo") int clubNo
+    ) {
+        List<ClubMember> approvedList = clubService.listApproveMembers(clubNo);
         log.info("★★ approvedList : " + approvedList);
 
-        map.put("pendingList", pendingList);
-        map.put("approvedList", approvedList);
-
-        return map;
+        return approvedList;
     }
+    
 
     // 신청 중인 모임
     // 신청 취소
