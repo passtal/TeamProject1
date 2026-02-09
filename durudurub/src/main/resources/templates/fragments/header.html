@@ -28,7 +28,7 @@
                         <img th:src="@{/img/icons/navbar-search-icon.png}" alt="검색" class="navbar-icon">
                       </button>
                       <input class="form-control rounded-pill shadow-none" type="search" name="keyword" placeholder="모임 검색..." aria-label="Search" style="padding-left: 50px;">
-                      <button class="btn btn-outline-secondary right-btn" type="submit">
+                      <button class="btn btn-outline-secondary right-btn ai-search-btn" type="button">
                         <img th:src="@{/img/icons/navbar-filter-button.png}" alt="ai검색" class="navbar-icon">
                       </button>
                   </div>
@@ -206,6 +206,91 @@
                   </li>
               </th:block>
           </ul>
+      </div>
+  </div>
+
+  <!-- AI 검색 로그인 필요 팝업 (비로그인 시) -->
+  <div class="modal fade" id="aiLoginModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content text-center p-4">
+              <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+              <div class="mb-3 mt-2">
+                  <img th:src="@{/img/icons/navbar-filter-button.png}" alt="AI" width="60" height="60">
+              </div>
+              <h5 class="fw-bold">로그인이 필요합니다</h5>
+              <p class="text-muted small">
+                  AI 검색 기능은 로그인 후 이용하실 수 있습니다.<br>
+                  로그인하시면 무료로 3회까지 AI 검색을 체험하실 수 있어요!
+              </p>
+              <div class="mb-3 text-start mx-auto" style="max-width: 280px;">
+                  <p class="fw-bold text-center mb-2">AI 검색으로 이런 것들이 가능해요</p>
+                  <p class="text-success small mb-1">✓ 자연어로 원하는 모임 찾기</p>
+                  <p class="text-success small mb-1">✓ 맞춤형 모임 추천받기</p>
+                  <p class="text-success small mb-0">✓ 로그인 후 무료 3회 체험</p>
+              </div>
+              <div class="d-flex gap-2 justify-content-center mt-3">
+                  <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">취소</button>
+                  <a th:href="@{/login}" class="btn px-4 text-white" style="background-color: #8B5CF6;">로그인하기</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- AI 검색 구독 필요 팝업 (무료 3회 소진 시) -->
+  <div class="modal fade" id="aiSubscribeModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content text-center p-4">
+              <button type="button" class="btn-close position-absolute top-0 end-0 m-3" data-bs-dismiss="modal"></button>
+              <div class="mb-3 mt-2">
+                  <img th:src="@{/img/icons/navbar-filter-button.png}" alt="AI" width="60" height="60">
+              </div>
+              <h5 class="fw-bold">무료 체험이 종료되었습니다</h5>
+              <p class="text-muted small">
+                  무료 AI 검색 3회를 모두 사용하셨습니다.<br>
+                  프리미엄 구독 후 무제한으로 AI 검색을 이용해보세요!
+              </p>
+              <div class="mb-3 text-start mx-auto" style="max-width: 280px;">
+                  <p class="fw-bold text-center mb-2">프리미엄 구독 혜택</p>
+                  <p class="text-success small mb-1">✓ AI 검색 무제한 이용</p>
+                  <p class="text-success small mb-1">✓ 맞춤형 모임 추천</p>
+                  <p class="text-success small mb-0">✓ 우선 검색 결과 노출</p>
+              </div>
+              <div class="d-flex gap-2 justify-content-center mt-3">
+                  <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">취소</button>
+                  <a th:href="@{/subscribe}" class="btn px-4 text-white" style="background-color: #8B5CF6;">구독하기</a>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- AI 검색 모달 (로그인 + 검색 가능 시) -->
+  <div class="modal fade" id="aiSearchModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title">
+                      <i class="bi bi-robot"></i> AI 모임 검색
+                      <span id="aiSearchRemaining" class="badge bg-secondary ms-2" style="font-size: 0.7rem;"></span>
+                  </h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                  <form id="aiSearchForm">
+                      <div class="input-group mb-3">
+                          <input type="text" id="aiSearchInput" class="form-control"
+                                 placeholder="예: 서울에서 등산 같이 할 사람 있나요?">
+                          <button class="btn btn-primary" type="submit">
+                              <i class="bi bi-search"></i> 검색
+                          </button>
+                      </div>
+                  </form>
+                  <div id="aiSearchResult">
+                      <p class="text-muted text-center py-4">
+                          자연어로 원하는 모임을 검색해보세요!
+                      </p>
+                  </div>
+              </div>
+          </div>
       </div>
   </div>
 </th:block>

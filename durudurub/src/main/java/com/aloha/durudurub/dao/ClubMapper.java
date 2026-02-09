@@ -49,4 +49,7 @@ public interface ClubMapper {
 
     int decrementCommentCount(int clubNo);
 
+    // AI 검색용
+    List<Club> search(@Param("keyword") String keyword);
+
 }

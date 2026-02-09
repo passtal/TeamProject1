@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.aloha.durudurub.dao.AiSearchLogMapper">
+
+    <!-- 검색 로그 저장 -->
+    <insert id="insert">
+        INSERT INTO ai_search_logs (user_no, keyword, user_message, result_count)
+        VALUES (#{userNo}, #{keyword}, #{userMessage}, #{resultCount})
+    </insert>
+
+    <!-- 총 검색 횟수 조회 -->
+    <select id="countByUserNo" resultType="int">
+        SELECT COUNT(*)
+        FROM ai_search_logs
+        WHERE user_no = #{userNo}
+    </select>
+
+</mapper>
