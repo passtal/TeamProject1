@@ -405,7 +405,7 @@ CREATE TABLE `subscriptions` (
 CREATE TABLE `payments` (
     `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
     `user_no` INT NOT NULL COMMENT 'FK',
-    `subscription_no` INT NOT NULL COMMENT 'FK',
+    `subscription_no` INT NULL COMMENT 'FK',
     `payment_key` VARCHAR(200) NULL COMMENT '토스페이먼츠 결제키',
     `order_id` VARCHAR(100) NOT NULL COMMENT '고유 주문번호',
     `order_name` VARCHAR(100) NOT NULL COMMENT 'AI검색 구독권',
