@@ -11,26 +11,23 @@
 </head>
 <body layout:fragment="content">
 
-    <!-- Hero Section -->
+    <!-- 히어로 -->
     <section class="hero-section">
         <div class="hero-container">
             <div class="hero-content">
-                <!-- Hero Text -->
                 <div class="hero-text">
                     <h1 class="hero-title">
-                        함께 하면<br>
-                        더 즐거운 순간
+                        함께 하면<br>더 즐거운 순간
                     </h1>
                     <p class="hero-subtitle">
-                        관심사가 같은 사람들과 모여<br>
-                        새로운 경험을 만들어보세요
+                        관심사가 같은 사람들과 모여<br>새로운 경험을 만들어보세요
                     </p>
                     <a th:href="@{/club/list}" class="hero-btn">모임 둘러보기</a>
                 </div>
 
-                <!-- Hero Image -->
+                <!-- 히어로 이미지 -->
                 <div class="hero-image-wrapper">
-                    <img src="https://www.figma.com/api/mcp/asset/737aa482-a091-4a55-9834-b89c4c7521f2" 
+                    <img th:src="@{/img/index/main_img.jpg}" 
                          alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
@@ -38,11 +35,11 @@
         </div>
     </section>
 
-    <!-- Ad Banner Section -->
-    <section class="ad-section">
+    <!-- 광고 배너 섹션 -->
+    <section class="ad-section" th:if="${banners != null and !banners.empty}">
         <div class="ad-sponsored">Sponsored</div>
         <div class="ad-banner-wrapper">
-            <img src="https://www.figma.com/api/mcp/asset/757c5665-93d8-4158-acf9-1d1b82f24883" 
+            <img th:src="@{/img/banner/ad-banner.png}" 
                  alt="Coffee House Ad" class="ad-banner-img">
             <div class="ad-banner-overlay"></div>
             <div class="ad-banner-content">
@@ -51,8 +48,7 @@
                 <p class="ad-banner-subtitle">신규 회원 20% 할인</p>
                 <a href="#" class="ad-banner-btn">
                     자세히 보기
-                    <img src="https://www.figma.com/api/mcp/asset/4cb55c91-4535-4759-b880-7c46e0ea1e79" 
-                         alt="" style="width: 16px; height: 16px;">
+                    <span style="font-size: 16px; margin-left: 4px;">→</span>
                 </a>
             </div>
             <div class="ad-banner-dots">
@@ -63,7 +59,7 @@
         </div>
     </section>
 
-    <!-- Category Section -->
+    <!-- 카테고리 -->
     <section class="category-section">
         <div class="category-header">
             <h2 class="category-title">어떤 모임을 찾으시나요?</h2>
@@ -73,25 +69,79 @@
         <div class="category-grid">
             <!-- 카테고리 반복 -->
             <a th:each="category : ${categories}" 
-               th:href="@{/club/list(category=${category.no})}" 
+               th:href="@{/club/category(category=${category.no})}" 
                class="category-item">
                 <div class="category-icon">
-                    <!-- Bootstrap Icons (bi-*) 클래스인 경우 -->
-                    <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
-                       th:class="'bi ' + ${category.icon}" 
-                       style="font-size: 36px; color: #6366F1;"></i>
-                    <!-- URL인 경우 이미지 -->
-                    <img th:if="${category.icon != null and category.icon.startsWith('http')}" 
-                         th:src="${category.icon}" 
-                         th:alt="${category.name}">
-                    <!-- 그 외 (이모지 등) -->
-                    <span th:if="${category.icon != null and !category.icon.startsWith('bi-') and !category.icon.startsWith('http')}" 
-                          th:text="${category.icon}" 
-                          style="font-size: 36px;">📁</span>
+                    <!-- 카테고리 아이콘 -->
+                    <img th:src="${category.icon}" 
+                         th:alt="${category.name}" 
+                         onerror="this.src='/img/default-profile.png';" />
                 </div>
                 <span class="category-name" th:text="${category.name}">카테고리명</span>
             </a>
         </div>
     </section>
+
+    <!-- 배너 슬라이드 -->
+    <th:block layout:fragment="script">
+        <script th:if="${banners != null and !banners.empty}">
+            let currentBannerIndex = 0;
+            const bannerSlides = document.querySelectorAll('.banner-slide');
+            const bannerDots = document.querySelectorAll('.ad-dot');
+            const totalBanners = bannerSlides.length;
+            let bannerInterval;
+
+            // 배너 슬라이드 표시 함수
+            function showBannerSlide(index) {
+                // 모든 슬라이드 숨김
+                bannerSlides.forEach(slide => {
+                    slide.style.display = 'none';
+                });
+                
+                // 모든 dot 비활성화
+                bannerDots.forEach(dot => {
+                    dot.classList.remove('active');
+                });
+                
+                // 현재 슬라이드 표시
+                if (bannerSlides[index]) {
+                    bannerSlides[index].style.display = 'block';
+                }
+                
+                // 현재 dot 활성화
+                if (bannerDots[index]) {
+                    bannerDots[index].classList.add('active');
+                }
+                
+                currentBannerIndex = index;
+            }
+
+            // 다음 슬라이드
+            function nextBannerSlide() {
+                let nextIndex = (currentBannerIndex + 1) % totalBanners;
+                showBannerSlide(nextIndex);
+            }
+
+            // 특정 슬라이드로 이동
+            function goToBannerSlide(index) {
+                showBannerSlide(parseInt(index));
+                // 수동 클릭 시 자동 슬라이드 재시작
+                clearInterval(bannerInterval);
+                startBannerAutoSlide();
+            }
+
+            // 자동 슬라이드 시작
+            function startBannerAutoSlide() {
+                if (totalBanners > 1) {
+                    bannerInterval = setInterval(nextBannerSlide, 5000); // 5초마다 변경
+                }
+            }
+
+            // 페이지 로드 시 자동 슬라이드 시작
+            if (totalBanners > 1) {
+                startBannerAutoSlide();
+            }
+        </script>
+    </th:block>
 </body>
 </html>

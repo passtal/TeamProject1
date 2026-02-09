@@ -1,15 +1,16 @@
 -- 기초 데이터 DML
 
 -- 대분류 카테고리
+-- 대분류 카테고리
 INSERT INTO `categories` (`name`, `description`, `icon`, `seq`) VALUES
-('자기계발', '나를 성장시키는 모임', 'bi-book', 1),
-('스포츠', '함께 땀 흘리는 모임', 'bi-trophy', 2),
-('푸드', '맛있는 음식을 나누는 모임', 'bi-cup-hot', 3),
-('게임', '게임을 즐기는 모임', 'bi-controller', 4),
-('동네친구', '동네에서 친구 만들기', 'bi-people', 5),
-('여행', '함께 떠나는 여행', 'bi-airplane', 6),
-('예술', '예술을 사랑하는 모임', 'bi-palette', 7),
-('기타', '그 외 다양한 취미활동!', 'bi-heart', 8);
+('자기계발', '나를 성장시키는 모임', '/img/icons/category-self-development.png', 1),
+('스포츠', '함께 땀 흘리는 모임', '/img/icons/category-sports.png', 2),
+('푸드', '맛있는 음식을 나누는 모임', '/img/icons/category-food.png', 3),
+('게임', '게임을 즐기는 모임', '/img/icons/category-game.png', 4),
+('동네친구', '동네에서 친구 만들기', '/img/icons/category-neighborhood.png', 5),
+('여행', '함께 떠나는 여행', '/img/icons/category-travel.png', 6),
+('예술', '예술을 사랑하는 모임', '/img/icons/category-art.png', 7),
+('기타', '그 외 다양한 취미활동!', '/img/icons/category-etc.png', 8);
 
 -- 소분류 카테고리
 -- 자기계발 (category_no = 1)
@@ -104,7 +105,7 @@ SELECT * FROM `user_auth`;
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
 (2, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
 (2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
-(3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '126.99460000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '37.53450000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
 (4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 
 -- 모임 멤버 추가

@@ -8,6 +8,8 @@
     <th:block th:replace="~{fragments/meta :: meta}"></th:block>
     <!-- link -->
     <th:block th:replace="~{fragments/link::link}"></th:block>
+    <!-- 페이지별 추가 CSS -->
+    <th:block layout:fragment="css"></th:block>
 </head>
 <body>
     <!-- 헤더 -->
@@ -27,5 +29,7 @@
     
     <!-- JS / J쿼리 -->
     <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
+    <!-- 페이지별 추가 스크립트 -->
+    <th:block layout:fragment="script"></th:block>
 </body>
 </html>

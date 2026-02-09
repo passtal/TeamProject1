@@ -42,6 +42,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	// 타임리프 다이얼렉트 레이아웃 (추가)
 	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+	// JSON 처리는 spring-boot-starter-web에 포함된 Jackson 사용 (별도 의존성 불필요)
 }
 
 tasks.named('test') {
