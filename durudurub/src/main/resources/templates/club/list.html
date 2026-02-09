@@ -44,6 +44,9 @@
                     <h3 class="section-title mb-0" id="section-title">
                         <span>모든 모임</span>
                     </h3>
+                    <a th:href="@{/club/create}" class="btn btn-join" sec:authorize="isAuthenticated()">
+                        + 새 모임 만들기
+                    </a>
                 </div>
                 
                 <!-- 모임 결과 카운트 -->
