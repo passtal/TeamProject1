@@ -30,7 +30,7 @@
 
                 <!-- Hero Image -->
                 <div class="hero-image-wrapper">
-                    <img src="https://www.figma.com/api/mcp/asset/737aa482-a091-4a55-9834-b89c4c7521f2" 
+                    <img th:src="@{/img/index/main_img.jpg}" 
                          alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
@@ -42,7 +42,7 @@
     <section class="ad-section">
         <div class="ad-sponsored">Sponsored</div>
         <div class="ad-banner-wrapper">
-            <img src="https://www.figma.com/api/mcp/asset/757c5665-93d8-4158-acf9-1d1b82f24883" 
+            <img th:src="@{/img/banner/ad-banner.png}" 
                  alt="Coffee House Ad" class="ad-banner-img">
             <div class="ad-banner-overlay"></div>
             <div class="ad-banner-content">
@@ -51,8 +51,7 @@
                 <p class="ad-banner-subtitle">신규 회원 20% 할인</p>
                 <a href="#" class="ad-banner-btn">
                     자세히 보기
-                    <img src="https://www.figma.com/api/mcp/asset/4cb55c91-4535-4759-b880-7c46e0ea1e79" 
-                         alt="" style="width: 16px; height: 16px;">
+                    <span style="font-size: 16px; margin-left: 4px;">→</span>
                 </a>
             </div>
             <div class="ad-banner-dots">

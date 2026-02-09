@@ -1,11 +1,7 @@
 package com.aloha.durudurub.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,13 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import lombok.extern.slf4j.Slf4j;
-
 import com.aloha.durudurub.dto.Board;
-import com.aloha.durudurub.dto.BoardImage;
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
 import com.aloha.durudurub.dto.Comment;
@@ -37,7 +29,6 @@ import org.springframework.web.bind.annotation.PostMapping;
  * 게시판 컨트롤러
  * 모임 내 게시판 - /club/{clubNo}/board
  */
-@Slf4j
 @Controller
 @RequestMapping("/club/{clubNo}/board")
 public class BoardController {
@@ -69,27 +60,8 @@ public class BoardController {
         }
 
         Club club = clubService.selectByNo(clubNo);
-        List<Board> boards = boardService.listRegularByClub(clubNo);
+        List<Board> boards = boardService.listByClub(clubNo);
         List<Board> notices = boardService.listNotices(clubNo);
-
-        log.debug("===== Board List Debug =====");
-        log.debug("Club No: {}", clubNo);
-        log.debug("Notices size: {}", notices != null ? notices.size() : "null");
-        if (notices != null && !notices.isEmpty()) {
-            for (Board notice : notices) {
-                log.debug("  Notice: {} - {} (isNotice={}) writer profileImg={}", 
-                    notice.getNo(), notice.getTitle(), notice.getIsNotice(), 
-                    notice.getWriter() != null ? notice.getWriter().getProfileImg() : "null");
-            }
-        }
-        log.debug("Boards size: {}", boards != null ? boards.size() : "null");
-        if (boards != null && !boards.isEmpty()) {
-            for (Board board : boards) {
-                log.debug("  Board: {} - {} (isNotice={}) writer profileImg={}", 
-                    board.getNo(), board.getTitle(), board.getIsNotice(),
-                    board.getWriter() != null ? board.getWriter().getProfileImg() : "null");
-            }
-        }
 
         model.addAttribute("club", club);
         model.addAttribute("boards", boards);
@@ -160,7 +132,6 @@ public class BoardController {
     public String writePro(@PathVariable("clubNo") int clubNo,
                             Board board,
                             @RequestParam(value = "isNotice", defaultValue = "N") String isNotice,
-                            @RequestParam(value = "images", required = false) List<MultipartFile> images,
                             Principal principal,
                             RedirectAttributes rttr) {
         if (!isMember(clubNo, principal)) {
@@ -179,39 +150,7 @@ public class BoardController {
             board.setIsNotice("N");
         }
         
-        // 이미지 업로드 처리
-        List<BoardImage> boardImages = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            String uploadDir = System.getProperty("user.dir") + "/uploads/boards/";
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            
-            for (MultipartFile image : images) {
-                if (image != null && !image.isEmpty()) {
-                    try {
-                        String originalFilename = image.getOriginalFilename();
-                        String extension = "";
-                        if (originalFilename != null && originalFilename.contains(".")) {
-                            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                        }
-                        String savedFilename = UUID.randomUUID().toString() + extension;
-                        
-                        File savedFile = new File(uploadDir + savedFilename);
-                        image.transferTo(savedFile);
-                        
-                        BoardImage boardImage = new BoardImage();
-                        boardImage.setImageUrl("/uploads/boards/" + savedFilename);
-                        boardImages.add(boardImage);
-                    } catch (IOException e) {
-                        log.error("이미지 업로드 실패", e);
-                    }
-                }
-            }
-        }
-        
-        int result = boardImages.isEmpty() ? boardService.insert(board) : boardService.insert(board, boardImages);
+        int result = boardService.insert(board);
 
         if (result > 0) {
             rttr.addFlashAttribute("message", "게시글이 작성되었습니다.");
@@ -260,7 +199,6 @@ public class BoardController {
                          @PathVariable("no") int no,
                          Board board,
                          @RequestParam(value = "isNotice", defaultValue = "N") String isNotice,
-                         @RequestParam(value = "images", required = false) List<MultipartFile> images,
                          Principal principal,
                          RedirectAttributes rttr) {
         Board existingBoard = boardService.selectByNo(no);
@@ -276,39 +214,7 @@ public class BoardController {
             board.setIsNotice(isNotice);
         }
         
-        // 이미지 업로드 처리
-        List<BoardImage> boardImages = new ArrayList<>();
-        if (images != null && !images.isEmpty()) {
-            String uploadDir = System.getProperty("user.dir") + "/uploads/boards/";
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            
-            for (MultipartFile image : images) {
-                if (image != null && !image.isEmpty()) {
-                    try {
-                        String originalFilename = image.getOriginalFilename();
-                        String extension = "";
-                        if (originalFilename != null && originalFilename.contains(".")) {
-                            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                        }
-                        String savedFilename = UUID.randomUUID().toString() + extension;
-                        
-                        File savedFile = new File(uploadDir + savedFilename);
-                        image.transferTo(savedFile);
-                        
-                        BoardImage boardImage = new BoardImage();
-                        boardImage.setImageUrl("/uploads/boards/" + savedFilename);
-                        boardImages.add(boardImage);
-                    } catch (IOException e) {
-                        log.error("이미지 업로드 실패", e);
-                    }
-                }
-            }
-        }
-        
-        int result = boardImages.isEmpty() ? boardService.update(board) : boardService.update(board, boardImages);
+        int result = boardService.update(board);
         
         if (result > 0) {
             rttr.addFlashAttribute("message", "게시글이 수정되었습니다.");
