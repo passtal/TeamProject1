@@ -51,10 +51,13 @@ public interface ClubMapper {
 
 
     // 마이페이지: 내모임 관리
-    // 참여 중인 모임 리스트
-    List<Club> joinedClubList(@Param("userNo") int userNo) throws Exception;
-    // 승인 대기 중인 모임 리스트
-    List<Club> pendingClubList(@Param("userNo") int userNo) throws Exception;
+    // 모임리스트 (승인, 리더, 대기)
+    List<Club> myClubList(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
+    // 모임리스트 개수 (승인, 리더, 대기) 
+    int countByStatus(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
+    // 전체 모임개수
+    int countByUser(@Param("userNo") int userNo) throws Exception;
+    
     // 관리자페이지
     // 1. 대시보드
     Club findLatestClub();

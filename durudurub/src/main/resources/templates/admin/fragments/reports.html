@@ -142,14 +142,8 @@
     }
     // 신고횟수 뱃지
     function badge(reportCount) {
-        if(reportCount == 1) {
-            return `<span class="badge-report">1회</span>`
-        }
-        if(reportCount == 2) {
-            return `<span class="badge-report">2회</span>`
-        }
-        if(reportCount == 3) {
-            return `<span class="badge-report">3회</span>`
+        if(reportCount >= 1 && reportCount <= 5) {
+            return `<span class="badge-report">${reportCount}회</span>`
         }
         return `<span class="badge-report-warning">${reportCount}회</span>`
     }

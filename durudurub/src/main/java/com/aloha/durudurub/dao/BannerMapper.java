@@ -24,9 +24,9 @@ public interface BannerMapper {
     // 배너 삭제
     int bannerDelete(@Param("no") int no) throws Exception;
     // 배너 활성화 뱃지
-    int updateBannerActive(@Param("no") int no, String isActive);
+    int updateBannerActive(@Param("no") int no, @Param("isActive") String isActive);
     // 배너 위치 뱃지
-    int updateBannerPosition(@Param("no") int no, String position);
+    int updateBannerPosition(@Param("no") int no, @Param("position") String position);
     // 메인 배너
     List<Banner> selectMainBanner();
     

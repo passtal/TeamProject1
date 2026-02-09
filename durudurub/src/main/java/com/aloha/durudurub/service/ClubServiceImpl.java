@@ -182,26 +182,27 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.decrementCurrentMembers(clubNo);
     }
 
+
     // 마이페이지: 내모임 관리
-    // 참여중인 모임
+    // 모임리스트 (승인, 리더, 대기)
     @Override
-    public List<Club> joinedClubList(int userNo) throws Exception {
-        return clubMapper.joinedClubList(userNo);
+    public List<Club> myClubList(int userNo, String status) throws Exception {
+        return clubMapper.myClubList(userNo, status);
+    }
+    // 모임리스트 수
+    @Override
+    public int countByStatus(int userNo, String status) throws Exception {
+        return clubMapper.countByStatus(userNo, status);
+    }
+    // 전체 모임개수
+    @Override
+    public int countByUser(int userNo) throws Exception {
+        return clubMapper.countByUser(userNo);
     }
     // 탈퇴하기
     @Override
     public int deleteByClubAndUser(int clubNo, int userNo) {
         return memberMapper.deleteByClubAndUser(clubNo, userNo);
-    }
-    // 승인 대기 중인 모임
-    @Override
-    public List<Club> pendingClubList(int userNo) throws Exception {
-        return clubMapper.pendingClubList(userNo);
-    }
-    // 모임장별 모임 목록
-    @Override
-    public List<Club> listByHost(int hostNo) {
-        return clubMapper.listByHost(hostNo);
     }
     // 가입 신청 취소
     @Override
@@ -214,6 +215,9 @@ public class ClubServiceImpl implements ClubService {
     public Club findLatestClub() {
         return clubMapper.findLatestClub();
     }
+
+    
+
 
 
     

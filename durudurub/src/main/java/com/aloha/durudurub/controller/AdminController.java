@@ -173,7 +173,7 @@ public class AdminController {
         reportService.deleteExpired();
         return reportService.listByTarget();
     }
-    // 신고 - 4회 이상 버튼 누르면 (유저 삭제)
+    // 신고 - 6회 이상 빨간뱃지 (유저 직접 삭제)
     @DeleteMapping("/api/reports/{userNo}")
     @ResponseBody
     public int deleteReports(@PathVariable int userNo) {
@@ -219,7 +219,7 @@ public class AdminController {
     @DeleteMapping("/api/banners/{no}")
     @ResponseBody
     public int deleteBanner (
-        @PathVariable int no
+        @PathVariable("no") int no
     ) throws Exception {
         return bannerService.bannerDelete(no);
     }

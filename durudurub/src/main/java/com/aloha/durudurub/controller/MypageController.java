@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,16 +53,17 @@ public class MypageController {
     ) throws Exception {
         if (principal != null) {
 
-            String userId = principal.getName();    // 로그인한 사용자ID
-            User user = userService.selectByUserId(userId);
+            User user = userService.selectByUserId(principal.getName());
+            int userNo = user.getNo();
 
-            int joinedClubCount = clubService.joinedClubList(user.getNo()).size();
+            int totalMyClub = clubService.countByUser(userNo);
 
             model.addAttribute("user", user);
-            model.addAttribute("joinedClubCount", joinedClubCount);
+            model.addAttribute("totalMyClub", totalMyClub);
         }
         return "mypage/mypage";
     }
+
     // 회원 정보 수정 (비동기)
     // ⭐ 사진 업로드 완성 시 수정 필요!
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -88,6 +90,7 @@ public class MypageController {
 
         return ResponseEntity.ok().build();
     }
+
     // 회원 탈퇴 모달
     @DeleteMapping("/modal")
     @ResponseBody
@@ -109,54 +112,45 @@ public class MypageController {
 
     
     // 내모임 관리
-    // club index (기본) - 동기, 페이지 이동
+    // club index (공통)
     @GetMapping("/club")
     public String clubPage(
-        @RequestParam(name="type", defaultValue = "APPROVED") String type,
         Model model,
         Principal principal
     ) throws Exception {
-        if (principal != null) {
-            User user = userService.selectByUserId(principal.getName());
-            model.addAttribute("user", user);
-            model.addAttribute("type", type);
 
-            int userNo = user.getNo();
-            model.addAttribute("joinedClubCount", clubService.joinedClubList(userNo).size());
-            model.addAttribute("pendingClubCount", clubService.pendingClubList(userNo).size());
-            model.addAttribute("hostClubCount", clubService.listByHost(userNo).size());
-        }
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo();
+        
+        int countByApproved = clubService.countByStatus(userNo, "APPROVED");
+        int countByHost = clubService.countByStatus(userNo, "HOST");
+        int countByPending = clubService.countByStatus(userNo, "PENDING");
+
+        model.addAttribute("countByApproved", countByApproved);
+        model.addAttribute("countByHost", countByHost);
+        model.addAttribute("countByPending", countByPending);
+
         return "mypage/mypage-club";
     }
-    // 리스트 조회 (타입별 조회) - 비동기, 내부 페이지만 변경
-    @GetMapping("/club/list")
-    public String clubListFragment(
-        @RequestParam(name="type", defaultValue = "APPROVED") String type,
+
+    // 가입 중인 모임 (조각)
+    @GetMapping("/club/fragment/approvedClub")
+    public String approvedClub(
         Model model,
         Principal principal
     ) throws Exception {
 
-        int userNo = userService.selectByUserId(principal.getName()).getNo();
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo();
 
-        List<Club> myclubList = switch (type) {
-            case "APPROVED" -> clubService.joinedClubList(userNo);
-            case "PENDING"  -> clubService.pendingClubList(userNo);
-            case "HOST"     -> clubService.listByHost(userNo);
-            default         -> java.util.Collections.emptyList();
-        };
+        List<Club> approvedClub = clubService.myClubList(userNo, "APPROVED");
+        
+        model.addAttribute("approvedClub", approvedClub);
 
-        model.addAttribute("myclubList", myclubList);
-        model.addAttribute("type", type);
-
-        // 카운트도 같이 fragment에 필요하면 같이 넣기
-        model.addAttribute("joinedClubCount", clubService.joinedClubList(userNo).size());
-        model.addAttribute("pendingClubCount", clubService.pendingClubList(userNo).size());
-        model.addAttribute("hostClubCount", clubService.listByHost(userNo).size());
-
-        // HTML fragments 정의 필요!
-        return "mypage/mypage-club-fragment";
+        return "mypage/fragments/approvedClub";
     }
-    // 탈퇴
+
+    // 가입 중인 모임 - 탈퇴
     @DeleteMapping("/club/{clubNo}")
     @ResponseBody
     public ResponseEntity<Void> delete(

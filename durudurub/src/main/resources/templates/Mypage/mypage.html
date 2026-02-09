@@ -72,9 +72,9 @@
                         <div class="profile-section">
                             <div class="profile-avatar">
                                 <!-- ⭐ 이미지 데이터 받기 -->
-                                <!-- th:src="*{profileImg != null ? profileImg : @{/img/default-profile.png}}" -->
+                                <!-- <a th:src="*{profileImg != null ? profileImg : @{/img/두룹이/두룹이만세.png}}"> -->
                                 <img  
-                                    src="/img/default-profile.png"
+                                    src="/img/두룹이/두룹이만세.png"
                                     alt="프로필 이미지" 
                                     class="profile-image"
                                     id="profileImageView">
@@ -265,7 +265,7 @@
                             <div class="stat-content">
                                 <div class="stat-info">
                                     <p class="stat-label">참여 중인 모임</p>
-                                    <p class="stat-value" th:text="${joinedClubCount} + '개'">0개</p>
+                                    <p class="stat-value" th:text="${totalMyClub} + '개'">0개</p>
                                 </div>
                                 <span class="material-symbols-outlined stat-icon">groups</span>
                             </div>

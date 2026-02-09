@@ -131,16 +131,20 @@ public class BannerServiceImpl implements BannerService {
         File dest = new File(dir, savedName);
         imageFile.transferTo(dest);
 
+
+        System.out.println("**************SAVE PATH = " + dest.getAbsolutePath());
+        System.out.println("**************URL = " + (DB_URL_PREFIX + savedName));
+
         // DB에 저장할 URL (정적 리소스 매핑 필요)
         return DB_URL_PREFIX + savedName;
     }
     private void deleteFileIfLocal(String imageUrl) {
         if (!StringUtils.hasText(imageUrl)) return;
         // /uploads/... 경우 삭제
-        if (!imageUrl.startsWith("/uploads/")) return;
+        if (!imageUrl.startsWith("/durudurub/uploads/")) return;
         // /uploads/banners/xxx.png 
-        String relativePath = imageUrl.replaceFirst("^/uploads/", "");
-        File file = new File(System.getProperty("user.dir") + "/uploads/" + relativePath);
+        String relativePath = imageUrl.replaceFirst("^/durudurub/uploads/", "");
+        File file = new File(System.getProperty("user.dir") + "/durudurub/uploads/" + relativePath);
         if (file.exists() && file.isFile()) {
             boolean deleted = file.delete();
             if (!deleted) {
