@@ -16,6 +16,8 @@ public interface BoardService {
 
     List<Board> listNotices(int clubNo);
 
+    List<Board> listRegularByClub(int clubNo);
+
     List<Board> listByWriter(int writerNo);
 
     // 검색 기능은 일단 기능구현을 해놔야 ai활용 검색할때 안되더라도 보험이 되지 않을까해서..

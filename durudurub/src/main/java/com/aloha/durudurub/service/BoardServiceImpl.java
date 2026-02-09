@@ -35,6 +35,11 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
+    public List<Board> listRegularByClub(int clubNo) {
+        return boardMapper.listRegularByClub(clubNo);
+    }
+
+    @Override
     public List<Board> listByWriter(int writerNo) {
         return boardMapper.listByWriter(writerNo);
     }

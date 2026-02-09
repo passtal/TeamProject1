@@ -149,4 +149,49 @@ public class CommentController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * 댓글 좋아요 토글
+     * @param commentNo
+     * @param principal
+     * @return
+     */
+    @PostMapping("/{commentNo}/like")
+    public ResponseEntity<?> toggleLike(@PathVariable("commentNo") int commentNo, Principal principal) {
+        try {
+            if (principal == null) {
+                return new ResponseEntity<>("UNAUTHORIZED", HttpStatus.UNAUTHORIZED);
+            }
+
+            User user = userService.selectByUserId(principal.getName());
+            int userNo = user.getNo();
+
+            // 좋아요 여부 확인
+            int likeCount = commentService.countCommentLike(commentNo, userNo);
+            
+            boolean isLiked;
+            if (likeCount > 0) {
+                // 좋아요 취소
+                commentService.deleteCommentLike(commentNo, userNo);
+                commentService.decrementLikeCount(commentNo);
+                isLiked = false;
+            } else {
+                // 좋아요 추가
+                commentService.insertCommentLike(commentNo, userNo);
+                commentService.incrementLikeCount(commentNo);
+                isLiked = true;
+            }
+
+            // 현재 좋아요 수 조회
+            Comment comment = commentService.selectByNo(commentNo);
+            
+            return ResponseEntity.ok(new java.util.HashMap<String, Object>() {{
+                put("liked", isLiked);
+                put("count", comment.getLikeCount());
+            }});
+        } catch (Exception e) {
+            log.error("댓글 좋아요 토글 실패", e);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

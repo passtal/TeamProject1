@@ -259,3 +259,96 @@ footer {
         color: var(--border-color);
     }
 }
+
+/* ================================
+   모바일 반응형 스타일
+================================ */
+
+/* 햄버거 버튼 스타일 */
+.navbar-toggler {
+    border: none;
+    padding: 0.5rem;
+    background: transparent;
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
+
+.navbar-toggler-icon {
+    width: 24px;
+    height: 24px;
+}
+
+/* 오프캔버스 메뉴 스타일 */
+.offcanvas {
+    max-width: 300px;
+}
+
+.offcanvas-header {
+    padding: 1rem 1.25rem;
+}
+
+.offcanvas-body {
+    padding: 1.25rem;
+}
+
+.offcanvas-body .nav-link {
+    color: #333;
+    font-size: 1rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.offcanvas-body .nav-link:hover {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+}
+
+.offcanvas-body .nav-link i {
+    color: #666;
+}
+
+.offcanvas-body .nav-link:hover i {
+    color: var(--primary-color);
+}
+
+/* 모바일 검색 스타일 */
+.offcanvas-body .input-group .form-control {
+    border: 1px solid #ddd;
+}
+
+.offcanvas-body .input-group .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: none;
+}
+
+/* 태블릿 (992px 미만) */
+@media (max-width: 991.98px) {
+    .header .container-fluid {
+        height: 60px;
+        padding: 0 1rem;
+    }
+    
+    .navbar-brand .fw-bold {
+        font-size: 1rem !important;
+    }
+}
+
+/* 모바일 (576px 미만) */
+@media (max-width: 575.98px) {
+    .header .container-fluid {
+        height: 56px;
+        padding: 0 0.75rem;
+    }
+    
+    .navbar-brand img {
+        width: 32px !important;
+        height: 32px !important;
+    }
+    
+    .user-icon {
+        width: 22px;
+        height: 22px;
+    }
+}

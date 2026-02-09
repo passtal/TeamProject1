@@ -18,6 +18,8 @@ public interface BoardMapper {
 
     List<Board> listNoticeByClub(@Param("clubNo") int clubNo);
 
+    List<Board> listRegularByClub(@Param("clubNo") int clubNo);
+
     List<Board> listByWriter(@Param("writerNo") int clubNo);
 
     List<Board> searchByClub(@Param("clubNo") int clubNo, @Param("keyword") String keyword);

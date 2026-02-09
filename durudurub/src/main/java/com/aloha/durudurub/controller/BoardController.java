@@ -249,12 +249,19 @@ public class BoardController {
     }
     
     /**
-     * 멤버 여부 확인 (승인된 멤버만 접근 가능하게)
+     * 멤버 여부 확인 (승인된 멤버 또는 호스트만 접근 가능)
      */
     private boolean isMember(int clubNo, Principal principal) {
         if (principal == null) return false;
         
         User user = userService.selectByUserId(principal.getName());
+        
+        // 호스트는 항상 접근 가능
+        Club club = clubService.selectByNo(clubNo);
+        if (club != null && club.getHostNo() == user.getNo()) {
+            return true;
+        }
+        
         ClubMember member = clubService.selectMember(clubNo, user.getNo());
         
         return member != null && "APPROVED".equals(member.getStatus());
