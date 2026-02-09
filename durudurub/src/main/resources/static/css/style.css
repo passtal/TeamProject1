@@ -39,6 +39,13 @@
     }
 }
 
+/* @media (min-width: 1024px) {
+    .header .navbar {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+} */
+
 @media (max-width: 768px) {
     .header .navbar {
         flex-wrap: wrap;

@@ -35,12 +35,10 @@ public class HomeController {
             }
             model.addAttribute("categories", categories);
             
-            // 활성화된 배너 목록 조회
-            List<Banner> banners = bannerService.bannerList();
-            if (banners == null) {
-                banners = new ArrayList<>();
-            }
+            // 활성화된 배너 목록 조회 (수정)
+            List<Banner> banners = bannerService.getMainBanner();
             model.addAttribute("banners", banners);
+            
         } catch (Exception e) {
             e.printStackTrace();
             model.addAttribute("categories", new ArrayList<>());

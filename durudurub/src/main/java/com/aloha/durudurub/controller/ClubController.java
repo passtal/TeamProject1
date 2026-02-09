@@ -73,8 +73,26 @@ public class ClubController {
                        @RequestParam(value = "page", defaultValue = "1") int page,
                        Model model) {
         
-        // 모든 모임을 가져온 뒤, 프론트에서 카테고리 필터링 처리
-        List<Club> clubs = clubService.list();
+        List<Club> clubs;
+
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            clubs = clubService.search(keyword);
+        } else if (subCategoryNo != null) {
+            clubs = clubService.listBySubCategory(subCategoryNo);
+        } else if (categoryNo != null) {
+            clubs = clubService.listByCategory(categoryNo);
+        } else {
+            clubs = clubService.list();
+        }
+        
+        // 디버깅 로그
+        System.out.println("=== Club List Debug ===");
+        System.out.println("clubs size: " + (clubs != null ? clubs.size() : "null"));
+        if (clubs != null && !clubs.isEmpty()) {
+            for (Club c : clubs) {
+                System.out.println("Club: " + c.getNo() + " - " + c.getTitle());
+            }
+        }
 
         List<Category> categories = categoryService.list();
 

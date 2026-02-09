@@ -1,0 +1,78 @@
+<!-- 대시보드 fragment -->
+<div th:fragment="content">
+    <!-- 통계 카드 -->
+    <div class="stats-container">
+        <div class="stat-card stat-users">
+            <div class="stat-icon">
+                <span class="material-symbols-outlined">group</span>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">전체 사용자</p>
+                <p class="stat-value" th:text="${totalUsers}"></p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-clubs">
+            <div class="stat-icon">
+                <span class="material-symbols-outlined">article</span>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">전체 모임</p>
+                <p class="stat-value" th:text="${totalClubs}"></p>
+            </div>
+        </div>
+
+        <div class="stat-card stat-reports">
+            <div class="stat-icon">
+                <span class="material-symbols-outlined">report</span>
+            </div>
+            <div class="stat-content">
+                <p class="stat-label">신고 접수 내역</p>
+                <p class="stat-value" th:text="${totalReports}"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 최근 활동 리스트 -->
+    <section class="activity-section">
+        <h2>최근 활동</h2>
+        <div class="activity-list">
+            <!-- 1) 최근 모임 생성 -->
+            <div class="activity-item">
+            <div class="activity-icon activity-club">
+                <span class="material-symbols-outlined">dashboard</span>
+            </div>
+            <div class="activity-content">
+                <p class="activity-text">
+                새로운 모임 "<span th:text="${lastestClubTitle}"></span>"이 생성되었습니다.
+                </p>
+                <p class="activity-time" th:text="${lastestClubTime}"></p>
+            </div>
+            </div>
+
+            <!-- 2) 신규 가입 -->
+            <div class="activity-item">
+            <div class="activity-icon activity-user">
+                <span class="material-symbols-outlined">group</span>
+            </div>
+            <div class="activity-content">
+                <p class="activity-text">
+                새로운 사용자 <span th:text="${totalNew}"></span>명이 가입했습니다.
+                </p>
+                <p class="activity-time" th:text="${lastestUserTime}"></p>
+            </div>
+            </div>
+
+            <!-- 3) 신고 접수 -->
+            <div class="activity-item">
+            <div class="activity-icon activity-notice">
+                <span class="material-symbols-outlined">article</span>
+            </div>
+            <div class="activity-content">
+                <p class="activity-text">새로운 신고 <span th:text="${totalNewReports}"></span>건이 접수되었습니다.</p>
+                <p class="activity-time" th:text="${lastestReportsTime}"></p>
+            </div>
+            </div>
+        </div>
+    </section>
+</div>

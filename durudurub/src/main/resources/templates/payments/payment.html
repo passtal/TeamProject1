@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>프리미엄 구독 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/user/payment.css}">
+    </th:block>
+    <script src="https://js.tosspayments.com/v2/standard"></script>
+</head>
+<body>
+    <main layout:fragment="content">
+        <!-- 결제 페이지 -->
+        <div class="payment-page">
+            <div class="payment-container">
+                <!-- 헤더 -->
+                <div class="payment-header">
+                    <h1>프리미엄 구독</h1>
+                    <button class="btn-close" onclick="history.back()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 6L6 18M6 6L18 18" stroke="#99A1AF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- 프리미엄 정보 카드 -->
+                <div class="premium-card">
+                    <div class="premium-header">
+                        <div class="premium-icon">
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16 29.3333C23.3638 29.3333 29.3333 23.3638 29.3333 16C29.3333 8.63616 23.3638 2.66663 16 2.66663C8.63616 2.66663 2.66663 8.63616 2.66663 16C2.66663 23.3638 8.63616 29.3333 16 29.3333Z" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 9.33337V13.3334" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M16 18.6666H16.0133" stroke="white" stroke-width="2.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div class="premium-info">
+                            <h2>두루두룹 프리미엄</h2>
+                            <p class="price">월 4,900원</p>
+                        </div>
+                    </div>
+                    <div class="premium-features">
+                        <div class="feature-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#00A651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>제한 없는 AI 검색 기능</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.6667 5L7.50004 14.1667L3.33337 10" stroke="#00A651" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <span>광고 없는 깨끗한 환경</span>
+                        </div>
+                    </div>
+                    <p class="cancel-info">언제든지 취소할 수 있습니다.</p>
+                </div>
+
+                <!-- 구독 기간 선택 -->
+                <div class="subscription-card">
+                    <h3>구독 기간 선택</h3>
+                    <div class="subscription-options">
+                        <div class="subscription-option" data-period="1" data-price="4900">
+                            <div class="option-content">
+                                <div class="option-info">
+                                    <span class="period">1개월</span>
+                                </div>
+                                <div class="option-price">
+                                    <span class="price-text">₩4,900 / 월</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subscription-option" data-period="3" data-price="13200" data-original="14700">
+                            <div class="option-content">
+                                <div class="option-info">
+                                    <span class="period">3개월</span>
+                                    <span class="badge discount-badge">10% 할인</span>
+                                </div>
+                                <div class="option-price">
+                                    <span class="original-price">₩14,700</span>
+                                    <span class="discount-price">₩13,200</span>
+                                    <span class="monthly-price">(월 ₩4,400)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="subscription-option selected" data-period="6" data-price="23520" data-original="29400">
+                            <div class="option-content">
+                                <div class="option-info">
+                                    <span class="period">6개월</span>
+                                    <span class="badge premium-badge">20% 할인</span>
+                                </div>
+                                <div class="option-price">
+                                    <span class="original-price">₩29,400</span>
+                                    <span class="discount-price">₩23,520</span>
+                                    <span class="monthly-price">(월 ₩3,920)</span>
+                                </div>
+                            </div>
+                            <div class="selected-check">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M13.3333 4L6 11.3333L2.66667 8" stroke="white" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 카드 정보 입력 
+                <div class="card-info-card">
+                    <div class="card-header">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10H22" stroke="#00A651" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 5H22V19H2V5Z" stroke="#00A651" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <h3>신용 / 체크카드</h3>
+                    </div>
+                    <div class="card-form">
+                        <div class="form-group">
+                            <label for="cardNumber">카드번호</label>
+                            <input type="text" id="cardNumber" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="expiry">유효기간</label>
+                                <input type="text" id="expiry" class="form-input" placeholder="MM/YY" maxlength="5">
+                            </div>
+                            <div class="form-group">
+                                <label for="cvc">CVC</label>
+                                <input type="text" id="cvc" class="form-input" placeholder="123" maxlength="3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardHolder">카드 소유자명</label>
+                            <input type="text" id="cardHolder" class="form-input" placeholder="홍길동">
+                        </div>
+                    </div>
+                </div>-->
+
+                <!-- 약관 동의 -->
+                <div class="terms-card">
+                    <h3>약관 동의</h3>
+                    <div class="terms-list">
+                        <label class="term-item">
+                            <input type="checkbox" class="term-checkbox" id="term1" required>
+                            <span>유효성 확인 동의 (필수)</span>
+                        </label>
+                        <label class="term-item">
+                            <input type="checkbox" class="term-checkbox" id="term2" required>
+                            <span>서비스 약관 동의 (필수)</span>
+                        </label>
+                        <label class="term-item">
+                            <input type="checkbox" class="term-checkbox" id="term3" required>
+                            <span>개인정보 3자 제공 동의 (필수)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- 결제 버튼 -->
+                <button class="btn-payment" id="btnPayment">
+                    <span id="paymentAmount">₩23,520</span> 결제하기
+                </button>
+
+                <!-- 갱신 정보 -->
+                <p class="renewal-info">
+                    <span id="renewalPeriod">6개월</span> 구독 후 자동 갱신됩니다.
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <th:block layout:fragment="script">
+        <script th:inline="javascript">
+            window.TOSS_CLIENT_KEY = /*[[${tossClientKey}]]*/ "";
+        </script>
+        <script th:src="@{/js/user/payment.js}"></script>
+    </th:block>
+</body>
+</html>

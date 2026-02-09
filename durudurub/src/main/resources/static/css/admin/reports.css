@@ -63,7 +63,7 @@
 }
 
 .reports-table th:first-child {
-    width: 23.8%;
+    width: 15%;
 }
 
 .reports-table th:nth-child(2) {
@@ -71,21 +71,30 @@
 }
 
 .reports-table th:nth-child(3) {
-    width: 17.2%;
+    width: 20%;
 }
 
 .reports-table th:nth-child(4) {
-    width: 14.9%;
+    width: 10%;
 }
 
 .reports-table th:nth-child(5) {
-    width: 17.8%;
+    width: 10%;
     text-align: center;
 }
 
 .reports-table th:nth-child(6) {
-    width: 9.1%;
+    width: 10%;
     text-align: center;
+}
+
+.reports-table th:nth-child(7) {
+    width: 10%;
+    text-align: center;
+}
+
+.btn-delete{
+    padding-left: 50px;
 }
 
 .reports-table tbody tr {
@@ -119,8 +128,18 @@
     font-weight: 700;
 }
 
+.badge-report-warning {
+    display: inline-block;
+    padding: 3px 12px;
+    background-color: #fec7c7;
+    color: #a11a1a;
+    border-radius: 9999px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
 /* More Button */
-.btn-more {
+/* .btn-more {
     width: 32px;
     height: 32px;
     border: none;
@@ -140,10 +159,10 @@
 .btn-more .material-symbols-outlined {
     font-size: 16px;
     color: #6B7280;
-}
+} */
 
 /* Options Menu */
-.options-menu {
+/* .options-menu {
     position: fixed;
     background-color: #FFFFFF;
     border: 1px solid #E5E7EB;
@@ -189,6 +208,29 @@
 
 .option-item.delete:hover {
     background-color: #FEE2E2;
+} */
+
+/* Delete Button */
+.btn-delete {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.btn-delete:hover {
+    background-color: #FEE2E2;
+}
+
+.btn-delete .material-symbols-outlined {
+    font-size: 22px;
+    color: #EF4444;
 }
 
 /* Block User Modal */
@@ -432,7 +474,7 @@
     border-top: 1px solid #E5E7EB;
 }
 
-.btn-delete {
+.btn-confirm-delete {
     padding: 10px 24px;
     font-size: 16px;
     font-weight: 400;
@@ -444,7 +486,7 @@
     color: #FFFFFF;
 }
 
-.btn-delete:hover {
+.btn-confirm-delete:hover {
     background-color: #DC2626;
 }
 

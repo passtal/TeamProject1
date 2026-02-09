@@ -44,6 +44,11 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public List<Club> search(String keyword) {
+        return clubMapper.search(keyword);
+    }
+
+    @Override
     public Club selectByNo(int no) {
         return clubMapper.selectByNo(no);
     }
@@ -141,7 +146,7 @@ public class ClubServiceImpl implements ClubService {
     public ClubMember getMemberStatus(int clubNo, int userNo) {
         return memberMapper.selectByClubAndUser(clubNo, userNo);
     }
-
+    
     @Override
     public int count() {
         return clubMapper.count();
@@ -182,22 +187,43 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.decrementCurrentMembers(clubNo);
     }
 
+
     // 마이페이지: 내모임 관리
-    // 참여중인 모임
+    // 모임리스트 (승인, 리더, 대기)
     @Override
-    public List<Club> joinedClubList(int userNo) throws Exception {
-        return memberMapper.joinedClubList(userNo);
+    public List<Club> myClubList(int userNo, String status) throws Exception {
+        return clubMapper.myClubList(userNo, status);
     }
-    // 승인 대기 중인 모임
+    // 모임리스트 수
     @Override
-    public List<Club> pendingClubList(int userNo) throws Exception {
-        return memberMapper.pendingClubList(userNo);
+    public int countByStatus(int userNo, String status) throws Exception {
+        return clubMapper.countByStatus(userNo, status);
     }
-    // 모임장별 모임 목록
+    // 전체 모임개수
     @Override
-    public List<Club> listByHost(int hostNo) {
-        return clubMapper.listByHost(hostNo);
+    public int countByUser(int userNo) throws Exception {
+        return clubMapper.countByUser(userNo);
     }
+    // 탈퇴하기
+    @Override
+    public int deleteByClubAndUser(int clubNo, int userNo) {
+        return memberMapper.deleteByClubAndUser(clubNo, userNo);
+    }
+    // 가입 신청 취소
+    @Override
+    public int cancelPending(int clubNo, int userNo) {
+        return memberMapper.cancelPending(clubNo, userNo);
+    }
+    // 관리자페이지
+    // 1. 대시보드
+    @Override
+    public Club findLatestClub() {
+        return clubMapper.findLatestClub();
+    }
+
+    
+
+
 
     
 }

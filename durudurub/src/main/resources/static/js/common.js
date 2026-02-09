@@ -32,6 +32,69 @@ $(document).ready(function() {
         $('#admin-dropdown').hide();
     })
 })
+
+// 검색 기능
+// 검색 debounce - 깜빡임 처리
+function debounce(fn, delay) {
+    let timer
+    return function (...args) {
+        clearTimeout(timer)
+        timer = setTimeout(() => fn.apply(this, args), delay)
+    }
+}
+
+// 카드 필터 
+function filterClubsByKeyword(term) {
+  const keyword = (term || "").toLowerCase().trim();
+
+  // 모임 리스트 페이지가 아니면 무시
+  const grid = document.getElementById("club-grid");
+  if (!grid) return;
+
+  // data-category-no 있는 카드 컬럼
+  const cols = grid.querySelectorAll('[data-category-no]');
+
+  let visibleCount = 0;
+
+  cols.forEach(col => {
+    const title = col.querySelector(".card-title")?.textContent?.toLowerCase() ?? "";
+    const category = col.querySelector(".badge.bg-light")?.textContent?.toLowerCase() ?? "";
+    const desc = col.querySelector(".card-text")?.textContent?.toLowerCase() ?? "";
+    const location = col.querySelector(".bi-geo-alt")?.parentElement?.textContent?.toLowerCase() ?? "";
+
+    const matched =
+      !keyword ||
+      title.includes(keyword) ||
+      category.includes(keyword) ||
+      desc.includes(keyword) ||
+      location.includes(keyword);
+
+    col.style.display = matched ? "" : "none";
+    if (matched) visibleCount++;
+  });
+
+  // 개수
+  const clubCountEl = document.getElementById("club-count");
+  if (clubCountEl) clubCountEl.textContent = visibleCount;
+
+  // 빈 화면
+  const emptyState = document.getElementById("empty-state");
+  if (emptyState) emptyState.style.display = visibleCount === 0 ? "block" : "none";
+}
+$(document).on('input.clubSearch', '#clubSearch', function () {
+  console.log("typing:", this.value);
+});
+
+// 검색 - 이벤트
+$(document).on('input', '#clubSearch', debounce(function(e){
+    filterClubsByKeyword(e.target.value.toLowerCase())
+}, 200))
+// 엔터 후 페이지 이동(GET) 막기
+$(document).on("submit", ".search-container form", function (e) {
+  if (document.getElementById("club-grid")) e.preventDefault();
+});
+
+
 /* 이벤트 버블링
      : 이벤트가 위로 올라간다!
    icon-container 클릭 시, body 클릭, document 클릭 되버림 */
