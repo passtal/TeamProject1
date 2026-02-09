@@ -200,7 +200,15 @@ public class PaymentController {
 		String orderId = generateOrderId();
 		String orderName = "AI검색 구독권";
 
-		paymentService.createOrder(user.getNo(), orderId, orderName, amount, "KRW", "NORMAL");
+		try {
+			paymentService.createOrder(user.getNo(), orderId, orderName, amount);
+		} catch (Exception e) {
+			log.error("❌ createOrder 실패 - userNo={}, orderId={}, amount={}", user.getNo(), orderId, amount, e);
+			Map<String, Object> error = new HashMap<>();
+			error.put("code", "ORDER_CREATION_FAILED");
+			error.put("message", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+		}
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("orderId", orderId);

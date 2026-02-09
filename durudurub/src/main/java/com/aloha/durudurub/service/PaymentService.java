@@ -7,7 +7,7 @@ import com.aloha.durudurub.dto.Payment;
  */
 public interface PaymentService {
 
-    void createOrder(int userNo, String orderId, String orderName, int amount, String currency, String type);
+    void createOrder(int userNo, String orderId, String orderName, int amount);
 
     Payment selectByOrderId(String orderId);
 

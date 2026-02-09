@@ -18,8 +18,8 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void createOrder(int userNo, String orderId, String orderName, int amount, String currency, String type) {
-        paymentMapper.insertOrder(userNo, orderId, orderName, amount, currency, type, "READY");
+    public void createOrder(int userNo, String orderId, String orderName, int amount) {
+        paymentMapper.insertOrder(userNo, orderId, orderName, amount, "READY");
     }
 
     @Override

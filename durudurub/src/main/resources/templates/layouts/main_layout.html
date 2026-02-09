@@ -22,6 +22,9 @@
         위의 링크 상단 html 에 포함 필수! -->
     <th:block layout:fragment="content"></th:block>
     
+    <!-- 푸터 -->
+    <th:block th:replace="~{fragments/footer::footer}"></th:block>
+
     <!-- JS / J쿼리 -->
     <th:block th:replace="~{fragments/scripts :: scripts}"></th:block>
     <!-- 페이지별 추가 스크립트 -->

@@ -16,8 +16,6 @@ public interface PaymentMapper {
         @Param("orderId") String orderId,
         @Param("orderName") String orderName,
         @Param("amount") int amount,
-        @Param("currency") String currency,
-        @Param("type") String type,
         @Param("status") String status
     );
 
