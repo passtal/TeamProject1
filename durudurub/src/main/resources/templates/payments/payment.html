@@ -9,6 +9,7 @@
     <th:block layout:fragment="css">
         <link rel="stylesheet" th:href="@{/css/user/payment.css}">
     </th:block>
+    <script src="https://js.tosspayments.com/v2/standard"></script>
 </head>
 <body>
     <main layout:fragment="content">
@@ -105,7 +106,7 @@
                     </div>
                 </div>
 
-                <!-- 카드 정보 입력 -->
+                <!-- 카드 정보 입력 
                 <div class="card-info-card">
                     <div class="card-header">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +135,7 @@
                             <input type="text" id="cardHolder" class="form-input" placeholder="홍길동">
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 <!-- 약관 동의 -->
                 <div class="terms-card">
@@ -169,6 +170,9 @@
     </main>
 
     <th:block layout:fragment="script">
+        <script th:inline="javascript">
+            window.TOSS_CLIENT_KEY = /*[[${tossClientKey}]]*/ "";
+        </script>
         <script th:src="@{/js/user/payment.js}"></script>
     </th:block>
 </body>

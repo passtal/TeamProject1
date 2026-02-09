@@ -1,6 +1,11 @@
 // 결제 페이지 JavaScript
 
 document.addEventListener('DOMContentLoaded', function() {
+    const paymentPage = document.querySelector('.payment-page');
+    if (!paymentPage) {
+        return;
+    }
+
     // 구독 옵션 선택
     const subscriptionOptions = document.querySelectorAll('.subscription-option');
     const paymentAmountEl = document.getElementById('paymentAmount');

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 구독 매퍼 XML -->
+<mapper namespace="com.aloha.durudurub.dao.SubscriptionMapper">
+
+    <resultMap id="subscriptionResultMap" type="com.aloha.durudurub.dto.Subscription">
+        <id property="no" column="no"/>
+        <result property="userNo" column="user_no"/>
+        <result property="status" column="status"/>
+        <result property="planName" column="plan_name"/>
+        <result property="startDate" column="start_date"/>
+        <result property="endDate" column="end_date"/>
+        <result property="autoRenew" column="auto_renew"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="selectByUserNo" resultMap="subscriptionResultMap">
+        SELECT
+            no,
+            user_no,
+            status,
+            plan_name,
+            start_date,
+            end_date,
+            auto_renew,
+            created_at,
+            updated_at
+        FROM subscriptions
+        WHERE user_no = #{userNo}
+        LIMIT 1
+    </select>
+
+    <insert id="upsertActiveSubscription">
+        INSERT INTO subscriptions (
+            user_no,
+            status,
+            plan_name,
+            start_date,
+            end_date,
+            auto_renew
+        ) VALUES (
+            #{userNo},
+            'ACTIVE',
+            'AI_SEARCH',
+            #{startDate},
+            #{endDate},
+            'Y'
+        )
+        ON DUPLICATE KEY UPDATE
+            status = 'ACTIVE',
+            plan_name = 'AI_SEARCH',
+            start_date = #{startDate},
+            end_date = #{endDate},
+            auto_renew = 'Y',
+            updated_at = NOW()
+    </insert>
+
+</mapper>
