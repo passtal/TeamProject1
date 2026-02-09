@@ -119,4 +119,38 @@
         WHERE m.user_no = #{userNo} AND m.status = 'PENDING'
             ORDER BY m.joined_at DESC
     </select>
+
+    <!-- 마이페이지: 내 모임 총 개수 -->
+    <select id="countByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM club_members
+        WHERE user_no = #{userNo}
+    </select>
+
+    <!-- 마이페이지: 상태별 모임 수 -->
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*)
+        FROM club_members m
+        <if test="status == 'HOST'">
+            JOIN clubs c ON m.club_no = c.no
+            WHERE c.host_no = #{userNo}
+        </if>
+        <if test="status != 'HOST'">
+            WHERE m.user_no = #{userNo} AND m.status = #{status}
+        </if>
+    </select>
+
+    <!-- 마이페이지: 상태별 모임 목록 -->
+    <select id="myClubList" resultType="com.aloha.durudurub.dto.Club">
+        SELECT c.*
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        <if test="status == 'HOST'">
+            WHERE c.host_no = #{userNo}
+        </if>
+        <if test="status != 'HOST'">
+            WHERE m.user_no = #{userNo} AND m.status = #{status}
+        </if>
+        ORDER BY m.joined_at DESC
+    </select>
 </mapper>

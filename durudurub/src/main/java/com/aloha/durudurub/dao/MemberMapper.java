@@ -40,4 +40,9 @@ public interface MemberMapper {
     // 참여 중인 모임 리스트
     List<Club> joinedClubList(@Param("userNo") int userNo) throws Exception;
     List<Club> pendingClubList(@Param("userNo") int userNo) throws Exception;
+
+    // 마이페이지: 카운트 및 목록
+    int countByUser(@Param("userNo") int userNo);
+    int countByStatus(@Param("userNo") int userNo, @Param("status") String status);
+    List<Club> myClubList(@Param("userNo") int userNo, @Param("status") String status);
 }

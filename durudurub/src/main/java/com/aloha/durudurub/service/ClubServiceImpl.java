@@ -199,4 +199,32 @@ public class ClubServiceImpl implements ClubService {
         return clubMapper.listByHost(hostNo);
     }
 
+    // 마이페이지: 내모임 카운트
+    @Override
+    public int countByUser(int userNo) {
+        return memberMapper.countByUser(userNo);
+    }
+
+    @Override
+    public int countByStatus(int userNo, String status) {
+        return memberMapper.countByStatus(userNo, status);
+    }
+
+    @Override
+    public List<Club> myClubList(int userNo, String status) {
+        return memberMapper.myClubList(userNo, status);
+    }
+
+    @Override
+    @Transactional
+    public int deleteByClubAndUser(int clubNo, int userNo) {
+        clubMapper.decrementCurrentMembers(clubNo);
+        return memberMapper.deleteByClubAndUser(clubNo, userNo);
+    }
+
+    @Override
+    public int cancelPending(int clubNo, int userNo) {
+        return memberMapper.deleteByClubAndUser(clubNo, userNo);
+    }
 }
+

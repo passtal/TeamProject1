@@ -76,4 +76,11 @@ public interface ClubService {
     
     // 모임장별 모임 목록
     List<Club> listByHost(int hostNo) throws Exception;
+
+    // 마이페이지: 내모임 카운트
+    int countByUser(int userNo);
+    int countByStatus(int userNo, String status);
+    List<Club> myClubList(int userNo, String status);
+    int deleteByClubAndUser(int clubNo, int userNo);
+    int cancelPending(int clubNo, int userNo);
 }
