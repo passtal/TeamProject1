@@ -27,7 +27,7 @@
 
                 <!-- 히어로 이미지 -->
                 <div class="hero-image-wrapper">
-                    <img src="https://www.figma.com/api/mcp/asset/737aa482-a091-4a55-9834-b89c4c7521f2" 
+                    <img th:src="@{/img/index/main_img.jpg}" 
                          alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
@@ -38,17 +38,23 @@
     <!-- 광고 배너 섹션 -->
     <section class="ad-section" th:if="${banners != null and !banners.empty}">
         <div class="ad-sponsored">Sponsored</div>
-        <div class="ad-banner-wrapper" id="bannerSlider">
-
-            </th:block>
-            
-            <!-- 배너 개수만큼 dot 표시 -->
-            <div class="ad-banner-dots" th:if="${#lists.size(banners) > 1}">
-                <div th:each="b, stat : ${banners}" 
-                     class="ad-dot"
-                     th:classappend="${stat.first ? 'active' : ''}"
-                     th:attr="data-index=${stat.index}"
-                     onclick="goToBannerSlide(this.dataset.index)"></div>
+        <div class="ad-banner-wrapper">
+            <img th:src="@{/img/banner/ad-banner.png}" 
+                 alt="Coffee House Ad" class="ad-banner-img">
+            <div class="ad-banner-overlay"></div>
+            <div class="ad-banner-content">
+                <div class="ad-banner-brand">Coffee House</div>
+                <h3 class="ad-banner-title">프리미엄 원두 커피</h3>
+                <p class="ad-banner-subtitle">신규 회원 20% 할인</p>
+                <a href="#" class="ad-banner-btn">
+                    자세히 보기
+                    <span style="font-size: 16px; margin-left: 4px;">→</span>
+                </a>
+            </div>
+            <div class="ad-banner-dots">
+                <div class="ad-dot active"></div>
+                <div class="ad-dot"></div>
+                <div class="ad-dot"></div>
             </div>
         </div>
     </section>

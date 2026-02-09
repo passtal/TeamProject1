@@ -3,6 +3,8 @@ package com.aloha.durudurub.dto;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 /**
@@ -20,10 +22,12 @@ public class Club {
     private String thumbnailImg;
     private int maxMembers;
     private int currentMembers;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date deadLine;
     private String location;
     private Double lat;
     private Double lng;
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Date clubDate;
     private String status;
     private int viewCount;
