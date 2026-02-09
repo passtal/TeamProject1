@@ -61,4 +61,7 @@ public interface ClubMapper {
     // 관리자페이지
     // 1. 대시보드
     Club findLatestClub();
+    // AI 검색용
+    List<Club> search(@Param("keyword") String keyword);
+
 }

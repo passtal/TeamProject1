@@ -135,6 +135,16 @@
                                                 <span class="post-author fw-bold" th:text="${board.writer != null ? board.writer.username : '알 수 없음'}">작성자</span>
                                                 <span class="post-date text-muted ms-2 small" th:if="${board.createdAt != null}" th:text="${board.createdAt}">날짜</span>
                                             </div>
+                                            <div class="ms-auto" th:if="${board.writer != null}">
+                                                <span class="btn-report-user text-danger" 
+                                                      style="cursor: pointer; font-size: 0.9rem;"
+                                                      th:data-user-no="${board.writer.no}" 
+                                                      th:data-username="${board.writer.username}"
+                                                      onclick="event.stopPropagation(); reportUser(this);" 
+                                                      title="신고">
+                                                    <i class="bi bi-flag"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                         <h5 class="post-title mb-2 text-dark">
                                             <span th:if="${board.isNotice == 'Y'}" class="badge bg-danger me-2">공지</span>
@@ -400,7 +410,16 @@
                     html += '<div class="flex-grow-1">';
                     html += '<div class="d-flex justify-content-between align-items-center">';
                     html += '<strong class="small">' + escapeHtml(comment.writer ? comment.writer.username : '알 수 없음') + '</strong>';
+                    html += '<div class="d-flex align-items-center gap-2">';
                     html += '<small class="text-muted">' + formatDate(comment.createdAt) + '</small>';
+                    if (comment.writer && comment.writer.no) {
+                        html += '<button class="btn btn-link text-danger p-0 btn-report-user" '
+                             + 'data-user-no="' + comment.writer.no + '" '
+                             + 'data-username="' + escapeHtml(comment.writer.username) + '" '
+                             + 'onclick="reportUser(this)" title="신고">'
+                             + '<i class="bi bi-flag"></i></button>';
+                    }
+                    html += '</div>';
                     html += '</div>';
                     html += '<p class="mb-0 small">' + escapeHtml(comment.content) + '</p>';
                     html += '</div>';
@@ -457,6 +476,14 @@
             return date.toLocaleDateString('ko-KR');
         }
         
+        // 유저 신고 버튼 클릭
+        function reportUser(btn) {
+            var userNo = $(btn).data('user-no');
+            var username = $(btn).data('username');
+            // 여기에 구현하시면 될 것 같습니다.
+            alert('T.T');
+        }
+
         // 모임 정보 수정 페이지로 이동
         function editClubInfo() {
             window.location.href = '/club/' + [[${club.no}]] + '/edit';

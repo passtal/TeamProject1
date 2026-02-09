@@ -1,9 +1,10 @@
+-- Active: 1767915726149@@127.0.0.1@3306@durudurub
 -- 23. ai_search_logs (AI 검색 사용 이력)
 -- 무료 사용자들 체크용 (미구독 회원 3회 제한)
 
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS `banners`;
+DROP TABLE IF EXISTS `ai_search_logs`;
 
 SET FOREIGN_KEY_CHECKS = 1;
 

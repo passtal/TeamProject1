@@ -174,7 +174,7 @@
         SET category_no = #{categoryNo}, sub_category_no = #{subCategoryNo},
             title = #{title}, description = #{description}, thumbnail_img = #{thumbnailImg},
             max_members = #{maxMembers}, deadline = #{deadLine}, location = #{location},
-            lat = #{lat}, lng = #{lng}, club_date = #{clubDate}
+            lat = #{lat}, lng = #{lng}, club_date = #{clubDate}, status = #{status}
         WHERE no = #{no}
     </update>
 

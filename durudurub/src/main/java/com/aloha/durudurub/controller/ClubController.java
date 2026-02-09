@@ -69,27 +69,12 @@ public class ClubController {
     @GetMapping("/list")
     public String list(@RequestParam(value = "category", required = false) Integer categoryNo,
                        @RequestParam(value = "sub", required = false) Integer subCategoryNo,
+                       @RequestParam(value = "keyword", required = false) String keyword,
                        @RequestParam(value = "page", defaultValue = "1") int page,
                        Model model) {
         
-        List<Club> clubs;
-
-        if (subCategoryNo != null) {
-            clubs = clubService.listBySubCategory(subCategoryNo);
-        } else if (categoryNo != null) {
-            clubs = clubService.listByCategory(categoryNo);
-        } else {
-            clubs = clubService.list();
-        }
-        
-        // 디버깅 로그
-        System.out.println("=== Club List Debug ===");
-        System.out.println("clubs size: " + (clubs != null ? clubs.size() : "null"));
-        if (clubs != null && !clubs.isEmpty()) {
-            for (Club c : clubs) {
-                System.out.println("Club: " + c.getNo() + " - " + c.getTitle());
-            }
-        }
+        // 모든 모임을 가져온 뒤, 프론트에서 카테고리 필터링 처리
+        List<Club> clubs = clubService.list();
 
         List<Category> categories = categoryService.list();
 
@@ -97,6 +82,7 @@ public class ClubController {
         model.addAttribute("categories", categories);
         model.addAttribute("categoryNo", categoryNo);
         model.addAttribute("subCategoryNo", subCategoryNo);
+        model.addAttribute("keyword", keyword);
         
         return "club/list";
     }
@@ -338,7 +324,7 @@ public class ClubController {
      */
     @PostMapping("/{no}/edit")
     public String editPro(@PathVariable("no") int no, Club club, 
-                         @RequestParam(value = "thumbnailImg", required = false) MultipartFile thumbnailImg,
+                         @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
                          Principal principal, RedirectAttributes rttr) {
         Club existingClub = clubService.selectByNo(no);
         User user = userService.selectByUserId(principal.getName());
@@ -348,7 +334,7 @@ public class ClubController {
         }
         
         // 새 이미지가 업로드된 경우
-        if (thumbnailImg != null && !thumbnailImg.isEmpty()) {
+        if (thumbnail != null && !thumbnail.isEmpty()) {
             try {
                 String uploadDir = System.getProperty("user.dir") + "/uploads/clubs/";
                 File dir = new File(uploadDir);
@@ -356,12 +342,12 @@ public class ClubController {
                     dir.mkdirs();
                 }
                 
-                String originalFilename = thumbnailImg.getOriginalFilename();
+                String originalFilename = thumbnail.getOriginalFilename();
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = UUID.randomUUID().toString() + extension;
                 
                 File file = new File(uploadDir + filename);
-                thumbnailImg.transferTo(file);
+                thumbnail.transferTo(file);
                 
                 club.setThumbnailImg("/uploads/clubs/" + filename);
             } catch (IOException e) {

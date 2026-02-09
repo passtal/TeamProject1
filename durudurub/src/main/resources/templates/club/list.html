@@ -41,8 +41,8 @@
             <div class="container">
                 <!-- 헤더 -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="section-title mb-0">
-                        <span th:if="${categoryNo != null}" th:text="${currentCategory.name + ' 모임'}">카테고리 모임</span>
+                    <h3 class="section-title mb-0" id="section-title">
+                        <span>모든 모임</span>
                     </h3>
                 </div>
                 
@@ -128,18 +128,12 @@
                 console.log('=== DOMContentLoaded fired ===');
                 console.log('Club list page loaded');
                 
-                // 초기 모임 데이터 저장
-                allClubs = Array.from(document.querySelectorAll('.col-md-6')).map(col => ({
-                    element: col,
-                    categoryNo: col.getAttribute('data-category-no')
-                }));
-                
-                console.log('Total clubs loaded:', allClubs.length);
-                console.log('Sample club categoryNo:', allClubs[0]?.categoryNo);
+                // URL에서 category 파라미터 확인
+                const urlParams = new URLSearchParams(window.location.search);
+                const urlCategoryNo = urlParams.get('category');
                 
                 // 대분류 카테고리 필터 기능
                 const filterButtons = document.querySelectorAll('.category-filter .filter-btn');
-                console.log('Filter buttons found:', filterButtons.length);
                 
                 filterButtons.forEach(button => {
                     button.addEventListener('click', function() {
@@ -154,11 +148,21 @@
                         
                         if (type === 'all') {
                             showAllClubs();
-                        } else if (type === 'main' && categoryNo) {
+                            document.getElementById('section-title').innerHTML = '<span>모든 모임</span>';
+                        } else if (categoryNo) {
                             filterClubsByCategory(categoryNo);
+                            document.getElementById('section-title').innerHTML = '<span>' + categoryName + ' 모임</span>';
                         }
                     });
                 });
+                
+                // URL 파라미터가 있으면 해당 카테고리 자동 선택
+                if (urlCategoryNo) {
+                    const targetBtn = document.querySelector('.filter-btn[data-category-no="' + urlCategoryNo + '"]');
+                    if (targetBtn) {
+                        targetBtn.click();
+                    }
+                }
             });
             
             // 소분류 카테고리 로드
