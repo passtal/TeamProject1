@@ -300,10 +300,10 @@ body {
 }
 
 .profile-image {
-    width: 500px;
-    height: 300px;
+    width: 200px;
+    height: 200px;
     object-fit: cover;
-    margin-top: 20px;
+    /* margin-top: 20px; */
 }
 
 .avatar-letter {

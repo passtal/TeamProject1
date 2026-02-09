@@ -25,5 +25,4 @@ public class User {
     private Date updatedAt;
 
     private List<Auth> authList;     // 권한 목록
-
 }

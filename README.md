@@ -9,3 +9,9 @@
 -   index : HomeController
 -   ## 본인 코드 확인 후 전체 코드 확인하기
 -       이상 없으면 최신화된 test1 반영해서 담당 기능 이어서 구현해주세요!!
+
+
+
+---
+### 두룹이
+<img width="256" height="256" alt="두룹이만세" src="https://github.com/user-attachments/assets/e0ffa497-8f53-4caf-abfb-4ab2ab2f1b00" />

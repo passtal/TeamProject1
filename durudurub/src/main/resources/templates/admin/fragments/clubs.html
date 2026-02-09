@@ -1,0 +1,314 @@
+<!-- 모임 관리 fragment -->
+<div th:fragment="content">
+    <!-- 모임 section -->
+    <section class="clubs-section">
+        <div class="search-bar">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" id="clubSearch" placeholder="모임명 또는 카테고리 검색...">
+        </div>
+
+        <div class="table-container">
+            <table class="clubs-table">
+                <thead>
+                    <tr>
+                        <th>모임명</th>
+                        <th>카테고리</th>
+                        <th>리더</th>
+                        <th>멤버 수</th>
+                        <th>생성일</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="club-body">
+                    <tr id="club-data">
+                        <td colspan="6" align="center">조회된 모임이 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 모임 상세조회 모달창 -->
+    <div class="modal-overlay" id="clubDetailModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h2>모임 상세 정보</h2>
+                <button class="btn-close-modal" onclick="closeClubDetail()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body-detail">
+                <div class="detail-row">
+                    <div class="detail-label">모임명</div>
+                    <div class="detail-value" id="detail-title"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">카테고리</div>
+                    <div class="detail-value" id="detail-category"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">리더</div>
+                    <div class="detail-value" id="detail-host"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">멤버 수</div>
+                    <div class="detail-value" id="detail-members"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">생성일</div>
+                    <div class="detail-value" id="detail-created"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">상태</div>
+                    <div class="detail-badge">
+                        <span class="badge-active">활성</span>
+                    </div>
+                </div>
+                <div class="detail-row-id">
+                    <div class="detail-label-id">모임 NO</div>
+                    <div class="detail-id" id="detail-no"></div>
+                </div>
+            </div>
+            <div class="modal-footer-detail">
+                <button class="btn-modal-close" onclick="closeClubDetail()">닫기</button>
+                <button class="btn-modal-goto" onclick="gotoClub()">이동하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 삭제 모달창 -->
+    <div class="modal-overlay" id="deleteConfirmModal" style="display: none;">
+        <div class="modal-container-small">
+            <div class="modal-header">
+                <h2>모임 삭제 확인</h2>
+                <button class="btn-close-modal" onclick="closeDeleteConfirm()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="modal-body-small">
+                <p id="deleteMessage"></p>
+            </div>
+            <div class="modal-footer-confirm">
+                <button class="btn-cancel" onclick="closeDeleteConfirm()">취소</button>
+                <button class="btn-confirm-delete" onclick="confirmDelete()">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="script">
+    <script>
+        // 검색 기능
+        // 검색 debounce - 깜빡임 처리
+        function debounce(fn, delay) {
+            let timer
+            return function (...args) {
+                clearTimeout(timer)
+                timer = setTimeout(() => fn.apply(this, args), delay)
+            }
+        }
+        // 검색 - 함수
+        function filterUsers(searchTerm) {
+            const rows = document.querySelectorAll('#club-body tr')
+
+            rows.forEach(row => {
+                const title = row.cells[0].textContent.toLowerCase();
+                const category = row.cells[1].textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || category.includes(searchTerm)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+        // 검색 - 이벤트
+        $(document).on('input', '#clubSearch', debounce(function(e){
+            filterUsers(e.target.value.toLowerCase())
+        }, 200))
+
+
+        // 모임 리스트 조회
+        function getList() {
+            $.ajax({
+                url: `/admin/api/clubs`,
+                method: 'GET',
+                dataType: 'json',
+                success: function (clubList) {
+                    if (clubList.length == 0) {
+                        $('#club-body').html(
+                            `<tr>
+                                <td colspan="6" align="center">조회된 모임이 없습니다.</td>
+                            </tr>`
+                        )
+                        return
+                    } else {
+                        // 기존 목록 제거
+                        $('#club-body').empty()
+                        // 새로운 서버데이터 요청 후 받은 데이터 기반으로 재생성
+                        let tr = ''
+                        for(const club of clubList) {
+                            tr += `<tr data-club-no='${club.no}'
+                                    data-title='${escapeJs(club.title)}'
+                                    onclick="showClubDetail(
+                                        '${escapeJs(club.title)}',
+                                        '${escapeJs(club.category.name)}',
+                                        '${escapeJs(club.host.username)}',
+                                        '${club.currentMembers}',
+                                        '${club.createdAt}',
+                                        '${escapeJs(club.status)}',
+                                        '${club.no}'
+                                    )">
+                                    <td>${club.title}</td>
+                                    <td>${club.category.name}</td>
+                                    <td>${club.host.username}</td>
+                                    <td>${club.currentMembers}</td>
+                                    <td>${formatDate(club.createdAt)}</td>
+                                    <td>
+                                        <button class="btn-delete" onclick="deleteClub(this, event)">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    </td>
+                                </tr>`
+                        }
+                        $('#club-body').html(tr)
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('*****status:', status);
+                    console.error('*****http status code:', xhr.status);
+                    console.error('*****error:', error);
+                    console.error('*****responseText:', xhr.responseText);
+                    alert('리스트 조회 실패!')
+                }
+            })
+        }
+        // 따옴표 깨짐 onclick('문자열', '문자열',,,,)
+        // '${escapeJs(value)}' : 문자열 파라미터
+        function escapeJs(str) {
+            if (str == null) return '';
+            return String(str)
+                .replace(/\\/g, '\\\\')
+                .replace(/'/g, "\\'")
+                .replace(/\r/g, '\\r')
+                .replace(/\n/g, '\\n')
+                .replace(/\t/g, '\\t');
+        }
+
+        // 활성/비활성 뱃지
+        function badgeStatus(status) {
+            if(status == 'RECRUITING') {
+                return `<span class="badge-active">활성</span>`
+            }
+            return `<span class="badge-active">비활성</span>`
+        }
+        // 날짜 형식
+        function formatDate(createdDate) {
+            const date = new Date(createdDate)
+
+            return date.getFullYear() + '. '
+            + (date.getMonth() + 1) + '. '
+            + date.getDate() + '.'
+        }
+        getList()
+
+
+        // 모임 상세 정보 표시
+        function showClubDetail(title, category, host, members, createdDate, status, clubNo) {
+            document.getElementById('detail-title').textContent = title;
+            document.getElementById('detail-category').textContent = category;
+            document.getElementById('detail-host').textContent = host;
+            document.getElementById('detail-members').textContent = members + '명';
+            document.getElementById('detail-created').textContent = formatDateTime(createdDate);
+            document.getElementById('detail-no').textContent = '#' + clubNo;
+            
+            // 활성화 상태 배지
+            const badgeContainer = document.querySelector('#clubDetailModal .detail-badge')
+            badgeContainer.innerHTML = badgeStatus(status)
+
+            document.getElementById('clubDetailModal').style.display = 'flex';
+        }
+        // 모달창 닫기
+        function closeClubDetail() {
+            document.getElementById('clubDetailModal').style.display = 'none';
+        }
+        // 모임으로 이동하기
+        function gotoClub() {
+            const clubNo = document.getElementById('detail-no').textContent.replace('#', '');
+            // TODO: 모임 페이지로 이동
+            window.location.href = '/club/' + clubNo;
+        }
+        // 날짜 포맷팅 함수
+        function formatDateTime(dateStr) {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours();
+            const minutes = date.getMinutes();
+            const period = hours < 12 ? '오전' : '오후';
+            const displayHour = hours % 12 || 12;
+            const displayMinute = minutes.toString().padStart(2, '0');
+            
+            return `${year}년 ${month}월 ${day}일 ${period} ${displayHour.toString().padStart(2, '0')}:${displayMinute}`;
+        }
+        document.getElementById('clubDetailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeClubDetail();
+            }
+        });
+
+        // 모임 삭제 기능
+        window.rowToDelete = window.rowToDelete ?? null
+        
+        function deleteClub(btn, event) {
+            event.stopPropagation();
+            rowToDelete = btn.closest('tr');
+            const clubNo = rowToDelete.getAttribute('data-club-no') || '1';
+            const title = rowToDelete.getAttribute('data-title') || '1';
+            
+            document.getElementById('deleteMessage').textContent = `정말로 NO #${clubNo} (${title}) 모임을 삭제하시겠습니까?`;
+            document.getElementById('deleteConfirmModal').style.display = 'flex';
+        }
+        
+        function confirmDelete() {
+            if (rowToDelete) {
+                const clubNo = rowToDelete.getAttribute('data-club-no')
+
+                // CSRF 토큰 문제 (403)
+                const token = $("meta[name='_csrf']").attr("content");
+                const header = $("meta[name='_csrf_header']").attr("content");
+                
+                $.ajax({
+                    url: `/admin/api/clubs/${clubNo}`,
+                    method: 'DELETE',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader(header, token)
+                    },
+                    success: function (res) {
+                        rowToDelete.remove();
+                        rowToDelete = null;
+                        closeDeleteConfirm();
+                        getList()
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('*****삭제 실패!')
+                        alert('삭제 실패!')
+                    }
+                })
+            }
+        }
+        
+        function closeDeleteConfirm() {
+            document.getElementById('deleteConfirmModal').style.display = 'none';
+            rowToDelete = null;
+        }
+        
+        // 모달 외부 클릭 시 닫기
+        document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDeleteConfirm();
+            }
+        });
+    </script>
+    </th:block>
+</div>

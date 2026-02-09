@@ -174,7 +174,7 @@
         SET category_no = #{categoryNo}, sub_category_no = #{subCategoryNo},
             title = #{title}, description = #{description}, thumbnail_img = #{thumbnailImg},
             max_members = #{maxMembers}, deadline = #{deadLine}, location = #{location},
-            lat = #{lat}, lng = #{lng}, club_date = #{clubDate}
+            lat = #{lat}, lng = #{lng}, club_date = #{clubDate}, status = #{status}
         WHERE no = #{no}
     </update>
 
@@ -215,6 +215,37 @@
 
     <!-- 모임 수 조회 -->
     <select id="count" resultType="int">
-        SELECT COUNT (*) FROM clubs
+        SELECT COUNT(*) FROM clubs
+    </select>
+
+
+    <!-- 마이페이지 : 내모임 관리 -->
+    <!-- 참여/리더/승인대기 -->
+    <select id="myClubList" resultMap="clubResultMap">
+        SELECT c.*
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        WHERE m.user_no = #{userNo} AND m.status = #{status}
+            ORDER BY m.joined_at DESC
+    </select>
+    <!-- 참여/리더/승인대기 개수 -->
+    <select id="countByStatus" resultType="int">
+        SELECT COUNT(*)
+        FROM club_members 
+        WHERE user_no = #{userNo} AND status = #{status}
+    </select>
+    <!-- 전체 개수 -->
+    <select id="countByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM club_members 
+        WHERE user_no = #{userNo}
+    </select>
+
+    <!-- 관리자페이지: 최신모임 1건 -->
+    <select id="findLatestClub" resultType="Club">
+        SELECT *
+        FROM clubs
+        ORDER BY created_at DESC
+        LIMIT 1
     </select>
 </mapper>

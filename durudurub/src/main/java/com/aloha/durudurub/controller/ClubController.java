@@ -342,7 +342,7 @@ public class ClubController {
      */
     @PostMapping("/{no}/edit")
     public String editPro(@PathVariable("no") int no, Club club, 
-                         @RequestParam(value = "thumbnailImg", required = false) MultipartFile thumbnailImg,
+                         @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
                          Principal principal, RedirectAttributes rttr) {
         Club existingClub = clubService.selectByNo(no);
         User user = userService.selectByUserId(principal.getName());
@@ -352,7 +352,7 @@ public class ClubController {
         }
         
         // 새 이미지가 업로드된 경우
-        if (thumbnailImg != null && !thumbnailImg.isEmpty()) {
+        if (thumbnail != null && !thumbnail.isEmpty()) {
             try {
                 String uploadDir = System.getProperty("user.dir") + "/uploads/clubs/";
                 File dir = new File(uploadDir);
@@ -360,12 +360,12 @@ public class ClubController {
                     dir.mkdirs();
                 }
                 
-                String originalFilename = thumbnailImg.getOriginalFilename();
+                String originalFilename = thumbnail.getOriginalFilename();
                 String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
                 String filename = UUID.randomUUID().toString() + extension;
                 
                 File file = new File(uploadDir + filename);
-                thumbnailImg.transferTo(file);
+                thumbnail.transferTo(file);
                 
                 club.setThumbnailImg("/uploads/clubs/" + filename);
             } catch (IOException e) {

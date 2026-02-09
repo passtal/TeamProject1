@@ -3,6 +3,8 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{/layouts/main_layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>마이페이지 - 두루두룹</title>
     <link rel="stylesheet" th:href="@{/css/mypage/mypage.css}">
     <link rel="stylesheet" th:href="@{/css/mypage/mypage-edit.css}">
@@ -107,229 +109,359 @@
                         </div>
                     </div>
 
-                    <!-- 이메일 -->
-                    <div class="info-field">
-                        <label class="field-label">
-                            <span class="material-symbols-outlined">mail</span>
-                            <span>이메일</span>
-                        </label>
-                        <div class="field-value readonly-field">
-                            <span id="userid-span" th:text="${user?.userId ?: 'test@example.com'}">test@example.com</span>
-                        </div>
-                    </div>
+                            <!-- 이메일 -->
+                            <div class="info-field">
+                                <label class="field-label">
+                                    <span class="material-symbols-outlined">mail</span>
+                                    <span>이메일</span>
+                                </label>
+                                <div class="field-value readonly-field">
+                                    <span id="userid-span" th:text="*{userId}"></span>
+                                </div>
+                            </div>
 
-                    <!-- 활동 지역 -->
-                    <div class="info-field">
-                        <label class="field-label">
-                            <span class="material-symbols-outlined">location_on</span>
-                            <span>활동 지역</span>
-                        </label>
-                        <div class="field-value field-value-placeholder">
-                            <span id="useraddress-span" th:text="${user?.address ?: '예: 서울특별시'}">예: 서울특별시</span>
-                        </div>
-                    </div>
+                            <!-- 활동 지역 -->
+                            <div class="info-field">
+                                <label class="field-label">
+                                    <span class="material-symbols-outlined">location_on</span>
+                                    <span>활동 지역</span>
+                                </label>
+                                <div class="field-value field-value-placeholder">
+                                    <span id="useraddress-span" th:text="*{address != null ? address : '미입력'}"></span>
+                                </div>
+                            </div>
 
-                    <!-- 나이 & 성별 -->
-                    <div class="info-field-row">
-                        <div class="info-field info-field-half">
-                            <label class="field-label">
-                                <span class="material-symbols-outlined">person</span>
-                                <span>나이</span>
-                            </label>
-                            <div class="field-value field-value-placeholder">
-                                <span id="userage-span" th:text="${user?.age > 0 ? user.age + '세' : '예: 25세'}">예: 25세</span>
+                            <!-- 나이 & 성별 -->
+                            <div class="info-field-row">
+                                <div class="info-field info-field-half">
+                                    <label class="field-label">
+                                        <span class="material-symbols-outlined">person</span>
+                                        <span>나이</span>
+                                    </label>
+                                    <div class="field-value field-value-placeholder">
+                                        <span id="userage-span" th:text="*{age != null ? age + '세' : '미입력'}"></span>
+                                    </div>
+                                </div>
+                                <div class="info-field info-field-half">
+                                    <label class="field-label">
+                                        <span class="material-symbols-outlined">person</span>
+                                        <span>성별</span>
+                                    </label>
+                                    <div class="field-value">
+                                        <span id="usergender-span" th:text="*{gender != null ? gender : '선택 안함'}"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 가입일 -->
+                            <div class="info-field">
+                                <label class="field-label">
+                                    <span class="material-symbols-outlined">calendar_today</span>
+                                    <span>가입일</span>
+                                </label>
+                                <div class="field-value readonly-field">
+                                    <span th:text="*{ #dates.format( createdAt, 'yyyy년 MM월 dd일') }"></span>
+                                </div>
                             </div>
                         </div>
-                        <div class="info-field info-field-half">
-                            <label class="field-label">
-                                <span class="material-symbols-outlined">person</span>
-                                <span>성별</span>
-                            </label>
-                            <div class="field-value">
-                                <span id="usergender-span" th:text="${user?.gender ?: '선택 안함'}">선택 안함</span>
+                    </div>
+                    
+                    <!-- 수정 모드 -->
+                    <div class="info-content" id="edit-content" style="display: none;">
+                        <!-- ⭐ 프로필 이미지 수정 -->
+                        <div class="profile-section-edit">
+                            <div class="profile-avatar-edit">
+                                <!-- th:src="${user?.profileImg != null ? user.profileImg : '/img/default-profile.png'}" -->
+                                <img  
+                                    src="/img/default-profile.png"
+                                    alt="프로필 이미지" 
+                                    class="profile-image-edit"
+                                    id="profileImageEdit">
+                            </div>
+                            <button class="btn-change-photo" id="btnChangePhoto">
+                                <span class="change-photo-text">사진 변경</span>
+                            </button>
+                            <input type="file" id="profile-file" accept="image/*" style="display: none;">
+                        </div>
+
+                        <!-- 정보 입력 필드들 -->
+                        <div class="info-fields-edit">
+                            <!-- 닉네임 -->
+                            <div class="info-field-edit">
+                                <label class="field-label-edit">
+                                    <!-- ⭐ 닉네임 중복체크 유효성 검사 -->
+                                    <span class="material-symbols-outlined">person</span>
+                                    <span>닉네임</span>
+                                </label>
+                                <input type="text" 
+                                    class="field-input" 
+                                    id="username-input" 
+                                    th:value="*{username}" 
+                                    value="test"
+                                    placeholder="예: 두루두룹">
+                            </div>
+
+                            <!-- 이메일 (읽기 전용) -->
+                            <div class="info-field-edit">
+                                <label class="field-label-edit">
+                                    <span class="material-symbols-outlined">mail</span>
+                                    <span>이메일</span>
+                                </label>
+                                <div class="field-input-readonly">
+                                    <span id="userid-span" th:text="*{userId}"></span>
+                                </div>
+                            </div>
+
+                            <!-- 활동 지역 -->
+                            <div class="info-field-edit">
+                                <label class="field-label-edit">
+                                    <span class="material-symbols-outlined">location_on</span>
+                                    <span>활동 지역</span>
+                                </label>
+                                <input type="text" 
+                                    class="field-input" 
+                                    id="useraddress-input" 
+                                    th:value="*{address}"
+                                    placeholder="예: 서울특별시">
+                            </div>
+
+                            <!-- 나이 & 성별 -->
+                            <div class="info-field-row-edit">
+                                <div class="info-field-edit info-field-half-edit">
+                                    <label class="field-label-edit">
+                                        <!-- ⭐ 나이 유효성 검사 -->
+                                        <span class="material-symbols-outlined">person</span>
+                                        <span>나이</span>
+                                    </label>
+                                    <div class="age-input-group">
+                                        <input type="number" 
+                                            class="field-input field-input-number" 
+                                            id="userage-input" 
+                                            th:value="*{age}" 
+                                            placeholder="예: 25"
+                                            min="15"
+                                            max="100">
+                                        <span class="age-suffix">세</span>
+                                    </div>
+                                </div>
+                                <div class="info-field-edit info-field-half-edit">
+                                    <label class="field-label-edit">
+                                        <span class="material-symbols-outlined">person</span>
+                                        <span>성별</span>
+                                    </label>
+                                    <select class="field-select" id="usergender-select" th:value="*{gender}">
+                                        <option value="">선택 안함</option>
+                                        <option value="남성" th:selected="*{gender == '남성'}">남성</option>
+                                        <option value="여성" th:selected="*{gender == '여성'}">여성</option>
+                                        <option value="기타" th:selected="*{gender == '기타'}">기타</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- 가입일 (읽기 전용) -->
+                            <div class="info-field-edit">
+                                <label class="field-label-edit">
+                                    <span class="material-symbols-outlined">calendar_today</span>
+                                    <span>가입일</span>
+                                </label>
+                                <div class="field-input-readonly">
+                                    <span th:text="*{ #dates.format( createdAt, 'yyyy년 MM월 dd일') }">2025년 1월 20일</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- 가입일 -->
-                    <div class="info-field">
-                        <label class="field-label">
-                            <span class="material-symbols-outlined">calendar_today</span>
-                            <span>가입일</span>
-                        </label>
-                        <div class="field-value readonly-field">
-                            <span th:text="${#temporals.format(user?.createdAt ?: #temporals.createNow(), 'yyyy년 M월 d일')}">2025년 1월 20일</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- 수정 모드 -->
-            <div class="info-content" id="edit-content" style="display: none;">
-                <!-- 프로필 이미지 수정 -->
-                <div class="profile-section-edit">
-                    <div class="profile-avatar-edit">
-                        <img th:src="${user?.profileImg != null ? user.profileImg : '/img/default-profile.png'}" 
-                             src="/img/default-profile.png"
-                             alt="프로필 이미지" 
-                             class="profile-image-edit"
-                             id="profileImageEdit">
-                    </div>
-                    <button class="btn-change-photo" id="btnChangePhoto">
-                        <span class="change-photo-text">사진 변경</span>
-                    </button>
-                    <input type="file" id="profile-file" accept="image/*" style="display: none;">
                 </div>
 
-                <!-- 정보 입력 필드들 -->
-                <div class="info-fields-edit">
-                    <!-- 닉네임 -->
-                    <div class="info-field-edit">
-                        <label class="field-label-edit">
-                            <span class="material-symbols-outlined">person</span>
-                            <span>닉네임</span>
-                        </label>
-                        <input type="text" 
-                               class="field-input" 
-                               id="username-input" 
-                               th:value="${user?.username ?: 'test'}" 
-                               value="test"
-                               placeholder="닉네임을 입력하세요">
-                    </div>
-
-                    <!-- 이메일 (읽기 전용) -->
-                    <div class="info-field-edit">
-                        <label class="field-label-edit">
-                            <span class="material-symbols-outlined">mail</span>
-                            <span>이메일</span>
-                        </label>
-                        <div class="field-input-readonly">
-                            <span id="userid-span" th:text="${user?.userId ?: 'test@example.com'}">test@example.com</span>
-                        </div>
-                    </div>
-
-                    <!-- 활동 지역 -->
-                    <div class="info-field-edit">
-                        <label class="field-label-edit">
-                            <span class="material-symbols-outlined">location_on</span>
-                            <span>활동 지역</span>
-                        </label>
-                        <input type="text" 
-                               class="field-input" 
-                               id="useraddress-input" 
-                               th:value="${user?.address}" 
-                               placeholder="예: 서울특별시">
-                    </div>
-
-                    <!-- 나이 & 성별 -->
-                    <div class="info-field-row-edit">
-                        <div class="info-field-edit info-field-half-edit">
-                            <label class="field-label-edit">
-                                <span class="material-symbols-outlined">person</span>
-                                <span>나이</span>
-                            </label>
-                            <div class="age-input-group">
-                                <input type="number" 
-                                       class="field-input field-input-number" 
-                                       id="userage-input" 
-                                       th:value="${user?.age > 0 ? user.age : ''}" 
-                                       placeholder="예: 25"
-                                       min="1"
-                                       max="120">
-                                <span class="age-suffix">세</span>
+                <!-- 활동 통계 카드 -->
+                <div class="stats-card">
+                    <h2 class="card-title">활동 통계</h2>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-content">
+                                <div class="stat-info">
+                                    <p class="stat-label">참여 중인 모임</p>
+                                    <p class="stat-value" th:text="${totalMyClub} + '개'">0개</p>
+                                </div>
+                                <span class="material-symbols-outlined stat-icon">groups</span>
                             </div>
                         </div>
-                        <div class="info-field-edit info-field-half-edit">
-                            <label class="field-label-edit">
-                                <span class="material-symbols-outlined">person</span>
-                                <span>성별</span>
-                            </label>
-                            <select class="field-select" id="usergender-select" th:value="${user?.gender}">
-                                <option value="">선택 안함</option>
-                                <option value="남성" th:selected="${user?.gender == '남성'}">남성</option>
-                                <option value="여성" th:selected="${user?.gender == '여성'}">여성</option>
-                                <option value="기타" th:selected="${user?.gender == '기타'}">기타</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- 가입일 (읽기 전용) -->
-                    <div class="info-field-edit">
-                        <label class="field-label-edit">
-                            <span class="material-symbols-outlined">calendar_today</span>
-                            <span>가입일</span>
-                        </label>
-                        <div class="field-input-readonly">
-                            <span th:text="${#temporals.format(user?.createdAt ?: #temporals.createNow(), 'yyyy년 M월 d일')}">2025년 1월 20일</span>
+                        <div class="stat-item">
+                            <div class="stat-content">
+                                <div class="stat-info">
+                                    <p class="stat-label">즐겨찾기</p>
+                                    <p class="stat-value">5개</p>
+                                </div>
+                                <span class="material-symbols-outlined stat-icon">favorite</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 활동 통계 카드 -->
-        <div class="stats-card">
-            <h2 class="card-title">활동 통계</h2>
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-content">
-                        <div class="stat-info">
-                            <p class="stat-label">참여 중인 모임</p>
-                            <p class="stat-value">3개</p>
-                        </div>
-                        <span class="material-symbols-outlined stat-icon">groups</span>
+            <!-- 오른쪽 컬럼 -->
+            <div class="right-column">
+                <!-- 빠른 메뉴 카드 -->
+                <div class="quick-menu-card">
+                    <h3 class="section-title">빠른 메뉴</h3>
+                    <div class="menu-list">
+                        <a th:href="@{/users/mypage/club}" class="menu-item">내 모임 관리</a>
+                        <a th:href="@{/users/mypage/favorites}" class="menu-item">즐겨찾기 목록</a>
                     </div>
                 </div>
-                <div class="stat-item">
-                    <div class="stat-content">
-                        <div class="stat-info">
-                            <p class="stat-label">즐겨찾기</p>
-                            <p class="stat-value">5개</p>
-                        </div>
-                        <span class="material-symbols-outlined stat-icon">favorite</span>
-                    </div>
+
+                <!-- 계정 관리 카드 -->
+                <div class="account-card">
+                    <h3 class="section-title">계정 관리</h3>
+                    <button id="deleteAccountBtn" class="menu-item menu-item-danger" onclick="openModal()">회원 탈퇴</button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 오른쪽 컬럼 -->
-    <div class="right-column">
-        <!-- 빠른 메뉴 카드 -->
-        <div class="quick-menu-card">
-            <h3 class="section-title">빠른 메뉴</h3>
-            <div class="menu-list">
-                <a th:href="@{/users/mypage/club}" class="menu-item">내 모임 관리</a>
-                <a href="@{/users/mypage/favorites}" class="menu-item">즐겨찾기 목록</a>
+        <!-- 회원 탈퇴 모달 -->
+        <div id="delete-modal" class="modal" >
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <div class="icon-wrapper">
+                        <span class="material-symbols-outlined error-icon">warning</span>
+                    </div>
+                </div>
+                <h2 class="modal-title">회원 탈퇴</h2>
+                <p class="modal-text">회원 탈퇴하면 되돌릴 수 없습니다.</p>
+                <p class="modal-text">정말 탈퇴하시겠습니까?</p>
+                <div class="modal-actions">
+                    <button id="cancelBtn" class="modal-btn modal-btn-cancel" onclick="closeModal()">취소</button>
+                    <button id="confirmDeleteBtn" class="modal-btn modal-btn-delete" onclick="userDelete()">탈퇴하기</button>
+                </div>
             </div>
         </div>
-
-        <!-- 계정 관리 카드 -->
-        <div class="account-card">
-            <h3 class="section-title">계정 관리</h3>
-            <button id="deleteAccountBtn" class="menu-item menu-item-danger" onclick="openModal()">회원 탈퇴</button>
-        </div>
-    </div>
-</div>
-
-<!-- 회원 탈퇴 모달 -->
-<div id="delete-modal" class="modal" >
-    <div class="modal-content" >
-        <div class="modal-header">
-            <div class="icon-wrapper">
-                <span class="material-symbols-outlined error-icon">warning</span>
-            </div>
-        </div>
-        <h2 class="modal-title">회원 탈퇴</h2>
-        <p class="modal-text">회원 탈퇴하면 되돌릴 수 없습니다.</p>
-        <p class="modal-text">정말 탈퇴하시겠습니까?</p>
-        <div class="modal-actions">
-            <button id="cancelBtn" class="modal-btn modal-btn-cancel" onclick="closeModal()">취소</button>
-            <button id="confirmDeleteBtn" class="modal-btn modal-btn-delete" onclick="userDelete()">탈퇴하기</button>
-        </div>
-    </div>
-</div>
+    </main>
 <!-- static/js/userpage.js 정적 경로 -->
-<script th:src="@{/js/userpage.js}"></script>
+<script>
+// 회원 정보 수정 (수정버튼)
+function updateBtn() {
+    $("#view-mode, #view-content").hide() // 조회 화면 -> span
+    $("#edit-mode, #edit-content").show() // 수정 화면 -> text
+
+    // .trim() : 공백 입력 방지!
+    //          option '여자' -> span ' 여자 ' : 적용X
+    $("#username-input").val($("#username-span").text().trim())
+    $("#useraddress-input").val($("#useraddress-span").text().trim())
+    // 나이 : "세" 추가하기
+    // "" : "세" -> "" (숫자만 뽑기)
+    const ageText = $("#userage-span").text().replace("세", "").trim()
+    $("#userage-input").val(ageText);
+    // 성별 : 선택 안함 추가하기
+    const genderText = $("#usergender-span").text().trim()
+    $("#usergender-select").val(genderText === "선택 안함" ? "" : genderText)
+
+    // 사진 미리보기 기존 값 설정
+    // $("#profileImageEdit").attr("src", $("#profileImageView").attr("src"));
+}
+
+// 회원 정보 수정 (취소버튼)
+function cancelBtn() {
+    $("#edit-mode, #edit-content").hide() // 수정 화면 -> text
+    $("#view-mode, #view-content").show() // 조회 화면 -> span
+}
+
+// 회원 정보 수정 (저장버튼)
+function saveBtn() {
+
+    // 사진 추가 시 FormData 필요!
+    const formData = new FormData();
+
+    formData.append("username", $("#username-input").val());
+    // "세" 추가하기
+    const ageVal = $("#userage-input").val()
+    formData.append("age", ageVal ? parseInt(ageVal, 10) : 0);
+    
+    formData.append("gender", $("#usergender-select").val());
+    formData.append("address", $("#useraddress-input").val());
+
+    // CSRF 토큰 문제 (403)
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+
+    // 사진이 선택된 경우에만 추가
+    // const imgFile = $("#profile-file")[0].files[0];
+    // if (imgFile) {
+    //     formData.append("profileImg", imgFile);
+    // }
+
+    $.ajax({
+        url: `/users/mypage`,
+        method: 'PUT',
+        processData: false,  // processData: false → 데이터를 문자열로 변환하지 않고 원본 그대로 보냄
+        contentType: false,  // contentType: false → 헤더를 자동으로 설정하지 말고, 브라우저가 알아서 content-type 붙게 비워두기
+        data: formData,      // data: formData → 여기에 실제로 보낼 데이터 (formData 객체) 들어있음
+        beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
+            xhr.setRequestHeader(header, token)
+        },
+        success: function () {
+            alert("회원 정보가 수정되었습니다")
+
+            // 화면 업데이트
+            // $("#userprofile-img").attr("src", $("#userprofile-img").attr("src"));
+            $("#username-span").text($("#username-input").val());
+            // 나이 : "세" 붙이기
+            const newAge = $("#userage-input").val();
+            $("#userage-span").text(newAge ? `${newAge}세` : "예: 25세");
+            // 성별 : 선택 안할 시 "선택 안함" 기본!
+            const newGender = $("#usergender-select").val();
+            $("#usergender-span").text(newGender ? newGender : "선택 안함");
+            $("#useraddress-span").text($("#useraddress-input").val());
+
+            cancelBtn()
+        }, 
+        error: function (xhr, status, error) {
+            // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+            // status : AJAX 요청 상태를 문자열로 나타낸 것
+            if (xhr.status === 404) {
+                alert("잘못된 요청입니다");
+            } else {
+                alert("서버 내부 오류입니다.");
+            }
+        }
+    })
+}
+// ------------------------------------------------------------------
+// 회원 탈퇴 - 모달 열기 (회원탈퇴 버튼)
+function openModal() {
+    // $("#delete-modal").show()
+    $("#delete-modal").css("display", "flex")
+}
+// 회원 탈퇴 - 모달 닫기 
+function closeModal() {
+    $("#delete-modal").hide()
+}
+// 회원 탈퇴 (탈퇴하기 버튼)
+function userDelete() {
+
+    // CSRF 토큰 문제 (403)
+    const token = $("meta[name='_csrf']").attr("content");
+    const header = $("meta[name='_csrf_header']").attr("content");
+
+    $.ajax({
+        url: `/users/mypage/modal`,
+        method: 'DELETE',
+        beforeSend: function (xhr) {    // CSRF 토큰 문제(403)
+            xhr.setRequestHeader(header, token)
+        },
+        success: function (result, status, xhr) {
+            alert("탈퇴가 완료되었습니다")
+            window.location.href = "/";     // 탈퇴 후 메인 이동
+        }, 
+        error: function (xhr, status, error) {
+            // xhr : AJAX 요청에 대한 전체 HTTP 응답 객체
+            // status : AJAX 요청 상태를 문자열로 나타낸 것
+            if (xhr.status === 404) {
+                alert("잘못된 요청입니다");
+            } else {
+                alert("서버 내부 오류입니다.")
+            }
+        }
+    })
+}
+</script>
 </body>
 </html>

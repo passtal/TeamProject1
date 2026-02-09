@@ -1,0 +1,328 @@
+<!-- 사용자 관리 fragment -->
+<div th:fragment="content">
+    <!-- 사용자 관리 section -->
+    <section class="users-section">
+        <!-- 검색창 -->
+        <div class="search-bar">
+            <span class="material-symbols-outlined">search</span>
+            <input type="text" placeholder="닉네임 또는 이메일 검색..." id="userSearch">
+        </div>
+
+        <!-- 사용자 테이블 -->
+        <div class="table-container">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>닉네임</th>
+                        <th>이메일</th>
+                        <th>가입일</th>
+                        <th>구독 상태</th>
+                        <th>삭제</th>
+                    </tr>
+                </thead>
+                <tbody id="user-body">
+                    <tr id="user-data">
+                        <td colspan="5" align="center">조회된 사용자가 없습니다.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 사용자 상세조회 모달창 -->
+    <div class="modal-overlay" id="userDetailModal">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h2>사용자 상세 정보</h2>
+            <button class="btn-close-modal" onclick="closeUserDetail()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-row">
+                <div class="detail-label">닉네임</div>
+                <div class="detail-value" id="detailUsername">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">이메일</div>
+                <div class="detail-value" id="detailUserId">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">가입일</div>
+                <div class="detail-value" id="detailCreatedAt">-</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">구독 상태</div>
+                <div id="detailBadge"></div>
+            </div>
+            <div class="detail-row" id="reportRow">
+                <div class="detail-label">신고 횟수</div>
+                <div class="report-badge" id="detailReportCount">0회</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">사용자 NO</div>
+                <div class="detail-value user-id" id="detailUserNo">#1</div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn-close" onclick="closeUserDetail()">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 사용자 삭제 모달창 -->
+<div class="modal-overlay" id="deleteConfirmModal">
+    <div class="modal-container-small">
+        <div class="modal-header">
+            <h2>사용자 삭제 확인</h2>
+            <button class="btn-close-modal" onclick="closeDeleteConfirm()">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div class="modal-body-small">
+            <p id="deleteMessage"></p>
+        </div>
+        <div class="modal-footer-confirm">
+            <button class="btn-cancel" onclick="closeDeleteConfirm()">취소</button>
+            <button class="btn-confirm-delete" onclick="confirmDelete()">삭제</button>
+        </div>
+    </div>
+</div>
+
+
+<th:block layout:fragment="script">
+<script>
+    // 검색 기능
+    // 검색 debounce - 깜빡임 처리
+    function debounce(fn, delay) {
+        let timer
+        return function (...args) {
+            clearTimeout(timer)
+            timer = setTimeout(() => fn.apply(this, args), delay)
+        }
+    }
+    // 검색 - 함수
+    function filterUsers(searchTerm) {
+        const rows = document.querySelectorAll('#user-body tr')
+
+        rows.forEach(row => {
+            const username = row.cells[0].textContent.toLowerCase();
+            const userId = row.cells[1].textContent.toLowerCase();
+            
+            if (username.includes(searchTerm) || userId.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+    // 검색 - 이벤트
+    $(document).on('input', '#userSearch', debounce(function(e){
+        filterUsers(e.target.value.toLowerCase())
+    }, 200))
+
+
+    // 사용자 리스트
+    function getList() {
+        $.ajax({
+            url: `/admin/api/users`,
+            method: 'GET',
+            dataType: 'json',
+            success: function (userList) {
+                if (userList.length == 0) {
+                    $('#user-body').html(
+                        `<tr>
+                            <td colspan="5" align="center">조회된 사용자가 없습니다.</td>
+                        </tr>`
+                    )
+                    return
+                } else {
+                    // 기존 목록 제거
+                    $('#user-body').empty()
+                    // 새로운 서버데이터 요청 후 받은 데이터 기반으로 재생성
+                    let tr = ''
+                    for(const user of userList) {
+                        let deleteBtn = '';
+                        if (user.username != '관리자') {
+                            deleteBtn = `
+                                <button class="btn-delete" onclick="deleteUser(this, event)">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            `
+                        }
+                        tr += `<tr data-user-no='${user.userNo}'
+                                    data-username='${escapeJs(user.username)}'
+                                onclick="showUserDetail(
+                                    '${escapeJs(user.username)}',
+                                    '${escapeJs(user.userId)}',
+                                    '${user.createdAt}',
+                                    '${user.subStatus}',
+                                    '${user.userNo}'
+                                )">
+                                <td>${user.username}</td> 
+                                <td>${user.userId}</td>
+                                <td>${formatDate(user.createdAt)}</td>
+                                <td>${badge(user)}</td>
+                                <td>${deleteBtn}</td>
+                            </tr>`
+                    }
+                    $('#user-body').html(tr)
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('*****status:', status);
+                console.error('*****http status code:', xhr.status);
+                console.error('*****error:', error);
+                console.error('*****responseText:', xhr.responseText);
+                alert('리스트 조회 실패!')
+            }
+        })
+    }
+    // 따옴표 깨짐 onclick('문자열', '문자열',,,,)
+    // '${escapeJs(value)}' : 문자열 파라미터
+    function escapeJs(str) {
+        if (str == null) return ''
+        return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'")
+    }
+    // 구독 뱃지
+    function badge(user) {
+        if(user.username == '관리자') {
+            return `<span class="badge badge-admin">관리자</span>`
+        }
+        if(user.subStatus == 'ACTIVE') {
+            return `<span class="badge badge-subscribed">구독 중</span>`
+        }
+        if(user.subStatus == 'EXPIRED') {
+            return `<span class="badge badge-expired">만료</span>`
+        }
+        return `<span class="badge badge-unsubscribed">미구독</span>`
+        
+    }
+    // 날짜 형식
+    function formatDate(joinDatebyList) {
+        const date = new Date(joinDatebyList)
+
+        return date.getFullYear() + '. '
+            + (date.getMonth() + 1) + '. '
+            + date.getDate() + '.'
+    }
+    getList()
+
+    // 사용자 상세 정보 표시
+    function showUserDetail(username, email, createdAt, subStatus, userNo) {
+        document.getElementById('detailUsername').textContent = username;
+        document.getElementById('detailUserId').textContent = email;
+        
+        // 가입일 포맷 변경 (2024. 1. 15. → 2024년 1월 15일)
+        const date = new Date(createdAt)
+
+        const yyyy = date.getFullYear()
+        const mm = String(date.getMonth() + 1).padStart(2, '0')
+        const dd = String(date.getDate()).padStart(2, '0')
+
+        const hh = date.getHours() //0~23
+        const mi = String(date.getMinutes()).padStart(2, '0')
+
+        const ampm = hh < 12 ? '오전' : '오후'
+        const hours = hh % 12 || 12     // 오전 12시(0->12)/오후 12시(12->12)/오후 1시(13->1)
+
+        document.getElementById('detailCreatedAt').textContent
+            = `${yyyy}년 ${mm}월 ${dd}일 ${ampm} ${String(hours).padStart(2,'0')}:${mi}`
+
+        // 구독 상태 배지
+        const badgeContainer = document.getElementById('detailBadge');
+        
+        badgeContainer.innerHTML = badge({
+            username: username,
+            subStatus: subStatus
+        })
+        
+        // 신고 횟수
+        // document.getElementById('detailReportCount').textContent = `${reportCount}회`;
+        const reportRow = document.getElementById('reportRow')
+
+        if (username == '관리자') {
+            reportRow.style.display = 'none';
+        } else {
+            reportRow.style.display = 'flex';
+            document.getElementById('detailReportCount').textContent = `0회`
+        }
+        
+        // 사용자 No
+        document.getElementById('detailUserNo').textContent = '#' + userNo
+        // 모달 표시
+        document.getElementById('userDetailModal').style.display = 'flex';
+    }
+    // 모달 닫기
+    function closeUserDetail() {
+        document.getElementById('userDetailModal').style.display = 'none';
+    }
+    // 모달 외부 클릭 시 닫기
+    document.getElementById('userDetailModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeUserDetail();
+        }
+    });
+
+
+    // 사용자 삭제 기능 : 스크립트 한번만 선언!
+    // let rowToDelete = null;
+    window.rowToDelete = window.rowToDelete ?? null;
+    
+    function deleteUser(btn, event) {
+        event.stopPropagation(); // 행 클릭 이벤트 방지
+        rowToDelete = btn.closest('tr');    // 클릭한 삭제버튼 속한 tr
+        const userNo = rowToDelete.getAttribute('data-user-no') || '1';
+        const username = rowToDelete.getAttribute('data-username') || '';
+        
+        // 모달에 메시지 설정
+        document.getElementById('deleteMessage').textContent = `정말로 사용자 NO #${userNo} (${username})을 삭제하시겠습니까?`;
+        // 모달 표시
+        document.getElementById('deleteConfirmModal').style.display = 'flex';
+    }
+    
+    function confirmDelete() {
+        if (rowToDelete) {
+            const userNo = rowToDelete.getAttribute('data-user-no') // 클릭한 user 번호
+
+            // CSRF 토큰 문제 (403)
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+            
+            $.ajax({
+                url: `/admin/api/users/${userNo}`,
+                method: 'DELETE',
+                beforeSend: function (xhr) {     
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (res) {
+                    // 서버 삭제 성공 후, 리스트제거
+                    rowToDelete.remove();
+                    rowToDelete = null;
+                    closeDeleteConfirm();
+                    // 목록 다시 받기 (동기화)
+                    getList()
+                },
+                error: function (xhr, status, error) {
+                    console.error('*****삭제 실패!')
+                    alert('삭제 실패!')
+                }
+            })
+            
+        }
+    }
+
+    function closeDeleteConfirm() {
+        document.getElementById('deleteConfirmModal').style.display = 'none';
+        rowToDelete = null;
+    }
+    
+    // 모달 외부 클릭 시 닫기
+    document.getElementById('deleteConfirmModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteConfirm();
+        }
+    });
+    </script>
+    </th:block>
+</div>

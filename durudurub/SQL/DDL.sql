@@ -25,10 +25,10 @@ DROP TABLE IF EXISTS
     club_likes,
     random_games,
     banners,
+    notices,
     club_member_reports,
     club_location,
     report_categories,
-    notices,
     subscriptions,
     payments,
     ai_search_logs
@@ -405,6 +405,7 @@ CREATE TABLE `subscriptions` (
 CREATE TABLE `payments` (
     `no` INT NOT NULL AUTO_INCREMENT COMMENT 'PK',
     `user_no` INT NOT NULL COMMENT 'FK',
+    `subscription_no` INT NULL COMMENT 'FK',
     `payment_key` VARCHAR(200) NULL COMMENT '토스 결제키',
     `order_id` VARCHAR(100) NOT NULL COMMENT '고유 주문번호',
     `order_name` VARCHAR(100) NOT NULL COMMENT 'AI검색 구독권',
@@ -418,6 +419,7 @@ CREATE TABLE `payments` (
     `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`no`),
     FOREIGN KEY (`user_no`) REFERENCES `users`(`no`) ON DELETE CASCADE,
+    FOREIGN KEY (`subscription_no`) REFERENCES `subscriptions`(`no`) ON DELETE SET NULL,
     UNIQUE KEY uk_payment_order (`order_id`),
     INDEX idx_payment_key (`payment_key`)
 );

@@ -2,6 +2,9 @@ package com.aloha.durudurub.service;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+import org.springframework.transaction.annotation.Transactional;
+
 // import org.apache.ibatis.annotations.Param;
 
 import com.aloha.durudurub.dto.Club;
@@ -53,7 +56,7 @@ public interface ClubService {
     boolean isMember(int clubNo, int userNo);
 
     ClubMember getMemberStatus(int clubNo, int userNo);
-
+    
     int count();
 
     List<Club> listLatest(int limit);
@@ -71,11 +74,19 @@ public interface ClubService {
     int decrementMemberCount(int clubNo);
 
     // 마이페이지: 내모임 관리
-    // 참여 중인 모임
-    List<Club> joinedClubList(int userNo) throws Exception;
-    // 승인 대기 중인 모임
-    List<Club> pendingClubList(int userNo) throws Exception;
+    // 모임리스트 (승인, 리더, 대기)
+    List<Club> myClubList(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
+    // 모임리스트 개수 (승인, 리더, 대기) 
+    int countByStatus(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
+    // 전체 모임개수
+    int countByUser(@Param("userNo") int userNo) throws Exception;
     
-    // 모임장별 모임 목록
-    List<Club> listByHost(int hostNo) throws Exception;
+    // 탈퇴하기
+    @Transactional  // 멤버 삭제 및 인원 수 감소
+    int deleteByClubAndUser(int clubNo, int userNo);
+    // 가입 신청 취소
+    int cancelPending(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
+
+    // 관리자페이지 : 대시보드
+    Club findLatestClub();
 }

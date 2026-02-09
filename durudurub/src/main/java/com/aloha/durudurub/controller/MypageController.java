@@ -1,27 +1,39 @@
 package com.aloha.durudurub.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.Subscription;
+import com.aloha.durudurub.dto.ClubMember;
+import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.ClubService;
 import com.aloha.durudurub.service.SubscriptionService;
 import com.aloha.durudurub.service.UserService;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 
 @Slf4j
 @Controller
@@ -34,11 +46,19 @@ public class MypageController {
     private final SubscriptionService subscriptionService;
     
     // 마이페이지 메인
-    @GetMapping()
-    public String mypagePage(Model model, Principal principal) throws Exception {
+    // user_id 조회
+    @GetMapping("")
+    public String mypagePage(
+        Model model, 
+        Principal principal
+    ) throws Exception {
         if (principal != null) {
-            var user = userService.selectByUserId(principal.getName());
+            User user = userService.selectByUserId(principal.getName());
+            int userNo = user.getNo();
+            int totalMyClub = clubService.countByUser(userNo);
+            
             model.addAttribute("user", user);
+            model.addAttribute("totalMyClub", totalMyClub);
 
             if (user != null) {
                 Subscription subscription = subscriptionService.selectByUserNo(user.getNo());
@@ -47,100 +67,158 @@ public class MypageController {
         }
         return "mypage/mypage";
     }
-    
+
+    // 회원 정보 수정 (비동기)
+    // ⭐ 사진 업로드 완성 시 수정 필요!
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public ResponseEntity<Void> mypageUpdate(
+        @RequestParam("username") String username,
+        @RequestParam(value = "age", required = false, defaultValue = "0") int age,
+        @RequestParam(value = "gender", required = false) String gender,
+        @RequestParam(value = "address", required = false) String address,
+        Principal principal
+    ) throws Exception {
+        String userId = principal.getName();
+        User loginUser = userService.selectByUserId(userId);
+        
+        User user = new User();
+        // 조건문 : no 조회
+        user.setNo(loginUser.getNo());
+        user.setUsername(username);
+        user.setAge(age);
+        user.setGender(gender);
+        user.setAddress(address);
+
+        userService.update(user);
+
+        return ResponseEntity.ok().build();
+    }
+
     // 회원 탈퇴 모달
     @DeleteMapping("/modal")
     @ResponseBody
-    public ResponseEntity<Void> deleteUser(Principal principal) throws Exception {
-        // if (principal == null) return ResponseEntity.status(401).build();
+    public ResponseEntity<Void> deleteUser(
+        Principal principal,
+        HttpServletRequest request,
+        HttpServletResponse response,
+        Authentication authentication
+    ) throws Exception {
+        if (principal != null) {
+            int userNo = userService.selectByUserId(principal.getName()).getNo();
+            userService.delete(userNo);
+        }
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
 
-        int userNo = userService.selectByUserId(principal.getName()).getNo();
-        userService.delete(userNo);
-        
         return ResponseEntity.noContent().build();
     }
+// 완료 ------------------------------------------------------------------------
 
-    // 내모임 관리 페이지
-    // @GetMapping("/club-management")
-    // public String clubManagementPage(Model model, Principal principal) throws Exception {
-    //     if (principal != null) {
-    //         model.addAttribute("user", userService.selectByUserId(principal.getName()));
-    //     }
-    //     return "mypage/club-management";
-    // }
     
-   // club index (기본) - 동기, 페이지 이동
-   @GetMapping("/club")
+    // 내모임 관리
+    // club index (공통)
+    @GetMapping("/club")
     public String clubPage(
-        @RequestParam(name="type", defaultValue = "APPROVED") String type,
         Model model,
         Principal principal
     ) throws Exception {
-        // if (principal != null) {
-        //     model.addAttribute("user", userService.selectByUserId(principal.getName()));
-        // }
-        model.addAttribute("type", type);
+
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo();
+        
+        int countByApproved = clubService.countByStatus(userNo, "APPROVED");
+        int countByHost = clubService.countByStatus(userNo, "HOST");
+        int countByPending = clubService.countByStatus(userNo, "PENDING");
+
+        model.addAttribute("countByApproved", countByApproved);
+        model.addAttribute("countByHost", countByHost);
+        model.addAttribute("countByPending", countByPending);
+
         return "mypage/mypage-club";
     }
 
-    // 리스트 조회 (타입별 조회) - 비동기, 내부 페이지만 변경
-    @GetMapping("/club/list")
-    // @GetMapping("/list")
-    public String clubListFragment(
-        @RequestParam(name="type", defaultValue = "APPROVED") String type,
+    // 가입 중인 모임 (조각)
+    @GetMapping("/club/fragment/approvedClub")
+    public String approvedClub(
         Model model,
         Principal principal
     ) throws Exception {
 
-        // 임시 코드
-        if (principal == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo();
 
-        int userNo = userService.selectByUserId(principal.getName()).getNo();
+        List<Club> approvedClub = clubService.myClubList(userNo, "APPROVED");
+        
+        model.addAttribute("approvedClub", approvedClub);
 
-        List<Club> myclubList = switch (type) {
-            case "APPROVED" -> clubService.joinedClubList(userNo);
-            case "PENDING"  -> clubService.pendingClubList(userNo);
-            case "HOST"     -> clubService.listByHost(userNo);
-            default         -> java.util.Collections.emptyList();
-        };
-
-        model.addAttribute("myclubList", myclubList);
-        model.addAttribute("type", type);
-
-        // 카운트도 같이 fragment에 필요하면 같이 넣기
-        model.addAttribute("joinedClubCount", clubService.joinedClubList(userNo).size());
-        model.addAttribute("pendingClubCount", clubService.pendingClubList(userNo).size());
-        model.addAttribute("hostClubCount", clubService.listByHost(userNo).size());
-
-        // HTML fragments 정의 필요!
-        return "mypage/mypage-club :: myclubListFragment";
+        return "mypage/fragments/approvedClub";
     }
 
-    // // 탈퇴 및 신청취소
-    // @DeleteMapping("/{clubNo}")
-    // @ResponseBody
-    // public org.springframework.http.ResponseEntity<Void> delete(
-    //     @PathVariable int clubNo,
-    //     @RequestParam(defaultValue = "APPROVED") String type,
-    //     Principal principal
-    // ) throws Exception {
+    // 가입 중인 모임 - 탈퇴
+    @DeleteMapping("/club/{clubNo}")
+    @ResponseBody
+    public ResponseEntity<Void> delete(
+        @PathVariable("clubNo") int clubNo,
+        Principal principal
+    ) {
+        int userNo = userService.selectByUserId(principal.getName()).getNo();
 
-    //     int userNo = userService.selectByUserId(principal.getName()).getNo();
+        // 삭제
+        try {
+            int result = clubService.deleteByClubAndUser(clubNo, userNo);
+            if ( result == 0) {
+                // build : 응답 바디 필요 없을 때 사용하는 메서드
+                return ResponseEntity.badRequest().build();
+            }
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-    //     // 삭제
-    //     try {
-    //         boolean result = clubService.deleteByClubAndUser(no);
-    //         if (!result) {
-    //             // build : 응답 바디 필요 없을 때 사용하는 메서드
-    //             return ResponseEntity.badRequest().build();
-    //         }
-    //         return ResponseEntity.noContent().build();
-    //     } catch (Exception e) {
-    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-    //     }
+    // 리더인 모임
+    @GetMapping("/club/{clubNo}/members")
+    @ResponseBody
+    public Map<String, Object> members(
+        @PathVariable("clubNo") int clubNo,
+        Principal principal,
+        Model model
+    ) throws Exception {
 
-    //     return org.springframework.http.ResponseEntity.ok().build();
-    // }
+        
+        List<ClubMember> pendingList = clubService.listPendingMembers(clubNo);
+        List<ClubMember> approvedList = clubService.listApproveMembers(clubNo);
+        Map<String, Object> map = new HashMap<>();
+
+        log.info("★★ pendingList : " + pendingList);
+        log.info("★★ approvedList : " + approvedList);
+
+        map.put("pendingList", pendingList);
+        map.put("approvedList", approvedList);
+
+        return map;
+    }
+
+    // 신청 중인 모임
+    // 신청 취소
+    @DeleteMapping("/club/pending/{clubNo}")
+    @ResponseBody
+    public ResponseEntity<Void> cancelPending(
+        @PathVariable("clubNo") int clubNo,
+        Principal principal
+    ) {
+        int userNo = userService.selectByUserId(principal.getName()).getNo();
+
+        try {
+            int result = clubService.cancelPending(clubNo, userNo);
+            if (result == 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            System.out.println(SecurityContextHolder.getContext().getAuthentication());
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

@@ -194,6 +194,7 @@ body {
     border-bottom: 1px solid #E5E7EB;
     padding-bottom: 0;
     margin-bottom: 32px;
+    justify-content: space-around;
 }
 
 .nav-tab {

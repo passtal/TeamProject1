@@ -54,6 +54,7 @@
 .banners-table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;        /*추가*/
 }
 
 .banners-table thead {
@@ -122,6 +123,17 @@
     color: #6B7280;
 }
 
+.banners-table td.td-link {
+  overflow: hidden;
+}
+/*말줄임*/
+.link-ellipsis {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* 배너 미리보기 */
 .banner-preview {
     display: flex;
@@ -176,7 +188,8 @@
 }
 
 .btn-edit,
-.btn-delete {
+.btn-delete,
+.btn-save {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -405,6 +418,51 @@
     }
 }
 
+/* 배너 등록 모달 */
+#bannerInsertForm {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0; 
+}
+
+.modal-create-container {
+    background: #FFFFFF;
+    border-radius: 16px;
+    width: 600px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.modal-create-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 64px;
+    border-bottom: 1px solid #E5E7EB;
+}
+
+.modal-create-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0;
+}
+
+.modal-create-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 16px;
+}
+
 /* 배너 수정 모달 */
 .modal-edit-container {
     background: #FFFFFF;
@@ -601,6 +659,14 @@
 .modal-edit-footer {
     display: flex;
     justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px 0 0;
+    border-top: 1px solid #E5E7EB;
+}
+.modal-create-footer {
+    display: flex;
+    justify-content: flex-end;
+    flex-shrink: 0;
     gap: 12px;
     padding: 16px 24px 0 0;
     border-top: 1px solid #E5E7EB;
