@@ -193,6 +193,15 @@
     background-color: #f9fafb;
     }
 
+    .hidden .notice {
+    color: #F97316;
+    font-weight: 500;
+    }
+
+    .hidden .notice:hover {
+    color: #EA580C;
+    }
+
     .icon-container {
         position: relative;
     }

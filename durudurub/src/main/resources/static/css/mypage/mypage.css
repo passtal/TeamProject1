@@ -658,3 +658,9 @@ body {
 #deleteAccountBtn:hover {
     background-color: #fef2f2;
 }
+
+
+/* 모달 z-index 보정 */
+.modal-backdrop {
+    z-index: var(--bs-modal-zindex);
+}
