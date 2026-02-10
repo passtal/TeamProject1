@@ -32,29 +32,44 @@ public class AiChatbotServiceImpl implements AiChatbotService {
             clubs = clubMapper.search("");  // 전체 모임 조회
         }
 
-        // 모임 정보를 텍스트로 정리
+        // 모임 정보를 텍스트로 정리 (설명 포함)
         StringBuilder clubInfo = new StringBuilder();
         int count = 0;
         for (Club club : clubs) {
-            if (count >= 20) break;  // 최대 20개까지만 참고
-            clubInfo.append(String.format("- [%d] %s (위치: %s, 카테고리: %s, 현재인원: %d/%d)\n",
+            if (count >= 30) break;  // 최대 30개까지 참고
+            String desc = club.getDescription() != null
+                ? club.getDescription().substring(0, Math.min(club.getDescription().length(), 80))
+                : "";
+            clubInfo.append(String.format("- [%d] %s | %s | 위치: %s | 카테고리: %s | 인원: %d/%d | 설명: %s\n",
                 club.getNo(),
                 club.getTitle(),
+                club.getStatus() != null ? club.getStatus() : "",
                 club.getLocation() != null ? club.getLocation() : "미정",
                 club.getCategory() != null ? club.getCategory().getName() : "미분류",
                 club.getCurrentMembers(),
-                club.getMaxMembers()
+                club.getMaxMembers(),
+                desc
             ));
             count++;
         }
 
         String systemPrompt =
-            "너는 '두루두룹'이라는 모임 플랫폼의 친근한 상담 챗봇이야.\n" +
-            "사용자가 모임에 대해 질문하면, 아래 실제 모임 목록을 참고해서 추천하거나 안내해줘.\n" +
-            "답변은 3~5줄 이내로 짧고 친근하게 해줘.\n" +
-            "모임이 없는 경우 직접 모임을 만들어보라고 안내해줘.\n\n" +
-            "[현재 운영 중인 모임 목록]\n" + clubInfo.toString();
+            "너는 '두루두룹'이라는 모임/소셜 플랫폼의 친근하고 유능한 AI 어시스턴트야.\n" +
+            "이름은 '두루'라고 해.\n\n" +
+            "## 너의 역할\n" +
+            "1. 사용자와 자연스럽게 대화하면서 모임을 추천하거나 안내해줘.\n" +
+            "2. 사용자의 취향, 관심사, 위치 등을 파악해서 맞춤 추천을 해줘.\n" +
+            "3. 모임 관련 질문이 아니더라도 친절하게 대화해줘.\n" +
+            "4. 플랫폼 사용법이나 기능에 대한 질문에도 안내해줘.\n\n" +
+            "## 대화 스타일\n" +
+            "- 반말/존댓말: 사용자의 말투에 맞춰줘\n" +
+            "- 이모지를 적절히 사용해서 친근하게 대화해줘\n" +
+            "- 추천할 때는 왜 그 모임이 적합한지 이유도 함께 설명해줘\n" +
+            "- 모임이 없으면 직접 만들어보라고 자연스럽게 안내해줘\n" +
+            "- 여러 모임을 추천할 때는 번호를 매겨서 보기 좋게 정리해줘\n\n" +
+            "## 참고할 수 있는 실제 모임 데이터\n" +
+            clubInfo.toString();
 
-        return openAiService.call(systemPrompt, userMessage, 300, 0.8);
+        return openAiService.call(systemPrompt, userMessage, 800, 0.85);
     }
 }

@@ -49,27 +49,35 @@ public class AiCategoryServiceImpl implements AiCategoryService {
 
         // 3. 시스템 프롬프트 구성
         String systemPrompt =
-            "너는 모임/클럽 카테고리 분류 전문가야.\n" +
-            "아래 카테고리 목록 중에서 가장 적합한 카테고리를 추천해줘.\n" +
-            "반드시 목록에 있는 카테고리만 추천해야 해.\n\n" +
+            "너는 '두루두룹' 모임 플랫폼의 카테고리 추천 도우미야.\n" +
+            "사용자가 모임 제목이나 설명을 주면, 아래 카테고리 중 가장 적합한 것을 추천하고 그 이유를 자연스럽게 설명해줘.\n\n" +
             "=== 카테고리 목록 ===\n" +
             categoryInfo.toString() + "\n" +
-            "반드시 아래 JSON 형식으로만 답변해. 다른 텍스트 없이 JSON만 출력해:\n" +
+            "## 응답 규칙\n" +
+            "1. 반드시 아래 JSON 형식으로 응답해줘 (JSON만 출력, 다른 텍스트 없이)\n" +
+            "2. reason에는 사용자가 이해하기 쉽게 친근한 말투로 왜 이 카테고리가 적합한지 2~3문장으로 설명해줘\n" +
+            "3. 제목이나 설명이 애매하면 가장 가까운 카테고리를 골라주고, reason에서 다른 후보도 언급해줘\n\n" +
             "{\n" +
             "  \"categoryNo\": 메인 카테고리 번호(숫자),\n" +
             "  \"categoryName\": \"메인 카테고리명\",\n" +
             "  \"subCategoryNo\": 서브 카테고리 번호(숫자, 없으면 0),\n" +
             "  \"subCategoryName\": \"서브 카테고리명(없으면 빈 문자열)\",\n" +
-            "  \"reason\": \"추천 사유를 한 줄로\"\n" +
+            "  \"reason\": \"추천 사유\"\n" +
             "}";
 
         // 4. 사용자 메시지 구성
-        String userMessage = String.format("제목: %s\n설명: %s",
-                title != null ? title : "",
-                description != null ? description.substring(0, Math.min(description.length(), 1000)) : "");
+        String userMessage = "";
+        if (title != null && !title.trim().isEmpty() && description != null && !description.trim().isEmpty()) {
+            userMessage = String.format("제목: %s\n설명: %s", title,
+                    description.substring(0, Math.min(description.length(), 1000)));
+        } else if (title != null && !title.trim().isEmpty()) {
+            userMessage = title;
+        } else if (description != null && !description.trim().isEmpty()) {
+            userMessage = description.substring(0, Math.min(description.length(), 1000));
+        }
 
         // 5. OpenAI API 호출
-        String response = openAiService.call(systemPrompt, userMessage, 200, 0.2);
+        String response = openAiService.call(systemPrompt, userMessage, 400, 0.5);
         log.info("카테고리 추천 결과: {}", response);
 
         // 6. JSON 파싱
