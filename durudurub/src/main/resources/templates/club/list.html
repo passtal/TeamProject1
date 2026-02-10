@@ -31,10 +31,11 @@
                             th:data-category="${category.name}"
                             th:data-category-no="${category.no}"
                             data-type="main">
-                        <i th:if="${category.icon != null and category.icon.startsWith('bi-')}" 
-                           th:class="'bi ' + ${category.icon}"></i>
-                        <span th:if="${category.icon == null or !category.icon.startsWith('bi-')}" 
-                              th:text="${category.icon != null ? category.icon : '📁'}">📁</span>
+                        <img th:if="${category.icon != null}" 
+                             th:src="@{'/' + ${category.icon}}" 
+                             th:alt="${category.name}" 
+                             style="width:20px; height:20px; vertical-align:middle; margin-right:2px;">
+                        <span th:if="${category.icon == null}">📁</span>
                         <span th:text="${category.name}">카테고리</span>
                     </button>
                 </div>
