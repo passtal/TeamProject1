@@ -255,16 +255,13 @@
         // 카테고리 선택 시 세부 카테고리 로드
         $('#categoryNo').change(function() {
             const categoryNo = $(this).val();
-            console.log('카테고리 선택됨:', categoryNo);
             if (categoryNo) {
                 $.ajax({
                     url: '/club/api/subcategories/' + categoryNo,
                     type: 'GET',
                     dataType: 'json',
                     success: function(data) {
-                        console.log('API 응답:', data);
                         let subCategories = Array.isArray(data) ? data : (data.data || data.subCategories || []);
-                        console.log('세부 카테고리 배열:', subCategories);
                         if (subCategories && subCategories.length > 0) {
                             let options = '<option value="">세부 카테고리를 선택해주세요</option>';
                             subCategories.forEach(function(sub) {
