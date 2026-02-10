@@ -59,6 +59,7 @@
                           <ul>
                               <li><a th:href="@{/users/mypage}" class="mypage">마이페이지</a></li>
                               <li><a th:href="@{/users/mypage/club}" class="myclub">내모임</a></li>
+                              <li><a th:href="@{/notice}" class="notice">공지사항</a></li>
                               <hr>
                               <li>
                                   <form th:action="@{/logout}" method="post" style="display:inline;">
@@ -174,6 +175,12 @@
                       <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/users/mypage/club}" data-bs-dismiss="offcanvas">
                           <i class="bi bi-heart fs-5"></i>
                           <span>내 모임</span>
+                      </a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/notice}" data-bs-dismiss="offcanvas" style="color: #F97316;">
+                          <i class="bi bi-megaphone fs-5"></i>
+                          <span>공지사항</span>
                       </a>
                   </li>
                   <hr class="my-2">
