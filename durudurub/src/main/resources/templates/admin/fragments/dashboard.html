@@ -38,17 +38,23 @@
         <h2>최근 활동</h2>
         <div class="activity-list">
             <!-- 1) 최근 모임 생성 -->
-            <div class="activity-item">
-            <div class="activity-icon activity-club">
-                <span class="material-symbols-outlined">dashboard</span>
+            <div th:if="${lastestClubTitle != null}" >
+                <div class="activity-item">
+                    <div class="activity-icon activity-club">
+                        <span class="material-symbols-outlined">dashboard</span>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">
+                        새로운 모임 "<span th:text="${lastestClubTitle}"></span>"이 생성되었습니다.
+                        </p>
+                    </div>
+                        <p class="activity-time" th:text="${lastestClubTime}"></p>
+                </div>
             </div>
-            <div class="activity-content">
-                <p class="activity-text">
-                새로운 모임 "<span th:text="${lastestClubTitle}"></span>"이 생성되었습니다.
-                </p>
-                <p class="activity-time" th:text="${lastestClubTime}"></p>
+            <div th:unless="${lastestClubTitle == null}">
+                <p class="activity-item" style="display: none;"></p>
             </div>
-            </div>
+            
 
             <!-- 2) 신규 가입 -->
             <div class="activity-item">

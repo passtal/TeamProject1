@@ -145,7 +145,7 @@
                         let deleteBtn = '';
                         if (user.username != '관리자' && !user.admin) {
                             deleteBtn = `
-                                <button class="btn-delete" onclick="deleteUser(this, event)">
+                                <button class="btn-delete" onclick="deleteUser(this, event)" style="padding: 0">
                                     <span class="material-symbols-outlined">delete</span>
                                 </button>
                             `

@@ -146,7 +146,7 @@
         FROM users u
         LEFT JOIN subscriptions s ON s.user_no = u.no
         LEFT JOIN user_auth a ON a.user_no = u.no AND a.auth = 'ROLE_ADMIN'
-        ORDER BY u.created_at DESC
+        ORDER BY u.created_at ASC
     </select>
 
     <!-- 신고하기 -->

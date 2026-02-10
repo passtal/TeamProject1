@@ -137,7 +137,7 @@ public class AdminController {
     // 사용자 삭제
     @DeleteMapping("/api/users/{userNo}")
     @ResponseBody
-    public int deleteUser(@PathVariable int userNo) {
+    public int deleteUser(@PathVariable("userNo") int userNo) {
         return userService.delete(userNo);
     }
     
@@ -156,7 +156,7 @@ public class AdminController {
     // 모임 삭제
     @DeleteMapping("/api/clubs/{clubNo}")
     @ResponseBody
-    public int deleteClub(@PathVariable int clubNo) {
+    public int deleteClub(@PathVariable("clubNo") int clubNo) {
         return clubService.delete(clubNo);
     }
     
@@ -176,7 +176,7 @@ public class AdminController {
     // 신고 - 6회 이상 빨간뱃지 (유저 직접 삭제)
     @DeleteMapping("/api/reports/{userNo}")
     @ResponseBody
-    public int deleteReports(@PathVariable int userNo) {
+    public int deleteReports(@PathVariable("userNo") int userNo) {
         return userService.delete(userNo);
     }
 

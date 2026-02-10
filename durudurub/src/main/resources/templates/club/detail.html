@@ -262,13 +262,19 @@
     <!-- ✅ 사용자 신고 모달 -->
     <div id="report-modal" class="modal">
         <div class="modal-content-report">
+            <button class="close-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x w-5 h-5">
+                    <path d="M18 6 6 18"></path>
+                    <path d="m6 6 12 12"></path>
+                </svg>
+            </button>
             <div class="modal-header-report">
-                <div class="icon-wrapper">
-                    <span class="material-symbols-outlined error-icon">warning</span>
-                </div>
+                <svg id="warning" class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
             </div>
-            <h2 class="modal-title">사용자 신고하기</h2>
-            <p class="modal-text">
+            <h5 class="modal-title" style="text-align: center;">사용자 신고하기</h5>
+            <p class="modal-text" style="text-align: center;">
                 <span id="reportTargetName" class="report-target"></span> 님을 신고합니다
             </p>
             <!-- 신고 사유 -->
@@ -526,6 +532,7 @@
         
         // 유저 신고 버튼 클릭
         function reportUser(btn) {
+
             var userNo = $(btn).data('user-no');
             var username = $(btn).data('username');
             // 모달 값 세팅
