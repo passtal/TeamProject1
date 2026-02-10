@@ -1,7 +1,9 @@
 package com.aloha.durudurub.service;
 
 import java.util.List;
+import java.util.Map;
 
+import com.aloha.durudurub.dto.Report;
 import com.aloha.durudurub.dto.UserBan;
 
 /**
@@ -18,4 +20,7 @@ public interface ReportService {
    int countNewReports();
    // 대시보드: 최신신고(신고일)
    UserBan findLastestUserBan();
+   // 신고하기
+   int insertUserReport(Report report);
+   Map<String, Object> reportUser(Report report) throws Exception;
 }

@@ -1,5 +1,8 @@
 package com.aloha.durudurub.controller;
 
+import java.security.Principal;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.aloha.durudurub.dto.Report;
 import com.aloha.durudurub.dto.User;
+import com.aloha.durudurub.service.ReportService;
 import com.aloha.durudurub.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -24,55 +29,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ReportController {
 
+    private final ReportService reportService;
     private final UserService userService;
-    
-    @GetMapping()
-    public ResponseEntity<?> getAll() {
-        try {
-            
-            return new ResponseEntity<>("GetAll Results", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+
+    @PostMapping("/user")
+    public ResponseEntity<?> reportUser(@RequestBody Report report, Principal principal) throws Exception {
+
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
+
+        int reporterNo = userService.selectByUserId(principal.getName()).getNo();
+        report.setReporterNo(reporterNo);
+
+        // clubNo/targetNo/reason 검증은 있으면 좋음
+        Map<String, Object> result = reportService.reportUser(report);
+        result.put("success", true);
+
+        return ResponseEntity.ok(result);
     }
     
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getOne(@PathVariable Integer id) {
-        try {
-            
-            return new ResponseEntity<>("GetOne Result", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
-    @PostMapping()
-    public ResponseEntity<?> create(@RequestBody User dto) {
-        try {
-            
-            return new ResponseEntity<>("Create Result", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
-    @PutMapping()
-    public ResponseEntity<?> update(@RequestBody User dto) {
-        try {
-            
-            return new ResponseEntity<>("Update Result", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> destroy(@PathVariable Integer id) {
-        try {
-            
-            return new ResponseEntity<>("Destroy Result", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 }

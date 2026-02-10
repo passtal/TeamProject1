@@ -148,4 +148,34 @@
         LEFT JOIN user_auth a ON a.user_no = u.no AND a.auth = 'ROLE_ADMIN'
         ORDER BY u.created_at DESC
     </select>
+
+    <!-- 신고하기 -->
+    <update id="increaseReportCount" parameterType="int">
+        UPDATE users
+        SET report_count = IFNULL(report_count, 0) + 1
+        WHERE no = #{targetNo}
+    </update>
+
+    <select id="selectReportCount" parameterType="int" resultType="int">
+        SELECT IFNULL(report_count, 0)
+        FROM users
+        WHERE no = #{targetNo}
+    </select>
+
+    <!-- 차단 기록 -->
+    <select id="countActiveBan" parameterType="int" resultType="int">
+        SELECT COUNT(*)
+        FROM user_bans
+        WHERE user_no = #{userNo}
+          AND is_active = 'Y'
+    </select>
+
+    <insert id="insertUserBan" parameterType="com.aloha.durudurub.dto.UserBan">
+        INSERT INTO user_bans (
+            user_no, reason, report_count_at_ban, ban_type, ban_end_date, is_active, created_at, updated_at
+        ) VALUES (
+            #{userNo}, #{reason}, #{reportCountAtBan}, #{banType}, #{banEndDate}, #{isActive}, NOW(), NOW()
+        )
+    </insert>
+
 </mapper>

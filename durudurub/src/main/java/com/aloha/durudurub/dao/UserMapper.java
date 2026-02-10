@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.aloha.durudurub.dto.AdminSubscription;
 import com.aloha.durudurub.dto.User;
+import com.aloha.durudurub.dto.UserBan;
 
 /**
  * 회원 매퍼
@@ -45,4 +46,11 @@ public interface UserMapper {
     User findLastestUser();
     // 사용자 리스트(구독 여부)
     List<AdminSubscription> userList();
+
+    // 신고하기
+    int increaseReportCount(@Param("targetNo") int targetNo);
+    int selectReportCount(@Param("targetNo") int targetNo);
+    // 차단 기록
+    int countActiveBan(@Param("userNo") int userNo);
+    int insertUserBan(UserBan userBan);
 }

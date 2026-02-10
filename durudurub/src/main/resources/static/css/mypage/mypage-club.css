@@ -90,6 +90,32 @@ body {
 }
 
 /* 모임 카드 */
+.cardList {
+    display: flex;
+    flex-direction:column;
+    gap: 15px;
+}
+.cardList-host{
+    background: white;
+    padding: 24px;
+    border: 1px solid #F3F4F6;
+    border-radius: 14px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.club-card-wrapper-host{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+.club-card-host{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 .club-card {
     display: flex;
     justify-content: space-between;
@@ -103,7 +129,8 @@ body {
 }
 
 .club-card:hover {
-    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: inherit;
 }
 
 .club-info {
@@ -636,6 +663,11 @@ body {
 .club-card-wrapper {
     display: flex;
     flex-direction: column;
+    /* background-color: #FFFFFF;
+    border: 1px solid #F3F4F6;
+    border-radius: 14px;
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.1), 0px 1px 3px 0px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease; */
 }
 
 .member-management-area {
@@ -662,7 +694,7 @@ body {
 }
 
 .section-icon {
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .pending-icon {
@@ -689,8 +721,11 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    border-radius: 10px;
+    border-radius: 8px;
     transition: all 0.2s ease;
+    margin-bottom: 10px;
+
+    background: #fff7ed;
 }
 
 .member-item.pending {

@@ -5,6 +5,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 안영아 추가! -->
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title th:text="${club != null ? club.title + ' - 두루두룹' : '모임 상세보기 - 두루두룹'}">모임 상세보기</title>
     <th:block layout:fragment="css">
         <link rel="stylesheet" th:href="@{/css/board/board.css}">
@@ -255,6 +258,48 @@
             </div>
         </div>
     </div>
+   
+    <!-- ✅ 사용자 신고 모달 -->
+    <div id="report-modal" class="modal">
+        <div class="modal-content-report">
+            <div class="modal-header-report">
+                <div class="icon-wrapper">
+                    <span class="material-symbols-outlined error-icon">warning</span>
+                </div>
+            </div>
+            <h2 class="modal-title">사용자 신고하기</h2>
+            <p class="modal-text">
+                <span id="reportTargetName" class="report-target"></span> 님을 신고합니다
+            </p>
+            <!-- 신고 사유 -->
+            <div class="modal-form">
+                <label for="reportReason" class="modal-label">신고 사유</label>
+                <select id="reportReason" class="modal-input">
+                    <option value="">선택해주세요</option>
+                    <option value="ABUSE">욕설 및 비방</option>
+                    <option value="SPAM">스팸/홍보</option>
+                    <option value="SEXUAL">음란물/선정성</option>
+                    <option value="SCAM">사기 의심</option>
+                    <option value="PRIVACY">개인정보 침해</option>
+                    <option value="ETC">기타</option>
+                </select>
+            </div>
+
+            <!-- 상세 내용 -->
+            <div class="modal-form">
+                <label for="reportContent" class="modal-label">상세 내용 (선택)</label>
+                <textarea
+                    id="reportContent"
+                    class="modal-textarea"
+                    placeholder="신고 사유를 자세히 설명해주세요..."
+                ></textarea>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-cancel" onclick="closeReportModal()">취소</button>
+                <button class="modal-btn modal-btn-delete" onclick="submitReport()">신고하기</button>
+            </div>
+        </div>
+    </div>
     </th:block>
 
     <th:block th:if="${club == null}">
@@ -267,6 +312,9 @@
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script th:if="${club != null and club.lat != null and club.lng != null}" th:inline="javascript">
+        // 신고하기 변수..!
+        const clubNo = /*[[${club.no}]]*/ 0;
+        
         document.addEventListener('DOMContentLoaded', function() {
             var clubLat = /*[[${club.lat}]]*/ 37.5;
             var clubLng = /*[[${club.lng}]]*/ 127.0;
@@ -480,10 +528,61 @@
         function reportUser(btn) {
             var userNo = $(btn).data('user-no');
             var username = $(btn).data('username');
-            // 여기에 구현하시면 될 것 같습니다.
-            alert('T.T');
+            // 모달 값 세팅
+            $("#reportTargetName").text(username)
+            $('#report-modal').data("user-no", userNo)
+            // 초기화
+            $("#reportReason").val("");
+            $("#reportContent").val("");
+            // 모달 열기
+            $("#report-modal").css("display", "flex")
         }
+        // 신고 모달 닫기
+        function closeReportModal() {
+            $("#report-modal").hide()
+        }
+        // 신고 제출
+        function submitReport() {
+            const userNo = $("#report-modal").data("user-no")
+            const reason = $("#reportReason").val()
+            const content = $("#reportContent").val()
 
+            if (!reason) {
+                alert("신고 사유를 선택해주세요")
+                return
+            }
+            // 토큰
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                url: '/api/report/user',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    clubNo: clubNo,
+                    targetNo: userNo,
+                    reason: reason,
+                    content: content
+                }),
+                beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function() {
+                alert("신고가 접수되었습니다.");
+                closeReportModal();
+            },
+            error: function() {
+                alert("신고 처리 중 오류가 발생했습니다.");
+            }
+            })
+        }
+        window.addEventListener('load', function () {
+            // 모달 밖 클릭 시 닫힘
+            $(document).on("click", "#report-modal", function(e){
+                if (e.target.id === "report-modal") closeReportModal();
+            });
+        })
         // 모임 정보 수정 페이지로 이동
         function editClubInfo() {
             window.location.href = '/club/' + [[${club.no}]] + '/edit';

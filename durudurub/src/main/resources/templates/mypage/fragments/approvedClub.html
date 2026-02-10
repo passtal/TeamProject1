@@ -1,0 +1,140 @@
+<!-- 가입된 fragment -->
+<div th:fragment="content">
+    <!-- 가입 중인 모임 -->
+        <div class="tab-content active">
+            <div id="approvedClubEmptyMsg" th:style="${#lists.isEmpty(approvedClub)} ? 'display:block' : 'display:none'">
+                <p style="text-align:center;">가입한 모임이 없습니다.</p>
+            </div>
+            <div th:unless="${#lists.isEmpty(approvedClub)}" class="cardList">
+                <div th:each="club : ${approvedClub}" class="club-card-wrapper-approved">
+                    <div class="club-card" th:attr="data-club-no=${club.no}" style="cursor: pointer;">
+                        <div class="club-info">
+                            <div class="club-icon">
+                                <span class="material-symbols-outlined">group</span>
+                            </div>
+                            <div class="club-details">
+                                <div class="club-title-row">
+                                    <h3 class="club-title" th:text="${club.title}">모임명</h3>
+                                </div>
+                                <p class="club-category" th:text="${club.category != null ? club.category.name : '카테고리 없음'}">카테고리명</p>
+                                <p class="club-members" th:text="|멤버 ${club.currentMembers}/${club.maxMembers}명|">가입 멤버수</p>
+                            </div>
+                        </div>
+                        <div class="club-actions">
+                            <button class="btn-leave" th:attr="data-club-no=${club.no}" >
+                                <span class="material-symbols-outlined">logout</span>
+                                <span>탈퇴</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- 모임 탈퇴 모달 -->
+    <div id="leaveClubModal" class="leave-modal" >
+        <div class="leave-modal-content">
+            <div class="leave-modal-header">
+                <h3 class="leave-modal-title">모임 탈퇴</h3>
+                <button id="modalCloseBtn" class="leave-modal-close" onclick="clubCloseModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="leave-modal-warning">
+                <p class="leave-modal-warning-title">모임에서 탈퇴 하시겠습니까?</p>
+                <p class="leave-modal-warning-text">탈퇴하면 더 이상 모임 활동을 할 수 없습니다.</p>
+            </div>
+            <div class="leave-modal-actions">
+                <button id="modalCancelBtn" class="leave-modal-btn leave-modal-btn-cancel" onclick="clubCloseModal()">취소</button>
+                <button id="modalConfirmBtn" class="leave-modal-btn leave-modal-btn-confirm">탈퇴하기</button>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="script">
+        <script>
+        window.clubNoToLeave = window.clubNoToLeave ?? null
+        window.clubCardToLeave = window.clubCardToLeave ?? null
+
+        // 비어있으면 "가입한 모임이 없습니다" 표시
+        function ApprovedClubEmptyMessage() {
+            const hasAny = $('.club-card-wrapper-approved').length > 0
+            if (hasAny) {
+                $('#approvedClubEmptyMsg').hide()
+                $('.cardList').show()
+            } else {
+                $('#approvedClubEmptyMsg').show()
+                $('.cardList').hide() // ✅ 빈 목록 박스 숨기기
+            }
+        }
+        // 탈퇴하기 버튼
+        $(document).off('click', '#modalConfirmBtn').on('click', '#modalConfirmBtn', function () {
+            if (!clubNoToLeave) {
+                alert('탈퇴할 모임 정보가 없습니다.')
+                return
+            }
+
+            const token = $("meta[name='_csrf']").attr("content")
+            const header = $("meta[name='_csrf_header']").attr("content")
+
+            $.ajax({
+                url: `/users/mypage/api/club/${clubNoToLeave}`,
+                method: 'DELETE',
+                beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token)
+                },
+                success: function () {
+                    // 카드 제거
+                    if (clubCardToLeave) clubCardToLeave.remove()
+                    clubCloseModal()
+
+                    // 비어있으면 "모임 없음" 표시
+                    ApprovedClubEmptyMessage()
+                },
+                error: function (xhr) {
+                    console.error("****탈퇴 실패", xhr.status, xhr.responseText)
+                    alert("탈퇴 실패")
+                }
+            })
+        })
+
+        // 모임 탈퇴 - 모달 열기 (탈퇴하기 버튼)
+        // 탈퇴 버튼 클릭
+        $(document).on('click', '.btn-leave', function (e) {
+            e.stopPropagation()
+
+            const clubNo = $(this).data('clubNo')
+
+            clubNoToLeave = clubNo
+            // wrapper 제거  대상
+            clubCardToLeave = $(this).closest('.club-card-wrapper-approved') 
+
+            $('#leaveClubModal').css('display', 'flex')
+        })
+
+        // 모임 탈퇴 - 모달 닫기 
+        function clubCloseModal() {
+            $('#leaveClubModal').css('display', 'none')
+            clubNoToLeave = null
+            clubCardToLeave = null
+        }
+        // 모달 바깥 클릭 닫기(선택)
+        $(document).on('click', '#leaveClubModal', function (e) {
+            if (e.target === this) clubCloseModal()
+        })
+
+        // 카드 클릭 -> 모임 상세로 이동
+        $(document).on('click', '.club-card', function () {
+            const clubNo = $(this).data('clubNo')
+            if (!clubNo) return
+
+            window.location.href = `/club/detail/${clubNo}`
+        })
+        // 카드 안 버튼들은 카드 클릭(이동) 막기
+        $(document).on('click', '.btn-leave', function (e) {
+            e.stopPropagation()
+        })
+        </script>
+    </th:block>
+</div>
+

@@ -287,6 +287,11 @@ body {
     justify-content: center;
 }
 
+#profileImageView {
+    object-fit: cover;
+    width: auto;
+    height: auto;
+}
 .profile-avatar {
     width: 160px;
     height: 160px;
