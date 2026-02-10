@@ -143,7 +143,7 @@
                     let tr = ''
                     for(const user of userList) {
                         let deleteBtn = '';
-                        if (user.username != '관리자') {
+                        if (user.username != '관리자' && !user.admin) {
                             deleteBtn = `
                                 <button class="btn-delete" onclick="deleteUser(this, event)">
                                     <span class="material-symbols-outlined">delete</span>
@@ -157,7 +157,8 @@
                                     '${escapeJs(user.userId)}',
                                     '${user.createdAt}',
                                     '${user.subStatus}',
-                                    '${user.userNo}'
+                                    '${user.userNo}',
+                                    ${user.admin}
                                 )">
                                 <td>${user.username}</td> 
                                 <td>${user.userId}</td>
@@ -186,7 +187,7 @@
     }
     // 구독 뱃지
     function badge(user) {
-        if(user.username == '관리자') {
+        if(user.admin) {
             return `<span class="badge badge-admin">관리자</span>`
         }
         if(user.subStatus == 'ACTIVE') {
@@ -209,7 +210,7 @@
     getList()
 
     // 사용자 상세 정보 표시
-    function showUserDetail(username, email, createdAt, subStatus, userNo) {
+    function showUserDetail(username, email, createdAt, subStatus, userNo, isAdmin) {
         document.getElementById('detailUsername').textContent = username;
         document.getElementById('detailUserId').textContent = email;
         
@@ -233,7 +234,7 @@
         const badgeContainer = document.getElementById('detailBadge');
         
         badgeContainer.innerHTML = badge({
-            username: username,
+            admin: isAdmin,
             subStatus: subStatus
         })
         
@@ -241,7 +242,7 @@
         // document.getElementById('detailReportCount').textContent = `${reportCount}회`;
         const reportRow = document.getElementById('reportRow')
 
-        if (username == '관리자') {
+        if (isAdmin) {
             reportRow.style.display = 'none';
         } else {
             reportRow.style.display = 'flex';

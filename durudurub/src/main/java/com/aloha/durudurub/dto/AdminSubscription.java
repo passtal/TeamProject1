@@ -13,4 +13,5 @@ public class AdminSubscription {
     private Date createdAt;
 
     private String subStatus;
+    private boolean isAdmin;
 }
