@@ -6,7 +6,7 @@
 <head>
     <title>새 모임 만들기</title>
     <th:block layout:fragment="css">
-        <link rel="stylesheet" th:href="@{/css/board.css}">
+        <link rel="stylesheet" th:href="@{/css/club/insert.css}">
         <style>
             #locationMap {
                 height: 300px;
@@ -18,6 +18,7 @@
             .location-search-wrapper {
                 display: flex;
                 gap: 8px;
+                margin-top: 20px;
             }
             .location-search-wrapper input {
                 flex: 1;
@@ -28,11 +29,11 @@
                 background-color: #e8f5e9;
                 border-radius: 8px;
                 display: none;
-            }
-            .selected-location.show {
-                display: block;
-            }
-        </style>
+                }
+                .selected-location.show {
+                    display: block;
+                    }
+                    </style>
     </th:block>
 </head>
 <body>
@@ -40,13 +41,7 @@
     <main layout:fragment="content" class="container py-5">
         <div class="row justify-content-center">
             <div class="col-lg-8">
-                <!-- 뒤로가기 -->
-                <div class="mb-4">
-                    <a th:href="@{/club/list}" class="btn btn-outline-secondary btn-sm">
-                        ← 모임 목록으로
-                    </a>
-                </div>
-
+                
                 <!-- 모임 생성 카드 -->
                 <div class="board-card">
                     <div class="board-header">
@@ -54,8 +49,22 @@
                         <p class="text-muted">새로운 모임을 만들고 함께할 멤버를 모집해보세요!</p>
                     </div>
 
-                    <div class="board-content">
-                        <form th:action="@{/club/create}" method="post" enctype="multipart/form-data">
+                        <div class="board-content">
+                            <form th:action="@{/club/create}" method="post" enctype="multipart/form-data">
+                                <!-- 대표 이미지 -->
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">대표 이미지</label>
+                                    <label for="thumbnail" class="image-upload-area border rounded text-center">
+                                        <input type="file" class="d-none" id="thumbnail" name="thumbnail" accept="image/*">
+                                        <div id="imagePreview" class="mt-3 text-center">
+                                            <p id="uploadPlaceholder"> 이미지를 업로드하세요. </p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            
+
                             <!-- 모임 이름 -->
                             <div class="mb-4">
                                 <label for="title" class="form-label fw-bold">모임 이름 <span class="text-danger">*</span></label>
@@ -92,17 +101,8 @@
 
                             <!-- 활동 지역 -->
                             <div class="mb-4">
-                                <label for="location" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
-                                <div class="location-search-wrapper">
-                                    <input type="text" class="form-control" id="location" name="location" 
-                                           placeholder="예: 서울 강남구" required>
-                                    <button type="button" class="btn btn-outline-primary" id="btnSearchLocation">
-                                        <i class="bi bi-search"></i> 검색
-                                    </button>
-                                </div>
-                                <small class="text-muted">주소를 검색하거나 지도를 클릭하여 위치를 선택하세요</small>
-                                
                                 <!-- 지도 -->   
+                                <label for="location" class="form-label fw-bold">활동 지역 <span class="text-danger">*</span></label>
                                 <div id="locationMap"></div>
                                 
                                 <!-- 선택된 위치 표시 -->
@@ -115,6 +115,15 @@
                                 <!-- 좌표 hidden 필드 -->
                                 <input type="hidden" id="lat" name="lat">
                                 <input type="hidden" id="lng" name="lng">
+
+                                <div class="location-search-wrapper">
+                                    <input type="text" class="form-control" id="location" name="location" 
+                                           placeholder="예: 서울 강남구" required>
+                                    <button type="button" class="btn btn-outline-primary" id="btnSearchLocation">
+                                        <i class="bi bi-search"></i> 검색
+                                    </button>
+                                </div>
+                                <small class="text-muted">주소를 검색하거나 지도를 클릭하여 위치를 선택하세요</small>
                             </div>
 
                             <!-- 최대 인원 -->
@@ -125,20 +134,10 @@
                                 <small class="text-muted">2명 이상 100명 이하</small>
                             </div>
 
-                            <!-- 대표 이미지 -->
-                            <div class="mb-4">
-                                <label class="form-label fw-bold">대표 이미지</label>
-                                <div class="image-upload-area p-4 border rounded text-center">
-                                    <input type="file" class="form-control" id="thumbnail" name="thumbnail" 
-                                           accept="image/*">
-                                    <small class="text-muted d-block mt-2">권장 사이즈: 800x400px</small>
-                                </div>
-                                <div id="imagePreview" class="mt-3 text-center"></div>
-                            </div>
 
                             <!-- 버튼 -->
-                            <div class="d-flex justify-content-end gap-2 pt-4 border-top">
-                                <a th:href="@{/club/list}" class="btn btn-outline-secondary">취소</a>
+                            <div class="d-flex justify-content-between gap-2 pt-4 mb-5">
+                                <a th:href="@{/club/list}" class="btn btn-cancel">취소</a>
                                 <button type="submit" class="btn btn-join">모임 만들기</button>
                             </div>
                         </form>
@@ -194,10 +193,7 @@
                     if (result && result.display_name) {
                         var address = result.display_name;
                         $('#selectedAddress').text(address);
-                        // location 필드에도 자동 입력 (사용자가 원하면 수정 가능)
-                        if (!$('#location').val()) {
-                            $('#location').val(address.split(',')[0]);
-                        }
+                        $('#location').val(address.split(',')[0]);
                     }
                 }
             });
@@ -259,11 +255,16 @@
         // 카테고리 선택 시 세부 카테고리 로드
         $('#categoryNo').change(function() {
             const categoryNo = $(this).val();
+            console.log('카테고리 선택됨:', categoryNo);
             if (categoryNo) {
                 $.ajax({
-                    url: '/api/categories/' + categoryNo + '/sub',
+                    url: '/club/api/subcategories/' + categoryNo,
                     type: 'GET',
-                    success: function(subCategories) {
+                    dataType: 'json',
+                    success: function(data) {
+                        console.log('API 응답:', data);
+                        let subCategories = Array.isArray(data) ? data : (data.data || data.subCategories || []);
+                        console.log('세부 카테고리 배열:', subCategories);
                         if (subCategories && subCategories.length > 0) {
                             let options = '<option value="">세부 카테고리를 선택해주세요</option>';
                             subCategories.forEach(function(sub) {
@@ -271,8 +272,6 @@
                             });
                             $('#subCategoryNo').html(options);
                             $('#subCategoryDiv').show();
-                        } else {
-                            $('#subCategoryDiv').hide();
                         }
                     }
                 });

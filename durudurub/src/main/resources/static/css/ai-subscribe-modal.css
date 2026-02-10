@@ -1,0 +1,150 @@
+/* ========================================
+   AI 구독 모달 스타일
+   ======================================== */
+
+.ai-subscribe-modal {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+    max-width: 500px;
+    padding: 32px;
+}
+
+.ai-subscribe-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.ai-subscribe-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #AD46FF 0%, #8200DB 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ai-subscribe-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #101828;
+    margin: 0;
+    text-align: center;
+    line-height: 1.33;
+}
+
+.ai-subscribe-description {
+    text-align: center;
+    margin: 0;
+}
+
+.ai-subscribe-description p {
+    font-size: 16px;
+    color: #4A5565;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.ai-subscribe-benefits {
+    width: 100%;
+    background-color: #FAF5FF;
+    border-radius: 14px;
+    padding: 24px;
+}
+
+.benefits-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #59168B;
+    margin: 0 0 12px 0;
+    line-height: 1.5;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.benefits-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 14px;
+    color: #6E11B0;
+    line-height: 1.43;
+}
+
+.benefits-list .checkmark {
+    color: #AD46FF;
+    font-weight: 400;
+}
+
+.ai-subscribe-price {
+    text-align: center;
+    width: 100%;
+}
+
+.price-amount {
+    font-size: 30px;
+    font-weight: 700;
+    color: #9810FA;
+    line-height: 1.2;
+    margin-bottom: 4px;
+}
+
+.price-period {
+    font-size: 14px;
+    color: #6A7282;
+    line-height: 1.43;
+}
+
+.ai-subscribe-actions {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+}
+
+.btn-later,
+.btn-subscribe {
+    flex: 1;
+    height: 52px;
+    border-radius: 9999px;
+    font-size: 16px;
+    font-weight: 400;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    line-height: 1.5;
+}
+
+.btn-later {
+    background-color: #FFFFFF;
+    color: #364153;
+    border: 2px solid #D1D5DC;
+}
+
+.btn-later:hover {
+    background-color: #F9FAFB;
+}
+
+.btn-subscribe {
+    background: linear-gradient(90deg, #AD46FF 0%, #8200DB 100%);
+    color: #FFFFFF;
+    box-shadow: 0px 4px 6px -4px rgba(0, 0, 0, 0.1), 0px 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.btn-subscribe:hover {
+    box-shadow: 0px 6px 8px -4px rgba(0, 0, 0, 0.15), 0px 12px 18px -3px rgba(0, 0, 0, 0.15);
+    color: #FFFFFF;
+}

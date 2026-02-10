@@ -18,10 +18,7 @@
                 <h1 class="category-title" th:text="${category.name}"></h1>
                 <p class="category-subtitle" th:text="${category.name} + '와 관련된 다양한 모임을 만나보세요'"></p>
             </div>
-            <a th:href="@{/club/create}" class="create-club-btn">
-                <i class="bi bi-plus-lg"></i>
-                <span>모임 만들기</span>
-            </a>
+            <a th:href="@{/club/create}" class="create-club-btn"><i class="bi bi-plus-lg"></i><span>모임 만들기</span></a>
         </div>
     </section>
 
@@ -31,11 +28,10 @@
             <!-- 서브 카테고리 필터 -->
             <div class="subcategory-filter">
                 <button class="subcategory-btn active" data-subcategory="all">전체</button>
-                <button th:if="${subCategories != null}" 
-                        th:each="sub : ${subCategories}" 
-                        class="subcategory-btn" 
-                        th:data-subcategory="${sub.name}"
-                        th:text="${sub.name}">소분류</button>
+                <button class="subcategory-btn"
+                        th:each="sub : ${subCategories}"  th:if="${subCategories != null}"
+                        th:data-subcategory="${sub.name}" th:text="${sub.name}">소분류
+                </button>
             </div>
             <!-- 모임 카드 리스트 -->
             <div class="club-cards-list">
@@ -51,11 +47,8 @@
                    th:data-subcategory="${club.subCategory != null ? club.subCategory.name : ''}">
                     <div class="club-thumbnail">
                         <img th:src="@{${club.thumbnailImg != null and club.thumbnailImg != '' ? club.thumbnailImg : '/img/defaultThumbnail.jpg'}}" 
-                             th:alt="${club.title}" 
-                             class="thumbnailImg-card">
-                        <button class="like-btn">
-                            <i class="bi bi-heart-fill"></i>
-                        </button>
+                             th:alt="${club.title}" class="thumbnailImg-card">
+                        <button class="like-btn"> <i class="bi bi-heart-fill"></i></button>
                     </div>
 
                     <!-- 모임 정보 -->
@@ -75,11 +68,9 @@
                             </div>
                         </div>
                         <div class="club-members-count">
-                            <i class="bi bi-people"></i>
-                            <span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명'"></span>
+                            <i class="bi bi-people"></i><span th:text="${club.currentMembers} + '/' + ${club.maxMembers} + '명'"></span>
                         </div>
                     </div>
-
                 </a>
             </div>
         </div>
