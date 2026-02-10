@@ -72,12 +72,10 @@
                         <div class="profile-section">
                             <div class="profile-avatar">
                                 <!-- ⭐ 이미지 데이터 받기 -->
-                                <!-- <a th:src="*{profileImg != null ? profileImg : @{/img/두룹이/두룹이만세.png}}"> -->
-                                <img  
-                                    src="/img/두룹이/두룹이만세.png"
-                                    alt="프로필 이미지" 
+                                <img th:src="${user.profileImg != null ? user.profileImg : '/img/두룹이/두룹이만세.png'}"
+                                    alt="프로필 이미지"
                                     class="profile-image"
-                                    id="profileImageView">
+                                    id="profileImageView" />
                             </div>
                         </div>
 
@@ -156,17 +154,19 @@
                         <!-- ⭐ 프로필 이미지 수정 -->
                         <div class="profile-section-edit">
                             <div class="profile-avatar-edit">
-                                <!-- th:src="${user?.profileImg != null ? user.profileImg : '/img/default-profile.png'}" -->
-                                <img  
-                                    src="/img/default-profile.png"
-                                    alt="프로필 이미지" 
-                                    class="profile-image-edit"
-                                    id="profileImageEdit">
+                                <img th:src="${user.profileImg != null ? user.profileImg : '/img/default-profile.png'}"
+                                alt="프로필 이미지"
+                                class="profile-image-edit"
+                                id="profileImageEdit" />
                             </div>
-                            <button class="btn-change-photo" id="btnChangePhoto">
+                            <button  type="button" class="btn-change-photo" id="btnChangePhoto">
                                 <span class="change-photo-text">사진 변경</span>
                             </button>
-                            <input type="file" id="profile-file" accept="image/*" style="display: none;">
+                            <input type="file"
+                                id="profileImg"
+                                name="profileImg"
+                                accept="image/*"
+                                style="display:none;" />
                         </div>
 
                         <!-- 정보 입력 필드들 -->
@@ -370,7 +370,7 @@
         const header = $("meta[name='_csrf_header']").attr("content");
 
         // 사진이 선택된 경우에만 추가
-        const imgFile = $("#profile-file")[0].files[0];
+        const imgFile = $("#profileImg")[0].files[0];
         if (imgFile) {
             formData.append("profileImg", imgFile);
         }
@@ -399,9 +399,9 @@
                 $("#useraddress-span").text($("#useraddress-input").val());
 
                 if (res && res.profileImgUrl) {
-                    const cacheBuster = "?v=" + Date.now();
-                    $("#profileImageView").attr("src", res.profileImgUrl + cacheBuster);
-                    $("#profileImageEdit").attr("src", res.profileImgUrl + cacheBuster);
+                    const url = res.profileImgUrl + "?v=" + Date.now();
+                    $("#profileImageView").attr("src", url);
+                    $("#profileImageEdit").attr("src", url);
                 }
 
 
@@ -421,8 +421,8 @@
     // 사진 변경 버튼 -> 파일 선택창 열기
     document.addEventListener("DOMContentLoaded", () => {
         const btnChangePhoto = document.getElementById("btnChangePhoto");
-        const profileFile = document.getElementById("profile-file");
-        const profileImageEdit = document.getElementById("profileImageEdit");
+        const profileFile = document.getElementById("profileImg");
+        const profileImg = document.getElementById("profileImageEdit");
 
         btnChangePhoto?.addEventListener("click", (e) => {
             e.preventDefault();
@@ -439,9 +439,10 @@
             return;
             }
 
+            // 미리보기
             const reader = new FileReader();
             reader.onload = (ev) => {
-            profileImageEdit.src = ev.target.result;
+            profileImg.src = ev.target.result;
             };
             reader.readAsDataURL(file);
         });

@@ -87,4 +87,18 @@
         SELECT COUNT(*) FROM club_comment_likes WHERE comment_no = #{commentNo}
     </select>
 
+
+
+    
+    <!-- 즐겨찾기 모임 리스트 -->
+    <select id="favoriteList" parameterType="int" resultType="Club">
+        SELECT c.*,
+            c.thumbnail_img AS thumbnailImg,
+            c.current_members AS currentMembers,
+            c.max_members AS maxMembers
+        FROM club_likes cl
+        JOIN clubs c ON c.no = cl.club_no
+        WHERE cl.user_no = #{userNo}
+        ORDER BY cl.created_at DESC
+    </select>
 </mapper>

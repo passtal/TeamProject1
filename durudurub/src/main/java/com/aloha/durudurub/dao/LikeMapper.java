@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.aloha.durudurub.dto.BoardLike;
+import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubLike;
 import com.aloha.durudurub.dto.CommentLike;
 
@@ -46,5 +47,8 @@ public interface LikeMapper {
     int countBoardLikes(@Param("boardNo") int boardNo);
     
     int countCommentLikes(@Param("commentNo") int commentNo);
+
+    // 즐겨찾기 모임리스트
+    List<Club> favoriteList(@Param("userNo") int userNo) throws Exception;
 
 }

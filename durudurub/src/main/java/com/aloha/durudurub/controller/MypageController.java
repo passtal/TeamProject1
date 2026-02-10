@@ -28,9 +28,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.durudurub.dto.Club;
+import com.aloha.durudurub.dto.ClubLike;
 import com.aloha.durudurub.dto.ClubMember;
 import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.ClubService;
+import com.aloha.durudurub.service.LikeService;
 import com.aloha.durudurub.service.UserService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,6 +50,8 @@ public class MypageController {
 
     private final UserService userService;
     private final ClubService clubService;
+    private final LikeService likeService;
+    
     
     // 마이페이지 메인
     // user_id 조회
@@ -84,7 +88,7 @@ public class MypageController {
         String userId = principal.getName();
         User loginUser = userService.selectByUserId(userId);
 
-        // ✅ 1) 기본정보 업데이트
+        //  1) 기본정보 업데이트
         User user = new User();
         user.setNo(loginUser.getNo());
         user.setUsername(username);
@@ -93,7 +97,11 @@ public class MypageController {
         user.setAddress(address);
         userService.update(user);
 
-        // ✅ 2) 이미지 업데이트
+        System.out.println("*********profileImgFile = " + (profileImgFile == null ? "null" : profileImgFile.getOriginalFilename()));
+        System.out.println("********isEmpty = " + (profileImgFile == null ? "null" : profileImgFile.isEmpty()));
+        System.out.println("********size = " + (profileImgFile == null ? "null" : profileImgFile.getSize()));
+
+        //  2) 이미지 업데이트
         String imageUrl = null;
         if (profileImgFile != null && !profileImgFile.isEmpty()) {
             imageUrl = saveProfileImage(profileImgFile);
@@ -107,6 +115,12 @@ public class MypageController {
                 .body(res);
     }
     // 사진 저장
+    private static final Path UPLOAD_DIR = Paths.get(
+        System.getProperty("user.dir"),
+        "uploads", "profile"
+    ).toAbsolutePath().normalize();
+    private static final String DB_URL_PREFIX = "/uploads/profile/";
+
     private String saveProfileImage(MultipartFile file) {
         String contentType = file.getContentType();
         if (contentType == null || !contentType.startsWith("image/")) {
@@ -117,15 +131,6 @@ public class MypageController {
             throw new IllegalArgumentException("프로필 사진은 5MB 이하만 가능합니다.");
         }
 
-       // ✅ OS 독립 경로 (예: /Users/you/durudurub_upload/profile/profileImg)
-        Path uploadDir = Paths.get(System.getProperty("user.home"),
-                                "durudurub_upload", "profile", "profileImg");
-        try {
-            Files.createDirectories(uploadDir);
-        } catch (Exception e) {
-            throw new RuntimeException("업로드 폴더 생성에 실패했습니다.", e);
-        }
-
         String original = file.getOriginalFilename();
         String ext = "";
         if (original != null && original.contains(".")) {
@@ -133,15 +138,30 @@ public class MypageController {
         }
 
         String savedName = UUID.randomUUID().toString().replace("-", "") + ext;
-        Path target = uploadDir.resolve(savedName);
+        Path target = UPLOAD_DIR.resolve(savedName).toAbsolutePath().normalize();
 
         try {
+            Files.createDirectories(UPLOAD_DIR);
+
+            // 디버깅 로그 (저장되는 "진짜" 경로)
+            System.out.println("**********uploadDir = " + UPLOAD_DIR);
+            System.out.println("**********target    = " + target);
+
             file.transferTo(target.toFile());
+
+            // 저장 확인
+            if (!Files.exists(target) || Files.size(target) <= 0) {
+                throw new RuntimeException("파일 저장 검증 실패: " + target);
+            }
+
+            System.out.println("saved OK. size=" + Files.size(target));
+
         } catch (Exception e) {
-            throw new RuntimeException("프로필 이미지 저장에 실패했습니다.", e);
+            e.printStackTrace();
+            throw new RuntimeException("프로필 이미지 저장에 실패했습니다. target=" + target, e);
         }
 
-        return "/upload/profile/" + savedName;
+        return DB_URL_PREFIX + savedName;
     }
 
     // 회원 탈퇴 모달
@@ -263,7 +283,7 @@ public class MypageController {
     @DeleteMapping("/api/club/hostClub/{clubNo}")
     @ResponseBody
     public ResponseEntity<?> deleteClub (
-        @PathVariable int clubNo
+        @PathVariable("clubNo") int clubNo
     ) throws Exception{
         int result = clubService.deleteClub(clubNo);
 
@@ -349,7 +369,23 @@ public class MypageController {
     //------------------------------
     // 즐겨찾기
     @GetMapping("/favorites")
-    public String favorites() {
+    public String favorites(
+        Model model,
+        Principal principal
+    ) throws Exception{
+
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo();
+
+        List<Club> favoriteClubs= likeService.favoriteList(userNo);
+
+        model.addAttribute("favoriteClubs", favoriteClubs);
+        log.info("****************favoriteClubs: {}", favoriteClubs);
+
         return "mypage/favorites";
     }
     // @PostMapping("/like/club/{clubNo}")
