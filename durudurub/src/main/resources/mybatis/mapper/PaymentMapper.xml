@@ -7,17 +7,15 @@
     <resultMap id="paymentResultMap" type="com.aloha.durudurub.dto.Payment">
         <id property="no" column="no"/>
         <result property="userNo" column="user_no"/>
-        <result property="subscriptionNo" column="subscription_no"/>
         <result property="paymentKey" column="payment_key"/>
         <result property="orderId" column="order_id"/>
         <result property="orderName" column="order_name"/>
         <result property="amount" column="amount"/>
-        <result property="method" column="method"/>
+        <result property="currency" column="currency"/>
+        <result property="type" column="type"/>
         <result property="status" column="status"/>
+        <result property="requestedAt" column="requested_at"/>
         <result property="approvedAt" column="approved_at"/>
-        <result property="canceledAt" column="canceled_at"/>
-        <result property="cancelReason" column="cancel_reason"/>
-        <result property="receiptUrl" column="receipt_url"/>
         <result property="createdAt" column="created_at"/>
         <result property="updatedAt" column="updated_at"/>
     </resultMap>
@@ -42,17 +40,15 @@
         SELECT
             no,
             user_no,
-            subscription_no,
             payment_key,
             order_id,
             order_name,
             amount,
-            method,
+            currency,
+            type,
             status,
+            requested_at,
             approved_at,
-            canceled_at,
-            cancel_reason,
-            receipt_url,
             created_at,
             updated_at
         FROM payments
