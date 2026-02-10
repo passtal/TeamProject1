@@ -131,6 +131,11 @@ public class LikeServiceImpl implements LikeService {
     public List<Club> favoriteList(int userNo) throws Exception {
         return likeMapper.favoriteList(userNo);
     }
+    // 즐겨찾기 - 수
+    @Override
+    public int countClubLikeByUser(int userNo) throws Exception {
+        return likeMapper.countClubLikeByUser(userNo);
+    }
     
     
 }

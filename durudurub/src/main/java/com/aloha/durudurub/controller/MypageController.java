@@ -65,9 +65,11 @@ public class MypageController {
             User user = userService.selectByUserId(principal.getName());
             int userNo = user.getNo();
             int totalMyClub = clubService.countByUser(userNo);
+            int totalFavorite = likeService.countClubLikeByUser(userNo);
             
             model.addAttribute("user", user);
             model.addAttribute("totalMyClub", totalMyClub);
+            model.addAttribute("totalFavorite", totalFavorite);
 
             if (user != null) {
                 Subscription subscription = subscriptionService.selectByUserNo(user.getNo());

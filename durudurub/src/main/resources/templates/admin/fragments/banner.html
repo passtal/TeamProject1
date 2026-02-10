@@ -353,7 +353,7 @@
 
                 
         // ------- 배너 수정하기
-        let bannerNo = null
+        window.bannerNo = window.bannerNo ?? null
         // 수정버튼
         function editBanner(no) {
             const banner = bannerMap[no];
@@ -445,7 +445,8 @@
             document.getElementById('bannerEditModal').style.display = 'none';
         }
         
-        let bannerMap = {} // no -> banner
+        window.bannerMap = window.bannerMap ?? {} // no -> banner
+
         // --------리스트 조회하기
         // 사용자 리스트
         function getList() {

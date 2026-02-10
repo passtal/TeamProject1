@@ -256,8 +256,8 @@ public class ClubServiceImpl implements ClubService {
     public Club findLatestClub() {
         return clubMapper.findLatestClub();
     }
-
 }
+
     
 
 

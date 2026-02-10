@@ -225,14 +225,19 @@
         SELECT c.*
         FROM club_members m
         JOIN clubs c ON m.club_no = c.no
-        WHERE m.user_no = #{userNo} AND m.status = #{status}
+        WHERE m.user_no = #{userNo} 
+            AND m.status = #{status}
+            AND c.host_no != #{userNo}
             ORDER BY m.joined_at DESC
     </select>
     <!-- 참여/리더/승인대기 개수 -->
     <select id="countByStatus" resultType="int">
         SELECT COUNT(*)
-        FROM club_members 
-        WHERE user_no = #{userNo} AND status = #{status}
+        FROM club_members m
+        JOIN clubs c ON m.club_no = c.no
+        WHERE m.user_no = #{userNo}
+            AND m.status = #{status}
+            AND c.host_no != #{userNo}
     </select>
     <!-- 전체 개수 -->
     <select id="countByUser" resultType="int">

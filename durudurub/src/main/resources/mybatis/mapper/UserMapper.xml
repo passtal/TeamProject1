@@ -58,7 +58,9 @@
             #{userId},
             #{password},
             #{username},
-            COALESCE(#{profileImg}, '/static/img/default-profile.png'),
+            <!-- COALESCE(#{profileImg}, '/static/img/default-profile.png'), -->
+            <!-- 마이페이지 이미지 오류 -->
+            COALESCE(#{profileImg}, '/img/default-profile.png'),
             #{age},
             COALESCE(#{gender}, '공개안함'),
             #{address}

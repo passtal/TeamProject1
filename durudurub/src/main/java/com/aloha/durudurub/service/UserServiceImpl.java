@@ -138,7 +138,8 @@ public class UserServiceImpl implements UserService {
         }
 
         // 2) 저장 폴더 준비
-        String uploadDir = "C:/durudurub_upload/profile/profileImg";
+        // ******수정 : /durudurub_upload/ -> /durudurub/uploads
+        String uploadDir = "C:/durudurub/uploads/profile/profileImg";
         File dir = new File(uploadDir);
         if (!dir.exists()) dir.mkdirs();
 

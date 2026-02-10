@@ -10,7 +10,7 @@
 
             <div th:unless="${#lists.isEmpty(hostClub)}" class="cardList-host">
                 <div th:each="club : ${hostClub}" class="club-card-wrapper-host">
-                    <div class="club-card-host" th:attr="data-club-no=${club.no}" style="cursor: pointer;">
+                    <div class="club-card-host" th:attr="data-club-no=${club.no}, data-host-no=${club.hostNo}" style="cursor: pointer;">
                         <div class="club-info">
                             <div class="club-icon">
                                 <span class="material-symbols-outlined">group</span>
@@ -273,18 +273,30 @@
 
             $empty.hide()   // 데이터 있으면 '멤버 없음' 숨기기
 
+            // 1. 호스트 가져오기 : 현재 club hostNo 
+            const hostNo = Number(
+                $(`.club-card-host[data-club-no="${clubNo}"]`).data('hostNo')
+            )
+            console.log("clubNo=", clubNo, "hostNo=", hostNo)
+            
+            // 2. 호스트 '추방버튼' 숨기기
             const html = list.map(approved => {
                 const name = approved.user.username
                 const joinedAt = formatDate(approved.joinedAt)
-                
+                const memberNo = Number(approved.userNo)
+
+                const removeBtn = (memberNo == hostNo)
+                    ? ''
+                    : `<button class="btn-remove-member" data-member-no="${memberNo}" data-club-no="${clubNo}">
+                            추방하기
+                        </button>`
+
                 return `<div class="member-item" style="background-color: #f9fafb">
                             <div class="member-info">
                                 <p class="member-name">${escapeHtml(name)}</p>
                                 <p class="member-date">가입일: ${joinedAt}</p>
                             </div>
-                            <button class="btn-remove-member" data-member-no="${approved.userNo}" data-club-no="${clubNo}">
-                                추방하기
-                            </button>
+                            ${removeBtn}
                         </div>`
             }).join("")
             $container.html(html)
