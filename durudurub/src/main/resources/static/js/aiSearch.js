@@ -19,9 +19,11 @@ $(document).ready(function() {
                 } else {
                     // 검색 가능 → AI 검색 모달
                     if (res.remaining !== null && res.remaining >= 0) {
-                        $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회');
+                        $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회')
+                            .removeClass('bg-purple').addClass('bg-secondary');
                     } else {
-                        $('#aiSearchRemaining').text('무제한');
+                        $('#aiSearchRemaining').text('프리미엄')
+                            .removeClass('bg-secondary').addClass('bg-purple');
                     }
                     $('#aiSearchModal').modal('show');
                 }
@@ -82,21 +84,24 @@ $(document).ready(function() {
     function displayResult(res) {
         var html = '';
 
-        // AI 추천 메시지
-        html += '<div class="alert alert-info mb-3">';
-        html += '  <i class="bi bi-robot"></i> ' + res.aiMessage;
+        // AI 추천 메시지 (줄바꿈 처리)
+        var aiMsg = res.aiMessage ? res.aiMessage.replace(/\n/g, '<br>') : '';
+        html += '<div class="alert alert-info mb-3" style="white-space: pre-line;">';
+        html += '  <i class="bi bi-robot"></i> ' + aiMsg;
         html += '</div>';
-
-        // 추출된 키워드
-        html += '<p class="text-muted small">검색 키워드: <strong>' + res.keyword + '</strong></p>';
 
         // 남은 횟수 업데이트
         if (res.remaining !== null && res.remaining !== undefined && res.remaining >= 0) {
-            $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회');
+            $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회')
+                .removeClass('bg-purple').addClass('bg-secondary');
+        } else if (res.remaining === -1) {
+            $('#aiSearchRemaining').text('프리미엄')
+                .removeClass('bg-secondary').addClass('bg-purple');
         }
 
         // 모임 목록
         if (res.clubs && res.clubs.length > 0) {
+            html += '<p class="text-muted small mb-2">🔍 추천 모임 ' + res.clubs.length + '건</p>';
             html += '<div class="list-group">';
             res.clubs.forEach(function(club) {
                 html += '<a href="/club/' + club.no + '" class="list-group-item list-group-item-action">';
@@ -107,14 +112,16 @@ $(document).ready(function() {
                 html += '         onerror="this.src=\'/img/hero-image.png\'">';
                 html += '    <div>';
                 html += '      <h6 class="mb-1">' + club.title + '</h6>';
-                html += '      <p class="mb-0 text-muted small">' + (club.location || '') + '</p>';
+                html += '      <p class="mb-0 text-muted small">';
+                if (club.category && club.category.name) {
+                    html += '<span class="badge bg-light text-dark me-1">' + club.category.name + '</span>';
+                }
+                html += (club.location || '') + '</p>';
                 html += '    </div>';
                 html += '  </div>';
                 html += '</a>';
             });
             html += '</div>';
-        } else {
-            html += '<p class="text-muted">검색 결과가 없습니다.</p>';
         }
 
         $('#aiSearchResult').html(html);

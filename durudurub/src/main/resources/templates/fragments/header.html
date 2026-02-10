@@ -95,7 +95,7 @@
                                     <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
                                     <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
                                 </svg>
-                                <a th:href="@{/admin/notice}" class="notice">공지사항</a>
+                                <a th:href="@{/notice}" class="notice">공지사항</a>
                             </li>
                               <li><a th:href="@{/admin/}" class="adminpage" style="color: blueviolet;">관리자 페이지</a></li>
                               <!-- <br style="color: #374151;"> -->
@@ -209,7 +209,7 @@
               <!-- 로그인 후 : admin -->
               <th:block sec:authorize="hasRole('ADMIN')">
                   <li class="nav-item">
-                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/admin/notice}" data-bs-dismiss="offcanvas">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/notice}" data-bs-dismiss="offcanvas">
                           <i class="bi bi-megaphone fs-5"></i>
                           <span>공지사항</span>
                       </a>

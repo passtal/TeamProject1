@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aloha.durudurub.dao.AiSearchLogMapper;
 import com.aloha.durudurub.dto.AiSearchLog;
 import com.aloha.durudurub.dto.AiSearchResponse;
+import com.aloha.durudurub.dto.Subscription;
 import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.service.AiSearchService;
+import com.aloha.durudurub.service.SubscriptionService;
 import com.aloha.durudurub.service.UserService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -38,6 +40,9 @@ public class AiSearchController {
 
     @Autowired
     private AiSearchLogMapper aiSearchLogMapper;
+
+    @Autowired
+    private SubscriptionService subscriptionService;
 
     /**
      * AI 검색 상태 확인 API
@@ -69,14 +74,19 @@ public class AiSearchController {
             return ResponseEntity.ok(result);
         }
 
-        // 일반 유저: 총 검색 횟수 조회
+        // 일반 유저: 구독 상태 확인
         User user = userService.selectByUserId(auth.getName());
+        Subscription sub = subscriptionService.selectByUserNo(user.getNo());
+        if (sub != null && "ACTIVE".equals(sub.getStatus())) {
+            // 구독자는 무제한
+            result.put("canSearch", true);
+            result.put("remaining", -1);
+            return ResponseEntity.ok(result);
+        }
+
+        // 비구독자: 무료 횟수 제한
         int totalCount = aiSearchLogMapper.countByUserNo(user.getNo());
         int remaining = FREE_LIMIT - totalCount;
-
-        // TODO: 구독 테이블 연동 후 구독자는 무제한 처리
-        // Subscription sub = subscriptionMapper.selectByUserNo(user.getNo());
-        // if (sub != null && "ACTIVE".equals(sub.getStatus())) { remaining = -1; }
 
         result.put("canSearch", remaining > 0);
         result.put("remaining", Math.max(remaining, 0));
@@ -107,11 +117,16 @@ public class AiSearchController {
 
         // 관리자가 아니면 횟수 체크
         if (!isAdmin) {
-            int totalCount = aiSearchLogMapper.countByUserNo(user.getNo());
-            if (totalCount >= FREE_LIMIT) {
-                // TODO: 구독자 체크 로직 추가
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body(Map.of("error", "무료 검색 횟수를 모두 사용하셨습니다."));
+            // 구독자는 무제한
+            Subscription sub = subscriptionService.selectByUserNo(user.getNo());
+            boolean isSubscriber = sub != null && "ACTIVE".equals(sub.getStatus());
+
+            if (!isSubscriber) {
+                int totalCount = aiSearchLogMapper.countByUserNo(user.getNo());
+                if (totalCount >= FREE_LIMIT) {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                            .body(Map.of("error", "무료 검색 횟수를 모두 사용하셨습니다."));
+                }
             }
         }
 
@@ -132,9 +147,15 @@ public class AiSearchController {
 
             // 남은 횟수 계산하여 응답에 포함
             if (!isAdmin) {
-                int newTotalCount = aiSearchLogMapper.countByUserNo(user.getNo());
-                int remaining = Math.max(FREE_LIMIT - newTotalCount, 0);
-                response.setRemaining(remaining);
+                Subscription sub2 = subscriptionService.selectByUserNo(user.getNo());
+                boolean isSubscriber = sub2 != null && "ACTIVE".equals(sub2.getStatus());
+                if (isSubscriber) {
+                    response.setRemaining(-1);
+                } else {
+                    int newTotalCount = aiSearchLogMapper.countByUserNo(user.getNo());
+                    int remaining = Math.max(FREE_LIMIT - newTotalCount, 0);
+                    response.setRemaining(remaining);
+                }
             } else {
                 response.setRemaining(-1);
             }
