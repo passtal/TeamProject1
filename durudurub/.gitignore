@@ -38,7 +38,3 @@ out/
 
 ### Application Local Properties (API Keys) ###
 src/main/resources/application-local.properties
-
-### Bootstrap Icons 로컬 폰트 (PC별 아이콘 문제 대응) ###
-src/main/resources/static/fonts/bootstrap-icons/
-src/main/resources/templates/fragments/link.html
