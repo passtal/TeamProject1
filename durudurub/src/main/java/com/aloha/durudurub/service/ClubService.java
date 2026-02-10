@@ -23,6 +23,8 @@ public interface ClubService {
 
     List<Club> listRecent(int limit);
 
+    List<Club> search(String keyword);
+
     Club selectByNo(int no);
 
     int insert(Club club);

@@ -1,4 +1,11 @@
 /* 헤더 스타일 : 절대 건들지 말것!*/
+
+/* 프리미엄 배지 (보라색) */
+.bg-purple {
+    background-color: #9810FA !important;
+    color: #fff !important;
+}
+
 .header {
     header{
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -192,6 +199,15 @@
 
     .hidden .logout:hover {
     background-color: #f9fafb;
+    }
+
+    .hidden .notice {
+    color: #F97316;
+    font-weight: 500;
+    }
+
+    .hidden .notice:hover {
+    color: #EA580C;
     }
 
     .icon-container {

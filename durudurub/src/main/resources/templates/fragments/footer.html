@@ -36,10 +36,10 @@
                 <div class="col-md-3">
                     <h6 class="fw-bold text-dark mb-3">서비스</h6>
                     <ul class="list-unstyled small">
-                        <li><a href="#" class="text-muted text-decoration-none">모임 찾기</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">모임 만들기</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">이용 가이드</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">자주 묻는 질문</a></li>
+                        <li><a th:href="@{/club/list}" class="text-muted text-decoration-none">모임 찾기</a></li>
+                        <li><a th:href="@{/club/list}" class="text-muted text-decoration-none">모임 만들기</a></li>
+                        <li><a th:href="@{/notice}" class="text-muted text-decoration-none">이용 가이드</a></li>
+                        <li><a th:href="@{/notice}" class="text-muted text-decoration-none">자주 묻는 질문</a></li>
                     </ul>
                 </div>
 
@@ -48,7 +48,7 @@
                     <h6 class="fw-bold text-dark mb-3">회사</h6>
                     <ul class="list-unstyled small">
                         <li><a href="#" class="text-muted text-decoration-none">회사 소개</a></li>
-                        <li><a href="#" class="text-muted text-decoration-none">공지사항</a></li>
+                        <li><a th:href="@{/notice}" class="text-muted text-decoration-none">공지사항</a></li>
                         <li><a href="#" class="text-muted text-decoration-none">이용약관</a></li>
                         <li><a href="#" class="text-muted text-decoration-none">개인정보처리방침</a></li>
                     </ul>

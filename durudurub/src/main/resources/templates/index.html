@@ -16,9 +16,7 @@
         <div class="hero-container">
             <div class="hero-content">
                 <div class="hero-text">
-                    <h1 class="hero-title">
-                        함께 하면<br>더 즐거운 순간
-                    </h1>
+                    <h1 class="hero-title">함께 하면<br>더 즐거운 순간</h1>
                     <p class="hero-subtitle">
                         관심사가 같은 사람들과 모여<br>새로운 경험을 만들어보세요
                     </p>
@@ -27,8 +25,7 @@
 
                 <!-- 히어로 이미지 -->
                 <div class="hero-image-wrapper">
-                    <img th:src="@{/img/index/main_img.jpg}" 
-                         alt="함께하는 즐거운 순간">
+                    <img th:src="@{/img/hero-image.png}" alt="함께하는 즐거운 순간">
                     <div class="hero-image-overlay"></div>
                 </div>
             </div>
@@ -67,14 +64,12 @@
 
         <div class="category-grid">
             <!-- 카테고리 반복 -->
-            <a th:each="category : ${categories}" 
+            <a th:each="category, stat : ${categories}" 
                th:href="@{/club/category(category=${category.no})}" 
                class="category-item">
-                <div class="category-icon">
-                    <!-- 카테고리 아이콘 -->
-                    <img th:src="${category.icon}" 
-                         th:alt="${category.name}" 
-                         onerror="this.src='/img/default-profile.png';" />
+                <div class="category-icon" th:classappend="'category-bg-' + ${stat.count}">
+                    <!-- 카테고리 아이콘 (Bootstrap Icons) -->
+                    <i th:classappend="${category.icon}" class="bi"></i>
                 </div>
                 <span class="category-name" th:text="${category.name}">카테고리명</span>
             </a>

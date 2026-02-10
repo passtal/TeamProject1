@@ -44,6 +44,11 @@ public class ClubServiceImpl implements ClubService {
     }
 
     @Override
+    public List<Club> search(String keyword) {
+        return clubMapper.search(keyword);
+    }
+
+    @Override
     public Club selectByNo(int no) {
         return clubMapper.selectByNo(no);
     }
@@ -253,3 +258,8 @@ public class ClubServiceImpl implements ClubService {
     }
 
 }
+    
+
+
+
+    

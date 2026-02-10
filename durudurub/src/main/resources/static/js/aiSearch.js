@@ -19,9 +19,11 @@ $(document).ready(function() {
                 } else {
                     // 검색 가능 → AI 검색 모달
                     if (res.remaining !== null && res.remaining >= 0) {
-                        $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회');
+                        $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회')
+                            .removeClass('bg-purple').addClass('bg-secondary');
                     } else {
-                        $('#aiSearchRemaining').text('무제한');
+                        $('#aiSearchRemaining').text('프리미엄')
+                            .removeClass('bg-secondary').addClass('bg-purple');
                     }
                     $('#aiSearchModal').modal('show');
                 }
@@ -92,7 +94,11 @@ $(document).ready(function() {
 
         // 남은 횟수 업데이트
         if (res.remaining !== null && res.remaining !== undefined && res.remaining >= 0) {
-            $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회');
+            $('#aiSearchRemaining').text('남은 무료 횟수: ' + res.remaining + '회')
+                .removeClass('bg-purple').addClass('bg-secondary');
+        } else if (res.remaining === -1) {
+            $('#aiSearchRemaining').text('프리미엄')
+                .removeClass('bg-secondary').addClass('bg-purple');
         }
 
         // 모임 목록

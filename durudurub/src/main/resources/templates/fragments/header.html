@@ -21,7 +21,7 @@
               <span class="fw-bold fs-5 d-none d-sm-inline">두루두룹</span>
           </a>
           <!-- 검색창 영역 (중앙) - 데스크탑만 -->
-          <div class="search-container w-50 d-none d-lg-block">
+          <div class="search-container w-50 d-none d-lg-block mx-auto">
               <form class="d-flex justify-content-center" role="search" th:action="@{/club/list}" method="get">
                   <div class="input-group club-search-group">
                       <button class="btn btn-outline-secondary left-btn" type="submit">     
@@ -59,6 +59,7 @@
                           <ul>
                               <li><a th:href="@{/users/mypage}" class="mypage">마이페이지</a></li>
                               <li><a th:href="@{/users/mypage/club}" class="myclub">내모임</a></li>
+                              <li><a th:href="@{/notice}" class="notice">공지사항</a></li>
                               <hr>
                               <li>
                                   <form th:action="@{/logout}" method="post" style="display:inline;">
@@ -82,7 +83,7 @@
                                     <path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
                                     <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
                                 </svg>
-                                <a th:href="@{/admin/notice}" class="notice">공지사항</a>
+                                <a th:href="@{/notice}" class="notice">공지사항</a>
                             </li>
                               <li><a th:href="@{/admin/}" class="adminpage" style="color: blueviolet;">관리자 페이지</a></li>
                               <!-- <br style="color: #374151;"> -->
@@ -176,6 +177,12 @@
                           <span>내 모임</span>
                       </a>
                   </li>
+                  <li class="nav-item">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/notice}" data-bs-dismiss="offcanvas" style="color: #F97316;">
+                          <i class="bi bi-megaphone fs-5"></i>
+                          <span>공지사항</span>
+                      </a>
+                  </li>
                   <hr class="my-2">
                   <li class="nav-item">
                       <form th:action="@{/logout}" method="post">
@@ -190,7 +197,7 @@
               <!-- 로그인 후 : admin -->
               <th:block sec:authorize="hasRole('ADMIN')">
                   <li class="nav-item">
-                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/admin/notice}" data-bs-dismiss="offcanvas">
+                      <a class="nav-link d-flex align-items-center gap-2 py-3" th:href="@{/notice}" data-bs-dismiss="offcanvas">
                           <i class="bi bi-megaphone fs-5"></i>
                           <span>공지사항</span>
                       </a>
@@ -263,7 +270,7 @@
               </div>
               <div class="d-flex gap-2 justify-content-center mt-3">
                   <button class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">취소</button>
-                  <a th:href="@{/subscribe}" class="btn px-4 text-white" style="background-color: #8B5CF6;">구독하기</a>
+                  <a th:href="@{/payments}" class="btn px-4 text-white" style="background-color: #8B5CF6;">구독하기</a>
               </div>
           </div>
       </div>
@@ -300,3 +307,46 @@
       </div>
   </div>
 </th:block>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // 검색창 엔터키 기능
+    const searchInput = document.querySelector('input[name="keyword"]');
+    if (searchInput) {
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const form = this.closest('form');
+                if (form) {
+                    form.submit();
+                }
+            }
+        });
+    }
+
+    // 사용자 드롭다운 토글
+    const userIcons = document.querySelectorAll('.icon-container > button');
+    userIcons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            const dropdown = this.nextElementSibling;
+            if (dropdown) {
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+    });
+
+    // 페이지 다른 곳 클릭시 드롭다운 닫기
+    document.addEventListener('click', function(e) {
+        const iconContainers = document.querySelectorAll('.icon-container');
+        iconContainers.forEach(container => {
+            if (!container.contains(e.target)) {
+                const dropdown = container.querySelector('[style*="display"]');
+                if (dropdown) {
+                    dropdown.style.display = 'none';
+                }
+            }
+        });
+    });
+});
+</script>
