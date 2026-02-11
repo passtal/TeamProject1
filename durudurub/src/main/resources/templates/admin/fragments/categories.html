@@ -1,946 +1,717 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{/layouts/main_layout}"
-      th:with="isAdminPage=true">
-<head>
-    <title>카테고리 관리 - 두루두룹 관리자</title>
-    <th:block layout:fragment="css">
-        <link rel="stylesheet" th:href="@{/css/admin/dashboard.css}">
-        <link rel="stylesheet" th:href="@{/css/admin/categories.css}">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    </th:block>
-</head>
-<body>
-    <main layout:fragment="content" class="main-content">
-        <!-- Header -->
-        <header class="page-header">
-            <div class="header-left">
-                <h1>관리자 대시보드</h1>
-                <p>두루두룹 서비스 관리</p>
+<!-- 대시보드 fragment -->
+<div th:fragment="content">
+    <!-- 카테고리 관리 섹션 -->
+    <div class="categories-section">
+        <div class="section-header">
+            <h2>카테고리 관리</h2>
+            <button class="btn-add-category" onclick="addParentCategory()">
+                <span class="material-symbols-outlined">add</span>
+                대분류 추가
+            </button>
+        </div>
+
+        <div class="categories-container" id="categories-container">
+            <div class="category-empty">
+                등록된 카테고리가 없습니다.
             </div>
-            <button class="btn-main" onclick="location.href='/'">
-                메인으로
-            </button>
-        </header>
+        </div>
 
-        <!-- 관리자 네비게이션 -->
-        <nav class="admin-nav">
-            <button class="nav-tab" onclick="location.href='/admin/dashboard'">
-                <span class="material-symbols-outlined">dashboard</span>
-                대시보드
-            </button>
-            <button class="nav-tab" onclick="location.href='/admin/users'">
-                <span class="material-symbols-outlined">group</span>
-                사용자 관리
-            </button>
-            <button class="nav-tab" onclick="location.href='/admin/clubs'">
-                <span class="material-symbols-outlined">diversity_3</span>
-                모임 관리
-            </button>
-            <button class="nav-tab" onclick="location.href='/admin/reports'">
-                <span class="material-symbols-outlined">report</span>
-                신고 관리
-            </button>
-            <button class="nav-tab" onclick="location.href='/admin/adminpage/banner/list'">
-                <span class="material-symbols-outlined">image</span>
-                광고 배너 관리
-            </button>
-            <button class="nav-tab active" onclick="location.href='/admin/categories'">
-                <span class="material-symbols-outlined">category</span>
-                카테고리 관리
-            </button>
-        </nav>
+    </div>
 
-        <!-- 카테고리 관리 섹션 -->
-        <div class="categories-section">
-            <div class="section-header">
-                <h2>카테고리 관리</h2>
-                <button class="btn-add-category" onclick="addParentCategory()">
-                    <span class="material-symbols-outlined">add</span>
-                    대분류 추가
+    <!-- 대분류 추가 모달 -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <h2>카테고리 추가</h2>
+                </div>
+                <button class="modal-close" onclick="closeAddModal()">
+                    <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
 
-            <div class="categories-container">
-                <!-- 독서 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">독서</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>독서</h3>
-                                <p>책을 읽고 토론하는 모임</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(1)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(1)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
+            <div class="modal-body">
+                <div class="modal-form">
+                    <!-- 카테고리 이미지 -->
+                    <div class="form-row image-row">
+                        <div class="category-image-upload">
+                            <label for="categoryImageInput" class="image-upload-label">
+                                <div class="image-preview" id="imagePreview">
+                                    <span class="material-symbols-outlined">image</span>
+                                </div>
+                            </label>
+                            <input type="file" id="categoryImageInput" accept="image/*" style="display: none;">
                         </div>
                     </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(1)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag" data-sub-id="1" onclick="selectSubCategory(this)">
-                            <span class="sub-tag-text">자기계발서</span>
-                            <button class="sub-tag-delete" onclick="event.stopPropagation(); showSubDeleteModal(1, '자기계발서')">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                        <div class="sub-tag" data-sub-id="2" onclick="selectSubCategory(this)">
-                            <span class="sub-tag-text">소설</span>
-                            <button class="sub-tag-delete" onclick="event.stopPropagation(); showSubDeleteModal(2, '소설')">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                        <div class="sub-tag" data-sub-id="3" onclick="selectSubCategory(this)">
-                            <span class="sub-tag-text">ㅇㅁㅀ</span>
-                            <button class="sub-tag-delete" onclick="event.stopPropagation(); showSubDeleteModal(3, 'ㅇㅁㅀ')">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- 음악 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">음악</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>음악</h3>
-                                <p>음악 관련 활동</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(2)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(2)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
+                    <!-- 분류 타입 -->
+                    <div class="form-row">
+                        <label class="form-label">분류 타입</label>
+                        <div class="form-input-readonly">대분류</div>
                     </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(2)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">기타</div>
-                        <div class="sub-tag">피아노</div>
-                    </div>
-                </div>
 
-                <!-- 여행 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">여행</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>여행</h3>
-                                <p>여행 계획 및 정보 공유</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(3)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(3)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
+                    <!-- 카테고리명 -->
+                    <div class="form-row">
+                        <label class="form-label">카테고리명 *</label>
+                        <input type="text" id="categoryName" class="form-input" placeholder="예: 독서, 운동, 요리" maxlength="5">
+                        <div class="form-hint">
+                            <span id="nameCounter">0/5자</span>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(3)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">등산</div>
-                        <div class="sub-tag">해외여행</div>
-                    </div>
-                </div>
 
-                <!-- 운동 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">운동</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>운동</h3>
-                                <p>건강한 운동 활동</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">2개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(4)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(4)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(4)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">축구</div>
-                        <div class="sub-tag">러닝</div>
-                        <div class="sub-tag">요가</div>
-                        <div class="sub-tag">사이클</div>
-                    </div>
-                </div>
-
-                <!-- 요리 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">요리</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>요리</h3>
-                                <p>요리 레시피 및 팁 공유</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(5)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(5)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(5)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">한식</div>
-                        <div class="sub-tag">베이킹</div>
-                    </div>
-                </div>
-
-                <!-- 게임 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">게임</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>게임</h3>
-                                <p>게임 관련 모임</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(6)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(6)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(6)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">비디오게임</div>
-                        <div class="sub-tag">보드게임</div>
-                    </div>
-                </div>
-
-                <!-- 사진 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">사진</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>사진</h3>
-                                <p>사진 촬영 및 편집</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(7)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(7)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(7)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">풍경사진</div>
-                        <div class="sub-tag">인물사진</div>
-                    </div>
-                </div>
-
-                <!-- 학습 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">학습</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>학습</h3>
-                                <p>학습 및 자기계발</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(8)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(8)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(8)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                        <div class="sub-tag">영어</div>
-                        <div class="sub-tag">프로그래밍</div>
-                    </div>
-                </div>
-
-                <!-- 기타 카테고리 -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <span class="badge-text">기타</span>
-                            </div>
-                            <div class="category-info">
-                                <h3>기타</h3>
-                                <p>기타 카테고리</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">1개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(9)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(9)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(9)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
-                    </div>
-                </div>
-
-                <!-- ㅁㄴㅇㄹ 카테고리 (테스트용) -->
-                <div class="category-card">
-                    <div class="card-decoration"></div>
-                    <div class="card-header">
-                        <div class="header-left">
-                            <div class="category-badge">
-                                <img src="https://via.placeholder.com/58?text=ㅁㄴ" alt="ㅁㄴㅇㄹ">
-                            </div>
-                            <div class="category-info">
-                                <h3>ㅁㄴㅇㄹ</h3>
-                                <p>ㅁㅇㄹ</p>
-                            </div>
-                        </div>
-                        <div class="header-right">
-                            <div class="club-count">0개 모임</div>
-                            <button class="btn-icon" onclick="editCategory(10)" title="편집">
-                                <span class="material-symbols-outlined">edit</span>
-                            </button>
-                            <button class="btn-icon btn-delete" onclick="deleteCategory(10)" title="삭제">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <button class="sub-tag sub-tag-add" onclick="addSubCategory(10)">
-                            <span class="material-symbols-outlined">add</span>
-                            소분류 추가
-                        </button>
+                    <!-- 설명 -->
+                    <div class="form-row">
+                        <label class="form-label">설명</label>
+                        <textarea id="categoryDesc" class="form-textarea" placeholder="카테고리에 대한 간단한 설명을 입력하세요" rows="4"></textarea>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 대분류 추가 모달 -->
-        <div id="addCategoryModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-header-left">
-                        <h2>카테고리 추가</h2>
-                    </div>
-                    <button class="modal-close" onclick="closeAddModal()">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="modal-form">
-                        <!-- 카테고리 이미지 -->
-                        <div class="form-row image-row">
-                            <div class="category-image-upload">
-                                <label for="categoryImageInput" class="image-upload-label">
-                                    <div class="image-preview" id="imagePreview">
-                                        <span class="material-symbols-outlined">image</span>
-                                    </div>
-                                </label>
-                                <input type="file" id="categoryImageInput" accept="image/*" style="display: none;">
-                            </div>
-                        </div>
-
-                        <!-- 분류 타입 -->
-                        <div class="form-row">
-                            <label class="form-label">분류 타입</label>
-                            <div class="form-input-readonly">대분류</div>
-                        </div>
-
-                        <!-- 카테고리명 -->
-                        <div class="form-row">
-                            <label class="form-label">카테고리명 *</label>
-                            <input type="text" id="categoryName" class="form-input" placeholder="예: 독서, 운동, 요리" maxlength="5">
-                            <div class="form-hint">
-                                <span id="nameCounter">0/5자</span>
-                            </div>
-                        </div>
-
-                        <!-- 설명 -->
-                        <div class="form-row">
-                            <label class="form-label">설명</label>
-                            <textarea id="categoryDesc" class="form-textarea" placeholder="카테고리에 대한 간단한 설명을 입력하세요" rows="4"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeAddModal()">취소</button>
-                    <button class="btn-submit" onclick="submitCategory()">추가</button>
-                </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeAddModal()">취소</button>
+                <button class="btn-submit" onclick="submitCategory()">추가</button>
             </div>
         </div>
+    </div>
 
-        <!-- 소분류 추가 모달 -->
-        <div id="addSubCategoryModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-header-left">
-                        <h2>카테고리 추가</h2>
-                    </div>
-                    <button class="modal-close" onclick="closeAddSubModal()">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
+    <!-- 소분류 추가 모달 -->
+    <div id="addSubCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <h2>카테고리 추가</h2>
                 </div>
+                <button class="modal-close" onclick="closeAddSubModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
 
-                <div class="modal-body">
-                    <div class="modal-form">
-                        <!-- 분류 타입 -->
-                        <div class="form-row">
-                            <label class="form-label">분류 타입</label>
-                            <div class="form-input-readonly" id="subCategoryType">소분류 (상위: 독서)</div>
-                        </div>
+            <div class="modal-body">
+                <div class="modal-form">
+                    <!-- 분류 타입 -->
+                    <div class="form-row">
+                        <label class="form-label">분류 타입</label>
+                        <div class="form-input-readonly" id="subCategoryType">소분류 (상위: 독서)</div>
+                    </div>
 
-                        <!-- 카테고리명 -->
-                        <div class="form-row">
-                            <label class="form-label">카테고리명 *</label>
-                            <input type="text" id="subCategoryName" class="form-input" placeholder="예: 독서, 운동, 요리" maxlength="5">
-                            <div class="form-hint">
-                                <span id="subNameCounter">0/5자</span>
-                            </div>
-                        </div>
-
-                        <!-- 설명 -->
-                        <div class="form-row">
-                            <label class="form-label">설명</label>
-                            <textarea id="subCategoryDesc" class="form-textarea" placeholder="카테고리에 대한 간단한 설명을 입력하세요" rows="4"></textarea>
+                    <!-- 카테고리명 -->
+                    <div class="form-row">
+                        <label class="form-label">카테고리명 *</label>
+                        <input type="text" id="subCategoryName" class="form-input" placeholder="예: 독서, 운동, 요리" maxlength="5">
+                        <div class="form-hint">
+                            <span id="subNameCounter">0/5자</span>
                         </div>
                     </div>
-                </div>
 
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeAddSubModal()">취소</button>
-                    <button class="btn-submit" onclick="submitSubCategory()">추가</button>
+                    <!-- 설명 -->
+                    <div class="form-row">
+                        <label class="form-label">설명</label>
+                        <textarea id="subCategoryDesc" class="form-textarea" placeholder="카테고리에 대한 간단한 설명을 입력하세요" rows="4"></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- 카테고리 삭제 확인 모달 -->
-        <div id="deleteCategoryModal" class="modal">
-            <div class="modal-content delete-modal-content">
-                <div class="modal-header">
-                    <div class="modal-header-left">
-                        <h2>카테고리 삭제 확인</h2>
-                    </div>
-                    <button class="modal-close" onclick="closeDeleteModal()">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="delete-message">
-                        <p class="delete-question">정말로 이 카테고리를 삭제하시겠습니까?</p>
-                        <p class="delete-warning" id="deleteWarningText">현재 1개의 모임이 이 카테고리를 사용 중입니다.</p>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeDeleteModal()">취소</button>
-                    <button class="btn-delete-confirm" onclick="confirmDeleteCategory()">삭제</button>
-                </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeAddSubModal()">취소</button>
+                <button class="btn-submit" onclick="submitSubCategory()">추가</button>
             </div>
         </div>
+    </div>
 
-        <!-- 카테고리 수정 모달 -->
-        <div id="editCategoryModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <div class="modal-header-left">
-                        <h2>카테고리 수정</h2>
-                    </div>
-                    <button class="modal-close" onclick="closeEditModal()">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
+    <!-- 카테고리 삭제 확인 모달 -->
+    <div id="deleteCategoryModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <h2>카테고리 삭제 확인</h2>
                 </div>
+                <button class="modal-close" onclick="closeDeleteModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
 
-                <div class="modal-body">
-                    <div class="modal-form">
-                        <!-- 카테고리 이미지 -->
-                        <div class="form-row image-row">
-                            <div class="category-image-upload">
-                                <label for="editCategoryImageInput" class="image-upload-label">
-                                    <div class="image-preview" id="editImagePreview">
-                                        <span class="material-symbols-outlined">image</span>
-                                    </div>
-                                </label>
-                                <input type="file" id="editCategoryImageInput" accept="image/*" style="display: none;">
-                            </div>
-                        </div>
-
-                        <!-- 분류 타입 -->
-                        <div class="form-row">
-                            <label class="form-label">분류 타입</label>
-                            <div class="form-input-readonly">대분류</div>
-                        </div>
-
-                        <!-- 카테고리명 -->
-                        <div class="form-row">
-                            <label class="form-label">카테고리명 *</label>
-                            <input type="text" id="editCategoryName" class="form-input" placeholder="예: 독서, 운동, 요리" maxlength="5">
-                            <div class="form-hint">
-                                <span id="editNameCounter">0/5자</span>
-                            </div>
-                        </div>
-
-                        <!-- 설명 -->
-                        <div class="form-row">
-                            <label class="form-label">설명</label>
-                            <textarea id="editCategoryDesc" class="form-textarea" placeholder="카테고리에 대한 간단한 설명을 입력하세요" rows="4"></textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeEditModal()">취소</button>
-                    <button class="btn-submit" onclick="submitEditCategory()">수정</button>
+            <div class="modal-body">
+                <div class="delete-message">
+                    <p class="delete-question">정말로 이 카테고리를 삭제하시겠습니까?</p>
+                    <p class="delete-warning" id="deleteWarningText">현재 1개의 모임이 이 카테고리를 사용 중입니다.</p>
                 </div>
             </div>
-        </div>
 
-        <!-- 소분류 삭제 확인 모달 -->
-        <div id="deleteSubCategoryModal" class="modal">
-            <div class="modal-content delete-modal-content">
-                <div class="modal-header">
-                    <div class="modal-header-left">
-                        <h2>소분류 삭제 확인</h2>
-                    </div>
-                    <button class="modal-close" onclick="closeSubDeleteModal()">
-                        <span class="material-symbols-outlined">close</span>
-                    </button>
-                </div>
-
-                <div class="modal-body">
-                    <div class="delete-message">
-                        <p class="delete-question">정말로 이 소분류를 삭제하시겠습니까?</p>
-                        <p class="delete-warning" id="subDeleteWarningText">소분류: <span id="subDeleteName"></span></p>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn-cancel" onclick="closeSubDeleteModal()">취소</button>
-                    <button class="btn-delete-confirm" onclick="confirmDeleteSubCategory()">삭제</button>
-                </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()">취소</button>
+                <button class="btn-delete-confirm" onclick="confirmDeleteCategory()">삭제</button>
             </div>
         </div>
+    </div>
 
-        <!-- 토스트 메시지 -->
-        <div id="toast" class="toast">
-            <span class="toast-icon material-symbols-outlined"></span>
-            <span class="toast-message"></span>
+    <!-- 카테고리 수정 모달 -->
+    <div id="editCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <h2>카테고리 수정</h2>
+                </div>
+                <button class="modal-close" onclick="closeEditModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-form">
+                    <!-- 카테고리 이미지 -->
+                    <div class="form-row image-row">
+                        <div class="category-image-upload">
+                            <label for="editCategoryImageInput" class="image-upload-label">
+                                <div class="image-preview" id="editImagePreview">
+                                    <span class="material-symbols-outlined">image</span>
+                                </div>
+                            </label>
+                            <input type="file" id="editCategoryImageInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- 분류 타입 -->
+                    <div class="form-row">
+                        <label class="form-label">분류 타입</label>
+                        <div class="form-input-readonly">대분류</div>
+                    </div>
+
+                    <!-- 카테고리명 -->
+                    <div class="form-row">
+                        <label class="form-label">카테고리명 *</label>
+                        <input type="text" id="editCategoryName" class="form-input" placeholder="예: 독서, 운동, 요리" maxlength="5">
+                        <div class="form-hint">
+                            <span id="editNameCounter">0/5자</span>
+                        </div>
+                    </div>
+
+                    <!-- 설명 -->
+                    <div class="form-row">
+                        <label class="form-label">설명</label>
+                        <textarea id="editCategoryDesc" class="form-textarea" placeholder="카테고리에 대한 간단한 설명을 입력하세요" rows="4"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeEditModal()">취소</button>
+                <button class="btn-submit" onclick="submitEditCategory()">수정</button>
+            </div>
         </div>
+    </div>
 
-        <script>
-            let currentEditId = null;
-            let currentDeleteId = null;
-            let currentParentId = null; // 소분류 추가 시 상위 카테고리 ID
-            let currentParentName = null; // 소분류 추가 시 상위 카테고리명
-            let currentSubDeleteId = null; // 삭제할 소분류 ID
-            let selectedSubTag = null; // 현재 선택된 소분류 태그
-            let subTagTimer = null; // 소분류 태그 타이머
+    <!-- 소분류 삭제 확인 모달 -->
+    <div id="deleteSubCategoryModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <h2>소분류 삭제 확인</h2>
+                </div>
+                <button class="modal-close" onclick="closeSubDeleteModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
 
-            // 토스트 메시지 표시 함수
-            /* 사용 방법 : 
-            showToast('수정 완료', 'success');  // 성공
-            showToast('수정 실패', 'error');    // 실패
-            */
-            function showToast(message, type = 'success') {
-                const toast = document.getElementById('toast');
-                const icon = toast.querySelector('.toast-icon');
-                const messageEl = toast.querySelector('.toast-message');
-                
-                // 아이콘 설정
-                if (type === 'success') {
-                    icon.textContent = 'check_circle';
-                    toast.classList.remove('toast-error');
-                    toast.classList.add('toast-success');
-                } else {
-                    icon.textContent = 'error';
-                    toast.classList.remove('toast-success');
-                    toast.classList.add('toast-error');
-                }
-                
-                messageEl.textContent = message;
-                toast.classList.add('show');
-                
-                // 3초 후 자동 숨김
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
-            }
+            <div class="modal-body">
+                <div class="delete-message">
+                    <p class="delete-question">정말로 이 소분류를 삭제하시겠습니까?</p>
+                    <p class="delete-warning" id="subDeleteWarningText">소분류: <span id="subDeleteName"></span></p>
+                </div>
+            </div>
 
-            // 추가 모달 - 카테고리명 글자수 카운터
-            document.getElementById('categoryName').addEventListener('input', function(e) {
-                const counter = document.getElementById('nameCounter');
-                counter.textContent = `${e.target.value.length}/5자`;
-            });
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeSubDeleteModal()">취소</button>
+                <button class="btn-delete-confirm" onclick="confirmDeleteSubCategory()">삭제</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-            // 소분류 추가 모달 - 카테고리명 글자수 카운터
-            document.getElementById('subCategoryName').addEventListener('input', function(e) {
-                const counter = document.getElementById('subNameCounter');
-                counter.textContent = `${e.target.value.length}/5자`;
-            });
 
-            // 추가 모달 - 이미지 업로드 미리보기
-            document.getElementById('categoryImageInput').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const preview = document.getElementById('imagePreview');
-                        preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+<th:block layout:fragment="script">
+    <script>
+        let currentEditId = null;
+        let currentDeleteId = null;
 
-            // 수정 모달 - 카테고리명 글자수 카운터
-            document.getElementById('editCategoryName').addEventListener('input', function(e) {
-                const counter = document.getElementById('editNameCounter');
-                counter.textContent = `${e.target.value.length}/5자`;
-            });
+        let currentParentId = null; // 소분류 추가 시 상위 카테고리 ID
+        let currentParentName = null; // 소분류 추가 시 상위 카테고리명
 
-            // 수정 모달 - 이미지 업로드 미리보기
-            document.getElementById('editCategoryImageInput').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const preview = document.getElementById('editImagePreview');
-                        preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+        let currentSubDeleteId = null; // 삭제할 소분류 ID
+        let selectedSubTag = null; // 현재 선택된 소분류 태그
+        let subTagTimer = null; // 소분류 태그 타이머
 
-            function addParentCategory() {
-                document.getElementById('addCategoryModal').classList.add('active');
-            }
+        // 카테고리 갱신 
+        window.__categoriesCache = window.__categoriesCache ?? [];
 
-            function closeAddModal() {
-                const modal = document.getElementById('addCategoryModal');
-                modal.classList.remove('active');
-                // 폼 초기화
-                document.getElementById('categoryName').value = '';
-                document.getElementById('categoryDesc').value = '';
-                document.getElementById('nameCounter').textContent = '0/5자';
-                document.getElementById('imagePreview').innerHTML = '<span class="material-symbols-outlined">image</span>';
-            }
+        function getCsrf() {
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+            return { token, header };
+        }
 
-            function submitCategory() {
-                const name = document.getElementById('categoryName').value.trim();
-                const desc = document.getElementById('categoryDesc').value.trim();
+        // onclick 문자열 깨짐 방지
+        function escapeJs(str) {
+            if (str == null) return '';
+            return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        }
 
-                if (!name) {
-                    showToast('카테고리명을 입력하세요.', 'error');
-                    return;
-                }
+        // XSS 방지용(HTML 문자열로 렌더링하므로 필수)
+        function escapeHtml(str) {
+            if (str == null) return '';
+            return String(str)
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+        }
 
-                console.log('대분류 추가:', { name, desc });
-                // TODO: 서버에 추가 요청
-                // 성공 시:
-                showToast('카테고리가 추가되었습니다.', 'success');
-                closeAddModal();
-                // 실패 시: showToast('카테고리 추가에 실패했습니다.', 'error');
-            }
+        // 토스트 메시지 표시 함수
+        /* 사용 방법 : 
+        showToast('수정 완료', 'success');  // 성공
+        showToast('수정 실패', 'error');    // 실패
+        */
+        function showToast(message, type = 'success') {
+            alert(message);
+            // 3초 후 자동 숨김
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        // ------------------모달
+        // 추가 모달 - 카테고리명 글자수 카운터
+        document.getElementById('categoryName').addEventListener('input', function(e) {
+            const counter = document.getElementById('nameCounter');
+            counter.textContent = `${e.target.value.length}/5자`;
+        });
 
-            function editCategory(id) {
-                currentEditId = id;
-                
-                // TODO: 서버에서 카테고리 정보 가져오기
-                // 임시 데이터 (실제로는 서버에서 가져와야 함)
-                const categories = {
-                    1: { name: '독서', desc: '책을 읽고 토론하는 모임', image: null },
-                    2: { name: '음악', desc: '음악 관련 활동', image: null },
-                    3: { name: '여행', desc: '여행 계획 및 정보 공유', image: null },
-                    4: { name: '운동', desc: '건강한 운동 활동', image: null },
-                    5: { name: '요리', desc: '요리 레시피 및 팁 공유', image: null },
-                    6: { name: '게임', desc: '게임 관련 모임', image: null },
-                    7: { name: '사진', desc: '사진 촬영 및 편집', image: null },
-                    8: { name: '학습', desc: '학습 및 자기계발', image: null },
-                    9: { name: '기타', desc: '기타 카테고리', image: null },
+        // 소분류 추가 모달 - 카테고리명 글자수 카운터
+        document.getElementById('subCategoryName').addEventListener('input', function(e) {
+            const counter = document.getElementById('subNameCounter');
+            counter.textContent = `${e.target.value.length}/5자`;
+        });
+
+        // 추가 모달 - 이미지 업로드 미리보기
+        document.getElementById('categoryImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('imagePreview');
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
                 };
-                
-                const category = categories[id];
-                if (category) {
-                    document.getElementById('editCategoryName').value = category.name;
-                    document.getElementById('editCategoryDesc').value = category.desc;
-                    document.getElementById('editNameCounter').textContent = `${category.name.length}/5자`;
-                    
-                    // 이미지 설정
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // 수정 모달 - 카테고리명 글자수 카운터
+        document.getElementById('editCategoryName').addEventListener('input', function(e) {
+            const counter = document.getElementById('editNameCounter');
+            counter.textContent = `${e.target.value.length}/5자`;
+        });
+
+        // 수정 모달 - 이미지 업로드 미리보기
+        document.getElementById('editCategoryImageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
                     const preview = document.getElementById('editImagePreview');
-                    if (category.image) {
-                        preview.innerHTML = `<img src="${category.image}" alt="${category.name}">`;
-                    } else {
-                        preview.innerHTML = '<span class="material-symbols-outlined">image</span>';
-                    }
-                    
-                    document.getElementById('editCategoryModal').classList.add('active');
-                }
+                    preview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        // 모달 열고 닫기
+        function addParentCategory() {
+            document.getElementById('addCategoryModal').classList.add('active');
+        }
+
+        function closeAddModal() {
+            const modal = document.getElementById('addCategoryModal');
+            modal.classList.remove('active');
+            // 폼 초기화
+            document.getElementById('categoryName').value = '';
+            document.getElementById('categoryDesc').value = '';
+            document.getElementById('nameCounter').textContent = '0/5자';
+            document.getElementById('imagePreview').innerHTML = '<span class="material-symbols-outlined">image</span>';
+            const fileInput = document.getElementById('categoryImageInput');
+            if (fileInput) fileInput.value = '';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editCategoryModal').classList.remove('active');
+            currentEditId = null;
+            const fileInput = document.getElementById('editCategoryImageInput');
+            if (fileInput) fileInput.value = '';
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteCategoryModal').classList.remove('active');
+            currentDeleteId = null;
+        }
+
+        function closeAddSubModal() {
+            const modal = document.getElementById('addSubCategoryModal');
+            modal.classList.remove('active');
+            document.getElementById('subCategoryName').value = '';
+            document.getElementById('subCategoryDesc').value = '';
+            document.getElementById('subNameCounter').textContent = '0/5자';
+            currentParentId = null;
+            currentParentName = null;
+        }
+
+        function closeSubDeleteModal() {
+            document.getElementById('deleteSubCategoryModal').classList.remove('active');
+            currentSubDeleteId = null;
+        }
+
+        // ------------------ajax
+        // 리스트 조회
+        function getList() {
+            $.ajax({
+            url: `/admin/api/categories`,
+            method: 'GET',
+            dataType: 'json',
+            success: function(list) {
+                window.__categoriesCache = Array.isArray(list) ? list : [];
+                renderCategories(window.__categoriesCache);
+            },
+            error: function(xhr, status, error) {
+                console.error('*****status:', status);
+                console.error('*****http status code:', xhr.status);
+                console.error('*****error:', error);
+                console.error('*****responseText:', xhr.responseText);
+                showToast('카테고리 조회 실패', 'error');
+            }
+            });
+        }
+
+        // 렌더링 - container 내부  -> 서버데이터
+        function renderCategories(categories) {
+            const container = document.querySelector('.categories-container');
+            if (!container) return;
+
+            if (!categories || categories.length === 0) {
+            container.innerHTML = `
+                <div style="padding:18px; color:#6b7280; font-weight:700;">
+                등록된 카테고리가 없습니다.
+                </div>
+            `;
+            return;
+            }
+            
+            let html = '';
+            for (const c of categories) {
+            const no = c.no;
+            const name = escapeHtml(c.name || '');
+            const desc = escapeHtml(c.description || '');
+            const subList = c.subCategories || c.subCategoryList || []; 
+            const iconText = (c.name || '').length >= 2 ? (c.name || '').slice(0, 2) : (c.name || '');
+            const badgeHtml = c.icon
+            ? `<img src="${escapeHtml(c.icon)}?v=${Date.now()}" alt="${name}">`
+            : `<span class="badge-text">${escapeHtml(iconText)}</span>`;
+
+
+            // 소분류 버튼 + 태그들 (HTML 구조 유지)
+            let subHtml = `
+                <button class="sub-tag sub-tag-add" onclick="addSubCategory(${no})">
+                <span class="material-symbols-outlined">add</span>
+                소분류 추가
+                </button>
+            `;
+
+            for (const s of subList) {
+                const subNo = s.no;
+                const subName = escapeHtml(s.name || '');
+                subHtml += `
+                <div class="sub-tag" data-sub-id="${subNo}" onclick="selectSubCategory(this)">
+                    <span class="sub-tag-text">${subName}</span>
+                    <button class="sub-tag-delete"
+                    onclick="event.stopPropagation(); showSubDeleteModal(${subNo}, '${escapeJs(s.name || '')}')">
+                    <span class="material-symbols-outlined">delete</span>
+                    </button>
+                </div>
+                `;
             }
 
-            function closeEditModal() {
-                const modal = document.getElementById('editCategoryModal');
-                modal.classList.remove('active');
-                currentEditId = null;
+            const clubCount = (c.clubCount != null) ? c.clubCount : 0;
+
+            html += `
+                <div class="category-card" data-category-id="${no}">
+                <div class="card-decoration"></div>
+                <div class="card-header">
+                    <div class="header-left">
+                    <div class="category-badge">
+                        ${badgeHtml}
+                    </div>
+                    <div class="category-info">
+                        <h3>${name}</h3>
+                        <p>${desc}</p>
+                    </div>
+                    </div>
+                    <div class="header-right">
+                    <div class="club-count">${clubCount}개 모임</div>
+                    <button class="btn-icon" onclick="editCategory(${no})" title="편집">
+                        <span class="material-symbols-outlined">edit</span>
+                    </button>
+                    <button class="btn-icon btn-delete" onclick="deleteCategory(${no})" title="삭제" style="padding: 0px;">
+                        <span class="material-symbols-outlined">delete</span>
+                    </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    ${subHtml}
+                </div>
+                </div>
+            `;
             }
 
-            function submitEditCategory() {
-                const name = document.getElementById('editCategoryName').value.trim();
-                const desc = document.getElementById('editCategoryDesc').value.trim();
+            container.innerHTML = html;
+        }
+        //---------------대분류
+        // 대분류 추가
+        function submitCategory() {
+            const name = document.getElementById('categoryName').value.trim();
+            const description = document.getElementById('categoryDesc').value.trim();
+            const file = document.getElementById('categoryImageInput').files[0];
 
-                if (!name) {
-                    showToast('카테고리명을 입력하세요.', 'error');
-                    return;
-                }
+            if (!name) { showToast('카테고리명을 입력하세요.', 'error'); return; }
 
-                console.log('카테고리 수정:', { id: currentEditId, name, desc });
-                // TODO: 서버에 수정 요청
-                // 성공 시:
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("seq", 1);
+            if (file) formData.append("iconFile", file);
+
+            const token = $("meta[name='_csrf']").attr("content");
+            const header = $("meta[name='_csrf_header']").attr("content");
+
+            $.ajax({
+                url: "/admin/api/categories/create",
+                method: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: (xhr) => xhr.setRequestHeader(header, token),
+                success: () => { showToast('카테고리가 추가되었습니다.', 'success'); closeAddModal(); getList(); },
+                error: () => showToast('카테고리 추가에 실패했습니다.', 'error')
+            });
+        }
+
+        // 대분류 수정
+        function editCategory(id) {
+            currentEditId = id;
+
+            const category = (window.__categoriesCache || []).find(c => c.no === id);
+            if (!category) {
+            showToast('카테고리 정보를 찾을 수 없습니다.', 'error');
+            return;
+            }
+
+            document.getElementById('editCategoryName').value = category.name || '';
+            document.getElementById('editCategoryDesc').value = category.description || '';
+            document.getElementById('editNameCounter').textContent =
+            `${(category.name || '').length}/5자`;
+
+            // 이미지 미리보기
+            const preview = document.getElementById('editImagePreview');
+            if (category.icon) {
+                preview.innerHTML = `<img src="${category.icon}" alt="icon">`;
+            } else {
+                preview.innerHTML = '<span class="material-symbols-outlined">image</span>';
+            }
+
+            document.getElementById('editCategoryModal').classList.add('active');
+        }
+
+        function submitEditCategory() {
+            const name = document.getElementById('editCategoryName').value.trim();
+            const description = document.getElementById('editCategoryDesc').value.trim();
+            const file = document.getElementById('editCategoryImageInput').files[0];
+
+            if (!name) {
+                showToast('카테고리명을 입력하세요.', 'error');
+                return;
+            }
+            if (!currentEditId) {
+                showToast('수정 대상이 없습니다.', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("name", name);
+            formData.append("description", description);
+            // seq 정책이 있다면 넣기. 없으면 아예 빼도 됨.
+            formData.append("seq", 1);
+            if (file) formData.append("iconFile", file);
+
+            const { token, header } = getCsrf();
+
+            $.ajax({
+                url: `/admin/api/categories/${currentEditId}/update`,
+                method: 'PUT',
+                data: formData,
+                processData: false,
+                contentType: false,
+                beforeSend: function (xhr) {
+                if (header && token) xhr.setRequestHeader(header, token);
+                },
+                success: function() {
                 showToast('수정 완료', 'success');
                 closeEditModal();
-                // 실패 시: showToast('수정 실패', 'error');
-            }
-
-            function deleteCategory(id) {
-                currentDeleteId = id;
-                
-                // TODO: 서버에서 카테고리 정보 가져오기
-                // 임시 데이터
-                const clubCounts = {
-                    1: 1, 2: 1, 3: 1, 4: 2, 5: 1, 6: 1, 7: 1, 8: 1, 9: 1, 10: 0
-                };
-                
-                const count = clubCounts[id] || 0;
-                const warningText = document.getElementById('deleteWarningText');
-                warningText.textContent = `현재 ${count}개의 모임이 이 카테고리를 사용 중입니다.`;
-                
-                document.getElementById('deleteCategoryModal').classList.add('active');
-            }
-
-            function closeDeleteModal() {
-                const modal = document.getElementById('deleteCategoryModal');
-                modal.classList.remove('active');
-                currentDeleteId = null;
-            }
-
-            function confirmDeleteCategory() {
-                if (currentDeleteId) {
-                    console.log('카테고리 삭제 확정:', currentDeleteId);
-                    // TODO: 서버에 삭제 요청
-                    // 성공 시:
-                    showToast('삭제 완료', 'success');
-                    closeDeleteModal();
-                    // 실패 시: showToast('삭제 실패', 'error');
+                getList();
+                },
+                error: function(xhr) {
+                console.error(xhr.responseText);
+                showToast('수정 실패', 'error');
                 }
+            });
+        }
+        // 대분류 삭제
+        function deleteCategory(id) {
+            currentDeleteId = id;
+
+            const category = (window.__categoriesCache || []).find(c => c.no === id);
+            const count = category && category.clubCount != null ? category.clubCount : 0;
+
+            const warningText = document.getElementById('deleteWarningText');
+            warningText.textContent = `현재 ${count}개의 모임이 이 카테고리를 사용 중입니다.`;
+
+            document.getElementById('deleteCategoryModal').classList.add('active');
+        }
+
+        function confirmDeleteCategory() {
+            if (!currentDeleteId) return;
+
+            const { token, header } = getCsrf();
+
+            $.ajax({
+            url: `/admin/api/categories/${currentDeleteId}`,
+            method: 'DELETE',
+            beforeSend: function (xhr) {
+                if (header && token) xhr.setRequestHeader(header, token);
+            },
+            success: function(res) {
+                showToast('삭제 완료', 'success');
+                closeDeleteModal();
+                getList();
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                showToast('삭제 실패', 'error');
+            }
+            });
+        }
+
+        // ------------------소분류
+        // 소분류 추가
+        function addSubCategory(parentId) {
+            const category = (window.__categoriesCache || []).find(c => c.no === parentId);
+
+            currentParentId = parentId;
+            currentParentName = category ? category.name : '알 수 없음';
+
+            document.getElementById('subCategoryType').textContent =
+            `소분류 (상위: ${currentParentName})`;
+
+            document.getElementById('addSubCategoryModal').classList.add('active');
+        }
+
+        function submitSubCategory() {
+            const name = document.getElementById('subCategoryName').value.trim();
+            const desc = document.getElementById('subCategoryDesc').value.trim(); 
+
+            if (!name) {
+            showToast('카테고리명을 입력하세요.', 'error');
+            return;
+            }
+            if (!currentParentId) {
+            showToast('상위 카테고리를 찾을 수 없습니다.', 'error');
+            return;
             }
 
-            function addSubCategory(parentId) {
-                // 카테고리 이름 매핑 (실제로는 서버에서 가져와야 함)
-                const categoryNames = {
-                    '1': '독서',
-                    '2': '음악',
-                    '3': '여행',
-                    '4': '운동',
-                    '5': '요리',
-                    '6': '게임',
-                    '7': '사진',
-                    '8': '학습',
-                    '9': '기타',
-                    '10': 'ㅁㄴㅇㄹ'
-                };
-                
-                currentParentId = parentId;
-                currentParentName = categoryNames[parentId] || '알 수 없음';
-                
-                // 분류 타입 필드 업데이트
-                document.getElementById('subCategoryType').textContent = `소분류 (상위: ${currentParentName})`;
-                
-                // 모달 열기
-                document.getElementById('addSubCategoryModal').classList.add('active');
-            }
+            const payload = {
+            name: name,
+            seq: 0
+            };
 
-            function closeAddSubModal() {
-                const modal = document.getElementById('addSubCategoryModal');
-                modal.classList.remove('active');
-                // 폼 초기화
-                document.getElementById('subCategoryName').value = '';
-                document.getElementById('subCategoryDesc').value = '';
-                document.getElementById('subNameCounter').textContent = '0/5자';
-                currentParentId = null;
-                currentParentName = null;
-            }
+            const { token, header } = getCsrf();
 
-            function submitSubCategory() {
-                const name = document.getElementById('subCategoryName').value.trim();
-                const desc = document.getElementById('subCategoryDesc').value.trim();
-
-                if (!name) {
-                    showToast('카테고리명을 입력하세요.', 'error');
-                    return;
-                }
-
-                console.log('소분류 추가:', { 
-                    parentId: currentParentId, 
-                    parentName: currentParentName,
-                    name, 
-                    desc 
-                });
-                // TODO: 서버에 추가 요청
-                // 성공 시:
+            $.ajax({
+            url: `/admin/api/categories/${currentParentId}/subs`,
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(payload),
+            beforeSend: function (xhr) {
+                if (header && token) xhr.setRequestHeader(header, token);
+            },
+            success: function(res) {
                 showToast('소분류가 추가되었습니다.', 'success');
                 closeAddSubModal();
-                // 실패 시: showToast('소분류 추가에 실패했습니다.', 'error');
+                getList();
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                showToast('소분류 추가에 실패했습니다.', 'error');
+            }
+            });
+        }
+        // 소분류 선택
+        function selectSubCategory(element) {
+            if (selectedSubTag && selectedSubTag !== element) {
+            selectedSubTag.classList.remove('selected');
+            clearTimeout(subTagTimer);
             }
 
-            // 소분류 선택 (클릭 시 휴지통 아이콘 표시)
-            function selectSubCategory(element) {
-                // 기존 선택된 태그 제거
-                if (selectedSubTag && selectedSubTag !== element) {
-                    selectedSubTag.classList.remove('selected');
-                    clearTimeout(subTagTimer);
-                }
+            selectedSubTag = element;
+            element.classList.add('selected');
 
-                // 새로운 태그 선택
-                selectedSubTag = element;
-                element.classList.add('selected');
-
-                // 2초 후 자동으로 선택 해제
-                subTagTimer = setTimeout(() => {
-                    if (selectedSubTag) {
-                        selectedSubTag.classList.remove('selected');
-                        selectedSubTag = null;
-                    }
-                }, 2000);
+            subTagTimer = setTimeout(() => {
+            if (selectedSubTag) {
+                selectedSubTag.classList.remove('selected');
+                selectedSubTag = null;
             }
+            }, 2000);
+        }
+        // 소분류 삭제
+        function showSubDeleteModal(subId, subName) {
+            currentSubDeleteId = subId;
+            document.getElementById('subDeleteName').textContent = subName;
+            document.getElementById('deleteSubCategoryModal').classList.add('active');
 
-            // 소분류 삭제 모달 표시
-            function showSubDeleteModal(subId, subName) {
-                currentSubDeleteId = subId;
-                document.getElementById('subDeleteName').textContent = subName;
-                document.getElementById('deleteSubCategoryModal').classList.add('active');
-
-                // 선택 상태 제거 및 타이머 정리
-                if (selectedSubTag) {
-                    selectedSubTag.classList.remove('selected');
-                    selectedSubTag = null;
-                }
-                clearTimeout(subTagTimer);
+            if (selectedSubTag) {
+            selectedSubTag.classList.remove('selected');
+            selectedSubTag = null;
             }
+            clearTimeout(subTagTimer);
+        }
 
-            // 소분류 삭제 모달 닫기
-            function closeSubDeleteModal() {
-                document.getElementById('deleteSubCategoryModal').classList.remove('active');
-                currentSubDeleteId = null;
+        function confirmDeleteSubCategory() {
+            if (!currentSubDeleteId) return;
+
+            const { token, header } = getCsrf();
+
+            $.ajax({
+            url: `/admin/api/categories/subs/${currentSubDeleteId}`,
+            method: 'DELETE',
+            beforeSend: function (xhr) {
+                if (header && token) xhr.setRequestHeader(header, token);
+            },
+            success: function(res) {
+                showToast('소분류 삭제 완료', 'success');
+                closeSubDeleteModal();
+                getList();
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                showToast('소분류 삭제 실패', 'error');
             }
+            });
+        }
 
-            // 소분류 삭제 확정
-            function confirmDeleteSubCategory() {
-                if (currentSubDeleteId) {
-                    console.log('소분류 삭제 확정:', currentSubDeleteId);
-                    // TODO: 서버에 삭제 요청
-                    // 성공 시:
-                    showToast('소분류 삭제 완료', 'success');
-                    closeSubDeleteModal();
-                    // 실패 시: showToast('소분류 삭제 실패', 'error');
-                }
-            }
-        </script>
-    </main>
+        // 로딩
+        getList();
+    </script>
+</th:block>
 
-    <th:block layout:fragment="script"></th:block>
-</body>
-</html>

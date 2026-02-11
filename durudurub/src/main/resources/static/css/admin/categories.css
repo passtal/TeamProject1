@@ -435,7 +435,7 @@
 .modal-form {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 10px;
 }
 
 /* 이미지 업로드 */
@@ -605,7 +605,7 @@
 /* 삭제 확인 모달 */
 .delete-modal-content {
     width: 500px;
-    height: 290px;
+    /* height: 290px; */
 }
 
 .delete-message {

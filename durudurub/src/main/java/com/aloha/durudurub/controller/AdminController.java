@@ -1,5 +1,6 @@
 package com.aloha.durudurub.controller;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -7,10 +8,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,16 +21,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.aloha.durudurub.dto.AdminSubscription;
 import com.aloha.durudurub.dto.Banner;
+import com.aloha.durudurub.dto.Category;
 import com.aloha.durudurub.dto.Club;
+import com.aloha.durudurub.dto.Notice;
+import com.aloha.durudurub.dto.SubCategory;
 import com.aloha.durudurub.dto.User;
 import com.aloha.durudurub.dto.UserBan;
 import com.aloha.durudurub.service.BannerService;
+import com.aloha.durudurub.service.CategoryService;
 import com.aloha.durudurub.service.ClubService;
+import com.aloha.durudurub.service.NoticeService;
 import com.aloha.durudurub.service.ReportService;
 import com.aloha.durudurub.service.UserService;
 
@@ -45,6 +54,8 @@ public class AdminController {
     private final ClubService clubService;
     private final ReportService reportService;
     private final BannerService bannerService;
+    private final NoticeService noticeService;
+    private final CategoryService categoryService;
     
     // index (공통)
     @GetMapping("/")
@@ -246,36 +257,114 @@ public class AdminController {
         return bannerService.updateBannerPosition(no, position);
     }
     
-    /**
-     * 카테고리 관리 페이지
-     */
-    @GetMapping("/categories")
+
+    // 카테고리 - 조각
+    @GetMapping("/fragment/categories")
+    public String categories() {
+        return "admin/fragments/categories";
+    }
+    // 카테고리 리스트 조회
+    @GetMapping("/api/categories")
     @ResponseBody
-    public String categories(Model model) {
-        // TODO: 카테고리 관리 페이지 구현
-        return "admin/categories";
+    public List<Category> categoriesList() throws Exception {
+        List<Category> categories = categoryService.list();
+        return categories;
+    }
+    // 대분류 추가
+    @PostMapping(value = "/api/categories/create", consumes = "multipart/form-data")
+    @ResponseBody
+    public int createdCategories(
+            @ModelAttribute Category category,
+            @RequestPart(value = "iconFile", required = false) MultipartFile iconFile
+    ) throws Exception {
+        return categoryService.insertWithFile(category, iconFile);
+    }
+    // 대분류 수정
+    @PutMapping(value = "/api/categories/{no}/update", consumes = "multipart/form-data")
+    @ResponseBody
+    public int updatedCategories(
+            @PathVariable("no") int no,
+            @ModelAttribute Category category,
+            @RequestPart(value = "iconFile", required = false) MultipartFile iconFile
+    ) throws Exception {
+        category.setNo(no);
+        return categoryService.updateWithFile(category, iconFile);
+    }
+    // 대분류 삭제
+    @DeleteMapping("/api/categories/{no}")
+    @ResponseBody
+    public int deletedCategories (
+        @PathVariable("no") int no
+    ) throws Exception {
+        return categoryService.deleteWithFile(no);
+    }
+    // 소분류 추가
+    @PostMapping("/api/categories/{categoryNo}/subs")
+    @ResponseBody
+    public int createdSub (
+        @PathVariable("categoryNo") int categoryNo,
+        @RequestBody SubCategory sub
+    ) throws Exception {
+        sub.setCategoryNo(categoryNo);
+        return categoryService.insertSub(sub);
+    }
+    // 소분류 삭제
+    @DeleteMapping("/api/categories/subs/{no}")
+    @ResponseBody
+    public int deletedSub (
+        @PathVariable("no") int no 
+    ) throws Exception{
+        return categoryService.deleteSub(no);
     }
 
     // ----------------------공지사항
     // 등록
-    @PostMapping("/notice/{noticeNo}/create")
-    public String postMethodName(@RequestBody String entity) {
-        //TODO: process POST request
+    // 공지 작성 페이지
+    @GetMapping("/notice/create")
+    public String noticeInsertForm() {
+        return "notice/insert";
+    }
+
+    @PostMapping("/api/notice/create")
+    @ResponseBody
+    public int createdNotice(
+        @RequestBody Notice notice,
+        Principal principal
+    ) throws Exception{
         
-        return entity;
+        User user = userService.selectByUserId(principal.getName());
+        int userNo = user.getNo();
+        
+        notice.setWriterNo(userNo);
+
+        return noticeService.createdNotice(notice, userNo);
     }
     // 수정
-    @PutMapping("/notice/{noticeNo}/update")
-    public String putMethodName(@PathVariable String id, @RequestBody String entity) {
-        //TODO: process PUT request
+    // 공지 수정 페이지
+    @GetMapping("/notice/update/{noticeNo}")
+    public String noticeUpdateForm(@PathVariable int noticeNo, Model model) {
+        Notice notice = noticeService.getNotice(noticeNo); 
+        model.addAttribute("notice", notice);
+        return "notice/update";
+    }
+
+    @PutMapping("/api/notice/{noticeNo}/update")
+    @ResponseBody
+    public int updatedNotice(
+        @PathVariable("noticeNo") int noticeNo,
+        @RequestBody Notice notice
+    ) throws Exception {
         
-        return entity;
+        notice.setNoticeNo(noticeNo);
+
+        return noticeService.updatedNotice(notice);
     }
     // 삭제
-    @DeleteMapping("/notice/{noticeNo}")
+    @DeleteMapping("/api/notice/{noticeNo}")
     @ResponseBody
-    public int deleteNotice(@PathVariable int noticeNo) {
-
-        return noticeNo;
+    public int deleteNotice(
+        @PathVariable("noticeNo") int noticeNo
+    ) throws Exception {
+        return noticeService.deletedNotice(noticeNo);
     }
 }

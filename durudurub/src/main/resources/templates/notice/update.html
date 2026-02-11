@@ -4,6 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layouts/main_layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>공지사항 수정 - 두루두룹</title>
     <link rel="stylesheet" th:href="@{/css/notice/notice-update.css}">
 </head>
@@ -22,7 +24,7 @@
 <div class="notice-update-page">
 
     <!-- 폼 컨테이너 -->
-    <form class="notice-form" th:action="@{/notice/update/{noticeNo}(noticeNo=${notice.noticeNo})}" method="post">
+    <form id="noticeUpdateForm" class="notice-form">
         <div class="form-content">
             <!-- 제목 -->
             <div class="form-group">
@@ -35,15 +37,15 @@
                 <label class="form-label">카테고리 *</label>
                 <div class="category-buttons">
                     <button type="button" class="category-btn" data-value="공지" 
-                            th:classappend="${notice.tags != null && notice.tags.contains('공지')} ? 'active' : ''">공지</button>
+                            th:classappend="${notice.categoryString == '공지'} ? ' active' : ''">공지</button>
                     <button type="button" class="category-btn" data-value="이벤트"
-                            th:classappend="${notice.tags != null && notice.tags.contains('이벤트')} ? 'active' : ''">이벤트</button>
+                            th:classappend="${notice.categoryString == '이벤트'} ? ' active' : ''">이벤트</button>
                     <button type="button" class="category-btn" data-value="업데이트"
-                            th:classappend="${notice.tags != null && notice.tags.contains('업데이트')} ? 'active' : ''">업데이트</button>
+                            th:classappend="${notice.categoryString == '업데이트'} ? ' active' : ''">업데이트</button>
                     <button type="button" class="category-btn" data-value="점검"
-                            th:classappend="${notice.tags != null && notice.tags.contains('점검')} ? 'active' : ''">점검</button>
+                            th:classappend="${notice.categoryString == '점검'} ? ' active' : ''">점검</button>
                 </div>
-                <input type="hidden" name="tags" id="selectedTag" th:value="${notice.tags != null && !notice.tags.isEmpty()} ? ${notice.tags[0]} : ''">
+                <input type="hidden" name="categoryString" id="categoryString" th:value="${notice.categoryString}">
             </div>
 
             <!-- 중요 공지 체크박스 -->
@@ -61,33 +63,67 @@
 
             <!-- 버튼 영역 -->
             <div class="form-actions">
-                <button type="button" class="btn-cancel" onclick="history.back();">취소</button>
+                <button type="button" class="btn-cancel" th:onclick="|location.href='/notice/${notice.noticeNo}'|">취소</button>
                 <button type="submit" class="btn-submit">수정</button>
             </div>
         </div>
     </form>
 </div>
+<th:block layout:fragment="script">
+<script th:inline="javascript">
+    window.addEventListener('load', function () {
+        $(document).ready(function() {
 
-<script>
-    // 카테고리 선택 처리
-    document.addEventListener('DOMContentLoaded', function() {
+        // 카테고리 선택
         const categoryButtons = document.querySelectorAll('.category-btn');
-        const selectedTagInput = document.getElementById('selectedTag');
+        const selected = document.getElementById('categoryString');
 
-        categoryButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                // 모든 버튼에서 active 클래스 제거
-                categoryButtons.forEach(btn => btn.classList.remove('active'));
-                
-                // 클릭한 버튼에 active 클래스 추가
-                this.classList.add('active');
-                
-                // hidden input에 값 설정
-                selectedTagInput.value = this.dataset.value;
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+            categoryButtons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            selected.value = btn.dataset.value;
+            });
+        });
+
+        const token = $('meta[name="_csrf"]').attr('content');
+        const header = $('meta[name="_csrf_header"]').attr('content');
+
+        const noticeNo = [[${notice.noticeNo}]];
+
+        $('#noticeUpdateForm').on('submit', function(e) {
+            e.preventDefault();
+
+            const payload = {
+            title: $('input[name="title"]').val(),
+            content: $('textarea[name="content"]').val(),
+            categoryString: $('#categoryString').val(),
+            important: $('#important').is(':checked')
+            };
+
+            $.ajax({
+            url: '/admin/api/notice/' + noticeNo + '/update',
+            type: 'PUT',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(payload),
+            beforeSend: function(xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function(res) {
+                // res가 1(성공)이면 상세로
+                window.location.href = '/notice/' + noticeNo;
+            },
+            error: function(xhr) {
+                console.error(xhr.responseText);
+                alert('수정 실패');
+            }
             });
         });
     });
+});
 </script>
+</th:block>
+
 
 </body>
 </html>

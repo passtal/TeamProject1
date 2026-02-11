@@ -19,4 +19,6 @@ public interface NoticeMapper {
     int noticeUpdate(Notice notice);
     // 공지사항 삭제
     int noticeDelete(@Param("noticeNo") int noticeNo);
+    // 조회수
+    int increaseViews(@Param("noticeNo") int noticeNo);
 }

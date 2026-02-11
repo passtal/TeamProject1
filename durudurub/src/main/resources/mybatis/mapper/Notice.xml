@@ -4,31 +4,54 @@
 <!-- 공지사항 매퍼 -->
 <mapper namespace="com.aloha.durudurub.dao.NoticeMapper">
     <!-- 공지사항 목록 -->
-    <select id="noticeList" resultType="Notice">
-        SELECT *
+    <select id="noticeList" resultType="com.aloha.durudurub.dto.Notice">
+        SELECT 
+            no AS noticeNo,
+            writer_no AS writerNo,
+            title,
+            content,
+            DATE(created_at) AS regDate,
+            view_counts AS views,
+            CASE WHEN is_important = 'Y' THEN TRUE ELSE FALSE END AS important,
+            category AS categoryString
         FROM notices
-        ORDER BY created_at ASC
+        ORDER BY is_important DESC, created_at DESC
     </select>
     <!-- 공지사항 조회 -->
-    <select id="noticeSelect" resultType="Notice">
-        SELECT *
+    <select id="noticeSelect" parameterType="int" resultType="Notice">
+        SELECT
+            no AS noticeNo,
+            writer_no AS writerNo,
+            title,
+            content,
+            DATE(created_at) AS regDate,
+            view_counts AS views,
+            CASE WHEN is_important = 'Y' THEN TRUE ELSE FALSE END AS important,
+            category AS categoryString
         FROM notices
         WHERE no = #{noticeNo}
     </select>
     <!-- 공지사항 등록 -->
-    <insert id="noticeInsert">
+    <insert id="noticeInsert" useGeneratedKeys="true" keyProperty="noticeNo">
         INSERT INTO notices ( category, title, content, is_important, writer_no)
-        VALUES ( #{category}, #{title}, #{content}, #{isImportant}, #{writerNo} )
+        VALUES ( #{categoryString}, #{title}, #{content}, CASE WHEN #{important} THEN 'Y' ELSE 'N' END, #{writerNo} )
     </insert>
     <!-- 공지사항 수정 -->
     <update id="noticeUpdate">
         UPDATE notices
             SET title = #{title}
                 , content = #{content}
-                , is_important = #{isImportant}
+                , is_important = #{important}
         WHERE no = #{noticeNo}
     </update>
     <!-- 공지사항 삭제 -->
     <delete id="noticeDelete">
         DELETE FROM notices WHERE no = #{noticeNo}
     </delete>
+    <!-- 조회수 -->
+    <update id="increaseViews" parameterType="int">
+        UPDATE notices
+            SET  view_counts = view_counts + 1
+            WHERE no = #{noticeNo}
+    </update>
+</mapper>

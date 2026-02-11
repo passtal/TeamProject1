@@ -1,6 +1,7 @@
 package com.aloha.durudurub.dto;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Data;
@@ -16,21 +17,9 @@ public class Notice {
     private String content;         // 내용
     private LocalDate regDate;      // 등록일
     private int views;              // 조회수
-    private boolean isImportant;      // 중요 공지 여부 - 변수명 수정!
+    private boolean important;      // 중요 공지 여부 - 변수명 수정!
     private List<String> category;      // 카테고리 태그 (공지, 이벤트, 업데이트, 점검) - 변수명 수정!
+    private String categoryString;      // 카테고리 태그 (공지, 이벤트, 업데이트, 점검) - 변수명 수정!
     private String writerName;      // 작성자명
     
-    public Notice() {
-    }
-    
-    public Notice(int noticeNo, String title, String content, LocalDate regDate, 
-                  int views, boolean important, List<String> tags) {
-        this.noticeNo = noticeNo;
-        this.title = title;
-        this.content = content;
-        this.regDate = regDate;
-        this.views = views;
-        this.isImportant = important;
-        this.category = tags;
-    }
 }

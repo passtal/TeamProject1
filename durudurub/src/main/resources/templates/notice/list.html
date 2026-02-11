@@ -9,20 +9,20 @@
 </head>
 <body layout:fragment="content">
 
+    <!-- 헤더 -->
+    <div class="notice-header">
+        <h1 class="notice-title">공지사항</h1>
+        <!-- 관리자만 보이는 작성 버튼 -->
+        <a href="admin/notice/create" class="btn-write" sec:authorize="hasRole('ADMIN')">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4.16667 10H15.8333" stroke="#FFFFFF" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 4.16667V15.8333" stroke="#FFFFFF" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>공지사항 작성</span>
+        </a>
+    </div>
 <div class="notice-page">
     <div class="notice-container">
-        <!-- 헤더 -->
-        <div class="notice-header">
-            <h1 class="notice-title">공지사항</h1>
-            <!-- 관리자만 보이는 작성 버튼 -->
-            <a href="/notice/insert" class="btn-write" sec:authorize="hasRole('ADMIN')">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4.16667 10H15.8333" stroke="#FFFFFF" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M10 4.16667V15.8333" stroke="#FFFFFF" stroke-width="1.66667" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                <span>공지사항 작성</span>
-            </a>
-        </div>
 
         <!-- 공지사항 목록 -->
         <div class="notice-list">
@@ -32,17 +32,23 @@
                 <div class="notice-item-content">
                     <div class="notice-right">
                         <!-- 태그 -->
-                        <div class="notice-tags">
-                            <span th:each="tag : ${notice.tags}" 
-                                  th:class="'notice-tag ' + ${
-                                      tag == '공지' ? 'tag-notice' : 
-                                      tag == '중요' ? 'tag-important' : 
-                                      tag == '이벤트' ? 'tag-event' : 
-                                      tag == '업데이트' ? 'tag-update' : 
-                                      tag == '점검' ? 'tag-maintenance' : 'tag-notice'
-                                  }"
-                                  th:text="${tag}">태그</span>
+                        <div class="notice-category" style="display: flex; gap: 10px; align-items: center;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell w-5 h-5 text-red-600" data-fg-cmou132="597.342:597.24753:/src/app/components/NoticePage.tsx:568:23:20237:41:e:Bell::::::CiHR"><path d="M10.268 21a2 2 0 0 0 3.464 0"></path>
+                                <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326"></path>
+                            </svg>
+                            <div class="tag-wrap">
+                                <span th:each="tag : ${#strings.arraySplit(notice.categoryString, ',')}"
+                                    th:class="'notice-tag ' + ${
+                                        tag == '공지' ? 'tag-notice' :
+                                        tag == '이벤트' ? 'tag-event' : 
+                                        tag == '업데이트' ? 'tag-update' : 
+                                        tag == '점검' ? 'tag-maintenance' : 'tag-notice'
+                                    }"
+                                    th:text="${tag}">태그</span>
+                                <span th:if="${notice.important}" class="notice-tag tag-important">중요</span>
+                            </div>
                         </div>
+
                         <!-- 제목 -->
                         <h3 class="notice-item-title">
                             <a th:href="@{/notice/{noticeNo}(noticeNo=${notice.noticeNo})}" 
@@ -50,13 +56,13 @@
                         </h3>
                         <!-- 날짜 및 조회수 -->
                         <div class="notice-meta">
-                            <span class="notice-date" th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}">2026-01-20</span>
+                            <span class="notice-date" th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}"></span>
                             <span class="notice-views">
                                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M1.33333 8C1.33333 8 3.66667 3.33333 8 3.33333C12.3333 3.33333 14.6667 8 14.6667 8C14.6667 8 12.3333 12.6667 8 12.6667C3.66667 12.6667 1.33333 8 1.33333 8Z" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
                                     <path d="M8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z" stroke="#6A7282" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"/>
                                 </svg>
-                                <span th:text="${#numbers.formatInteger(notice.views, 0, 'COMMA')}">1,245</span>
+                                <span th:text="${#numbers.formatInteger(notice.views, 0, 'COMMA')}"></span>
                             </span>
                         </div>
                     </div>
@@ -69,14 +75,10 @@
 <script>
 // 공지사항 아이템 클릭 이벤트
 document.addEventListener('DOMContentLoaded', function() {
-    const noticeItems = document.querySelectorAll('.notice-item');
-    
-    noticeItems.forEach(item => {
+    document.querySelectorAll('.notice-item').forEach(item => {
         item.addEventListener('click', function(e) {
             // 작성 버튼 클릭은 제외
-            if (e.target.closest('.btn-write')) {
-                return;
-            }
+            if (e.target.closest('a') || e.target.closest('.btn-write')) return;
             
             // 제목 링크 찾기
             const link = this.querySelector('.notice-item-title a');

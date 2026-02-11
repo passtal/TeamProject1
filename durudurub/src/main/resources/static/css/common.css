@@ -201,6 +201,9 @@
     border-top: 1px solid #f3f4f6;
     margin-top: 0.25rem;
     margin-bottom: 0.25rem;
+    border: none;
+    background: #0e0f0f57;
+    height: 1px;
     }
 
     .hidden .logout {

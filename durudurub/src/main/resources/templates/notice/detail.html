@@ -4,6 +4,8 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layouts/main_layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title th:text="${notice.title} + ' - 두루두룹'">공지사항 상세</title>
     <link rel="stylesheet" th:href="@{/css/notice/notice-detail.css}">
 </head>
@@ -20,7 +22,7 @@
 
         <!-- 관리자 버튼 -->
         <div class="admin-buttons" sec:authorize="hasRole('ADMIN')">
-            <a th:href="@{/notice/update/{noticeNo}(noticeNo=${notice.noticeNo})}" class="btn-edit">
+            <a th:href="@{/admin/notice/update/{noticeNo}(noticeNo=${notice.noticeNo})}" class="btn-edit">
                 <span class="material-symbols-outlined">edit</span>
                 <span>수정</span>
             </a>
@@ -36,34 +38,34 @@
     <div class="notice-detail-container">
         <!-- 태그 -->
         <div class="notice-tags">
-            <span th:each="tag : ${notice.tags}" 
-                  th:class="${tag == '공지'} ? 'tag tag-notice' : 
-                            (${tag == '이벤트'} ? 'tag tag-event' : 
-                            (${tag == '업데이트'} ? 'tag tag-update' : 
-                            (${tag == '점검'} ? 'tag tag-maintenance' : 
-                            (${notice.important} ? 'tag tag-important' : 'tag'))))"
-                  th:text="${tag}">공지</span>
+            <span th:each="tag : ${#strings.arraySplit(notice.categoryString, ',')}" 
+                  th:class="'tag ' + ${
+                            tag == '공지' ? 'tag-notice' :
+                            tag == '이벤트' ? 'tag-event' :
+                            tag == '업데이트' ? 'tag-update' :
+                            tag == '점검' ? 'tag-maintenance' : 'tag-notice'
+                            }"
+                  th:text="${tag}">태그</span>
+            <span th:if="${notice.important}" class="notice-tag tag-important">중요</span>
         </div>
 
         <!-- 제목 -->
-        <h1 class="notice-title" th:text="${notice.title}">두루두룹 서비스 정식 오픈 안내</h1>
+        <h1 class="notice-title" th:text="${notice.title}"></h1>
 
         <!-- 메타 정보 -->
         <div class="notice-meta">
             <div class="meta-item">
                 <span class="material-symbols-outlined">calendar_today</span>
-                <span th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}">2026-01-20</span>
+                <span th:text="${#temporals.format(notice.regDate, 'yyyy-MM-dd')}"></span>
             </div>
             <div class="meta-item">
                 <span class="material-symbols-outlined">visibility</span>
-                <span th:text="'조회 ' + ${#numbers.formatInteger(notice.views, 0, 'COMMA')}">조회 1,245</span>
+                <span th:text="'조회 ' + ${#numbers.formatInteger(notice.views, 0, 'COMMA')}"></span>
             </div>
         </div>
 
         <!-- 내용 -->
-        <div class="notice-content" th:utext="${#strings.replace(notice.content, '&#10;', '<br>')}">
-            안녕하세요, 두루두룹입니다!<br><br>
-            드디어 소모임 커뮤니티 서비스 '두루두룹'이 정식으로 오픈되었습니다. 🎉
+        <div class="notice-content" th:text="${notice.content}">
         </div>
     </div>
 </div>
@@ -110,25 +112,27 @@
 
     // 삭제 실행
     function deleteNotice(noticeNo) {
-        fetch('/notice/' + noticeNo, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('공지사항이 삭제되었습니다.');
-                window.location.href = '/notice';
-            } else {
-                alert('삭제 중 오류가 발생했습니다.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
+        const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+        const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+        $.ajax({
+        url: '/admin/api/notice/' + noticeNo,
+        type: 'DELETE',
+        beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+        },
+        success: function (res) {
+            // res가 1이면 성공(보통)
+            alert('공지사항이 삭제되었습니다.');
+            window.location.href = '/notice';
+        },
+        error: function (xhr) {
+            console.error(xhr.responseText);
             alert('삭제 중 오류가 발생했습니다.');
+        }
         });
     }
+
 
     // 모달 배경 클릭 시 닫기
     document.getElementById('deleteModal').addEventListener('click', function(e) {

@@ -2,6 +2,8 @@ package com.aloha.durudurub.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.aloha.durudurub.dto.Category;
 import com.aloha.durudurub.dto.SubCategory;
 
@@ -17,7 +19,12 @@ public interface CategoryService {
     int insert(Category category);
     
     int update(Category category);
-    
+
+    // 이미지 추가
+    int insertWithFile(Category category, MultipartFile iconFile) throws Exception;
+    int updateWithFile(Category category, MultipartFile iconFile) throws Exception;
+    int deleteWithFile(int no);
+        
     int delete(int no);
     
     List<SubCategory> listBySubCategory(int categoryNo);
@@ -29,4 +36,5 @@ public interface CategoryService {
     int updateSub(SubCategory subCategory);
     
     int deleteSub(int no);
+
 }

@@ -10,11 +10,13 @@ public interface NoticeService {
     // 공지사항 목록
     List<Notice> getNoticeList();
     // 공지사항 상세보기
-    Notice getnotice(@Param("noticeNo") int noticeNo);
+    Notice getNotice(@Param("noticeNo") int noticeNo);
     // 공지사항 등록
-    int createNotice(Notice notice, int loginUserNo);
+    int createdNotice(Notice notice, int loginUserNo);
     // 공지사항 수정
-    int updateNotice(Notice notice, int loginUserNo);
+    int updatedNotice(Notice notice);
     // 공지사항 삭제
-    int deleteNotice(@Param("noticeNo") int noticeNo, int loginUserNo);
+    int deletedNotice(@Param("noticeNo") int noticeNo);
+    // 조회수
+    Notice getNoticeAndIncrease(@Param("noticeNo") int noticeNo);
 }
