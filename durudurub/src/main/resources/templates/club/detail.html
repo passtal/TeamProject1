@@ -52,9 +52,10 @@
                         <img th:src="@{/img/board/edit-icon.png}" alt="편집">
                         정보 수정
                     </button>
-                    <form th:if="${myMembership == null and !isHost}" th:action="@{/club/{no}/join(no=${club.no})}" method="post" style="display: inline;">
+                    <form th:if="${isLoggedIn and myMembership == null and !isHost}" th:action="@{/club/{no}/join(no=${club.no})}" method="post" style="display: inline;">
                         <button type="submit" class="btn btn-join">모임 가입하기</button>
                     </form>
+                    <button th:if="${!isLoggedIn}" class="btn btn-join" onclick="alert('로그인이 필요한 서비스입니다.'); location.href='/login';">모임 가입하기</button>
                     <span th:if="${myMembership != null and !isHost and myMembership.status == 'APPROVED'}" class="badge bg-success">참여 중</span>
                     <span th:if="${myMembership != null and !isHost and myMembership.status == 'PENDING'}" class="badge bg-warning text-dark">승인 대기 중</span>
                 </div>

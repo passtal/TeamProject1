@@ -1,7 +1,11 @@
 package com.aloha.durudurub.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,9 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.aloha.durudurub.dto.Board;
+import com.aloha.durudurub.dto.BoardImage;
 import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubMember;
 import com.aloha.durudurub.dto.Comment;
@@ -23,12 +29,15 @@ import com.aloha.durudurub.service.CommentService;
 import com.aloha.durudurub.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import lombok.extern.slf4j.Slf4j;
+
 
 
 /**
  * 게시판 컨트롤러
  * 모임 내 게시판 - /club/{clubNo}/board
  */
+@Slf4j
 @Controller
 @RequestMapping("/club/{clubNo}/board")
 public class BoardController {
@@ -132,6 +141,7 @@ public class BoardController {
     public String writePro(@PathVariable("clubNo") int clubNo,
                             Board board,
                             @RequestParam(value = "isNotice", defaultValue = "N") String isNotice,
+                            @RequestParam(value = "images", required = false) List<MultipartFile> images,
                             Principal principal,
                             RedirectAttributes rttr) {
         if (!isMember(clubNo, principal)) {
@@ -150,7 +160,10 @@ public class BoardController {
             board.setIsNotice("N");
         }
         
-        int result = boardService.insert(board);
+        // 이미지 파일 저장 처리
+        List<BoardImage> boardImages = saveImages(images);
+        
+        int result = boardService.insert(board, boardImages);
 
         if (result > 0) {
             rttr.addFlashAttribute("message", "게시글이 작성되었습니다.");
@@ -199,6 +212,7 @@ public class BoardController {
                          @PathVariable("no") int no,
                          Board board,
                          @RequestParam(value = "isNotice", defaultValue = "N") String isNotice,
+                         @RequestParam(value = "images", required = false) List<MultipartFile> images,
                          Principal principal,
                          RedirectAttributes rttr) {
         Board existingBoard = boardService.selectByNo(no);
@@ -214,7 +228,15 @@ public class BoardController {
             board.setIsNotice(isNotice);
         }
         
-        int result = boardService.update(board);
+        // 새 이미지가 있으면 저장 후 기존 이미지 교체
+        List<BoardImage> boardImages = saveImages(images);
+        
+        int result;
+        if (boardImages != null && !boardImages.isEmpty()) {
+            result = boardService.update(board, boardImages);
+        } else {
+            result = boardService.update(board);
+        }
         
         if (result > 0) {
             rttr.addFlashAttribute("message", "게시글이 수정되었습니다.");
@@ -248,6 +270,39 @@ public class BoardController {
         return "redirect:/club/" + clubNo + "/board";
     }
     
+    /**
+     * 이미지 파일 저장 유틸
+     */
+    private List<BoardImage> saveImages(List<MultipartFile> images) {
+        List<BoardImage> boardImages = new ArrayList<>();
+        if (images == null || images.isEmpty()) return boardImages;
+        
+        String uploadDir = System.getProperty("user.dir") + "/uploads/boards/";
+        File dir = new File(uploadDir);
+        if (!dir.exists()) dir.mkdirs();
+        
+        for (MultipartFile file : images) {
+            if (file.isEmpty()) continue;
+            try {
+                String originalName = file.getOriginalFilename();
+                String ext = "";
+                if (originalName != null && originalName.contains(".")) {
+                    ext = originalName.substring(originalName.lastIndexOf("."));
+                }
+                String savedName = UUID.randomUUID().toString() + ext;
+                File dest = new File(uploadDir + savedName);
+                file.transferTo(dest);
+                
+                BoardImage boardImage = new BoardImage();
+                boardImage.setImageUrl("/uploads/boards/" + savedName);
+                boardImages.add(boardImage);
+            } catch (IOException e) {
+                log.error("게시글 이미지 업로드 실패", e);
+            }
+        }
+        return boardImages;
+    }
+
     /**
      * 멤버 여부 확인 (승인된 멤버 또는 호스트만 접근 가능)
      */
