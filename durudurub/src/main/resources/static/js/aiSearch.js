@@ -124,6 +124,16 @@ $(document).ready(function() {
             html += '</div>';
         }
 
+        // 정확한 매칭이 아닌 경우 → 모임 만들기 버튼 표시
+        if (!res.exactMatch) {
+            html += '<div class="text-center mt-3 pt-3" style="border-top: 1px solid #eee;">';
+            html += '  <p class="text-muted small mb-2">원하는 모임을 직접 만들어볼 수도 있어요!</p>';
+            html += '  <a href="/club/insert" class="btn btn-outline-primary">';
+            html += '    <i class="bi bi-plus-circle"></i> 모임 만들기';
+            html += '  </a>';
+            html += '</div>';
+        }
+
         $('#aiSearchResult').html(html);
     }
 });

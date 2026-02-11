@@ -119,10 +119,10 @@ INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
 -- 샘플 배너
 -- /uploads/banners 파일로 변경!
 INSERT INTO `banners` (`title`, `image_url`, `link_url`, `position`, `seq`) VALUES
-('카페 이벤트', '/uploads/banners/banner_cafe.png', '/clubs', 'MAIN', 1),
-('영어회화 이벤트', '/uploads/banners/banner_english.png', '/clubs', 'MAIN', 2),
-('양념 갈비 이벤트', '/uploads/banners/banner_food.png', '/clubs', 'MAIN', 3),
-('발리 패키지 여행 이벤트', '/uploads/banners/banner_traval.png', '/clubs', 'MAIN', 4)
+('카페 이벤트', '/uploads/banners/banner_cafe.png', '/club/list', 'MAIN', 1),
+('영어회화 이벤트', '/uploads/banners/banner_english.png', '/club/list', 'MAIN', 2),
+('양념 갈비 이벤트', '/uploads/banners/banner_food.png', '/club/list', 'MAIN', 3),
+('발리 패키지 여행 이벤트', '/uploads/banners/banner_traval.png', '/club/list', 'MAIN', 4)
 
 -- 샘플 공지사항
 INSERT INTO `notices` (`writer_no`, `category`, `title`, `content`, `is_important`) VALUES
