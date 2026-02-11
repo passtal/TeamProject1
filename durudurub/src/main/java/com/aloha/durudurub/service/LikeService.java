@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.aloha.durudurub.dto.Club;
-import com.aloha.durudurub.dto.ClubLike;
 
 /**
  * 좋아요 서비스

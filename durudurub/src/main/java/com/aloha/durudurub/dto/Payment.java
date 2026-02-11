@@ -12,17 +12,15 @@ public class Payment {
 
     private int no;
     private int userNo;
-    private Integer subscriptionNo;
     private String paymentKey;
     private String orderId;
     private String orderName;
     private int amount;
-    private String method;
+    private String currency;
+    private String type;
     private String status;
+    private Date requestedAt;
     private Date approvedAt;
-    private Date canceledAt;
-    private String cancelReason;
-    private String receiptUrl;
     private Date createdAt;
     private Date updatedAt;
 }

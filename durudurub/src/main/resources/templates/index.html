@@ -64,11 +64,11 @@
 
         <div class="category-grid">
             <!-- 카테고리 반복 -->
-            <a th:each="category, stat : ${categories}" 
+            <a th:each="category : ${categories}" 
                th:href="@{/club/category(category=${category.no})}" 
                class="category-item">
-                <div class="category-icon" th:classappend="'category-bg-' + ${stat.count}">
-                    <!-- 카테고리 아이콘 (Bootstrap Icons) -->
+                <div class="category-icon">
+                    <!-- 카테고리 아이콘 -->
                     <img th:src="${category.icon}" 
                          th:alt="${category.name}" 
                          onerror="this.src='/img/default-profile.png';" />

@@ -520,7 +520,7 @@
     font-size: 16px;
     font-family: Arial, sans-serif;
     color: #101828;
-    resize: none;
+    resize: hidden;
     transition: background-color 0.3s ease;
 }
 
@@ -862,7 +862,7 @@
 
 .modal-textarea{
     min-height: 92px;
-    resize: none;
+    resize: hidden;
     border-radius: 10px;
     border: 1px solid #D1D5DC;
     padding: 12px;

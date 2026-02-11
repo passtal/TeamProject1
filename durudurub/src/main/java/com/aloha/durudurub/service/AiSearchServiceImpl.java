@@ -70,10 +70,14 @@ public class AiSearchServiceImpl implements AiSearchService {
         // 대표 키워드
         String displayKeyword = keywords.length > 0 ? keywords[0].trim() : keywordsRaw;
 
+        // 키워드 검색으로 직접 매칭된 결과가 있었는지 여부
+        boolean isExactMatch = (allClubs == null);
+
         return AiSearchResponse.builder()
                 .aiMessage(aiMessage)
                 .clubs(clubs)
                 .keyword(displayKeyword)
+                .exactMatch(isExactMatch)
                 .build();
     }
 
