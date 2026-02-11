@@ -55,7 +55,8 @@
                     <form th:if="${myMembership == null and !isHost}" th:action="@{/club/{no}/join(no=${club.no})}" method="post" style="display: inline;">
                         <button type="submit" class="btn btn-join">모임 가입하기</button>
                     </form>
-                    <span th:if="${myMembership != null and !isHost}" class="badge bg-success">참여 중</span>
+                    <span th:if="${myMembership != null and !isHost and myMembership.status == 'APPROVED'}" class="badge bg-success">참여 중</span>
+                    <span th:if="${myMembership != null and !isHost and myMembership.status == 'PENDING'}" class="badge bg-warning text-dark">승인 대기 중</span>
                 </div>
             </div>
 
@@ -107,7 +108,7 @@
                 <h2 class="section-title mb-0">게시글</h2>
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-muted"><i class="bi bi-chat-square-text"></i> 멤버만 작성 가능</span>
-                    <a th:if="${myMembership != null or isHost}" th:href="@{/club/{no}/board/write(no=${club.no})}" class="btn btn-primary btn-sm">
+                    <a th:if="${(myMembership != null and myMembership.status == 'APPROVED') or isHost}" th:href="@{/club/{no}/board/write(no=${club.no})}" class="btn btn-primary btn-sm">
                         <i class="bi bi-pencil"></i> 글쓰기
                     </a>
                 </div>
@@ -186,7 +187,7 @@
                                     </div>
                                     
                                     <!-- 댓글 작성 폼 (멤버만) -->
-                                    <div th:if="${myMembership != null or isHost}" class="comment-write-form mt-3 pt-3 border-top">
+                                    <div th:if="${(myMembership != null and myMembership.status == 'APPROVED') or isHost}" class="comment-write-form mt-3 pt-3 border-top">
                                         <div class="d-flex gap-2 align-items-start">
                                             <textarea class="form-control comment-input" rows="2" 
                                                       placeholder="댓글을 작성해주세요..." th:data-board-no="${board.no}"></textarea>
