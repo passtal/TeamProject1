@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 공지사항 매퍼 -->
+<mapper namespace="com.aloha.durudurub.dao.NoticeMapper">
+    <!-- 공지사항 목록 -->
+    <select id="noticeList" resultType="Notice">
+        SELECT *
+        FROM notices
+        ORDER BY created_at ASC
+    </select>
+    <!-- 공지사항 조회 -->
+    <select id="noticeSelect" resultType="Notice">
+        SELECT *
+        FROM notices
+        WHERE no = #{noticeNo}
+    </select>
+    <!-- 공지사항 등록 -->
+    <insert id="noticeInsert">
+        INSERT INTO notices ( category, title, content, is_important, writer_no)
+        VALUES ( #{category}, #{title}, #{content}, #{isImportant}, #{writerNo} )
+    </insert>
+    <!-- 공지사항 수정 -->
+    <update id="noticeUpdate">
+        UPDATE notices
+            SET title = #{title}
+                , content = #{content}
+                , is_important = #{isImportant}
+        WHERE no = #{noticeNo}
+    </update>
+    <!-- 공지사항 삭제 -->
+    <delete id="noticeDelete">
+        DELETE FROM notices WHERE no = #{noticeNo}
+    </delete>

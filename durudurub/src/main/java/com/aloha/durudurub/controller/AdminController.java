@@ -255,4 +255,27 @@ public class AdminController {
         // TODO: 카테고리 관리 페이지 구현
         return "admin/categories";
     }
+
+    // ----------------------공지사항
+    // 등록
+    @PostMapping("/notice/{noticeNo}/create")
+    public String postMethodName(@RequestBody String entity) {
+        //TODO: process POST request
+        
+        return entity;
+    }
+    // 수정
+    @PutMapping("/notice/{noticeNo}/update")
+    public String putMethodName(@PathVariable String id, @RequestBody String entity) {
+        //TODO: process PUT request
+        
+        return entity;
+    }
+    // 삭제
+    @DeleteMapping("/notice/{noticeNo}")
+    @ResponseBody
+    public int deleteNotice(@PathVariable int noticeNo) {
+
+        return noticeNo;
+    }
 }

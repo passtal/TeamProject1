@@ -394,19 +394,4 @@ public class MypageController {
 
         return "mypage/favorites";
     }
-    // @PostMapping("/like/club/{clubNo}")
-    // @ResponseBody
-    // public ResponseEntity<?> toggleLike(
-    //     @PathVariable int clubNo,
-    //     Principal principal
-    // ) throws Exception {
-
-    //     int userNo = userService.selectByUserId(principal.getName()).getNo();
-    //     boolean liked = clubService.toggleClubLike(userNo, clubNo);
-
-    //     return ResponseEntity.ok(liked);
-    // }
-
-    
-
 }
