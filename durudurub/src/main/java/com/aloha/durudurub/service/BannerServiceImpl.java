@@ -25,7 +25,7 @@ public class BannerServiceImpl implements BannerService {
     
     private final BannerMapper bannerMapper;
     
-    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/durudurub/uploads/banners/";
+    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/banners/";
     private static final String DB_URL_PREFIX = "/uploads/banners/";
 
     // 리스트 조회
@@ -141,10 +141,10 @@ public class BannerServiceImpl implements BannerService {
     private void deleteFileIfLocal(String imageUrl) {
         if (!StringUtils.hasText(imageUrl)) return;
         // /uploads/... 경우 삭제
-        if (!imageUrl.startsWith("/durudurub/uploads/")) return;
+        if (!imageUrl.startsWith("/uploads/")) return;
         // /uploads/banners/xxx.png 
-        String relativePath = imageUrl.replaceFirst("^/durudurub/uploads/", "");
-        File file = new File(System.getProperty("user.dir") + "/durudurub/uploads/" + relativePath);
+        String relativePath = imageUrl.replaceFirst("^/uploads/", "");
+        File file = new File(System.getProperty("user.dir") + "/uploads/" + relativePath);
         if (file.exists() && file.isFile()) {
             boolean deleted = file.delete();
             if (!deleted) {

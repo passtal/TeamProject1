@@ -15,7 +15,7 @@ public class WebConfig implements WebMvcConfigurer {
         // 업로드된 파일 서빙 (uploads 폴더)
         // String uploadPath = "file:" + System.getProperty("user.dir") + "/uploads/";
         // ******* 업로드 파일 서빙 (uploads? durudurub/uploads?)
-        String uploadPath = "file:" + System.getProperty("user.dir") + "/durudurub/uploads/";
+        String uploadPath = "file:" + System.getProperty("user.dir") + "/uploads/";
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(uploadPath);
         

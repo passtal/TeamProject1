@@ -67,9 +67,9 @@ public class SecurityConfig {
     /**
      * 정적 리소스(업로드 파일 등)를 시큐리티 필터에서 제외
      */
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers("/uploads/**", "/upload/**", "/css/**", "/js/**", "/img/**", "/fonts/**");
-    }
+    // @Bean
+    // public WebSecurityCustomizer webSecurityCustomizer() {
+    //     return (web) -> web.ignoring()
+    //             .requestMatchers("/uploads/**", "/upload/**", "/css/**", "/js/**", "/img/**", "/fonts/**");
+    // }
 }

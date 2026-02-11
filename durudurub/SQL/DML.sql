@@ -123,8 +123,13 @@ INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
 -- /uploads/banners 파일로 변경!
 INSERT INTO `banners` (`title`, `image_url`, `link_url`, `position`, `seq`) VALUES
 ('두루두루 오픈 기념', '/uploads/banners/durudurub-open.png', '/clubs', 'MAIN', 1),
-('모임을 만들어보세요!', '/uploads/banners/durudurub-newClub.png', '/clubs', 'MAIN', 2),
-('프리미엄 구독 50%', '/uploads/banners/durudurub-premium.png', '/clubs', 'MAIN', 3)
+('케이크 먹고 싶어요', '/uploads/banners/cafe_banner.png', '/clubs', 'MAIN', 2),
+('모임을 만들어보세요!', '/uploads/banners/durudurub-newClub.png', '/clubs', 'MAIN', 3),
+('스테이크 사주세요', '/uploads/banners/restaurant_banner.png', '/clubs', 'MAIN', 4),
+('작은 핸드폰 원하세요?', '/uploads/banners/smartphone_banner.png', '/clubs', 'MAIN', 5),
+('프리미엄 50%', '/uploads/banners/durudurub-premium.png', '/clubs', 'MAIN', 6),
+('로또 당첨되면 바로 뜨자', '/uploads/banners/travel_air_banner.png', '/clubs', 'MAIN', 7);
+
 
 -- 샘플 공지사항
 INSERT INTO `notices` (`writer_no`, `category`, `title`, `content`, `is_important`) VALUES
