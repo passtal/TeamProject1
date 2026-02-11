@@ -63,7 +63,20 @@
     </select>
     <!-- 신고하기 -->
     <insert id="insertUserReport" parameterType="com.aloha.durudurub.dto.Report">
-        INSERT INTO club_member_reports (club_no, reporter_no, target_no,reason, created_at
+        INSERT INTO club_member_reports (club_no, reporter_no, target_no,reason, processed_at
         ) VALUES ( #{clubNo}, #{reporterNo}, #{targetNo}, #{reason}, NOW() )
+    </insert>
+    <!-- 만료일 업데이트 -->
+    <insert id="updateUserReport" parameterType="map">
+    <!-- 중복 없으면 새 행 넣기 -->
+        INSERT INTO user_bans (user_no, reason, report_count_at_ban, ban_type, ban_end_date, is_active)
+        VALUES (#{userNo}, #{reason}, #{reportCountAtBan}, #{banType}, DATE_ADD(NOW(), INTERVAL 7 DAY), #{isActive})
+        <!-- 중복 있으면 UPDATE 실행 -->
+        ON DUPLICATE KEY UPDATE
+            reason = #{reason},
+            report_count_at_ban = #{reportCountAtBan},
+            ban_type = #{banType},
+            ban_end_date = DATE_ADD(NOW(), INTERVAL 7 DAY),
+            is_active = #{isActive}
     </insert>
 </mapper>

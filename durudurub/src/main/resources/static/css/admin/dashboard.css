@@ -302,6 +302,10 @@ body {
     margin: 0;
 }
 
+#warning {
+    width: 30px;
+    color: #ff000099;
+}
 /* Recent Activity Section */
 .activity-section {
     background-color: #FFFFFF;

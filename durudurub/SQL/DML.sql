@@ -81,7 +81,7 @@ INSERT INTO `report_categories` (`name`, `description`, `seq`) VALUES
 
 -- 관리자 계정 (테스트용)
 INSERT INTO `users` (`id`, `user_id`, `password`, `username`) VALUES
-(UUID(), 'admin@durudurub.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '관리자'); -- 비번 123456 입니다
+(UUID(), 'admin@durudurub.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '관리자안됨'); -- 비번 123456 입니다
 
 -- 테스트 일반 유저 (비밀번호: 123456)
 INSERT INTO `users` (`id`, `user_id`, `password`, `username`, `address`) VALUES
@@ -107,6 +107,8 @@ INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `desc
 (2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
 (3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '37.53450000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
 (4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 8, 8, '더그 러브 모임', '더그를 찾아서','/uploads/clubs/find-dug.jpg', 20, '고잉메리홈', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 
 -- 모임 멤버 추가
 INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
@@ -114,7 +116,8 @@ INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
 (1, 3, 'APPROVED'),
 (2, 2, 'APPROVED'),
 (3, 3, 'APPROVED'),
-(4, 4, 'APPROVED');
+(4, 4, 'APPROVED'),
+(5, 2, 'APPROVED');
 
 -- 샘플 배너
 -- /uploads/banners 파일로 변경!

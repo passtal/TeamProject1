@@ -123,7 +123,7 @@ public class MypageController {
     // 사진 저장
     private static final Path UPLOAD_DIR = Paths.get(
         System.getProperty("user.dir"),
-        "uploads", "profile"
+        "durudurub", "uploads", "profile"
     ).toAbsolutePath().normalize();
     private static final String DB_URL_PREFIX = "/uploads/profile/";
 

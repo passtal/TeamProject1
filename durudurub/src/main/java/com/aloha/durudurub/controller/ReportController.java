@@ -42,7 +42,6 @@ public class ReportController {
         int reporterNo = userService.selectByUserId(principal.getName()).getNo();
         report.setReporterNo(reporterNo);
 
-        // clubNo/targetNo/reason 검증은 있으면 좋음
         Map<String, Object> result = reportService.reportUser(report);
         result.put("success", true);
 

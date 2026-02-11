@@ -25,7 +25,7 @@ public class BannerServiceImpl implements BannerService {
     
     private final BannerMapper bannerMapper;
     
-    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/banners/";
+    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/durudurub/uploads/banners/";
     private static final String DB_URL_PREFIX = "/uploads/banners/";
 
     // 리스트 조회

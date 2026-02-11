@@ -259,7 +259,7 @@ public class ClubController {
         // 파일 업로드 처리
         if (thumbnail != null && !thumbnail.isEmpty()) {
             try {
-                String uploadDir = System.getProperty("user.dir") + "/uploads/clubs/";
+                String uploadDir = System.getProperty("user.dir") + "/durudurub/uploads/clubs/";
                 File dir = new File(uploadDir);
                 if (!dir.exists()) {
                     dir.mkdirs();
@@ -354,7 +354,7 @@ public class ClubController {
         // 새 이미지가 업로드된 경우
         if (thumbnail != null && !thumbnail.isEmpty()) {
             try {
-                String uploadDir = System.getProperty("user.dir") + "/uploads/clubs/";
+                String uploadDir = System.getProperty("user.dir") + "/durudurub/uploads/clubs/";
                 File dir = new File(uploadDir);
                 if (!dir.exists()) {
                     dir.mkdirs();

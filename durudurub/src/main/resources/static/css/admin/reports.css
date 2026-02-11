@@ -138,6 +138,9 @@
     font-weight: 700;
 }
 
+.btn-delete #delete {
+    padding-right: 50px;
+}
 /* More Button */
 /* .btn-more {
     width: 32px;
