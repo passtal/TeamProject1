@@ -1,5 +1,7 @@
 package com.aloha.durudurub.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,6 +11,7 @@ import com.aloha.durudurub.dao.ClubMapper;
 import com.aloha.durudurub.dao.CommentMapper;
 import com.aloha.durudurub.dao.LikeMapper;
 import com.aloha.durudurub.dto.BoardLike;
+import com.aloha.durudurub.dto.Club;
 import com.aloha.durudurub.dto.ClubLike;
 import com.aloha.durudurub.dto.CommentLike;
 
@@ -122,5 +125,12 @@ public class LikeServiceImpl implements LikeService {
     public int countCommentLikes(int commentNo) {
         return likeMapper.countCommentLikes(commentNo);
     }
+
+    // 즐겨찾기 - 목록
+    @Override
+    public List<Club> favoriteList(int userNo) throws Exception {
+        return likeMapper.favoriteList(userNo);
+    }
+    
     
 }

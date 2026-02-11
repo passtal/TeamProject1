@@ -112,4 +112,31 @@
             AND user_no = #{userNo}
             AND status = 'PENDING'
     </delete>
+    <!-- 모임 삭제(자식) -->
+    <delete id="deleteMembersByClubNo">
+        DELETE FROM club_members WHERE club_no = #{clubNo}
+    </delete>
+    <!-- 모임 승인 -->
+    <update id="approved">
+        UPDATE club_members
+        SET status = 'APPROVED'
+        WHERE club_no = #{clubNo}
+            AND user_no = #{userNo}
+            AND status = 'PENDING'
+    </update>
+    <!-- 모임 거부 -->
+    <delete id="rejectMember">
+        DELETE FROM club_members
+        WHERE club_no = #{clubNo}
+            AND user_no = #{userNo}
+            AND status = 'PENDING'
+    </delete>
+    <!-- 승인된 멤버 추방 -->
+    <delete id="removeMember">
+        DELETE FROM club_members
+        WHERE club_no = #{clubNo}
+            AND user_no = #{userNo}
+            AND status = 'APPROVED'
+    </delete>
+
 </mapper>

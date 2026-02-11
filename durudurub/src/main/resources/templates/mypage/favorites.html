@@ -4,8 +4,11 @@
       xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
       layout:decorate="~{/layouts/main_layout}">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
     <title>즐겨찾기 목록 - 두루두룹</title>
     <link rel="stylesheet" th:href="@{/css/mypage/favorites.css}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body layout:fragment="content">
 
@@ -25,8 +28,7 @@
              th:data-club-no="${club.no}"
              style="cursor: pointer;">
             <div class="card-image-container">
-                <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : '/img/default-club.png'}" 
-                     src="/img/default-club.png"
+                <img th:src="${club.thumbnailImg != null ? club.thumbnailImg : '/img/board/hero-image.png'}" 
                      alt="모임 이미지" 
                      class="card-image">
                 <button class="btn-favorite active" 
@@ -89,6 +91,9 @@ document.querySelectorAll('.btn-favorite').forEach(button => {
     button.addEventListener('click', async function() {
         const clubNo = this.getAttribute('data-club-no');
         
+        const token = document.querySelector("meta[name='_csrf']")?.getAttribute("content");
+        const header = document.querySelector("meta[name='_csrf_header']")?.getAttribute("content");
+        
         try {
             const response = await fetch(`/like/club/${clubNo}`, {
                 method: 'POST',
@@ -100,6 +105,7 @@ document.querySelectorAll('.btn-favorite').forEach(button => {
             if (response.ok) {
                 // 즐겨찾기 해제 성공 - 카드 제거
                 const card = this.closest('.favorite-card');
+
                 card.style.opacity = '0';
                 card.style.transform = 'scale(0.95)';
                 

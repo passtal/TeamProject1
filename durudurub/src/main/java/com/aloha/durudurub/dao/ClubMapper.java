@@ -57,6 +57,8 @@ public interface ClubMapper {
     int countByStatus(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
     // 전체 모임개수
     int countByUser(@Param("userNo") int userNo) throws Exception;
+    // 모임 삭제
+    int deleteClub(@Param("no") int clubNo) throws Exception;
     
     // 관리자페이지
     // 1. 대시보드

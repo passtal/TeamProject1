@@ -74,12 +74,23 @@ public interface ClubService {
     int decrementMemberCount(int clubNo);
 
     // 마이페이지: 내모임 관리
-    // 모임리스트 (승인, 리더, 대기)
+    // 모임리스트 (승인, 대기)
     List<Club> myClubList(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
     // 모임리스트 개수 (승인, 리더, 대기) 
     int countByStatus(@Param("userNo") int userNo, @Param("status") String status) throws Exception;
     // 전체 모임개수
     int countByUser(@Param("userNo") int userNo) throws Exception;
+    // 모임리스트 - 리더
+    List<Club> listByHost(@Param("hostNo") int hostNo);
+    // 모임 삭제
+    int deleteClub(@Param("no") int clubNo) throws Exception;
+    // 모임 승인
+    int approved(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+    // 모임 거부
+    int rejectMember(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+    // 추방
+    int removeMember(@Param("clubNo") int clubNo, @Param("userNo") int userNo) throws Exception;
+
     
     // 탈퇴하기
     @Transactional  // 멤버 삭제 및 인원 수 감소

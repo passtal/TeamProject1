@@ -220,7 +220,7 @@
 
 
     <!-- 마이페이지 : 내모임 관리 -->
-    <!-- 참여/리더/승인대기 -->
+    <!-- 참여/승인대기 리스트 -->
     <select id="myClubList" resultMap="clubResultMap">
         SELECT c.*
         FROM club_members m
@@ -240,7 +240,10 @@
         FROM club_members 
         WHERE user_no = #{userNo}
     </select>
-
+    <!-- 모임 삭제 - 리더 -->
+    <delete id="deleteClub">
+        DELETE FROM clubs WHERE no = #{no}
+    </delete>
     <!-- 관리자페이지: 최신모임 1건 -->
     <select id="findLatestClub" resultType="Club">
         SELECT *

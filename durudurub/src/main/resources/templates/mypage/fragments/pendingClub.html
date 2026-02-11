@@ -1,0 +1,143 @@
+<!-- 승인 대기 fragment -->
+<div th:fragment="content">
+<!-- 신청 중인 모임 -->
+    <div class="tab-content" id="pending">
+        <div id="pendingClubEmptyMsg" th:style="${#lists.isEmpty(pendingClub)} ? 'display:block' : 'display:none'">
+            <p style="text-align: center;">신청한 모임이 없습니다.</p>
+        </div>
+        <div th:unless="${#lists.isEmpty(pendingClub)}" class="cardList-pending">
+            <div th:each="club : ${pendingClub}" class="club-card-wrapper-pending">
+                <div class="club-card" th:attr="data-club-no=${club.no}" style="cursor: pointer;">
+                    <div class="club-info">
+                        <div class="club-icon gradient-orange">
+                            <span class="material-symbols-outlined">restaurant</span>
+                        </div>
+                        <div class="club-details">
+                            <div class="club-title-row">
+                                <h3 class="club-title" th:text="${club.title}">모임명</h3>
+                                <span class="status-badge pending">승인 대기 중</span>
+                            </div>
+                            <p class="club-category" th:text="${club.category != null ? club.category.name : '카테고리 없음'}">카테고리명</p>
+                            <p class="club-members" th:text="|멤버 ${club.currentMembers}/${club.maxMembers}명|">가입 멤버수</p>
+                        </div>
+                    </div>
+                    <div class="club-actions">
+                        <button class="btn-cancel-request" th:attr="data-club-no=${club.no}" onclick="pendingOpenModal(this);">
+                            <span class="material-symbols-outlined">close</span>
+                            신청 취소
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 신청 취소 모달 -->
+    <div id="cancelRequestModal" class="cancel-request-modal">
+        <div class="cancel-request-modal-content">
+            <div class="cancel-request-modal-header">
+                <h3 class="cancel-request-modal-title">가입 신청 취소</h3>
+                <button id="cancelRequestModalCloseBtn" class="cancel-request-modal-close" onclick="pendingCloseModal()">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="cancel-request-modal-warning">
+                <p class="cancel-request-modal-warning-text">모임의 가입 신청을 취소하시겠습니까?</p>
+                <p class="cancel-request-modal-warning-subtext">취소하면 해당 모임의 가입 신청이 삭제됩니다.</p>
+            </div>
+            <div class="cancel-request-modal-actions">
+                <button id="cancelRequestModalCancelBtn" class="cancel-request-modal-btn cancel-request-modal-btn-cancel" onclick="pendingCloseModal()">취소</button>
+                <button id="cancelRequestModalConfirmBtn" class="cancel-request-modal-btn cancel-request-modal-btn-confirm">취소하기</button>
+            </div>
+        </div>
+    </div>
+
+<th:block layout:fragment="script">
+    <script>
+    // ⭐ 신청 중인 모임
+    // pending empty 문구
+    function pendingClubEmptyMessage() {
+        const hasAny = $('.club-card-wrapper-pending').length > 0;
+
+        if (hasAny) {
+            $('#pendingClubEmptyMsg').hide();
+            $('.cardList-pending').show();
+        } else {
+            $('#pendingClubEmptyMsg').show();
+            $('.cardList-pending').hide();
+        }
+    }
+
+    // 신청 취소 - 모달 열기
+    function pendingOpenModal(btnEl) {
+        // data-club-no
+        const clubNo = $(btnEl).data("clubNo");
+        $("#cancelRequestModalConfirmBtn").data("clubNo", clubNo);
+
+        $("#cancelRequestModal").css("display", "flex");
+    }
+
+    // 신청 취소 - 모달 닫기
+    function pendingCloseModal() {
+        $("#cancelRequestModal").css("display", "none");
+        $("#cancelRequestModalConfirmBtn").removeData("clubNo");
+    }
+
+    // 취소하기 버튼(확정)
+    $(document).off("click", "#cancelRequestModalConfirmBtn").on("click", "#cancelRequestModalConfirmBtn", function () {
+        const clubNo = $(this).data("clubNo");
+        if (!clubNo) {
+            alert("취소할 모임 정보가 없습니다.");
+            return;
+        }
+
+        const token = $("meta[name='_csrf']").attr("content");
+        const header = $("meta[name='_csrf_header']").attr("content");
+
+        $.ajax({
+            url: `/users/mypage/api/club/pending/${clubNo}`,
+            method: "DELETE",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+            },
+            success: function () {
+                alert("신청이 취소되었습니다.");
+
+                // wrapper 제거 (빈공간 방지)
+                $(`.club-card[data-club-no="${clubNo}"]`)
+                .closest(".club-card-wrapper-pending")
+                .remove();
+                pendingCloseModal()
+
+                // 비어있으면 "모임 없음" 표시
+                pendingClubEmptyMessage()
+            },
+            error: function (xhr) {
+                console.error("***탈퇴 실패", xhr.status, xhr.responseText)
+                alert("탈퇴 실패")
+            }
+        });
+    });
+
+    // 카드 클릭 -> 모임 상세로 이동
+    $(document).on('click', '.cardList-pending .club-card', function () {
+        const clubNo = $(this).data('clubNo');
+        if (!clubNo) return;
+        window.location.href = `/club/detail/${clubNo}`;
+    });
+    // 클릭 방지
+    $(document).on('click', '.btn-cancel-request', function (e) {
+        e.stopPropagation();
+    });
+    // 모달 바깥 클릭 닫기(선택)
+    $(document).on('click', '#cancelRequestModal', function (e) {
+        if (e.target === this) pendingCloseModal();
+    });
+
+    // 최초 로드 시 한 번 정리(안전)
+    $(function () {
+        pendingClubEmptyMessage();
+    });
+
+    </script>
+</th:block>
