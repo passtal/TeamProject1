@@ -14,17 +14,7 @@
             "type": "java",
             "name": "Spring Boot-DurudurubApplication<durudurub>",
             "request": "launch",
-            "cwd": "${workspaceFolder}",
-            "mainClass": "com.aloha.durudurub.DurudurubApplication",
-            "projectName": "durudurub",
-            "args": "",
-            "envFile": "${workspaceFolder}/.env"
-        },
-        {
-            "type": "java",
-            "name": "Spring Boot-DurudurubApplication<durudurub>",
-            "request": "launch",
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/durudurub",
             "mainClass": "com.aloha.durudurub.DurudurubApplication",
             "projectName": "durudurub",
             "args": "",

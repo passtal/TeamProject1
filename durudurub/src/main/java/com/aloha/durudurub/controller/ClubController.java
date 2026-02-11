@@ -149,8 +149,10 @@ public class ClubController {
                         board.setLiked(likeService.isBoardLiked(board.getNo(), user.getNo()));
                     }
                 }
+                model.addAttribute("isLoggedIn", true);
             } else {
                 model.addAttribute("isHost", false);
+                model.addAttribute("isLoggedIn", false);
             }
             
             model.addAttribute("boards", boards);
