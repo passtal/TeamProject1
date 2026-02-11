@@ -116,8 +116,8 @@
                                 <td>${formatDate(expireDate)}</td>
                                 <td>${badge(reportCount)}</td>
                                 <td>
-                                    <button class="btn-delete" onclick="deleteUser(this, event)">
-                                        <span class="material-symbols-outlined">delete</span>
+                                    <button class="btn-delete" onclick="deleteUser(this, event)" style="margin-left: 20px;">
+                                        <span class="material-symbols-outlined" id="delete">delete</span>
                                     </button>
                                 </td>
                             </tr>`
@@ -142,7 +142,7 @@
     }
     // 신고횟수 뱃지
     function badge(reportCount) {
-        if(reportCount >= 1 && reportCount <= 5) {
+        if(reportCount < 5) {
             return `<span class="badge-report">${reportCount}회</span>`
         }
         return `<span class="badge-report-warning">${reportCount}회</span>`

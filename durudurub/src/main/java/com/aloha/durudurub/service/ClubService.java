@@ -97,7 +97,6 @@ public interface ClubService {
     int deleteByClubAndUser(int clubNo, int userNo);
     // 가입 신청 취소
     int cancelPending(@Param("clubNo") int clubNo, @Param("userNo") int userNo);
-
     // 관리자페이지 : 대시보드
     Club findLatestClub();
 }

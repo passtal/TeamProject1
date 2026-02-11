@@ -38,17 +38,23 @@
         <h2>최근 활동</h2>
         <div class="activity-list">
             <!-- 1) 최근 모임 생성 -->
-            <div class="activity-item">
-            <div class="activity-icon activity-club">
-                <span class="material-symbols-outlined">dashboard</span>
+            <div th:if="${lastestClubTitle != null}" >
+                <div class="activity-item">
+                    <div class="activity-icon activity-club">
+                        <span class="material-symbols-outlined">dashboard</span>
+                    </div>
+                    <div class="activity-content">
+                        <p class="activity-text">
+                        새로운 모임 "<span th:text="${lastestClubTitle}"></span>"이 생성되었습니다.
+                        </p>
+                        <p class="activity-time" th:text="${lastestClubTime}"></p>
+                    </div>
+                </div>
             </div>
-            <div class="activity-content">
-                <p class="activity-text">
-                새로운 모임 "<span th:text="${lastestClubTitle}"></span>"이 생성되었습니다.
-                </p>
-                <p class="activity-time" th:text="${lastestClubTime}"></p>
+            <div th:unless="${lastestClubTitle == null}" style="display: none;">
+                <span class="activity-item"></span>
             </div>
-            </div>
+            
 
             <!-- 2) 신규 가입 -->
             <div class="activity-item">
@@ -66,7 +72,9 @@
             <!-- 3) 신고 접수 -->
             <div class="activity-item">
             <div class="activity-icon activity-notice">
-                <span class="material-symbols-outlined">article</span>
+                <div class="stat-icon" style="background-color: #F3E5F5; height: 40px;">
+                    <span class="material-symbols-outlined" style="color: #9C27B0;">report</span>
+                </div>
             </div>
             <div class="activity-content">
                 <p class="activity-text">새로운 신고 <span th:text="${totalNewReports}"></span>건이 접수되었습니다.</p>

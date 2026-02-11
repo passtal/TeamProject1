@@ -65,5 +65,4 @@ public interface ClubMapper {
     Club findLatestClub();
     // AI 검색용
     List<Club> search(@Param("keyword") String keyword);
-
 }

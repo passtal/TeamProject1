@@ -125,6 +125,9 @@
     color: #374151;
 }
 
+#detailBadge {
+    padding-bottom: 10px;
+}
 /* Delete Button */
 .btn-delete {
     width: 32px;
@@ -212,7 +215,7 @@
     padding: 24px;
     display: flex;
     flex-direction: column;
-    gap: 0;
+    gap: 15px;
 }
 
 .detail-row {
@@ -252,6 +255,7 @@
     font-size: 14px;
     font-weight: 700;
     color: #92400E;
+    margin-bottom: 10px;
 }
 
 .modal-footer {

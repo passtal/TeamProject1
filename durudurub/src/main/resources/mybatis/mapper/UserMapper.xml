@@ -58,7 +58,9 @@
             #{userId},
             #{password},
             #{username},
-            COALESCE(#{profileImg}, '/static/img/default-profile.png'),
+            <!-- COALESCE(#{profileImg}, '/static/img/default-profile.png'), -->
+            <!-- 마이페이지 이미지 오류 -->
+            COALESCE(#{profileImg}, '/img/default-profile.png'),
             #{age},
             COALESCE(#{gender}, '공개안함'),
             #{address}
@@ -146,7 +148,7 @@
         FROM users u
         LEFT JOIN subscriptions s ON s.user_no = u.no
         LEFT JOIN user_auth a ON a.user_no = u.no AND a.auth = 'ROLE_ADMIN'
-        ORDER BY u.created_at DESC
+        ORDER BY u.created_at ASC
     </select>
 
     <!-- 신고하기 -->

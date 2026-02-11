@@ -313,6 +313,8 @@
                 success: function (result) {
                     if (result == 1) {
                         alert('등록 완료!')
+                        resetBannerForm() 
+
                         closeCreatedModal()
 
                         // 리스트 새로고침
@@ -333,7 +335,7 @@
                 document.getElementById('createPreviewImage').src = url;
             }
         });
-
+        
         // 파일 선택 시 미리보기 업데이트
         function previewImage(event) {
             const file = event.target.files[0];
@@ -346,6 +348,19 @@
                 reader.readAsDataURL(file);
             }
         }
+        // 미리보기 리셋
+        function resetBannerForm() {
+
+            const form = document.getElementById('bannerInsertForm');
+            form.reset();
+
+            // 미리보기 이미지 초기화
+            document.getElementById('createPreviewImage').src = '';
+
+            // 체크 기본값 (필요하면)
+            document.getElementById('active').checked = true;
+        }
+
         // 등록 모달 닫기
         function closeCreatedModal() {
             document.getElementById('bannerCreateModal').style.display = 'none';
@@ -353,7 +368,7 @@
 
                 
         // ------- 배너 수정하기
-        let bannerNo = null
+        window.bannerNo = window.bannerNo ?? null
         // 수정버튼
         function editBanner(no) {
             const banner = bannerMap[no];
@@ -445,7 +460,8 @@
             document.getElementById('bannerEditModal').style.display = 'none';
         }
         
-        let bannerMap = {} // no -> banner
+        window.bannerMap = window.bannerMap ?? {} // no -> banner
+
         // --------리스트 조회하기
         // 사용자 리스트
         function getList() {

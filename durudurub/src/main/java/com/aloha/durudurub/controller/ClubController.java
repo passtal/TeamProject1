@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -127,7 +126,7 @@ public class ClubController {
                 return "error/404";
             }
             
-            List<ClubMember> members = clubService.listMembers(no);
+            List<ClubMember> members = clubService.listApproveMembers(no);
             
             // 게시글 목록 조회 (공지사항 포함, 공지사항이 맨 위로)
             List<Board> boards = boardService.listByClub(no);
@@ -150,8 +149,10 @@ public class ClubController {
                         board.setLiked(likeService.isBoardLiked(board.getNo(), user.getNo()));
                     }
                 }
+                model.addAttribute("isLoggedIn", true);
             } else {
                 model.addAttribute("isHost", false);
+                model.addAttribute("isLoggedIn", false);
             }
             
             model.addAttribute("boards", boards);
@@ -431,11 +432,10 @@ public class ClubController {
         ClubMember member = new ClubMember();
         member.setClubNo(no);
         member.setUserNo(user.getNo());
-        member.setStatus("APPROVED");
+        member.setStatus("PENDING");
         
         clubService.insertMember(member);
-        clubService.incrementMemberCount(no);
-        rttr.addFlashAttribute("message", "모임에 가입되었습니다.");
+        rttr.addFlashAttribute("message", "가입 신청이 완료되었습니다. 리더의 승인을 기다려주세요.");
         
         return "redirect:/club/" + no;
     }

@@ -1,13 +1,16 @@
 package com.aloha.durudurub.service;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.aloha.durudurub.dao.ReportMapper;
 import com.aloha.durudurub.dao.UserMapper;
@@ -58,6 +61,7 @@ public class ReportServiceImpl implements ReportService {
     // 신고하기
     @Override
     public int insertUserReport(Report report) {
+        
         return reportMapper.insertUserReport(report);
     }
 
@@ -69,7 +73,7 @@ public class ReportServiceImpl implements ReportService {
         try {
             reportMapper.insertUserReport(report);
         } catch (DuplicateKeyException e) {
-            throw new RuntimeException("이미 신고한 사용자입니다.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"이미 신고한 사용자입니다.");
         }
 
         // 2) users.report_count +1
@@ -78,33 +82,38 @@ public class ReportServiceImpl implements ReportService {
         // 3) 최신 report_count 조회
         int newCount = userMapper.selectReportCount(report.getTargetNo());
 
-        // 4) user_bans에 무조건 기록 남기기
-        UserBan ban = new UserBan();
-        ban.setUserNo(report.getTargetNo());
-        ban.setReportCountAtBan(newCount);
-        ban.setReason("신고 접수: " + report.getReason());
+        
+        // 5 이상이면 활성 차단
+        // 7 이상 빨간 뱃지 - 관리자 직접 사용자 삭제! (버튼)
+        boolean banned = (newCount >= 5);
 
-        // 5 이상이면 활성 차단, 아니면 비활성 기록
-        if (newCount >= 5) {
-            ban.setBanType("TEMPORARY");
-            ban.setIsActive("Y");
+        // 4) user_bans 갱신
+        Map<String, Object> param = new HashMap<>();
+        param.put("userNo", report.getTargetNo());
+        param.put("reportCountAtBan", newCount);
+        param.put("reason", "신고 접수: " + report.getReason());
+        param.put("banType", "TEMPORARY");
 
+
+        Date banEndDate = null;
+        String isActive = "N";
+
+        if (banned) {
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.HOUR_OF_DAY, 0);
             cal.set(Calendar.MINUTE, 0);
             cal.set(Calendar.SECOND, 0);
             cal.set(Calendar.MILLISECOND, 0);
             cal.add(Calendar.DATE, 7);
-            ban.setBanEndDate(cal.getTime());
-        } else {
-            ban.setBanType("TEMPORARY"); // 또는 null/기본값
-            ban.setIsActive("N");        // 아직 차단 X
-            ban.setBanEndDate(null);
+            banEndDate = cal.getTime();
+
+            isActive = "Y"; // 5회 이상 차단! - 관리자 해결!
         }
+        param.put("isActive", isActive);
+        param.put("banEndDate", banEndDate);
 
-        userMapper.insertUserBan(ban);
-
-        boolean banned = (newCount >= 5);
+        // 갱신 호출
+        reportMapper.updateUserReport(param);
 
         Map<String, Object> result = new HashMap<>();
         result.put("reportCount", newCount);

@@ -1,6 +1,7 @@
 package com.aloha.durudurub.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
@@ -24,4 +25,6 @@ public interface ReportMapper {
    UserBan findLastestUserBan();
    // 신고하기
    int insertUserReport(Report report);
+   // 만료일
+   int updateUserReport(Map<String,Object> param);
 }

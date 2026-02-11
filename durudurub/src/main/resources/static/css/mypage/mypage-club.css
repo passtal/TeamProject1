@@ -200,6 +200,12 @@ body {
     align-items: center;
 }
 
+.cardList-pending {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 /* 버튼 스타일 */
 .btn-leave,
 .btn-cancel,

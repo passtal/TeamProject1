@@ -118,6 +118,16 @@
 
     }
     
+    .navbar-right #loginBtn {
+        background-color: #00A651; 
+        color: white; 
+    }
+
+    .navbar-right #loginBtn:hover {
+        background-color: #008a43;
+        color: white;
+    }
+
     .navbar-right .btn-outline-success {
         border-color: var(--primary-color);
         color: var(--primary-color);
@@ -138,6 +148,14 @@
         height: 40px;
         object-fit: contain;
     }
+
+    
+    .user-icon:hover {
+        filter: brightness(0) saturate(100%) 
+                invert(39%) sepia(94%) saturate(720%) 
+                hue-rotate(105deg) brightness(85%) contrast(105%);
+    }
+
     
     .logo-img {
         object-fit: contain;

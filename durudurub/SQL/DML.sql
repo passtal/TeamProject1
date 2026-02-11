@@ -81,7 +81,7 @@ INSERT INTO `report_categories` (`name`, `description`, `seq`) VALUES
 
 -- 관리자 계정 (테스트용)
 INSERT INTO `users` (`id`, `user_id`, `password`, `username`) VALUES
-(UUID(), 'admin@durudurub.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '관리자'); -- 비번 123456 입니다
+(UUID(), 'admin@durudurub.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '관리자안됨'); -- 비번 123456 입니다
 
 -- 테스트 일반 유저 (비밀번호: 123456)
 INSERT INTO `users` (`id`, `user_id`, `password`, `username`, `address`) VALUES
@@ -107,6 +107,8 @@ INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `desc
 (2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
 (3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '37.53450000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
 (4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 8, 8, '더그 러브 모임', '더그를 찾아서','/uploads/clubs/find-dug.jpg', 20, '고잉메리홈', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 
 -- 모임 멤버 추가
 INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
@@ -114,15 +116,20 @@ INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
 (1, 3, 'APPROVED'),
 (2, 2, 'APPROVED'),
 (3, 3, 'APPROVED'),
-(4, 4, 'APPROVED');
+(4, 4, 'APPROVED'),
+(5, 2, 'APPROVED');
 
 -- 샘플 배너
 -- /uploads/banners 파일로 변경!
 INSERT INTO `banners` (`title`, `image_url`, `link_url`, `position`, `seq`) VALUES
-('카페 이벤트', '/uploads/banners/banner_cafe.png', '/clubs', 'MAIN', 1),
-('영어회화 이벤트', '/uploads/banners/banner_english.png', '/clubs', 'MAIN', 2),
-('양념 갈비 이벤트', '/uploads/banners/banner_food.png', '/clubs', 'MAIN', 3),
-('발리 패키지 여행 이벤트', '/uploads/banners/banner_traval.png', '/clubs', 'MAIN', 4)
+('두루두루 오픈 기념', '/uploads/banners/durudurub-open.png', '/clubs', 'MAIN', 1),
+('케이크 먹고 싶어요', '/uploads/banners/cafe_banner.png', '/clubs', 'MAIN', 2),
+('모임을 만들어보세요!', '/uploads/banners/durudurub-newClub.png', '/clubs', 'MAIN', 3),
+('스테이크 사주세요', '/uploads/banners/restaurant_banner.png', '/clubs', 'MAIN', 4),
+('작은 핸드폰 원하세요?', '/uploads/banners/smartphone_banner.png', '/clubs', 'MAIN', 5),
+('프리미엄 50%', '/uploads/banners/durudurub-premium.png', '/clubs', 'MAIN', 6),
+('로또 당첨되면 바로 뜨자', '/uploads/banners/travel_air_banner.png', '/clubs', 'MAIN', 7);
+
 
 -- 샘플 공지사항
 INSERT INTO `notices` (`writer_no`, `category`, `title`, `content`, `is_important`) VALUES

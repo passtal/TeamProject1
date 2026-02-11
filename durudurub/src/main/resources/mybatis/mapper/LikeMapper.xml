@@ -101,4 +101,11 @@
         WHERE cl.user_no = #{userNo}
         ORDER BY cl.created_at DESC
     </select>
+    <!-- 즐겨찾기 모임 수 -->
+    <select id="countClubLikeByUser" resultType="int">
+        SELECT COUNT(*)
+        FROM club_likes
+        WHERE user_no = #{userNo}
+    </select>
+
 </mapper>

@@ -50,5 +50,7 @@ public interface LikeMapper {
 
     // 즐겨찾기 모임리스트
     List<Club> favoriteList(@Param("userNo") int userNo) throws Exception;
+    // 즐겨찾기 수
+    int countClubLikeByUser(@Param("userNo") int userNo) throws Exception;
 
 }

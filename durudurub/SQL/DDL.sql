@@ -321,6 +321,10 @@ CREATE TABLE `user_bans` (
     PRIMARY KEY (`no`),
     FOREIGN KEY (`user_no`) REFERENCES `users`(`no`) ON DELETE CASCADE
 );
+-- 차단 기록 중복 방지
+ALTER TABLE user_bans
+ADD UNIQUE KEY uk_user_bans_user_no (user_no);
+
 
 
 -- 17. club_member_reports (모임 멤버 신고 내역)

@@ -228,7 +228,11 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional
     public int approved(int clubNo, int userNo) throws Exception {
-        return memberMapper.approved(clubNo, userNo);
+        int result = memberMapper.approved(clubNo, userNo);
+        if (result > 0) {
+            clubMapper.incrementCurrentMembers(clubNo);
+        }
+        return result;
     }
     // 모임 거부 - 리더
     @Override
@@ -240,7 +244,11 @@ public class ClubServiceImpl implements ClubService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int removeMember(int clubNo, int userNo) throws Exception {
-        return memberMapper.removeMember(clubNo, userNo);
+        int result = memberMapper.removeMember(clubNo, userNo);
+        if (result > 0) {
+            clubMapper.decrementCurrentMembers(clubNo);
+        }
+        return result;
     }
 
     // 승인 대기
@@ -256,8 +264,8 @@ public class ClubServiceImpl implements ClubService {
     public Club findLatestClub() {
         return clubMapper.findLatestClub();
     }
-
 }
+
     
 
 
