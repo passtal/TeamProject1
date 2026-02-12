@@ -103,12 +103,36 @@ SELECT * FROM `user_auth`;
 
 -- 샘플 모임 데이터
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
-(2, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
 (2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
 (3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '37.53450000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
 (4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
 (2, 8, 8, '더그 러브 모임', '더그를 찾아서','/uploads/clubs/find-dug.jpg', 20, '고잉메리홈', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
+
+-- 1. 자기 계발
+-- -1. 독서
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`,  `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', '/uploads/clubs/self-development/bookclub1.png', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(2, 1, 1, '베르베르 베르사유 궁전에서 책 읽자', '베르사유 궁전가서 낭만을 즐기고 싶은 자여, 베르나르 베르베르 책이나 읽자', '/uploads/clubs/self-development/bookclub2.png', 10, '서울시 마포구 카페', '37.558458', '126.908235', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(3, 1, 1, '숨어 있는 뮤지컬 원작 책 찾기', '뮤지컬을 좋아하는 사람들이 모인 원작 책 공유 모임!', '/uploads/clubs/self-development/bookclub3.png', 10, '인천광역시 부평동 카페', '37.487380', '126.626480', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(4, 1, 1, '1권만 읽은 놈이 제일 무섭다', '꾸준하게 책 읽을 사람 모집합니다~', '/uploads/clubs/self-development/bookclub4.png', 5, '롯데 잠실', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
+-- -2. 스피치
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`,  `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 1, 2, '프레젠테이션 두려움 떨치기', '다양한 책을 읽고 이야기 나눠요!', '/uploads/clubs/self-development/bookclub1.png', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(2, 1, 2, '오늘도 말하', '베르사유 궁전가서 낭만을 즐기고 싶은 자여, 베르나르 베르베르 책이나 읽자', '/uploads/clubs/self-development/bookclub2.png', 10, '서울시 마포구 카페', '37.558458', '126.908235', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(3, 1, 2, '숨어 있는 뮤지컬 원작 책 찾기', '뮤지컬을 좋아하는 사람들이 모인 원작 책 공유 모임!', '/uploads/clubs/self-development/bookclub3.png', 10, '인천광역시 부평동 카페', '37.487380', '126.626480', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(4, 1, 2, '1권만 읽은 놈이 제일 무섭다', '꾸준하게 책 읽을 사람 모집합니다~', '/uploads/clubs/self-development/bookclub4.png', 5, '롯데 잠실', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
+
+-- -3. 면접
+-- -4. 회화
+
+-- 2. 자기 계발
+-- 3. 자기 계발
+-- 4. 자기 계발
+-- 5. 자기 계발
+-- 6. 자기 계발
+-- 7. 자기 계발
+-- 8. 자기 계발
 
 -- 모임 멤버 추가
 INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
