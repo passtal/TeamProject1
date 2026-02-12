@@ -87,7 +87,12 @@ INSERT INTO `users` (`id`, `user_id`, `password`, `username`) VALUES
 INSERT INTO `users` (`id`, `user_id`, `password`, `username`, `address`) VALUES
 (UUID(), 'user1@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저1', '서울시 강남구'),
 (UUID(), 'user2@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저2', '서울시 서초구'),
-(UUID(), 'premium@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '프리미엄유저', '서울시 마포구');
+(UUID(), 'premium@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '프리미엄유저', '서울시 마포구'),
+(UUID(), 'user3@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저3', '서울시 마포구'),
+(UUID(), 'user4@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저4', '서울시 마포구'),
+(UUID(), 'user5@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저5', '서울시 마포구'),
+(UUID(), 'user6@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저6', '서울시 마포구'),
+(UUID(), 'user7@test.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', '테스트유저7', '서울시 마포구');
 
 SELECT * FROM `users`;
 
@@ -97,13 +102,16 @@ INSERT INTO `user_auth` (`user_no`, `auth`) VALUES
 INSERT INTO `user_auth` (`user_no`, `auth`) VALUES
 (2, 'ROLE_USER'),
 (3, 'ROLE_USER'),
-(4, 'ROLE_USER');
+(4, 'ROLE_USER'),
+(5, 'ROLE_USER'),
+(6, 'ROLE_USER'),
+(7, 'ROLE_USER'),
+(8, 'ROLE_USER');
 
 SELECT * FROM `user_auth`;
 
 -- 샘플 모임 데이터
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
-(2, 2, 5, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', 20, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
 (3, 3, 9, '맛집 탐방단', '숨은 맛집을 찾아 떠나요', 8, '서울 전역', '37.53450000', '37.53450000', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
 (4, 4, 13, '보드게임 모임', '다양한 보드게임을 즐겨요', 6, '홍대 보드게임카페', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
@@ -112,29 +120,67 @@ INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `desc
 -- 1. 자기 계발
 -- -1. 독서
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`,  `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
-(2, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', '/uploads/clubs/self-development/bookclub1.png', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(5, 1, 1, '매주 토요일 독서 모임', '다양한 책을 읽고 이야기 나눠요!', '/uploads/clubs/self-development/bookclub1.png', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
 (2, 1, 1, '베르베르 베르사유 궁전에서 책 읽자', '베르사유 궁전가서 낭만을 즐기고 싶은 자여, 베르나르 베르베르 책이나 읽자', '/uploads/clubs/self-development/bookclub2.png', 10, '서울시 마포구 카페', '37.558458', '126.908235', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
 (3, 1, 1, '숨어 있는 뮤지컬 원작 책 찾기', '뮤지컬을 좋아하는 사람들이 모인 원작 책 공유 모임!', '/uploads/clubs/self-development/bookclub3.png', 10, '인천광역시 부평동 카페', '37.487380', '126.626480', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
 (4, 1, 1, '1권만 읽은 놈이 제일 무섭다', '꾸준하게 책 읽을 사람 모집합니다~', '/uploads/clubs/self-development/bookclub4.png', 5, '롯데 잠실', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 -- -2. 스피치
 INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`,  `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
-(2, 1, 2, '프레젠테이션 두려움 떨치기', '다양한 책을 읽고 이야기 나눠요!', '/uploads/clubs/self-development/bookclub1.png', 10, '서울시 강남구 스터디카페', '37.49790000', '127.02760000', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
-(2, 1, 2, '오늘도 말하', '베르사유 궁전가서 낭만을 즐기고 싶은 자여, 베르나르 베르베르 책이나 읽자', '/uploads/clubs/self-development/bookclub2.png', 10, '서울시 마포구 카페', '37.558458', '126.908235', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
-(3, 1, 2, '숨어 있는 뮤지컬 원작 책 찾기', '뮤지컬을 좋아하는 사람들이 모인 원작 책 공유 모임!', '/uploads/clubs/self-development/bookclub3.png', 10, '인천광역시 부평동 카페', '37.487380', '126.626480', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
-(4, 1, 2, '1권만 읽은 놈이 제일 무섭다', '꾸준하게 책 읽을 사람 모집합니다~', '/uploads/clubs/self-development/bookclub4.png', 5, '롯데 잠실', '37.55630000', '126.92370000', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
-
+(6, 1, 2, '프레젠테이션 두려움 떨치기', '회사 발표 때마다 떨린다면 일로 오세요!', '/uploads/clubs/self-development/speech1.png', 10, '여의도 공유오피스', '37.531416', '126.932766', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(7, 1, 2, '오늘도 말하는 방법 잊지 말아요', '자신감을 갖고, 목소리를 내보세요', '/uploads/clubs/self-development/speech2.png', 10, '부천 스터디카페', '37.506865', '126.788388', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(8, 1, 2, '시장통 과일가게 사장님 따라하기', '시장통 사장님이 알려주는 큰 소리 내는 법', '/uploads/clubs/self-development/speech3.png', 10, '제주 올레시장 광장', '33.248878', '126.564094', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(9, 1, 2, '스피치는 자신감!', '스피치는 자신감!', '/uploads/clubs/self-development/speech4.png', 6, '부평 스터디카페', '37.499737', '126.721040', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 -- -3. 면접
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`,  `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(5, 1, 3, '면접 끝판왕 되기', '면접 연습 같이할 사람 구해요~', '/uploads/clubs/self-development/interview1.png', 10, '노량진 학원', '37.515733', '126.942157', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(2, 1, 3, '오늘 면접 주인공은 나다', '이번주 면접 보시는 분들 같이 연습해요', '/uploads/clubs/self-development/interview2.png', 10, '노량진 스터디카페', '37.515733', '126.942157', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(3, 1, 3, '매번 면접에서 떨어져요. 다 여기로!', '같이 면접 공포증 없앨 분들 모집합니다', '/uploads/clubs/self-development/interview3.png', 10, '대치동 스터디카페', '37.499862', '127.063479', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(4, 1, 3, '사회초년생 삐약이들만의 면접 팁 공유', '20대만 모일 수 있는 면접 모임', '/uploads/clubs/self-development/interview4.png', 10, '안산 스터디카페', '37.327307', '126.819799', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 -- -4. 회화
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`,  `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(6, 1, 4, '영어 회화 올리고 싶은 사람', '우리 모임에서는 영어로만 얘기할 수 있습니다', '/uploads/clubs/self-development/conversation1.png', 10, '이태원 카페', '37.538917', '126.992519', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(7, 1, 4, '중국 여행 좋아하는 사람들 모임', '중국어 연습도 하고, 같이 여행도 가요!', '/uploads/clubs/self-development/conversation2.jpg', 15, '노원구 카페', '37.640386', '127.075086', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(8, 1, 4, '영어 배우고 싶은 5060 모여라!', '이태원에서 영어 알려드려요! 재능 기부~', '/uploads/clubs/self-development/conversation3.jpg', 8, '이태원 카페', '37.538917', '126.992519', DATE_ADD(NOW(), INTERVAL 5 DAY), 'RECRUITING'),
+(9, 1, 4, '무역 영어 필요한 사람', '전공 무역학과 나온 사람들 모이세요', '/uploads/clubs/self-development/conversation4.png', 10, '인천 카페', '37.450278', '126.653488', DATE_ADD(NOW(), INTERVAL 2 DAY), 'RECRUITING');
 
--- 2. 자기 계발
--- 3. 자기 계발
+-- 2. 스포츠
+-- -1.러닝
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 2, 1, '주말 러닝 크루', '함께 달리며 건강 챙겨요!', '/uploads/clubs/sports/running1.jpg', 8, '올림픽공원', '37.51330000', '127.10010000', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(3, 2, 1, '매주 저녁8시 한강 러닝 모집', '매주 토요일 저녁 8시마다 한강에서 런닝하실분~', '/uploads/clubs/sports/running2.jpg', 10, '여의도 한강', '37.526940', '126.934765', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(4, 2, 1, '러닝으로 다이어트 도전!', '오늘도 다이어트 실패하신 분들 오세요', '/uploads/clubs/sports/running3.jpg', 10, '인천 송도', '37.390232', '126.640082', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING');
+-- -2. 테니스
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(5, 2, 2, '서울 망원동 테니스 같이할 사람', '망원동 야외 테니스장에서 같이 테니스 하실 분~', '/uploads/clubs/sports/tennis1.jpg', 10, '망원동 테니스장', '37.554743', '126.898335', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(6, 2, 2, '테니스 대결할 사람', '이번주 토요일 안산 테니스장 8시에 오삼. 진 사람 치킨사기', '/uploads/clubs/sports/tennis2.jfif', 4, '안산 야외테니스', '37.307036', '126.811365', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(7, 2, 2, '테니스 사랑하는 사람들 (테사사)', '테니스를 사랑하는가? 그럼 공튀기면서 입장하기', '/uploads/clubs/sports/tennis3.jpg', 15, '평택 테니스장', '37.095984', '127.072944', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING');
+-- -3. 풋살
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(8, 2, 3, '풋살 동호회 만듭니다', '풋살 좋아하시면 누구든지 환영합니다', '/uploads/clubs/sports/foot1.jpg', 10, '수원 풋살장', '37.296292', '127.041254', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(9, 2, 3, '평택 풋살인들 모여라', '평택 풋살장 8시에 달마다 경기합시다', '/uploads/clubs/sports/foot2.jpg', 20, '평택 풋살장', '37.010238', '127.118662', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(1, 2, 3, '이번주 목요일 풋살할 사람', '나이X 경력X 직업X 이름도 안물어봅니다', '/uploads/clubs/sports/foot3.jfif', 15, '부산 풋살장', '35.187120', '129.166182', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING');
+-- -4. 등산
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(2, 2, 4, '반달가슴곰 보러 지리산 탐방대', '반달가슴곰 무섭지만 보고싶어서 지리산 갈건데 같이 갈 사람', '/uploads/clubs/sports/hiking1.jpg', 5, '지리산', '35.337784', '127.730641', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(3, 2, 4, '등산이 좋아요', '산 좋아하는 사람들은 누구든 환영', '/uploads/clubs/sports/hiking2.jfif', 10, '문학산', '37.432428', '126.679583', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(4, 2, 4, '주식은 떨어졌지만, 등산은 한다', '제 주식은 떨어짔지만, 등산은 해봅니다. 동지들이여 모여라', '/uploads/clubs/sports/hiking3.jfif', 5, '설악산', '38.120326', '128.465644', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING');
+
+-- 3. 푸드
+-- -1. 맛집
+INSERT INTO `clubs` (`host_no`, `category_no`, `sub_category_no`, `title`, `description`, `thumbnail_img`, `max_members`, `location`, `lat`, `lng`, `club_date`, `status`) VALUES
+(5, 3, 1, '오늘도 날라간다. 피리부는 호빵맨', '1달에 한번씩 전국으로 빵집 투어할 사람 모집합니다', '/uploads/clubs/food/best1.jpg', 4, '대전 성심당', '36.329079', '127.427190', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING'),
+(6, 3, 1, '우리 동네 맛집 마스터하기', '인천 부평동 사는 사람들, 같이 맛집 찾아내여~~', '/uploads/clubs/food/best2.jfif', 4, '부평역', '37.490552', '126.723651', DATE_ADD(NOW(), INTERVAL 7 DAY), 'RECRUITING'),
+(7, 3, 1, '먹고 싶지만, 돈이 없어요', '그지 깽깽들끼리 모여서 맛집 n/1 할 사람!', '/uploads/clubs/food/best3.jfif', 3, '서울 종로구', '37.596338', '126.977808', DATE_ADD(NOW(), INTERVAL 3 DAY), 'RECRUITING');
+-- -2. 한식
+-- -3. 베이킹
+
 -- 4. 자기 계발
 -- 5. 자기 계발
 -- 6. 자기 계발
 -- 7. 자기 계발
 -- 8. 자기 계발
 
--- 모임 멤버 추가
+-- 모임 멤버 추가 (꼭 하기!!)
 INSERT INTO `club_members` (`club_no`, `user_no`, `status`) VALUES
 (1, 2, 'APPROVED'),
 (1, 3, 'APPROVED'),
