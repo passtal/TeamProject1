@@ -296,13 +296,16 @@ footer {
     }
 
     .footer .social-icon {
-        width: 40px;
+        /* width: 40px;
         height: 40px;
-        object-fit: contain;
+        object-fit: contain; */
+        color: #00A651;
+        transition: color 0.2s ease;
+        padding: 10px;
     }
 
-    .footer .social-icon :hover{
-        background-color: var(--primary-color);
+    .footer .social-icon:hover{
+        background-color: #008a43;
         color: var(--border-color);
     }
 }
