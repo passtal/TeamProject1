@@ -6,23 +6,13 @@
     user-select: none;
 }
 
-.notice-actions {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #FFFFFF;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-    width: 100%;
-    margin: 0;
-}
-
 .actions-container {
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
-    padding-right: 22rem;
-    padding-left: 22rem;
+    padding-left: 5rem;
+    padding-right: 5rem;
 }
 
 /* 상세 컨텐츠 컨테이너 */
@@ -38,7 +28,7 @@
 .notice-detail-page {
     min-height: 100vh;
     background-color: #F9FAFB;
-    padding: 24px 647px 80px 647px;
+        padding: 24px 480px 80px 480px;
 }
 
 /* 태그 */
@@ -405,9 +395,27 @@
     }
 }
 
+@media (max-width: 1700px) {
+    .notice-detail-page {
+        padding: 20px 200px 60px 200px;
+    }
+
+     .actions-container {
+        justify-content: space-between;
+        padding-left: 10rem;
+        padding-right: 10rem;
+    }
+}
+
 @media (max-width: 1440px) {
     .notice-detail-page {
-        padding: 20px 180px 60px 180px;
+        padding: 20px 100px 60px 100px;
+    }
+    
+    .actions-container {
+        justify-content: space-between;
+        padding-left: 4rem;
+        padding-right: 4rem;
     }
 }
 
@@ -430,9 +438,14 @@
         gap: 12px;
     }
 
+    .actions-container {
+        justify-content: space-between;
+        padding: 0;
+    }
+
     .btn-list,
     .admin-buttons {
-        width: 100%;
+        /* width: 100%; */
     }
 
     .admin-buttons {

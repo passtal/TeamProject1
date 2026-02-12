@@ -275,12 +275,12 @@ body {
     align-items: center;
     justify-content: center;
     margin-bottom: 12px;
+    
 }
 
-/* .category-icon img {
-    width: 36px;
-    height: 36px;
-} */
+.category-icon img {
+    border-radius: 9999px;
+}
 
 .category-icon i,
 .category-icon span {

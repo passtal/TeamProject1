@@ -68,6 +68,7 @@
 
 /* 카드 오른쪽 상단 데코레이션 */
 .card-decoration {
+        display: none;
     position: absolute;
     top: -49px;
     right: -49px;

@@ -4,7 +4,7 @@
 }
 
 .notice-update-page {
-    padding: 20px 400px 80px 400px;
+    padding:  24px 480px 80px 480px;
     background-color: #F9FAFB;
     min-height: 100vh;
 }
@@ -16,7 +16,7 @@
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 24px 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
 }
 
 .header-container {
@@ -25,7 +25,6 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding-left: 5rem;
 }
 
 .btn-back {
@@ -236,15 +235,39 @@
 }
 
 /* 반응형 (화면이 작을 경우) */
-@media (max-width: 1600px) {
+@media (max-width: 1920px) {
     .notice-update-page {
-        padding: 24px 300px 80px 300px;
+        padding: 20px 400px 60px 400px;
+    }
+}
+@media (max-width: 1700px) {
+    .notice-update-page {
+        padding: 20px 200px 60px 200px;
+    }
+}
+@media (max-width: 1400px) {
+    .notice-update-page {
+        padding: 20px 80px 60px 80px;
+    }
+}
+
+@media (max-width: 1400px) {
+    
+    .notice-header {
+        padding: 24px 0;
+        justify-content: space-around;
     }
 }
 
 @media (max-width: 1200px) {
     .notice-update-page {
-        padding: 24px 100px 80px 100px;
+        padding: 20px 40px 60px 40px;
+    }
+
+    .notice-header {
+        padding: 24px 0;
+        justify-content: space-around;
+        padding-left: 30px;
     }
 }
 
