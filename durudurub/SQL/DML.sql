@@ -127,7 +127,7 @@ INSERT INTO `banners` (`title`, `image_url`, `link_url`, `position`, `seq`) VALU
 ('모임을 만들어보세요!', '/uploads/banners/durudurub-newClub.png', '/club/create', 'MAIN', 3),
 ('스테이크 사주세요', '/uploads/banners/restaurant_banner.png', '/club/list', 'MAIN', 4),
 ('작은 핸드폰 원하세요?', '/uploads/banners/smartphone_banner.png', '/club/list', 'MAIN', 5),
-('프리미엄 50%', '/uploads/banners/durudurub-premium.png', '/mypage', 'MAIN', 6),
+('프리미엄 50%', '/uploads/banners/durudurub-premium.png', '/users/mypage', 'MAIN', 6),
 ('로또 당첨되면 바로 뜨자', '/uploads/banners/travel_air_banner.png', '/club/list', 'MAIN', 7);
 
 
