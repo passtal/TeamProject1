@@ -171,6 +171,7 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
   ![요구사항&기능정의서1](./durudurub/uploads/etc/tdl.png)
   ![요구사항&기능정의서2](./durudurub/uploads/etc/tdl2.PNG)
   ![요구사항&기능정의서3](./durudurub/uploads/etc/tdl3.PNG)
+  ![요구사항&기능정의서3](./durudurub/uploads/etc/tdl4.PNG)
 </details>
 
 ### 5-2. ERD
