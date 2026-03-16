@@ -1,4 +1,4 @@
-# **프로젝트 : 두루두룹 (Duru Durub)** 👥
+# **프로젝트 : 두루두룹 (DuruDurub)** 👥
 
 <p align="center">
   <img src="./durudurub/uploads/banners/durudurub-newClub.png" width="600" alt="두루두룹 대표 이미지">
@@ -216,7 +216,6 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 
 ```java
 // AiSearchController.java 핵심 로직
-// 여기에 핵심 코드 스니펫을 붙여넣으세요
 ```
 </details>
 
@@ -228,7 +227,6 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 
 ```java
 // SecurityConfig.java 핵심 로직
-// 여기에 핵심 코드 스니펫을 붙여넣으세요
 ```
 </details>
 
@@ -240,11 +238,10 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 
 ```java
 // PaymentController.java 핵심 로직
-// 여기에 핵심 코드 스니펫을 붙여넣으세요
 ```
 </details>
 
-<!-- 필요한 만큼 핵심 기능을 추가하세요 -->
+<!-- 필요한 만큼 핵심 기능 추가 -->
 
 <br>
 
@@ -316,7 +313,7 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 </details>
 <br>
 
-<!-- 필요한 만큼 화면을 추가하세요 -->
+<!-- 필요한 만큼 화면 추가 -->
 
 <br>
 
@@ -357,8 +354,3 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 ---
 
 <br>
-
-<!-- <p align="center">
-  <b>📫 Contact</b><br>
-  ✉️ orbiyoung@gmail.com &nbsp;|&nbsp; 🏫 passtal@cau.ac.kr
-</p> -->
