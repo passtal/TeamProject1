@@ -700,7 +700,8 @@ public class AiSearchServiceImpl implements AiSearchService {
 **최영우**
 
  - AI 검색 기능을 OpenAI API와 연동하여 구현한 것이 가장 큰 성과였습니다.
- - Thymeleaf와 Spring Boot의 연동 과정에서 많은 것을 배웠습니다.
+ - Thymeleaf Layout Dialect를 활용한 레이아웃 상속 구조와, Spring Security의 인가 설정·CSRF 예외 처리 등 보안 흐름을 실무 수준으로 익혔습니다.
+ - MyBatis 매퍼 XML로 동적 쿼리를 작성하고 페이징 처리를 구현하면서, 서버 사이드 데이터 처리 흐름을 체계적으로 이해하게 되었습니다.
 
 ### 8-2. 종합 평가
 
