@@ -1,7 +1,7 @@
 # **프로젝트 : 두루두룹 (Duru Durub)** 👥
 
 <p align="center">
-  <img src="./durudurub/uploads/banners/여기에_로고_또는_대표이미지.png" width="600" alt="두루두룹 대표 이미지">
+  <img src="./durudurub/uploads/banners/durudurub-newClub.png" width="600" alt="두루두룹 대표 이미지">
 </p>
 
 > 관심사가 같은 사람들과 모여 새로운 경험을 만들어가는 **소셜 모임 플랫폼**
