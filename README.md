@@ -10,7 +10,7 @@
 
 ## 📌 시연 영상
 
-[![시연 영상](https://img.youtube.com/vi/yVU2fAoMcvc/0.jpg)](https://www.youtube.com/watch?v=yVU2fAoMcvc)
+[![시연 영상](./durudurub/uploads/etc/thumbnail.PNG)](https://www.youtube.com/watch?v=yVU2fAoMcvc)
 
 > ⬆️ 이미지를 클릭하면 시연 영상으로 이동합니다.
 
