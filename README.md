@@ -168,7 +168,9 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 <details>
   <summary>요구사항 및 기능 정의서 펼치기</summary>
   
-  ![요구사항&기능정의서](./durudurub/uploads/etc/tdl1.png)<br>(./durudurub/uploads/etc/tdl2.png)<br>(./durudurub/uploads/etc/tdl3.png)
+  ![요구사항&기능정의서1](./durudurub/uploads/etc/tdl.png)
+  ![요구사항&기능정의서2](./durudurub/uploads/etc/tdl2.PNG)
+  ![요구사항&기능정의서3](./durudurub/uploads/etc/tdl3.PNG)
 </details>
 
 ### 5-2. ERD
@@ -196,7 +198,7 @@ durudurub-mcp/                      ← Spring AI + MCP 서버
 <details>
   <summary>간트 차트 펼치기</summary>
   
-  ![간트차트](./durudurub/uploads/etc/gantChart.png)
+  ![간트차트](./durudurub/uploads/etc/gantChart.PNG)
 </details>
 
 <br>
