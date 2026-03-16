@@ -10,7 +10,7 @@
 
 ## 📌 시연 영상
 
-[![시연 영상](https://img.youtube.com/vi/여기에_유튜브영상ID/0.jpg)](https://www.youtube.com/watch?v=여기에_유튜브영상ID)
+[![시연 영상](https://img.youtube.com/vi/yVU2fAoMcvc/0.jpg)](https://www.youtube.com/watch?v=yVU2fAoMcvc)
 
 > ⬆️ 이미지를 클릭하면 시연 영상으로 이동합니다.
 
@@ -38,24 +38,20 @@
 - 관심사 기반 소셜 모임 플랫폼 **"두루두룹"**
 
 ### 1-2. 주제 선정 배경
-- <!-- 왜 이 주제를 선택했는지 작성 -->
-- <!-- 예: 코로나 이후 오프라인 만남에 대한 수요 증가 -->
-- <!-- 예: 기존 소셜 플랫폼의 한계점 (카테고리 세분화 부족 등) -->
+- 코로나 이후 오프라인 만남에 대한 수요 증가
+- 기존 소셜 플랫폼의 한계점 (카테고리 세분화 부족 등)
 
 ### 1-3. 기획 의도
-- <!-- 어떤 문제를 해결하려 했는지 -->
-- <!-- 예: 누구나 쉽게 관심사 기반 모임을 만들고 참여할 수 있는 플랫폼 -->
-- <!-- 예: AI 검색을 통한 맞춤형 모임 추천 -->
+- 누구나 쉽게 관심사 기반 모임을 만들고 참여할 수 있는 플랫폼
+- AI 검색을 통한 맞춤형 모임 추천
 
 ### 1-4. 활용 방안
-- <!-- 실제 사용 시나리오 -->
-- <!-- 예: 사용자는 카테고리별로 모임을 탐색하고, AI 검색으로 취향에 맞는 모임을 추천받을 수 있습니다. -->
-- <!-- 예: 프리미엄 구독을 통해 무제한 AI 검색 등 부가 기능을 이용할 수 있습니다. -->
+- 사용자는 카테고리별로 모임을 탐색하고, AI 검색으로 취향에 맞는 모임을 추천받을 수 있습니다.
+- 프리미엄 구독을 통해 무제한 AI 검색 등 부가 기능을 이용할 수 있습니다.
 
 ### 1-5. 기대효과
-- <!-- 프로젝트의 의의, 기대효과 -->
-- <!-- 예: 오프라인 커뮤니티 활성화 -->
-- <!-- 예: AI 기반 개인화 추천으로 사용자 만족도 향상 -->
+- 오프라인 커뮤니티 활성화
+- AI 기반 개인화 추천으로 사용자 만족도 향상
 
 <br>
 
@@ -66,7 +62,7 @@
 ### 2-1. 주요 기능
 | 구분 | 기능 |
 |:---:|:---|
-| 👤 사용자 | 회원가입 / 로그인 (JWT 인증) |
+| 👤 사용자 | 회원가입 / 로그인 (Spring Security 세션 인증) |
 | 🔍 모임 탐색 | 카테고리별 모임 목록 / 모임 상세 조회 |
 | 🤖 AI 검색 | OpenAI API 기반 맞춤형 모임 검색 |
 | ❤️ 즐겨찾기 | 관심 모임 좋아요 / 즐겨찾기 목록 관리 |
@@ -109,12 +105,10 @@
 
 ### Frontend
 <div align="left">
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
-  <img src="https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white">
-  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white">
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white">
   <img src="https://img.shields.io/badge/Thymeleaf-005F0F?style=for-the-badge&logo=thymeleaf&logoColor=white">
-  <img src="https://img.shields.io/badge/Bootstrap_5-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white">
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
 </div>
 
 ### Backend
@@ -122,7 +116,7 @@
   <img src="https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
   <img src="https://img.shields.io/badge/Spring_Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white">
   <img src="https://img.shields.io/badge/MyBatis-000000?style=for-the-badge">
-  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white">
+  <img src="https://img.shields.io/badge/Lombok-DC382D?style=for-the-badge">
 </div>
 
 ### Database
@@ -147,26 +141,23 @@
 
 ### Architecture
 ```
-durudurub/                          ← Spring Boot 백엔드
+durudurub/                          ← Spring Boot 메인 서버
 ├── src/main/java/.../
 │   ├── config/                     ← Security, Web 설정
-│   ├── controller/                 ← REST API & 뷰 컨트롤러
+│   ├── controller/                 ← 뷰 & API 컨트롤러
 │   ├── dao/                        ← MyBatis Mapper 인터페이스
 │   ├── dto/                        ← 데이터 전송 객체
-│   ├── security/                   ← JWT 인증 필터
+│   ├── security/                   ← Spring Security (세션 인증)
 │   └── service/                    ← 비즈니스 로직
 ├── src/main/resources/
 │   ├── mybatis/mapper/             ← SQL 매퍼 XML
-│   ├── templates/                  ← Thymeleaf 템플릿
+│   ├── templates/                  ← Thymeleaf 템플릿 (레이아웃)
 │   └── static/                     ← CSS, JS, 이미지
 └── uploads/                        ← 업로드 파일 저장소
 
-durudurub-app/                      ← React 프론트엔드 (Vite)
-├── src/
-│   ├── components/                 ← 공통 컴포넌트 (Navbar 등)
-│   ├── contexts/                   ← AppContext (JWT 인증 상태 관리)
-│   ├── pages/                      ← 페이지별 컴포넌트
-│   └── App.tsx                     ← 라우팅 설정
+durudurub-mcp/                      ← Spring AI + MCP 서버
+├── src/main/java/.../
+│   └── ...                         ← Spring AI (OpenAI) 연동
 ```
 
 <br>
@@ -225,14 +216,14 @@ durudurub-app/                      ← React 프론트엔드 (Vite)
 ```
 </details>
 
-### 6-2. JWT 인증 시스템
-> Spring Security + JWT를 활용한 사용자 인증 및 인가 처리
+### 6-2. Spring Security 인증 시스템
+> Spring Security + 세션 기반 인증 및 인가 처리
 
 <details>
   <summary>코드 보기</summary>
 
 ```java
-// JwtAuthenticationFilter.java 핵심 로직
+// SecurityConfig.java 핵심 로직
 // 여기에 핵심 코드 스니펫을 붙여넣으세요
 ```
 </details>
@@ -335,7 +326,7 @@ durudurub-app/                      ← React 프론트엔드 (Vite)
 **최영우**
 > - <!-- 본인의 프로젝트 참여 소감, 잘한 점, 아쉬운 점 -->
 > - <!-- 예: AI 검색 기능을 OpenAI API와 연동하여 구현한 것이 가장 큰 성과였습니다. -->
-> - <!-- 예: React와 Spring Boot의 연동 과정에서 많은 것을 배웠습니다. -->
+> - <!-- 예: Thymeleaf와 Spring Boot의 연동 과정에서 많은 것을 배웠습니다. -->
 
 **팀원2**
 > - <!-- 소감 -->
