@@ -601,7 +601,7 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>메인 화면 보기</summary>
   
-  ![메인화면](./durudurub/uploads/figma/main.PNG)
+  <img src="./durudurub/uploads/figma/main.PNG" width="720" alt="메인화면">
 </details>
 <br>
 
@@ -609,7 +609,7 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>모임 탐색 화면 보기</summary>
   
-  ![모임탐색](./durudurub/uploads/figma/explore.PNG)
+  <img src="./durudurub/uploads/figma/explore.PNG" width="720" alt="모임탐색">
 </details>
 <br>
 
@@ -617,8 +617,8 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>모임 상세 화면 보기</summary>
   
-  ![모임상세](./durudurub/uploads/figma/club.PNG)
-  ![모임상세](./durudurub/uploads/figma/club2.PNG)
+  <img src="./durudurub/uploads/figma/club.PNG" width="720" alt="모임상세1"><br>
+  <img src="./durudurub/uploads/figma/club2.PNG" width="720" alt="모임상세2">
 </details>
 <br>
 
@@ -626,7 +626,7 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>AI 검색 화면 보기</summary>
   
-  ![AI검색](./durudurub/uploads/figma/aiSearch.PNG)
+  <img src="./durudurub/uploads/figma/aiSearch.PNG" width="720" alt="AI검색">
 </details>
 <br>
 
@@ -634,9 +634,9 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>로그인 / 회원가입 화면 보기</summary>
   
-  ![로그인](./durudurub/uploads/figma/login.PNG)
-  ![로그인](./durudurub/uploads/figma/login2.PNG)
-  ![로그인](./durudurub/uploads/figma/login3.PNG)
+  <img src="./durudurub/uploads/figma/login.PNG" width="720" alt="로그인1"><br>
+  <img src="./durudurub/uploads/figma/login2.PNG" width="720" alt="로그인2"><br>
+  <img src="./durudurub/uploads/figma/login3.PNG" width="720" alt="로그인3">
 </details>
 <br>
 
@@ -644,11 +644,11 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>마이페이지 화면 보기</summary>
   
-  ![마이페이지](./durudurub/uploads/figma/my.PNG)
-  ![마이페이지](./durudurub/uploads/figma/my5.PNG)
-  ![마이페이지](./durudurub/uploads/figma/my2.PNG)
-  ![마이페이지](./durudurub/uploads/figma/my3.PNG)
-  ![마이페이지](./durudurub/uploads/figma/my4.PNG)
+  <img src="./durudurub/uploads/figma/my.PNG" width="720" alt="마이페이지1"><br>
+  <img src="./durudurub/uploads/figma/my5.PNG" width="720" alt="마이페이지2"><br>
+  <img src="./durudurub/uploads/figma/my2.PNG" width="720" alt="마이페이지3"><br>
+  <img src="./durudurub/uploads/figma/my3.PNG" width="720" alt="마이페이지4"><br>
+  <img src="./durudurub/uploads/figma/my4.PNG" width="720" alt="마이페이지5">
 </details>
 <br>
 
@@ -656,7 +656,7 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>결제 화면 보기</summary>
   
-  ![결제](./durudurub/uploads/figma/payments.PNG)
+  <img src="./durudurub/uploads/figma/payments.PNG" width="720" alt="결제">
 </details>
 <br>
 
@@ -664,19 +664,19 @@ public class AiSearchServiceImpl implements AiSearchService {
 <details>
   <summary>공지사항 페이지 화면 보기</summary>
   
-  ![공지사항](./durudurub/uploads/figma/notice.PNG)
-  ![공지사항](./durudurub/uploads/figma/notice2.PNG)
-  ![공지사항](./durudurub/uploads/figma/notice3.PNG)
+  <img src="./durudurub/uploads/figma/notice.PNG" width="720" alt="공지사항1"><br>
+  <img src="./durudurub/uploads/figma/notice2.PNG" width="720" alt="공지사항2"><br>
+  <img src="./durudurub/uploads/figma/notice3.PNG" width="720" alt="공지사항3">
 </details>
 
 ### 관리자 페이지
 <details>
   <summary>관리자 페이지 화면 보기</summary>
   
-  ![관리자](./durudurub/uploads/figma/admin.PNG)
-  ![관리자](./durudurub/uploads/figma/admin2.PNG)
-  ![관리자](./durudurub/uploads/figma/admin3.PNG)
-  ![관리자](./durudurub/uploads/figma/admin4.PNG)
+  <img src="./durudurub/uploads/figma/admin.PNG" width="720" alt="관리자1"><br>
+  <img src="./durudurub/uploads/figma/admin2.PNG" width="720" alt="관리자2"><br>
+  <img src="./durudurub/uploads/figma/admin3.PNG" width="720" alt="관리자3"><br>
+  <img src="./durudurub/uploads/figma/admin4.PNG" width="720" alt="관리자4">
 </details>
 <br>
 
