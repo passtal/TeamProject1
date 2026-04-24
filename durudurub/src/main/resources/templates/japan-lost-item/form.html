@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{/layouts/main_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일본 분실물 신고서(遺失届) 작성 도우미 - 두루두룹</title>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/japan-lost-item/form.css}">
+    </th:block>
+</head>
+<body>
+<main layout:fragment="content" class="lost-item-page">
+
+    <!-- 페이지 헤더 -->
+    <section class="lost-item-hero">
+        <div class="hero-flag">🇯🇵</div>
+        <div class="hero-badge">AI 遺失届 작성 도우미</div>
+        <h1>일본 분실물 신고서 작성</h1>
+        <p>여행 중 분실한 물건 정보를 한국어로 입력하면 AI가 일본어 遺失届를 자동으로 작성해 드립니다</p>
+    </section>
+
+    <div class="lost-item-container">
+
+        <!-- 안내 메시지 -->
+        <div class="info-card">
+            <span class="info-icon">ℹ️</span>
+            <strong>이용 방법</strong><br>
+            아래 양식에 분실 정보를 <strong>한국어로</strong> 입력하고 「신고서 생성하기」를 누르세요.
+            AI가 일본어로 작성된 遺失届 내용을 생성합니다.
+            결과물을 출력하거나 복사하여 가까운 <strong>코방(交番 / こうばん)</strong>에 제출하세요.
+        </div>
+
+        <!-- 입력 폼 카드 -->
+        <div class="lost-item-card">
+            <div class="card-title">
+                <span>📝</span> 분실 정보 입력
+            </div>
+
+            <form id="lostItemForm" novalidate>
+
+                <!-- 분실물 정보 -->
+                <div class="form-group">
+                    <label for="itemName">분실한 물건 <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="itemName" name="itemName"
+                           placeholder="예: 지갑, 스마트폰, 여권, 카메라" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">물건 상세 설명</label>
+                    <textarea class="form-control" id="description" name="description" rows="3"
+                              placeholder="예: 갈색 가죽 지갑, 현금 약 30,000엔 및 신용카드 2장 포함, 내부에 한국 운전면허증 있음"></textarea>
+                    <div class="hint">색상, 브랜드, 포함 내용물, 특징 등을 자세히 적을수록 좋습니다.</div>
+                </div>
+
+                <!-- 분실 일시 -->
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="lostDate">분실 날짜</label>
+                        <input type="date" class="form-control" id="lostDate" name="lostDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="lostTime">분실 시간 (대략)</label>
+                        <input type="time" class="form-control" id="lostTime" name="lostTime">
+                    </div>
+                </div>
+
+                <!-- 분실 장소 -->
+                <div class="form-group">
+                    <label for="lostPlace">분실 장소 <span class="required">*</span></label>
+                    <input type="text" class="form-control" id="lostPlace" name="lostPlace"
+                           placeholder="예: 도쿄 시부야역 근처 편의점, 오사카 도톤보리 상점가" required>
+                    <div class="hint">가능한 한 구체적인 장소를 입력해주세요.</div>
+                </div>
+
+                <!-- 신고자 정보 -->
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="reporterName">신고자 이름</label>
+                        <input type="text" class="form-control" id="reporterName" name="reporterName"
+                               placeholder="예: 홍길동 (Hong Gildong)">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">연락처</label>
+                        <input type="text" class="form-control" id="contact" name="contact"
+                               placeholder="예: +82-10-1234-5678">
+                        <div class="hint">한국 번호 또는 일본 임시 번호</div>
+                    </div>
+                </div>
+
+                <!-- 에러 메시지 -->
+                <div class="error-alert" id="errorAlert"></div>
+
+                <!-- 제출 버튼 -->
+                <button type="submit" class="btn-generate" id="generateBtn">
+                    <span id="btnText">🤖 신고서 생성하기</span>
+                    <span id="btnSpinner" class="spinner-border spinner-border-sm" role="status" style="display:none;"></span>
+                </button>
+
+            </form>
+        </div>
+
+        <!-- 결과 섹션 -->
+        <div class="result-section" id="resultSection">
+            <div class="result-card">
+                <div class="result-title">
+                    <span>📄</span> 생성된 遺失届 (분실물 신고서)
+                </div>
+                <div class="result-content" id="resultContent"></div>
+                <div class="result-actions">
+                    <button class="btn-print" onclick="window.print()">
+                        🖨️ 인쇄하기
+                    </button>
+                    <button class="btn-copy" id="copyBtn" onclick="copyResult()">
+                        📋 텍스트 복사
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 코반 유용한 회화 -->
+        <div class="koban-guide">
+            <h3>🗣️ 코방에서 유용한 회화</h3>
+            <ul class="koban-phrase-list">
+                <li>
+                    <div>
+                        <div class="jp">財布をなくしました。</div>
+                        <div class="reading">사이후 오 나쿠시마시타.</div>
+                    </div>
+                    <div class="meaning">지갑을 잃어버렸습니다.</div>
+                </li>
+                <li>
+                    <div>
+                        <div class="jp">遺失届を出したいのですが。</div>
+                        <div class="reading">이시츠토도케 오 다시타이 노데스가.</div>
+                    </div>
+                    <div class="meaning">분실물 신고를 하고 싶습니다.</div>
+                </li>
+                <li>
+                    <div>
+                        <div class="jp">どこで落としたかわかりません。</div>
+                        <div class="reading">도코데 오토시타카 와카리마센.</div>
+                    </div>
+                    <div class="meaning">어디서 잃어버렸는지 모르겠습니다.</div>
+                </li>
+                <li>
+                    <div>
+                        <div class="jp">韓国語の通訳はいますか？</div>
+                        <div class="reading">캉코쿠고 노 츠우야쿠 와 이마스카?</div>
+                    </div>
+                    <div class="meaning">한국어 통역이 있나요?</div>
+                </li>
+                <li>
+                    <div>
+                        <div class="jp">これを見てください。（신고서를 보여주며）</div>
+                        <div class="reading">코레 오 미테 쿠다사이.</div>
+                    </div>
+                    <div class="meaning">이것을 봐주세요. (신고서를 제출할 때)</div>
+                </li>
+            </ul>
+        </div>
+
+    </div><!-- /lost-item-container -->
+
+</main>
+
+<th:block layout:fragment="script">
+<script>
+    document.getElementById('lostItemForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const itemName = document.getElementById('itemName').value.trim();
+        const lostPlace = document.getElementById('lostPlace').value.trim();
+        const errorAlert = document.getElementById('errorAlert');
+
+        // 필수 입력 검증
+        errorAlert.classList.remove('visible');
+        if (!itemName) {
+            showError('분실한 물건 이름을 입력해주세요.');
+            return;
+        }
+        if (!lostPlace) {
+            showError('분실 장소를 입력해주세요.');
+            return;
+        }
+
+        // 로딩 상태
+        setLoading(true);
+
+        const requestData = {
+            itemName: itemName,
+            lostDate: document.getElementById('lostDate').value,
+            lostTime: document.getElementById('lostTime').value,
+            lostPlace: lostPlace,
+            description: document.getElementById('description').value.trim(),
+            reporterName: document.getElementById('reporterName').value.trim(),
+            contact: document.getElementById('contact').value.trim()
+        };
+
+        try {
+            const response = await fetch('/api/ai/japan-lost-item', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestData)
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                showError(data.error || '신고서 생성 중 오류가 발생했습니다.');
+                return;
+            }
+
+            // 결과 표시
+            document.getElementById('resultContent').textContent = data.result;
+            const resultSection = document.getElementById('resultSection');
+            resultSection.classList.add('visible');
+            resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        } catch (err) {
+            showError('서버와의 연결 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        } finally {
+            setLoading(false);
+        }
+    });
+
+    function setLoading(isLoading) {
+        const btn = document.getElementById('generateBtn');
+        const btnText = document.getElementById('btnText');
+        const btnSpinner = document.getElementById('btnSpinner');
+
+        btn.disabled = isLoading;
+        btnText.textContent = isLoading ? '생성 중...' : '🤖 신고서 생성하기';
+        btnSpinner.style.display = isLoading ? 'inline-block' : 'none';
+    }
+
+    function showError(message) {
+        const errorAlert = document.getElementById('errorAlert');
+        errorAlert.textContent = message;
+        errorAlert.classList.add('visible');
+    }
+
+    function copyResult() {
+        const content = document.getElementById('resultContent').textContent;
+        navigator.clipboard.writeText(content).then(() => {
+            const copyBtn = document.getElementById('copyBtn');
+            copyBtn.textContent = '✅ 복사 완료!';
+            setTimeout(() => { copyBtn.textContent = '📋 텍스트 복사'; }, 2000);
+        }).catch(() => {
+            // Clipboard API not available — show the text in a prompt so the user can copy manually
+            const copyBtn = document.getElementById('copyBtn');
+            try {
+                window.prompt('아래 텍스트를 복사하세요 (Ctrl+C / Cmd+C):', content);
+            } catch (ignored) {
+                // prompt blocked (e.g. embedded iframes) — nothing more we can do
+            }
+            copyBtn.textContent = '📋 텍스트 복사';
+        });
+    }
+</script>
+</th:block>
+
+</body>
+</html>
