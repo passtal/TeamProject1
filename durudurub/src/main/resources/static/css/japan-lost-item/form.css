@@ -1,0 +1,378 @@
+/* =============================================
+   遺失届 (일본 분실물 신고서) 작성 보조 페이지
+   ============================================= */
+
+.lost-item-page {
+    background: #f8f9fa;
+    min-height: 100vh;
+    padding-bottom: 60px;
+}
+
+/* 페이지 헤더 */
+.lost-item-hero {
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 100%);
+    color: #fff;
+    padding: 48px 0 36px;
+    text-align: center;
+}
+
+.lost-item-hero .hero-flag {
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 12px;
+}
+
+.lost-item-hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.lost-item-hero p {
+    font-size: 1rem;
+    opacity: 0.85;
+    margin: 0;
+}
+
+/* 안내 배지 */
+.lost-item-hero .hero-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.35);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.82rem;
+    margin-bottom: 16px;
+    letter-spacing: 0.03em;
+}
+
+/* 메인 컨테이너 */
+.lost-item-container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+/* 카드 공통 */
+.lost-item-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 28px 32px;
+    margin-top: 28px;
+}
+
+.lost-item-card .card-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 안내 카드 */
+.info-card {
+    background: #eaf3ff;
+    border: 1px solid #b6d4fe;
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 0.92rem;
+    color: #1e3a5f;
+    line-height: 1.7;
+}
+
+.info-card .info-icon {
+    font-size: 1.2rem;
+    margin-right: 6px;
+}
+
+/* 폼 레이아웃 */
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 576px) {
+    .form-row-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .lost-item-card {
+        padding: 20px 16px;
+    }
+
+    .lost-item-hero h1 {
+        font-size: 1.4rem;
+    }
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #374151;
+    margin-bottom: 6px;
+}
+
+.form-group label .required {
+    color: #e53e3e;
+    margin-left: 2px;
+}
+
+.form-group .form-control {
+    border-radius: 8px;
+    border: 1.5px solid #dee2e6;
+    font-size: 0.95rem;
+    padding: 10px 14px;
+    transition: border-color 0.2s;
+}
+
+.form-group .form-control:focus {
+    border-color: #2d5a8e;
+    box-shadow: 0 0 0 3px rgba(45, 90, 142, 0.12);
+}
+
+.form-group .hint {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin-top: 4px;
+}
+
+/* 제출 버튼 */
+.btn-generate {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8e 100%);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.btn-generate:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+}
+
+.btn-generate:active {
+    transform: translateY(0);
+}
+
+.btn-generate:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* 로딩 스피너 */
+.spinner-border-sm {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* 결과 섹션 */
+.result-section {
+    display: none;
+}
+
+.result-section.visible {
+    display: block;
+}
+
+.result-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 28px 32px;
+    margin-top: 28px;
+    border-left: 4px solid #2d5a8e;
+}
+
+.result-card .result-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.result-content {
+    background: #f8fafd;
+    border: 1px solid #d0e4f7;
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 0.93rem;
+    line-height: 1.9;
+    white-space: pre-wrap;
+    color: #1a1a2e;
+    font-family: 'Noto Sans JP', 'Noto Sans KR', sans-serif;
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+/* 결과 하단 버튼들 */
+.result-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-print {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1.5px solid #2d5a8e;
+    color: #2d5a8e;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-print:hover {
+    background: #eaf3ff;
+}
+
+.btn-copy {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1.5px solid #6b7280;
+    color: #374151;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.btn-copy:hover {
+    background: #f3f4f6;
+}
+
+/* 에러 메시지 */
+.error-alert {
+    background: #fff5f5;
+    border: 1px solid #fc8181;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #c53030;
+    font-size: 0.9rem;
+    margin-top: 16px;
+    display: none;
+}
+
+.error-alert.visible {
+    display: block;
+}
+
+/* 코반 안내 섹션 */
+.koban-guide {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    padding: 24px 32px;
+    margin-top: 28px;
+}
+
+.koban-guide h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e3a5f;
+    margin-bottom: 14px;
+}
+
+.koban-phrase-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.koban-phrase-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.9rem;
+}
+
+.koban-phrase-list li:last-child {
+    border-bottom: none;
+}
+
+.koban-phrase-list .jp {
+    font-weight: 700;
+    color: #1e3a5f;
+    font-size: 0.95rem;
+    min-width: 220px;
+}
+
+.koban-phrase-list .reading {
+    color: #6b7280;
+    font-size: 0.82rem;
+}
+
+.koban-phrase-list .meaning {
+    color: #374151;
+}
+
+@media print {
+    .lost-item-hero,
+    .info-card,
+    .lost-item-card,
+    .result-actions,
+    .koban-guide,
+    header,
+    footer {
+        display: none !important;
+    }
+
+    .result-section {
+        display: block !important;
+    }
+
+    .result-card {
+        box-shadow: none;
+        border: 1px solid #ccc;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .result-content {
+        max-height: none;
+        font-size: 1rem;
+    }
+}
