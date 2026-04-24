@@ -38,3 +38,4 @@ out/
 
 ### Application Local Properties (API Keys) ###
 src/main/resources/application-local.properties
+*.class
